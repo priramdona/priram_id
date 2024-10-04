@@ -2,6 +2,7 @@
 
 namespace Modules\User\Database\Seeders;
 
+use App\Models\Business;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Permission;
@@ -123,12 +124,16 @@ class PermissionsTableSeeder extends Seeder
                 'name' => $permission
             ]);
         }
+        foreach (Business::get() as $business){
 
-        $role = Role::create([
-            'name' => 'Admin'
-        ]);
+            $role = Role::create([
+                'name' => 'Admin',
+                'business_id' => $business->id
+            ]);
 
-        $role->givePermissionTo($permissions);
-        $role->revokePermissionTo('access_user_management');
+            $role->givePermissionTo($permissions);
+            $role->revokePermissionTo('access_user_management');
+            }
+
     }
 }

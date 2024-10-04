@@ -1,0 +1,11 @@
+{
+    "name": "Pulsa",
+    "alias": "pulsa",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Pulsa\\Providers\\PulsaServiceProvider"
+    ],
+    "files": []
+}

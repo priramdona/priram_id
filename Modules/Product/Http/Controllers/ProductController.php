@@ -2,6 +2,7 @@
 
 namespace Modules\Product\Http\Controllers;
 
+use App\Models\Business;
 use Modules\Product\DataTables\ProductDataTable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -31,6 +32,9 @@ class ProductController extends Controller
 
 
     public function store(StoreProductRequest $request) {
+        $user = $request->user();
+        $businessId = Business::find($user->business_id);
+        $request->request->add(['business_id' => $businessId]);
         $product = Product::create($request->except('document'));
 
         if ($request->has('document')) {

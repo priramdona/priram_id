@@ -1,5 +1,5 @@
 @php
-    $category_max_id = \Modules\Product\Entities\Category::max('id') + 1;
+    $category_max_id = \Modules\Product\Entities\Category::count('id') + 1;
     $category_code = "CA_" . str_pad($category_max_id, 2, '0', STR_PAD_LEFT)
 @endphp
 <div class="modal fade" id="categoryCreateModal" tabindex="-1" role="dialog" aria-labelledby="categoryCreateModal" aria-hidden="true">

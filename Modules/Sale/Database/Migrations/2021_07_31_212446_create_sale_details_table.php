@@ -16,7 +16,8 @@ class CreateSaleDetailsTable extends Migration
         Schema::create('sale_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('sale_id');
-            $table->unsignedBigInteger('product_id')->nullable();
+            // $table->foreignUuid('product_id');
+            $table->foreignUuid('product_id')->references('id')->on('products');
             $table->string('product_name');
             $table->string('product_code');
             $table->integer('quantity');
@@ -28,8 +29,8 @@ class CreateSaleDetailsTable extends Migration
             $table->integer('product_tax_amount');
             $table->foreign('sale_id')->references('id')
                 ->on('sales')->cascadeOnDelete();
-            $table->foreign('product_id')->references('id')
-                ->on('products')->nullOnDelete();
+            // $table->foreignUuid('product_id')->references('id')
+            //     ->on('products')->nullOnDelete();
             $table->timestamps();
         });
     }

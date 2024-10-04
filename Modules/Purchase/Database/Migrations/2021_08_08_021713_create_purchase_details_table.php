@@ -16,7 +16,8 @@ class CreatePurchaseDetailsTable extends Migration
         Schema::create('purchase_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('purchase_id');
-            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreignUuid('product_id')->references('id')->on('products');
+            // $table->unsignedBigInteger('product_id')->nullable();
             $table->string('product_name');
             $table->string('product_code');
             $table->integer('quantity');
@@ -28,8 +29,8 @@ class CreatePurchaseDetailsTable extends Migration
             $table->integer('product_tax_amount');
             $table->foreign('purchase_id')->references('id')
                 ->on('purchases')->cascadeOnDelete();
-            $table->foreign('product_id')->references('id')
-                ->on('products')->nullOnDelete();
+            // $table->foreign('product_id')->references('id')
+            //     ->on('products')->nullOnDelete();
             $table->timestamps();
         });
     }

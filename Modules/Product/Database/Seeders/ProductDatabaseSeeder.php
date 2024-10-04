@@ -2,6 +2,7 @@
 
 namespace Modules\Product\Database\Seeders;
 
+use App\Models\Business;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Product\Entities\Category;
@@ -18,16 +19,21 @@ class ProductDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        Category::create([
-            'category_code' => 'CA_01',
-            'category_name' => 'Random'
-        ]);
+        foreach (Business::get() as $business){
+            Category::create([
+                'category_code' => 'CA_01' . $business->prefix,
+                'category_name' => 'Random',
+                'business_id' => $business->id,
+            ]);
 
-        Unit::create([
-            'name' => 'Piece',
-            'short_name' => 'PC',
-            'operator' => '*',
-            'operation_value' => 1
-        ]);
+            Unit::create([
+                'name' => 'Piece',
+                'short_name' => 'PC',
+                'operator' => '*',
+                'operation_value' => 1,
+                'business_id' => $business->id,
+            ]);
+        }
+
     }
 }
