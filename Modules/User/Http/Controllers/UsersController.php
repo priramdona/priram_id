@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Modules\Upload\Entities\Upload;
 
+use Illuminate\Support\Facades\Auth;
 class UsersController extends Controller
 {
     public function index(UsersDataTable $dataTable) {
@@ -41,7 +42,8 @@ class UsersController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'is_active' => $request->is_active
+            'is_active' => $request->is_active,
+            'business_id' => Auth::user()->business_id
         ]);
 
         $user->assignRole($request->role);

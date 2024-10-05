@@ -8,6 +8,7 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Illuminate\Support\Facades\Auth;
 
 class ProductDataTable extends DataTable
 {
@@ -37,7 +38,9 @@ class ProductDataTable extends DataTable
 
     public function query(Product $model)
     {
-        return $model->newQuery()->with('category');
+        return $model->newQuery()
+        ->where('business_id',Auth::user()->business_id)
+        ->with('category');
     }
 
     public function html()

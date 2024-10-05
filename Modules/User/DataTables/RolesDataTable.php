@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
+use Illuminate\Support\Facades\Auth;
 class RolesDataTable extends DataTable
 {
 
@@ -29,7 +30,7 @@ class RolesDataTable extends DataTable
     public function query(Role $model) {
         return $model->newQuery()->with(['permissions' => function ($query) {
             $query->select('name')->take(10)->get();
-        }])->where('name', '!=', 'Super Admin');
+        }])->where('name', '!=', 'Super Admin')->where('business_id', Auth::user()->business_id);
     }
 
     public function html() {

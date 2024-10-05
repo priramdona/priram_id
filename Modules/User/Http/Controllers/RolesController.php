@@ -33,8 +33,10 @@ class RolesController extends Controller
             'permissions' => 'required|array'
         ]);
 
+        $user = $request->user();
         $role = Role::create([
-            'name' => $request->name
+            'name' => $request->name,
+            'business_id' => $user->business_id
         ]);
 
         $role->givePermissionTo($request->permissions);

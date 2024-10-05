@@ -5,12 +5,12 @@ namespace Modules\Setting\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Setting\Entities\Unit;
-
+use Illuminate\Support\Facades\Auth;
 class   UnitsController extends Controller
 {
 
     public function index() {
-        $units = Unit::all();
+        $units = Unit::where('business_id', Auth::user()->business_id)->get();
 
         return view('setting::units.index', [
             'units' => $units
@@ -32,6 +32,7 @@ class   UnitsController extends Controller
             'short_name'      => $request->short_name,
             'operator'        => $request->operator,
             'operation_value' => $request->operation_value,
+            'business_id' => Auth::user()->business_id,
         ]);
 
         toast('Unit Created!', 'success');

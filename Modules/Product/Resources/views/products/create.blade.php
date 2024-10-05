@@ -45,7 +45,7 @@
                                     <div class="input-group">
                                         <select class="form-control" name="category_id" id="category_id" required>
                                             <option value="" selected disabled>Select Category</option>
-                                            @foreach(\Modules\Product\Entities\Category::all() as $category)
+                                            @foreach(\Modules\Product\Entities\Category::where('business_id',Auth::user()->business_id)->get() as $category)
                                                 <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                                             @endforeach
                                         </select>
@@ -123,7 +123,7 @@
                                         <label for="product_unit">Unit <i class="bi bi-question-circle-fill text-info" data-toggle="tooltip" data-placement="top" title="This short text will be placed after Product Quantity."></i> <span class="text-danger">*</span></label>
                                         <select class="form-control" name="product_unit" id="product_unit">
                                             <option value="" selected >Select Unit</option>
-                                            @foreach(\Modules\Setting\Entities\Unit::all() as $unit)
+                                            @foreach(\Modules\Setting\Entities\Unit::where('business_id',Auth::user()->business_id)->get() as $unit)
                                                 <option value="{{ $unit->short_name }}">{{ $unit->name . ' | ' . $unit->short_name }}</option>
                                             @endforeach
                                         </select>

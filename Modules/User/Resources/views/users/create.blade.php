@@ -64,7 +64,7 @@
                                 <label for="role">Role <span class="text-danger">*</span></label>
                                 <select class="form-control" name="role" id="role" required>
                                     <option value="" selected disabled>Select Role</option>
-                                    @foreach(\Spatie\Permission\Models\Role::where('name', '!=', 'Super Admin')->get() as $role)
+                                    @foreach(\Spatie\Permission\Models\Role::where('name', '!=', 'Super Admin')->get()->where('business_id',Auth::user()->business_id) as $role)
                                         <option value="{{ $role->name }}">{{ $role->name }}</option>
                                     @endforeach
                                 </select>

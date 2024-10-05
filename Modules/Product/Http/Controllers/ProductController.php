@@ -33,9 +33,10 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request) {
         $user = $request->user();
-        $businessId = Business::find($user->business_id);
-        $request->request->add(['business_id' => $businessId]);
-        $product = Product::create($request->except('document'));
+        $arrayRequestValue = $request->except('document');
+        $arrayRequestValue['business_id'] = $user->business_id;
+
+        $product = Product::create($arrayRequestValue);
 
         if ($request->has('document')) {
             foreach ($request->input('document', []) as $file) {

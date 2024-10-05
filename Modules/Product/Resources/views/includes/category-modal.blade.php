@@ -1,6 +1,7 @@
 @php
-    $category_max_id = \Modules\Product\Entities\Category::count('id') + 1;
-    $category_code = "CA_" . str_pad($category_max_id, 2, '0', STR_PAD_LEFT)
+    $businessPrefix = \App\Models\Business::where('id',Auth::user()->business_id)->first();
+    $category_max_id = \Modules\Product\Entities\Category::where('business_id',$businessPrefix->id)->count('id') + 1;
+    $category_code = $businessPrefix->prefix . str_pad($category_max_id, 4, '0', STR_PAD_LEFT)
 @endphp
 <div class="modal fade" id="categoryCreateModal" tabindex="-1" role="dialog" aria-labelledby="categoryCreateModal" aria-hidden="true">
     <div class="modal-dialog" role="document">

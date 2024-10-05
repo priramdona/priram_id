@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
+use Illuminate\Support\Facades\Auth;
 class UsersDataTable extends DataTable
 {
 
@@ -45,7 +46,8 @@ class UsersDataTable extends DataTable
             ->with(['roles' => function ($query) {
                 $query->select('name')->get();
             }])
-            ->where('id', '!=', auth()->id());
+            ->where('id', '!=', Auth::user()->id)
+            ->where('business_id', Auth::user()->business_id);
     }
 
     public function html() {
