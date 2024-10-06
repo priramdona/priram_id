@@ -52,16 +52,21 @@ class   UnitsController extends Controller
             'short_name' => 'required|string|max:255'
         ]);
 
-        $unit->update([
-            'name'            => $request->name,
-            'short_name'      => $request->short_name,
-            'operator'        => $request->operator,
-            'operation_value' => $request->operation_value,
-        ]);
+        if ($unit->is_default = true){
+            toast('Unit is Default, Cannot Update or Modify!', 'info');
+        }
+        else{
+            $unit->update([
+                'name'            => $request->name,
+                'short_name'      => $request->short_name,
+                'operator'        => $request->operator,
+                'operation_value' => $request->operation_value,
+            ]);
 
-        toast('Unit Updated!', 'info');
+            toast('Unit Updated!', 'info');
 
-        return redirect()->route('units.index');
+            return redirect()->route('units.index');
+        }
     }
 
     public function destroy(Unit $unit) {

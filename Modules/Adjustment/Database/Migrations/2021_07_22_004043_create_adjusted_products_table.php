@@ -14,13 +14,13 @@ class CreateAdjustedProductsTable extends Migration
     public function up()
     {
         Schema::create('adjusted_products', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('adjustment_id');
-            $table->unsignedBigInteger('product_id');
+            $table->uuid('id')->primary();;
+            $table->foreignUuid('adjustment_id')->references('id')->on('adjustments')->onDelete('cascade');
+            $table->foreignUuid('product_id')->references('id')->on('products');
             $table->integer('quantity');
             $table->string('type');
-            $table->foreign('adjustment_id')->references('id')->on('adjustments')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

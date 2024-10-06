@@ -44,7 +44,8 @@ class AdjustmentController extends Controller
         DB::transaction(function () use ($request) {
             $adjustment = Adjustment::create([
                 'date' => $request->date,
-                'note' => $request->note
+                'note' => $request->note,
+                'business_id' => $request->user()->business_id
             ]);
 
             foreach ($request->product_ids as $key => $id) {
@@ -52,7 +53,8 @@ class AdjustmentController extends Controller
                     'adjustment_id' => $adjustment->id,
                     'product_id'    => $id,
                     'quantity'      => $request->quantities[$key],
-                    'type'          => $request->types[$key]
+                    'type'          => $request->types[$key],
+                    'business_id' => $request->user()->business_id
                 ]);
 
                 $product = Product::findOrFail($id);

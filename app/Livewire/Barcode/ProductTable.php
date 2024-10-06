@@ -24,13 +24,19 @@ class ProductTable extends Component
         return view('livewire.barcode.product-table');
     }
 
-    public function productSelected(Product $product) {
+    public function productSelected($productData) {
+        $productId = $productData['id'];
+        $product = Product::find($productId);
+
         $this->product = $product;
         $this->quantity = 1;
         $this->barcodes = [];
+
     }
 
-    public function generateBarcodes(Product $product, $quantity) {
+    public function generateBarcodes($productData, $quantity) {
+        $product = Product::find($productData['id']);
+        // dd($product);
         if ($quantity > 100) {
             return session()->flash('message', 'Max quantity is 100 per barcode generation!');
         }

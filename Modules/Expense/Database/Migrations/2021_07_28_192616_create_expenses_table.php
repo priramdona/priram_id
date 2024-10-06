@@ -14,14 +14,14 @@ class CreateExpensesTable extends Migration
     public function up()
     {
         Schema::create('expenses', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('category_id');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('category_id')->references('id')->on('expense_categories');
             $table->date('date');
             $table->string('reference');
             $table->text('details')->nullable();
             $table->integer('amount');
-            $table->foreign('category_id')->references('id')->on('expense_categories')->restrictOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -2,6 +2,8 @@
 
 return [
     'home' => 'Home',
+    'whatsapp' => 'Whatsapp',
+    'wallet' => 'Wallet',
     'products' => 'Products',
     'categories' => 'Categories',
     'create_product' => 'Create Product',

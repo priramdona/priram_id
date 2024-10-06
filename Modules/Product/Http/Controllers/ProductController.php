@@ -65,29 +65,33 @@ class ProductController extends Controller
 
 
     public function update(UpdateProductRequest $request, Product $product) {
-        $product->update($request->except('document'));
+        if ($product->is_default = true){
+            toast('Product is Default, Cannot Update or Modify!', 'info');
+        }else{
+            $product->update($request->except('document'));
 
-        if ($request->has('document')) {
-            if (count($product->getMedia('images')) > 0) {
-                foreach ($product->getMedia('images') as $media) {
-                    if (!in_array($media->file_name, $request->input('document', []))) {
-                        $media->delete();
+            if ($request->has('document')) {
+                if (count($product->getMedia('images')) > 0) {
+                    foreach ($product->getMedia('images') as $media) {
+                        if (!in_array($media->file_name, $request->input('document', []))) {
+                            $media->delete();
+                        }
+                    }
+                }
+
+                $media = $product->getMedia('images')->pluck('file_name')->toArray();
+
+                foreach ($request->input('document', []) as $file) {
+                    if (count($media) === 0 || !in_array($file, $media)) {
+                        $product->addMedia(Storage::path('temp/dropzone/' . $file))->toMediaCollection('images');
                     }
                 }
             }
 
-            $media = $product->getMedia('images')->pluck('file_name')->toArray();
+            toast('Product Updated!', 'info');
 
-            foreach ($request->input('document', []) as $file) {
-                if (count($media) === 0 || !in_array($file, $media)) {
-                    $product->addMedia(Storage::path('temp/dropzone/' . $file))->toMediaCollection('images');
-                }
-            }
+            return redirect()->route('products.index');
         }
-
-        toast('Product Updated!', 'info');
-
-        return redirect()->route('products.index');
     }
 
 

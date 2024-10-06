@@ -17,6 +17,8 @@ class CreateCategoriesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('category_code')->unique();
             $table->string('category_name');
+            $table->string('is_default')->default(false);
+            $table->string('is_showlist')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -14,15 +14,15 @@ class CreatePurchaseReturnPaymentsTable extends Migration
     public function up()
     {
         Schema::create('purchase_return_payments', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('purchase_return_id');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('purchase_return_id')->references('id')->on('purchase_returns')->cascadeOnDelete();
             $table->integer('amount');
             $table->date('date');
             $table->string('reference');
             $table->string('payment_method');
             $table->text('note')->nullable();
-            $table->foreign('purchase_return_id')->references('id')->on('purchase_returns')->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

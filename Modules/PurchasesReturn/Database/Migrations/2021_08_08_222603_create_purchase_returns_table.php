@@ -14,10 +14,10 @@ class CreatePurchaseReturnsTable extends Migration
     public function up()
     {
         Schema::create('purchase_returns', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->date('date');
             $table->string('reference');
-            $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->foreignUuid('supplier_id')->nullable()->references('id')->on('suppliers')->nullOnDelete();;
             $table->string('supplier_name');
             $table->integer('tax_percentage')->default(0);
             $table->integer('tax_amount')->default(0);
@@ -31,8 +31,8 @@ class CreatePurchaseReturnsTable extends Migration
             $table->string('payment_status');
             $table->string('payment_method');
             $table->text('note')->nullable();
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->nullOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -45,7 +45,7 @@
                                     <div class="input-group">
                                         <select class="form-control" name="category_id" id="category_id" required>
                                             <option value="" selected disabled>Select Category</option>
-                                            @foreach(\Modules\Product\Entities\Category::where('business_id',Auth::user()->business_id)->get() as $category)
+                                            @foreach(\Modules\Product\Entities\Category::where('business_id',Auth::user()->business_id)->where('is_showlist',true)->get() as $category)
                                                 <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                                             @endforeach
                                         </select>

@@ -24,6 +24,7 @@ class ProductCategoriesDataTable extends DataTable
     public function query(Category $model) {
         return $model->newQuery()
         ->where('business_id',Auth::user()->business_id)
+        ->where('is_showlist',true)
         ->withCount('products');
     }
 

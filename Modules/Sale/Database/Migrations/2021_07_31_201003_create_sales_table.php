@@ -14,10 +14,10 @@ class CreateSalesTable extends Migration
     public function up()
     {
         Schema::create('sales', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->date('date');
             $table->string('reference');
-            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->foreignUuid('customer_id')->nullable()->references('id')->on('customers')->nullOnDelete();
             $table->string('customer_name');
             $table->integer('tax_percentage')->default(0);
             $table->integer('tax_amount')->default(0);
@@ -31,8 +31,8 @@ class CreateSalesTable extends Migration
             $table->string('payment_status');
             $table->string('payment_method');
             $table->text('note')->nullable();
-            $table->foreign('customer_id')->references('id')->on('customers')->nullOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

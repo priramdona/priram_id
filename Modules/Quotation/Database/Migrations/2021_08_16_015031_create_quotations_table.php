@@ -14,10 +14,10 @@ class CreateQuotationsTable extends Migration
     public function up()
     {
         Schema::create('quotations', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->date('date');
             $table->string('reference');
-            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->foreignUuid('customer_id')->references('id')->on('customers');
             $table->string('customer_name');
             $table->integer('tax_percentage')->default(0);
             $table->integer('tax_amount')->default(0);
@@ -27,8 +27,8 @@ class CreateQuotationsTable extends Migration
             $table->integer('total_amount');
             $table->string('status');
             $table->text('note')->nullable();
-            $table->foreign('customer_id')->references('id')->on('customers')->nullOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

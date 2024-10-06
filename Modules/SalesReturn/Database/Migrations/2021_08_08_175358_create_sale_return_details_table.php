@@ -14,8 +14,8 @@ class CreateSaleReturnDetailsTable extends Migration
     public function up()
     {
         Schema::create('sale_return_details', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('sale_return_id');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('sale_return_id')->references('id')->on('sale_returns')->cascadeOnDelete();
             $table->foreignUuid('product_id')->references('id')->on('products');
             $table->string('product_name');
             $table->string('product_code');
@@ -26,11 +26,8 @@ class CreateSaleReturnDetailsTable extends Migration
             $table->integer('product_discount_amount');
             $table->string('product_discount_type')->default('fixed');
             $table->integer('product_tax_amount');
-            $table->foreign('sale_return_id')->references('id')
-                ->on('sale_returns')->cascadeOnDelete();
-            // $table->foreignUuid('product_id')->references('id')
-            //     ->on('products')->nullOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

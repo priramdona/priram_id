@@ -56,7 +56,12 @@ class CategoriesController extends Controller
             'category_name' => 'required'
         ]);
 
-        Category::findOrFail($id)->update([
+        $category = Category::findOrFail($id);
+
+        if ($category->is_default = true){
+            toast('Category is Default, Cannot Update or Modify!', 'info');
+        }else{
+            $category->update([
             'category_code' => $request->category_code,
             'category_name' => $request->category_name,
         ]);
@@ -64,6 +69,7 @@ class CategoriesController extends Controller
         toast('Product Category Updated!', 'info');
 
         return redirect()->route('product-categories.index');
+        }
     }
 
 

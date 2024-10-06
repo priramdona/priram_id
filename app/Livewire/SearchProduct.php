@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Modules\Product\Entities\Product;
+use Illuminate\Support\Facades\Auth;
 
 class SearchProduct extends Component
 {
@@ -24,7 +25,9 @@ class SearchProduct extends Component
     }
 
     public function updatedQuery() {
-        $this->search_results = Product::where('product_name', 'like', '%' . $this->query . '%')
+        $this->search_results = Product::where('business_id',Auth::user()->business_id)
+            ->where('product_name', 'like', '%' . $this->query . '%')
+            ->where('is_showlist', true)
             ->orWhere('product_code', 'like', '%' . $this->query . '%')
             ->take($this->how_many)->get();
     }
@@ -40,7 +43,8 @@ class SearchProduct extends Component
         $this->search_results = Collection::empty();
     }
 
-    public function selectProduct($product) {
+    public function selectProduct($productData) {
+        $product = Product::find($productData['id']);
         $this->dispatch('productSelected', $product);
     }
 }

@@ -14,10 +14,11 @@ class CreateExpenseCategoriesTable extends Migration
     public function up()
     {
         Schema::create('expense_categories', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('category_name');
             $table->text('category_description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

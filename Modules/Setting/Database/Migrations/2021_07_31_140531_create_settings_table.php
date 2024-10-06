@@ -14,7 +14,7 @@ class CreateSettingsTable extends Migration
     public function up()
     {
         Schema::create('settings', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('company_name');
             $table->string('company_email');
             $table->string('company_phone');
@@ -25,6 +25,7 @@ class CreateSettingsTable extends Migration
             $table->text('footer_text');
             $table->text('company_address');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -237,7 +237,7 @@
 {{-- @can('access_customers|access_suppliers') --}}
 <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
-            <i class="c-sidebar-nav-icon bi bi-people" style="line-height: 1;"></i> {{ __('menu.whatsapp') }}
+            <i class="c-sidebar-nav-icon bi bi-whatsapp" style="line-height: 1;"></i> {{ __('menu.whatsapp') }}
         </a>
         <ul class="c-sidebar-nav-dropdown-items">
             {{-- @can('access_customers') --}}
@@ -293,7 +293,25 @@
         </ul>
     </li>
 @endcan
+{{-- @can('access_customers|access_suppliers') --}}
+<li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
+    <a class="c-sidebar-nav-dropdown-toggle">
+        <i class="c-sidebar-nav-icon bi bi-wallet" style="line-height: 1;"></i> {{ __('menu.wallet') }}
+    </a>
+    <ul class="c-sidebar-nav-dropdown-items">
+        {{-- @can('access_customers') --}}
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link {{ request()->routeIs('customers.*') ? 'c-active' : '' }}" href="{{ route('customers.index') }}">
+                    <i class="c-sidebar-nav-icon bi bi-wallet-fill" style="line-height: 1;"></i> {{ __('menu.wallet_information') }}
+                </a>
+            </li>
+        {{-- @endcan
+        @can('access_suppliers') --}}
 
+        {{-- @endcan --}}
+    </ul>
+</li>
+{{-- @endcan --}}
 @can('access_user_management')
     <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('roles*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">

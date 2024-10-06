@@ -14,7 +14,7 @@ class CreateCurrenciesTable extends Migration
     public function up()
     {
         Schema::create('currencies', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('currency_name');
             $table->string('code');
             $table->string('symbol');
@@ -22,6 +22,7 @@ class CreateCurrenciesTable extends Migration
             $table->string('decimal_separator');
             $table->integer('exchange_rate')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

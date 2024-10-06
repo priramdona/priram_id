@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('message_blasts', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('adjusted_products', function (Blueprint $table) {
+            $table->foreignUuid('business_id')->references('id')->on('businesses')->after('id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('message_blasts');
+        Schema::table('adjusted_products', function (Blueprint $table) {
+            $table->dropColumn('business_id');
+        });
     }
 };

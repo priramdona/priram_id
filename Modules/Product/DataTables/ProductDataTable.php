@@ -40,6 +40,7 @@ class ProductDataTable extends DataTable
     {
         return $model->newQuery()
         ->where('business_id',Auth::user()->business_id)
+        ->where('is_showlist',true)
         ->with('category');
     }
 

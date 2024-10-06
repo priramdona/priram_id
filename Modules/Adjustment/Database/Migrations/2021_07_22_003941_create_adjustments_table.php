@@ -14,11 +14,12 @@ class CreateAdjustmentsTable extends Migration
     public function up()
     {
         Schema::create('adjustments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->date('date');
             $table->string('reference');
             $table->text('note')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
