@@ -17,6 +17,7 @@ if (!function_exists('format_currency')) {
         }
 
         $settings = settings();
+        // dd($settings);
         $position = $settings->default_currency_position;
         $symbol = $settings->currency->symbol;
         $decimal_separator = $settings->currency->decimal_separator;

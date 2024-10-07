@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Modules\People\Entities\Customer;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 class Quotation extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
@@ -26,7 +27,7 @@ class Quotation extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $number = Quotation::max('id') + 1;
+            $number = Quotation::where('business_id', Auth::user()->business_id)->count('id') + 1;
             $model->reference = make_reference_id('QT', $number);
         });
     }

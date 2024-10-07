@@ -50,7 +50,8 @@ class PurchasePaymentsController extends Controller
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'purchase_id' => $request->purchase_id,
-                'payment_method' => $request->payment_method
+                'payment_method' => $request->payment_method,
+                'business_id' => $request->user()->business_id,
             ]);
 
             $purchase = Purchase::findOrFail($request->purchase_id);

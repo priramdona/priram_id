@@ -42,7 +42,8 @@ class ExpenseController extends Controller
             'date' => $request->date,
             'category_id' => $request->category_id,
             'amount' => $request->amount,
-            'details' => $request->details
+            'details' => $request->details,
+            'business_id' => $request->user()->business_id,
         ]);
 
         toast('Expense Created!', 'success');

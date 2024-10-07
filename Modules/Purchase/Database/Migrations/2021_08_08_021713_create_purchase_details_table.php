@@ -27,6 +27,7 @@ class CreatePurchaseDetailsTable extends Migration
             $table->string('product_discount_type')->default('fixed');
             $table->integer('product_tax_amount');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -49,7 +49,7 @@ class SalesReturnController extends Controller
             $sale_return = SaleReturn::create([
                 'date' => $request->date,
                 'customer_id' => $request->customer_id,
-                'customer_name' => Customer::findOrFail($request->customer_id)->customer_name,
+                'customer_name' => Customer::find($request->customer_id)->customer_name ?? null,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
                 'shipping_amount' => $request->shipping_amount * 100,
@@ -62,6 +62,7 @@ class SalesReturnController extends Controller
                 'note' => $request->note,
                 'tax_amount' => Cart::instance('sale_return')->tax() * 100,
                 'discount_amount' => Cart::instance('sale_return')->discount() * 100,
+                'business_id' => $request->user()->business_id,
             ]);
 
             foreach (Cart::instance('sale_return')->content() as $cart_item) {
@@ -77,6 +78,7 @@ class SalesReturnController extends Controller
                     'product_discount_amount' => $cart_item->options->product_discount * 100,
                     'product_discount_type' => $cart_item->options->product_discount_type,
                     'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'business_id' => $request->user()->business_id,
                 ]);
 
                 if ($request->status == 'Completed') {
@@ -95,7 +97,8 @@ class SalesReturnController extends Controller
                     'reference' => 'INV/'.$sale_return->reference,
                     'amount' => $sale_return->paid_amount,
                     'sale_return_id' => $sale_return->id,
-                    'payment_method' => $request->payment_method
+                    'payment_method' => $request->payment_method,
+                    'business_id' => $request->user()->business_id,
                 ]);
             }
         });
@@ -109,7 +112,7 @@ class SalesReturnController extends Controller
     public function show(SaleReturn $sale_return) {
         abort_if(Gate::denies('show_sale_returns'), 403);
 
-        $customer = Customer::findOrFail($sale_return->customer_id);
+        $customer = Customer::find($sale_return->customer_id) ?? null;
 
         return view('salesreturn::show', compact('sale_return', 'customer'));
     }
@@ -173,7 +176,7 @@ class SalesReturnController extends Controller
                 'date' => $request->date,
                 'reference' => $request->reference,
                 'customer_id' => $request->customer_id,
-                'customer_name' => Customer::findOrFail($request->customer_id)->customer_name,
+                'customer_name' => Customer::find($request->customer_id)->customer_name ?? null,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
                 'shipping_amount' => $request->shipping_amount * 100,
@@ -201,6 +204,7 @@ class SalesReturnController extends Controller
                     'product_discount_amount' => $cart_item->options->product_discount * 100,
                     'product_discount_type' => $cart_item->options->product_discount_type,
                     'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'business_id' => $request->user()->business_id,
                 ]);
 
                 if ($request->status == 'Completed') {

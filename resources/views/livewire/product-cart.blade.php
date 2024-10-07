@@ -41,9 +41,11 @@
                                     @include('livewire.includes.product-cart-modal')
                                 </td>
 
-                                <td x-data="{ open{{ $cart_item->id }}: false }" class="align-middle text-center">
-                                    <span x-show="!open{{ $cart_item->id }}" @click="open{{ $cart_item->id }} = !open{{ $cart_item->id }}">{{ format_currency($cart_item->price) }}</span>
+                                <td x-data="{ open{{ $cart_item->id }}: false }" class="align-middle text-left">
 
+                                    <span>Price : </span>
+                                    <span x-show="!open{{ $cart_item->id }}" @click="open{{ $cart_item->id }} = !open{{ $cart_item->id }}">{{ format_currency($cart_item->price) }}</span>
+                                    <br>
                                     <div x-show="open{{ $cart_item->id }}">
                                         @include('livewire.includes.product-cart-price')
                                     </div>
@@ -90,6 +92,27 @@
         </div>
     </div>
 
+    <div class="form-row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="tax_percentage">Tax (%)</label>
+                <input wire:change="globalTaxChange($event.target.value)"  type="number" class="form-control" name="tax_percentage" min="0" max="100" value="{{ $global_tax }}" required>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="discount_percentage">Discount (%)</label>
+                <input wire:change="globalDiscountChange($event.target.value)" type="number" class="form-control" name="discount_percentage" min="0" max="100" value="{{ $global_discount }}" required>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="shipping_amount">Shipping</label>
+                <input wire:change="shippingChange($event.target.value)" type="number" class="form-control" name="shipping_amount" min="0" value="0" required step="0.01">
+            </div>
+        </div>
+    </div>
+    <br>
     <div class="row justify-content-md-end">
         <div class="col-md-4">
             <div class="table-responsive">
@@ -123,24 +146,4 @@
 
     <input type="hidden" name="total_amount" value="{{ $total_with_shipping }}">
 
-    <div class="form-row">
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label for="tax_percentage">Tax (%)</label>
-                <input wire:model.blur="global_tax" type="number" class="form-control" name="tax_percentage" min="0" max="100" value="{{ $global_tax }}" required>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label for="discount_percentage">Discount (%)</label>
-                <input wire:model.blur="global_discount" type="number" class="form-control" name="discount_percentage" min="0" max="100" value="{{ $global_discount }}" required>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label for="shipping_amount">Shipping</label>
-                <input wire:model.blur="shipping" type="number" class="form-control" name="shipping_amount" min="0" value="0" required step="0.01">
-            </div>
-        </div>
-    </div>
 </div>

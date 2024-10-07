@@ -2,6 +2,7 @@
 
 namespace Modules\Quotation\DataTables;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Quotation\Entities\Quotation;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -27,7 +28,7 @@ class QuotationsDataTable extends DataTable
     }
 
     public function query(Quotation $model) {
-        return $model->newQuery();
+        return $model->where('business_id',Auth::user()->business_id)->newQuery();
     }
 
     public function html() {

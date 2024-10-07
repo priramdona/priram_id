@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+
 class Purchase extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
@@ -24,7 +26,7 @@ class Purchase extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $number = Purchase::max('id') + 1;
+            $number = Purchase::where('business_id',Auth::user()->business_id)->count('id') + 1;
             $model->reference = make_reference_id('PR', $number);
         });
     }

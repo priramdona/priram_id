@@ -61,6 +61,7 @@ class PurchaseController extends Controller
                 'note' => $request->note,
                 'tax_amount' => Cart::instance('purchase')->tax() * 100,
                 'discount_amount' => Cart::instance('purchase')->discount() * 100,
+                'business_id' => $request->user()->business_id,
             ]);
 
             foreach (Cart::instance('purchase')->content() as $cart_item) {
@@ -76,6 +77,7 @@ class PurchaseController extends Controller
                     'product_discount_amount' => $cart_item->options->product_discount * 100,
                     'product_discount_type' => $cart_item->options->product_discount_type,
                     'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'business_id' => $request->user()->business_id,
                 ]);
 
                 if ($request->status == 'Completed') {
@@ -94,7 +96,8 @@ class PurchaseController extends Controller
                     'reference' => 'INV/'.$purchase->reference,
                     'amount' => $purchase->paid_amount,
                     'purchase_id' => $purchase->id,
-                    'payment_method' => $request->payment_method
+                    'payment_method' => $request->payment_method,
+                    'business_id' => $request->user()->business_id,
                 ]);
             }
         });
@@ -199,6 +202,7 @@ class PurchaseController extends Controller
                     'product_discount_amount' => $cart_item->options->product_discount * 100,
                     'product_discount_type' => $cart_item->options->product_discount_type,
                     'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'business_id' => $request->user()->business_id,
                 ]);
 
                 if ($request->status == 'Completed') {

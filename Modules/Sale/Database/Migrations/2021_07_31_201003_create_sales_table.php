@@ -18,7 +18,7 @@ class CreateSalesTable extends Migration
             $table->date('date');
             $table->string('reference');
             $table->foreignUuid('customer_id')->nullable()->references('id')->on('customers')->nullOnDelete();
-            $table->string('customer_name');
+            $table->string('customer_name')->nullable();
             $table->integer('tax_percentage')->default(0);
             $table->integer('tax_amount')->default(0);
             $table->integer('discount_percentage')->default(0);

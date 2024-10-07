@@ -15,7 +15,7 @@ class StorePurchaseRequest extends FormRequest
     public function rules()
     {
         return [
-            'supplier_id' => 'required|numeric',
+            'supplier_id' => 'required|string',
             'reference' => 'required|string|max:255',
             'tax_percentage' => 'required|integer|min:0|max:100',
             'discount_percentage' => 'required|integer|min:0|max:100',

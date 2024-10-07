@@ -2,6 +2,7 @@
 
 namespace Modules\Expense\DataTables;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Expense\Entities\ExpenseCategory;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -21,7 +22,7 @@ class ExpenseCategoriesDataTable extends DataTable
     }
 
     public function query(ExpenseCategory $model) {
-        return $model->newQuery()->withCount('expenses');
+        return $model->where('business_id',Auth::user()->business_id)->newQuery()->withCount('expenses');
     }
 
     public function html() {

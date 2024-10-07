@@ -2,6 +2,7 @@
 
 namespace Modules\Adjustment\DataTables;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Adjustment\Entities\Adjustment;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -21,7 +22,7 @@ class AdjustmentsDataTable extends DataTable
     }
 
     public function query(Adjustment $model) {
-        return $model->newQuery()->withCount('adjustedProducts');
+        return $model->where('business_id',Auth::user()->business_id)->newQuery()->withCount('adjustedProducts');
     }
 
     public function html() {

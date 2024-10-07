@@ -2,6 +2,7 @@
 
 namespace Modules\SalesReturn\DataTables;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\SalesReturn\Entities\SaleReturn;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -36,7 +37,7 @@ class SaleReturnsDataTable extends DataTable
     }
 
     public function query(SaleReturn $model) {
-        return $model->newQuery();
+        return $model->where('business_id',Auth::user()->business_id)->newQuery();
     }
 
     public function html() {

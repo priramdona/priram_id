@@ -36,9 +36,10 @@
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="customer_id">Customer <span class="text-danger">*</span></label>
-                                            <select class="form-control" name="customer_id" id="customer_id" required>
-                                                @foreach(\Modules\People\Entities\Customer::all() as $customer)
+                                            <label for="customer_id">Customer</label>
+                                            <select class="form-control" name="customer_id" id="customer_id">
+                                                <option value="">Not Registered</option>
+                                                @foreach(\Modules\People\Entities\Customer::where('business_id',auth::user()->business_id)->get() as $customer)
                                                     <option {{ $sale_return->customer_id == $customer->id ? 'selected' : '' }} value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                                                 @endforeach
                                             </select>

@@ -62,6 +62,7 @@ class PurchasesReturnController extends Controller
                 'note' => $request->note,
                 'tax_amount' => Cart::instance('purchase_return')->tax() * 100,
                 'discount_amount' => Cart::instance('purchase_return')->discount() * 100,
+                'business_id' => $request->user()->business_id,
             ]);
 
             foreach (Cart::instance('purchase_return')->content() as $cart_item) {
@@ -77,6 +78,7 @@ class PurchasesReturnController extends Controller
                     'product_discount_amount' => $cart_item->options->product_discount * 100,
                     'product_discount_type' => $cart_item->options->product_discount_type,
                     'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'business_id' => $request->user()->business_id,
                 ]);
 
                 if ($request->status == 'Shipped' || $request->status == 'Completed') {
@@ -95,7 +97,8 @@ class PurchasesReturnController extends Controller
                     'reference'          => 'INV/' . $purchase_return->reference,
                     'amount'             => $purchase_return->paid_amount,
                     'purchase_return_id' => $purchase_return->id,
-                    'payment_method'     => $request->payment_method
+                    'payment_method'     => $request->payment_method,
+                    'business_id' => $request->user()->business_id,
                 ]);
             }
         });
@@ -201,6 +204,7 @@ class PurchasesReturnController extends Controller
                     'product_discount_amount' => $cart_item->options->product_discount * 100,
                     'product_discount_type' => $cart_item->options->product_discount_type,
                     'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'business_id' => $request->user()->business_id,
                 ]);
 
                 if ($request->status == 'Shipped' || $request->status == 'Completed') {

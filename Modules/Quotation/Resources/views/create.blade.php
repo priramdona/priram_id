@@ -38,7 +38,7 @@
                                         <div class="form-group">
                                             <label for="customer_id">Customer <span class="text-danger">*</span></label>
                                             <select class="form-control" name="customer_id" id="customer_id" required>
-                                                @foreach(\Modules\People\Entities\Customer::all() as $customer)
+                                                @foreach(\Modules\People\Entities\Customer::where('business_id',auth::user()->business_id)->get() as $customer)
                                                     <option value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                                                 @endforeach
                                             </select>
@@ -88,5 +88,12 @@
 @endsection
 
 @push('page_scripts')
-
+<script>
+    // Mencegah form di-submit saat Enter ditekan
+    document.getElementById('quotation-form').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();  // Mencegah submit
+        }
+    });
+</script>
 @endpush

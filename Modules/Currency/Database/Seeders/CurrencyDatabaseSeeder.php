@@ -2,6 +2,7 @@
 
 namespace Modules\Currency\Database\Seeders;
 
+use App\Models\Business;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -16,13 +17,18 @@ class CurrencyDatabaseSeeder extends Seeder
      * @return void
      */
     public function run() {
-        Currency::create([
-            'currency_name'      => 'RP Indonesia',
-            'code'               => Str::upper('ID'),
-            'symbol'             => 'Rp. ',
-            'thousand_separator' => ',',
-            'decimal_separator'  => '.',
-            'exchange_rate'      => null
-        ]);
+
+        foreach (Business::all() as $business) {
+            Currency::create([
+                'currency_name'      => 'RP Indonesia',
+                'code'               => Str::upper('ID'),
+                'symbol'             => 'Rp. ',
+                'thousand_separator' => ',',
+                'decimal_separator'  => '.',
+                'exchange_rate'      => null,
+                'business_id'      => $business->id,
+            ]);
+        }
+
     }
 }

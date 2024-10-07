@@ -2,7 +2,7 @@
 
 namespace Modules\People\DataTables;
 
-
+use Illuminate\Support\Facades\Auth;
 use Modules\People\Entities\Customer;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -22,7 +22,7 @@ class CustomersDataTable extends DataTable
     }
 
     public function query(Customer $model) {
-        return $model->newQuery();
+        return $model->where('business_id',Auth::user()->business_id)->newQuery();
     }
 
     public function html() {

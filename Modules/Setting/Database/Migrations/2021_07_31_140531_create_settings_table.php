@@ -19,7 +19,9 @@ class CreateSettingsTable extends Migration
             $table->string('company_email');
             $table->string('company_phone');
             $table->string('site_logo')->nullable();
-            $table->integer('default_currency_id');
+            // $table->integer('default_currency_id');
+            $table->foreignUuid('default_currency_id')->references('id')->on('currencies');
+
             $table->string('default_currency_position');
             $table->string('notification_email');
             $table->text('footer_text');

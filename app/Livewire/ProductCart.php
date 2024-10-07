@@ -16,6 +16,8 @@ class ProductCart extends Component
     public $global_discount;
     public $global_tax;
     public $shipping;
+    public $total_with_shipping;
+
     public $quantity;
     public $check_quantity;
     public $discount_type;
@@ -71,7 +73,9 @@ class ProductCart extends Component
         ]);
     }
 
-    public function productSelected($product) {
+    public function productSelected($productId) {
+        $product = Product::where('id',$productId)->first();
+
         $cart = Cart::instance($this->cart_instance);
 
         $exists = $cart->search(function ($cartItem, $rowId) use ($product) {
@@ -122,7 +126,33 @@ class ProductCart extends Component
         Cart::instance($this->cart_instance)->setGlobalDiscount((integer)$this->global_discount);
     }
 
+    public function shippingChange($shippingNominnal) {
+
+        $this->shipping =$shippingNominnal;
+        // $this->total_with_shipping = Cart::instance($cartInstance)->total() + (float) $this->shipping;
+   }
+    public function globalDiscountChange($discountNominnal) {
+        $this->global_discount = $discountNominnal;
+        Cart::instance($this->cart_instance)->setGlobalDiscount((integer)$this->global_discount);
+    }
+
+    public function globalTaxChange($taxNominnal) {
+        $this->global_tax = $taxNominnal;
+        Cart::instance($this->cart_instance)->setGlobalTax((integer)$this->global_tax);
+    }
+
+    public function quantityChange($quantityItem, $rowId, $cartItemId) {
+        $this->quantity[$cartItemId] = $quantityItem;
+        $this->updateQuantity($rowId,$cartItemId);
+    }
+    public function priceChange($priceItem, $rowId, $cartItemId) {
+        // dd($priceItem);
+        $this->unit_price[$cartItemId] = $priceItem;
+        $this->updatePrice($rowId,$cartItemId);
+    }
+
     public function updateQuantity($row_id, $product_id) {
+
         if  ($this->cart_instance == 'sale' || $this->cart_instance == 'purchase_return') {
             if ($this->check_quantity[$product_id] < $this->quantity[$product_id]) {
                 session()->flash('message', 'The requested quantity is not available in stock.');
@@ -204,7 +234,9 @@ class ProductCart extends Component
     }
 
     public function calculate($product, $new_price = null) {
+        $quantityExist = 1;
         if ($new_price) {
+            $quantityExist = $this->quantity[$product['id']];
             $product_price = $new_price;
         } else {
             $this->unit_price[$product['id']] = $product['product_price'];
@@ -222,17 +254,17 @@ class ProductCart extends Component
             $price = $product_price + ($product_price * ($product['product_order_tax'] / 100));
             $unit_price = $product_price;
             $product_tax = $product_price * ($product['product_order_tax'] / 100);
-            $sub_total = $product_price + ($product_price * ($product['product_order_tax'] / 100));
+            $sub_total = ($product_price + ($product_price * ($product['product_order_tax'] / 100))) * $quantityExist;
         } elseif ($product['product_tax_type'] == 2) {
             $price = $product_price;
             $unit_price = $product_price - ($product_price * ($product['product_order_tax'] / 100));
             $product_tax = $product_price * ($product['product_order_tax'] / 100);
-            $sub_total = $product_price;
+            $sub_total = $product_price * $quantityExist;
         } else {
             $price = $product_price;
             $unit_price = $product_price;
             $product_tax = 0.00;
-            $sub_total = $product_price;
+            $sub_total = $product_price * $quantityExist;
         }
 
         return ['price' => $price, 'unit_price' => $unit_price, 'product_tax' => $product_tax, 'sub_total' => $sub_total];

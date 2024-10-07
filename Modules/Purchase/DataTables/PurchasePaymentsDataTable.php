@@ -2,6 +2,7 @@
 
 namespace Modules\Purchase\DataTables;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Purchase\Entities\PurchasePayment;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -23,7 +24,7 @@ class PurchasePaymentsDataTable extends DataTable
     }
 
     public function query(PurchasePayment $model) {
-        return $model->newQuery()->byPurchase()->with('purchase');
+        return $model->where('business_id',Auth::user()->business_id)->newQuery()->byPurchase()->with('purchase');
     }
 
     public function html() {

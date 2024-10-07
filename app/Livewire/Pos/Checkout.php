@@ -115,6 +115,7 @@ class Checkout extends Component
     }
 
     public function updateQuantity($row_id, $product_id) {
+        dd();
         if ($this->check_quantity[$product_id] < $this->quantity[$product_id]) {
             session()->flash('message', 'The requested quantity is not available in stock.');
 

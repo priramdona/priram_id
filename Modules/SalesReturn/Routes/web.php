@@ -15,7 +15,7 @@ Route::group(['middleware' => 'auth'], function () {
     //Generate PDF
     Route::get('/sale-returns/pdf/{id}', function ($id) {
         $saleReturn = \Modules\SalesReturn\Entities\SaleReturn::findOrFail($id);
-        $customer = \Modules\People\Entities\Customer::findOrFail($saleReturn->customer_id);
+        $customer = \Modules\People\Entities\Customer::find($saleReturn->customer_id) ?? null;
 
         $pdf = \PDF::loadView('salesreturn::print', [
             'sale_return' => $saleReturn,

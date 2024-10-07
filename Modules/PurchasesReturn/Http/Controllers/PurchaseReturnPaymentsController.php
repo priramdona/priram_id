@@ -40,7 +40,7 @@ class PurchaseReturnPaymentsController extends Controller
             'amount' => 'required|numeric',
             'note' => 'nullable|string|max:1000',
             'purchase_return_id' => 'required',
-            'payment_method' => 'required|string|max:255'
+            'payment_method' => 'required|string|max:255',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -50,7 +50,8 @@ class PurchaseReturnPaymentsController extends Controller
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'purchase_return_id' => $request->purchase_return_id,
-                'payment_method' => $request->payment_method
+                'payment_method' => $request->payment_method,
+                'business_id' => $request->user()->business_id,
             ]);
 
             $purchase_return = PurchaseReturn::findOrFail($request->purchase_return_id);

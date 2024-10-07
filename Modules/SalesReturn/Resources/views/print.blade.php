@@ -29,6 +29,7 @@
                             <div>Phone: {{ settings()->company_phone }}</div>
                         </div>
 
+                        @if($customer)
                         <div class="col-xs-4 mb-3 mb-md-0">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Customer Info:</h4>
                             <div><strong>{{ $customer->customer_name }}</strong></div>
@@ -36,6 +37,15 @@
                             <div>Email: {{ $customer->customer_email }}</div>
                             <div>Phone: {{ $customer->customer_phone }}</div>
                         </div>
+                        @else
+                        <div class="col-xs-4 mb-3 mb-md-0">
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Customer Info:</h4>
+                            <div><strong>Not Registered</strong></div>
+                            <div>-</div>
+                            <div>Email: -</div>
+                            <div>Phone: -</div>
+                        </div>
+                        @endif
 
                         <div class="col-xs-4 mb-3 mb-md-0">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Invoice Info:</h4>

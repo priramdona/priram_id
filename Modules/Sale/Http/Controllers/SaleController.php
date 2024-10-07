@@ -49,7 +49,7 @@ class SaleController extends Controller
             $sale = Sale::create([
                 'date' => $request->date,
                 'customer_id' => $request->customer_id,
-                'customer_name' => Customer::findOrFail($request->customer_id)->customer_name,
+                'customer_name' => Customer::find($request->customer_id)->customer_name ?? null,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
                 'shipping_amount' => $request->shipping_amount * 100,
@@ -62,6 +62,7 @@ class SaleController extends Controller
                 'note' => $request->note,
                 'tax_amount' => Cart::instance('sale')->tax() * 100,
                 'discount_amount' => Cart::instance('sale')->discount() * 100,
+                'business_id' => $request->user()->business_id,
             ]);
 
             foreach (Cart::instance('sale')->content() as $cart_item) {
@@ -77,6 +78,7 @@ class SaleController extends Controller
                     'product_discount_amount' => $cart_item->options->product_discount * 100,
                     'product_discount_type' => $cart_item->options->product_discount_type,
                     'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'business_id' => $request->user()->business_id,
                 ]);
 
                 if ($request->status == 'Shipped' || $request->status == 'Completed') {
@@ -95,7 +97,8 @@ class SaleController extends Controller
                     'reference' => 'INV/'.$sale->reference,
                     'amount' => $sale->paid_amount,
                     'sale_id' => $sale->id,
-                    'payment_method' => $request->payment_method
+                    'payment_method' => $request->payment_method,
+                    'business_id' => $request->user()->business_id,
                 ]);
             }
         });
@@ -109,7 +112,7 @@ class SaleController extends Controller
     public function show(Sale $sale) {
         abort_if(Gate::denies('show_sales'), 403);
 
-        $customer = Customer::findOrFail($sale->customer_id);
+        $customer = Customer::find($sale->customer_id) ?? null;
 
         return view('sale::show', compact('sale', 'customer'));
     }
@@ -174,7 +177,7 @@ class SaleController extends Controller
                 'date' => $request->date,
                 'reference' => $request->reference,
                 'customer_id' => $request->customer_id,
-                'customer_name' => Customer::findOrFail($request->customer_id)->customer_name,
+                'customer_name' => Customer::find($request->customer_id)->customer_name ?? null,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
                 'shipping_amount' => $request->shipping_amount * 100,
@@ -202,6 +205,7 @@ class SaleController extends Controller
                     'product_discount_amount' => $cart_item->options->product_discount * 100,
                     'product_discount_type' => $cart_item->options->product_discount_type,
                     'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'business_id' => $request->user()->business_id,
                 ]);
 
                 if ($request->status == 'Shipped' || $request->status == 'Completed') {

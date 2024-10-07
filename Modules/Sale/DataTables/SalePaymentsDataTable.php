@@ -2,6 +2,7 @@
 
 namespace Modules\Sale\DataTables;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Sale\Entities\SalePayment;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -24,7 +25,7 @@ class SalePaymentsDataTable extends DataTable
     }
 
     public function query(SalePayment $model) {
-        return $model->newQuery()->bySale()->with('sale');
+        return $model->where('business_id',Auth::user()->business_id)->newQuery()->bySale()->with('sale');
     }
 
     public function html() {
