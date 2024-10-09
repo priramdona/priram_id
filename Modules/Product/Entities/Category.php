@@ -2,6 +2,7 @@
 
 namespace Modules\Product\Entities;
 
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -16,5 +17,8 @@ class Category extends Model
 
     public function products() {
         return $this->hasMany(Product::class, 'category_id', 'id');
+    }
+    public function businesses() {
+        return $this->belongsTo(Business::class, 'business_id', 'id');
     }
 }

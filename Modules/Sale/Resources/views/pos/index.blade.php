@@ -20,7 +20,7 @@
                 @include('utils.alerts')
             </div>
             <div class="col-lg-7">
-                <livewire:search-product/>
+                <livewire:search-product-sale/>
                 <livewire:pos.product-list :categories="$product_categories"/>
             </div>
             <div class="col-lg-5">
@@ -35,7 +35,29 @@
     <script>
         $(document).ready(function () {
             window.addEventListener('showCheckoutModal', event => {
+                $.ajax({
+                url: "{{ url('/get-payment-method') }}/",
+                method: "GET",
+                dataType: 'json',
+                success: function(data) {
+                    if (data.length > 0) {
+                        // alert(data);
+                        $("#payment_method").empty();
+                        op = '<option value="" disabled="true" selected="true">-Select-</option>'
+                        for (var i = 0; i < data.length; i++) {
+                            op += '<option value="' + data[i].id + '">' + data[i]
+                                .name + '</option>';
+                        }
+                        $("#payment_method").append(op);
+                        $('#payment_method').attr('hidden', false);
+                        $('#payment_method').attr('hidden', false);
+
+                    }
+                }
+            });
+
                 $('#checkoutModal').modal('show');
+                $('body').css('pointer-events', 'none'); // Menonaktifkan semua interaksi
 
                 $('#paid_amount').maskMoney({
                     prefix:'{{ settings()->currency->symbol }}',
@@ -61,6 +83,14 @@
                     $('#total_amount').val(total_amount);
                 });
             });
+        });
+        $('#closeModalCheckout').on('click', function() {
+            // Menyembunyikan modal
+            // $('#checkoutModal').modal('dispose');
+            $('#checkoutModal').modal('hide');
+
+            // Mengembalikan interaksi setelah modal ditutup
+            $('body').css('pointer-events', 'auto');
         });
     </script>
 

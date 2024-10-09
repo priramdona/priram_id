@@ -252,6 +252,24 @@
             {{-- @endcan --}}
         </ul>
     </li>
+
+    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
+        <a class="c-sidebar-nav-dropdown-toggle">
+            <i class="c-sidebar-nav-icon bi bi-whatsapp" style="line-height: 1;"></i> {{ __('menu.paymentgateway') }}
+        </a>
+        <ul class="c-sidebar-nav-dropdown-items">
+            {{-- @can('access_customers') --}}
+                <li class="c-sidebar-nav-item">
+                    <a class="c-sidebar-nav-link {{ request()->routeIs('payment-gateways.*') ? 'c-active' : '' }}" href="{{ route('payment-gateways.index') }}">
+                        <i class="c-sidebar-nav-icon bi bi-people-fill" style="line-height: 1;"></i> {{ __('menu.show_list') }}
+                    </a>
+                </li>
+            {{-- @endcan
+            @can('access_suppliers') --}}
+
+            {{-- @endcan --}}
+        </ul>
+    </li>
 {{-- @endcan --}}
 
 @can('access_reports')

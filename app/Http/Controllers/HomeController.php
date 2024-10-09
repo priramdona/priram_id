@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Expense\Entities\Expense;
+use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
 use Modules\Purchase\Entities\Purchase;
 use Modules\Purchase\Entities\PurchasePayment;
 use Modules\PurchasesReturn\Entities\PurchaseReturn;
@@ -31,6 +32,9 @@ class HomeController extends Controller
             }
         }
 
+        $paymentGateway =  new PaymentGatewayController();
+        $balance = $paymentGateway->showBalance();
+
         $revenue = ($sales - $sale_returns) / 100;
         $profit = $revenue - $product_costs;
 
@@ -38,7 +42,8 @@ class HomeController extends Controller
             'revenue'          => $revenue,
             'sale_returns'     => $sale_returns / 100,
             'purchase_returns' => $purchase_returns / 100,
-            'profit'           => $profit
+            'profit'           => $profit,
+            'balance' => $balance,
         ]);
     }
 

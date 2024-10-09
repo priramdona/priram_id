@@ -39,7 +39,7 @@
                                             <label for="customer_id">Customer</span></label>
                                             <select class="form-control" name="customer_id" id="customer_id">
                                                 <option value="">Not Registered</option>
-                                                @foreach(\Modules\People\Entities\Customer::all() as $customer)
+                                                @foreach(\Modules\People\Entities\Customer::where('business_id', auth::user()->business_id)->get() as $customer)
                                                     <option {{ $sale->customer_id == $customer->id ? 'selected' : '' }} value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                                                 @endforeach
                                             </select>

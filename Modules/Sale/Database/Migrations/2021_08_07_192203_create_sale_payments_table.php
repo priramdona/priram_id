@@ -16,10 +16,14 @@ class CreateSalePaymentsTable extends Migration
         Schema::create('sale_payments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('sale_id')->references('id')->on('sales')->cascadeOnDelete();
+            $table->string('payment_method')->nullable();
+            $table->foreignUuid('payment_method_id')->nullable();
+            $table->string('payment_method_name')->nullable();
+            $table->foreignUuid('payment_channel_id')->nullable();
+            $table->string('payment_channel_name')->nullable();
             $table->integer('amount');
             $table->date('date');
             $table->string('reference');
-            $table->string('payment_method');
             $table->text('note')->nullable();
             $table->timestamps();
             $table->softDeletes();

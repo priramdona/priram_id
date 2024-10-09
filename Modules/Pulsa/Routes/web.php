@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use $MODULE_NAMESPACE$\Pulsa\$CONTROLLER_NAMESPACE$\PulsaController;
+use Modules\Pulsa\Http\Controllers\PulsaController;
+
+// use $MODULE_NAMESPACE$\Pulsa\$CONTROLLER_NAMESPACE$\PulsaController;
 
 /*
 |--------------------------------------------------------------------------

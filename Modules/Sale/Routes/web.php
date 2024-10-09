@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Sales
     Route::resource('sales', 'SaleController');
+    Route::resource('pos', 'PosController');
 
     //Payments
     Route::get('/sale-payments/{sale_id}', 'SalePaymentsController@index')->name('sale-payments.index');

@@ -6,7 +6,10 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\PaymentMethod\Entities\PaymentChannel;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\People\Entities\Customer;
 use Modules\Product\Entities\Category;
 use Modules\Product\Entities\Product;
@@ -21,8 +24,8 @@ class PosController extends Controller
     public function index() {
         Cart::instance('sale')->destroy();
 
-        $customers = Customer::all();
-        $product_categories = Category::all();
+        $customers = Customer::where('business_id', Auth::user()->business_id)->get();
+        $product_categories = Category::where('business_id', Auth::user()->business_id)->get();
 
         return view('sale::pos.index', compact('product_categories', 'customers'));
     }
@@ -44,7 +47,7 @@ class PosController extends Controller
                 'date' => now()->format('Y-m-d'),
                 'reference' => 'PSL',
                 'customer_id' => $request->customer_id,
-                'customer_name' => Customer::findOrFail($request->customer_id)->customer_name,
+                'customer_name' => Customer::find($request->customer_id)->customer_name ?? null,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
                 'shipping_amount' => $request->shipping_amount * 100,
@@ -85,12 +88,20 @@ class PosController extends Controller
             Cart::instance('sale')->destroy();
 
             if ($sale->paid_amount > 0) {
+
+                $paymentMethodData = PaymentMethod::find($request->payment_method);
+                $paymentChannelData = PaymentChannel::find($request->payment_channel);
+
                 SalePayment::create([
                     'date' => now()->format('Y-m-d'),
                     'reference' => 'INV/'.$sale->reference,
                     'amount' => $sale->paid_amount,
                     'sale_id' => $sale->id,
-                    'payment_method' => $request->payment_method,
+                    'payment_method' => $paymentMethodData->id,
+                    'payment_method_id' => $paymentMethodData->id,
+                    'payment_method_name' => $paymentMethodData->name,
+                    'payment_channel_id' => $paymentChannelData->id ?? null,
+                    'payment_channel_name' => $paymentChannelData->name ?? null,
                     'business_id' => $request->user()->business_id,
                 ]);
             }
@@ -98,6 +109,6 @@ class PosController extends Controller
 
         toast('POS Sale Created!', 'success');
 
-        return redirect()->route('sales.index');
+        return redirect()->route('app.pos.index');
     }
 }

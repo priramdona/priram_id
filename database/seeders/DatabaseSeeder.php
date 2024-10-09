@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\Currency\Database\Seeders\CurrencyDatabaseSeeder;
 use Modules\Expense\Database\Seeders\ExpenseCategoryDatabaseSeeder;
+use Modules\PaymentMethod\Database\Seeders\PaymentMethodChannelSeeder;
 use Modules\People\Database\Seeders\CustomerDatabaseSeeder;
 use Modules\People\Database\Seeders\SupplierDatabaseSeeder;
 use Modules\Product\Database\Seeders\ProductDatabaseSeeder;
@@ -28,5 +29,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CustomerDatabaseSeeder::class);
         $this->call(SupplierDatabaseSeeder::class);
         $this->call(ExpenseCategoryDatabaseSeeder::class);
+        $this->call(PaymentMethodChannelSeeder::class);
     }
 }

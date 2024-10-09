@@ -60,11 +60,11 @@
                                     <div class="form-group">
                                         <label for="barcode_symbology">Barcode Symbology <span class="text-danger">*</span></label>
                                         <select class="form-control" name="product_barcode_symbology" id="barcode_symbology" required>
-                                            <option value="" selected disabled>Select Symbology</option>
+                                            {{-- <option value="" selected disabled>Select Symbology</option> --}}
                                             <option value="C128">Code 128</option>
-                                            <option value="C39">Code 39</option>
-                                            <option value="UPCA">UPC-A</option>
-                                            <option value="UPCE">UPC-E</option>
+                                            {{-- <option value="C39">Code 39</option> --}}
+                                            {{-- <option value="UPCA">UPC-A</option> --}}
+                                            {{-- <option value="UPCE">UPC-E</option> --}}
                                             <option selected value="EAN13">EAN-13</option><option value="EAN8">EAN-8</option>
                                         </select>
                                     </div>

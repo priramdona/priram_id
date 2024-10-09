@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/paymentmethod",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\PaymentMethod\\": "",
+            "Modules\\PaymentMethod\\App\\": "app/",
+            "Modules\\PaymentMethod\\Database\\Factories\\": "database/factories/",
+            "Modules\\PaymentMethod\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\PaymentMethod\\Tests\\": "tests/"
+        }
+    }
+}

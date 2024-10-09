@@ -14,5 +14,8 @@
     "PurchasesReturn": true,
     "Quotation": true,
     "Reports": true,
-    "Whatsapp": true
+    "Whatsapp": true,
+    "Pulsa": true,
+    "PaymentGateway": true,
+    "PaymentMethod": true
 }

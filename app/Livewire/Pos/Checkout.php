@@ -4,6 +4,8 @@ namespace App\Livewire\Pos;
 
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Livewire\Component;
+use Modules\PaymentMethod\Entities\PaymentChannel;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 
 class Checkout extends Component
 {
@@ -22,6 +24,8 @@ class Checkout extends Component
     public $data;
     public $customer_id;
     public $total_amount;
+    public $payment_method;
+    public $payment_channels = [];
 
     public function mount($cartInstance, $customers) {
         $this->cart_instance = $cartInstance;
@@ -49,11 +53,11 @@ class Checkout extends Component
     }
 
     public function proceed() {
-        if ($this->customer_id != null) {
+        // if ($this->customer_id != null) {
             $this->dispatch('showCheckoutModal');
-        } else {
-            session()->flash('message', 'Please Select Customer!');
-        }
+        // } else {
+        //     session()->flash('message', 'Please Select Customer!');
+        // }
     }
 
     public function calculateTotal() {
@@ -64,6 +68,14 @@ class Checkout extends Component
         Cart::instance($this->cart_instance)->destroy();
     }
 
+    public function quantityChange($quantityItem, $rowId, $cartItemId) {
+        if ($quantityItem == 0) {
+            $quantityItem = 1;
+        }
+
+        $this->quantity[$cartItemId] = $quantityItem;
+        $this->updateQuantity($rowId,$cartItemId);
+    }
     public function productSelected($product) {
         $cart = Cart::instance($this->cart_instance);
 
@@ -72,8 +84,12 @@ class Checkout extends Component
         });
 
         if ($exists->isNotEmpty()) {
-            session()->flash('message', 'Product exists in the cart!');
-
+            $rowId = $cart->search(function ($cartItem, $rowId) use ($product) {
+                return $cartItem->id === $product['id'];
+            })->first()->rowId;
+            $currentQty = $cart->get($rowId)->qty;
+            $this->quantity[$product['id']] = $currentQty + 1;
+            $this->updateQuantity($rowId,$product['id']);
             return;
         }
 
@@ -115,7 +131,6 @@ class Checkout extends Component
     }
 
     public function updateQuantity($row_id, $product_id) {
-        dd();
         if ($this->check_quantity[$product_id] < $this->quantity[$product_id]) {
             session()->flash('message', 'The requested quantity is not available in stock.');
 
@@ -212,4 +227,6 @@ class Checkout extends Component
             'product_discount_type' => $this->discount_type[$product_id],
         ]]);
     }
+
+
 }

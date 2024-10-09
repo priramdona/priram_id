@@ -142,11 +142,14 @@ class ProductCart extends Component
     }
 
     public function quantityChange($quantityItem, $rowId, $cartItemId) {
+        if ($quantityItem == 0) {
+            $quantityItem = 1;
+        }
+
         $this->quantity[$cartItemId] = $quantityItem;
         $this->updateQuantity($rowId,$cartItemId);
     }
     public function priceChange($priceItem, $rowId, $cartItemId) {
-        // dd($priceItem);
         $this->unit_price[$cartItemId] = $priceItem;
         $this->updatePrice($rowId,$cartItemId);
     }
