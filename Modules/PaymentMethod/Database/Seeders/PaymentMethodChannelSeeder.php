@@ -111,6 +111,10 @@ public function virtualAccount($idPaymentMethod): array
                 'min' => 10000,
                 'max' => 10000000,
 
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 4000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'Bank BRI',
@@ -123,6 +127,10 @@ public function virtualAccount($idPaymentMethod): array
                 'action' => 'account',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 4000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'Bank Mandiri',
@@ -135,6 +143,10 @@ public function virtualAccount($idPaymentMethod): array
                 'action' => 'account',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 4000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'Cimb Niaga',
@@ -147,6 +159,10 @@ public function virtualAccount($idPaymentMethod): array
                 'action' => 'account',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 4000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'Bank BSI',
@@ -159,6 +175,10 @@ public function virtualAccount($idPaymentMethod): array
                 'action' => 'account',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 4000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'Bank Permata',
@@ -171,6 +191,10 @@ public function virtualAccount($idPaymentMethod): array
                 'action' => 'account',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 4000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'Bank Sampoerna',
@@ -183,6 +207,10 @@ public function virtualAccount($idPaymentMethod): array
                 'action' => 'account',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 4000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'Bank BJB',
@@ -195,6 +223,10 @@ public function virtualAccount($idPaymentMethod): array
                 'action' => 'account',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 4000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ]
 
     ];
@@ -215,6 +247,10 @@ public function eWallet($idPaymentMethod): array
                 'action' => 'qrcode',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 1.5,
+                'fee_type_2' => '%',
+                'fee_value_2' => '11',
 
             ],
             [
@@ -228,6 +264,10 @@ public function eWallet($idPaymentMethod): array
                 'action' => 'qrcode',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 1.5,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'LinkAja',
@@ -240,6 +280,10 @@ public function eWallet($idPaymentMethod): array
                 'action' => 'qrcode',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 1.5,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'Shopeepay',
@@ -252,6 +296,10 @@ public function eWallet($idPaymentMethod): array
                 'action' => 'qrcode',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 1.8018,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ],
             [
                 'name' => 'AstraPay',
@@ -264,6 +312,10 @@ public function eWallet($idPaymentMethod): array
                 'action' => 'qrcode',
                 'min' => 10000,
                 'max' => 10000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 1.5,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
             ]
 
     ];

@@ -34,6 +34,7 @@
     <script src="{{ asset('js/jquery-mask-money.js') }}"></script>
     <script>
         $(document).ready(function () {
+            $("#payment_method").empty();
             window.addEventListener('showCheckoutModal', event => {
                 $.ajax({
                 url: "{{ url('/get-payment-method') }}/",
@@ -52,6 +53,8 @@
                         $('#payment_method').attr('hidden', false);
                         $('#payment_method').attr('hidden', false);
 
+                    } else {
+                        $("#payment_method").empty();
                     }
                 }
             });

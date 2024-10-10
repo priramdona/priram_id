@@ -33,6 +33,7 @@ class PosController extends Controller
 
     public function store(StorePosSaleRequest $request) {
         DB::transaction(function () use ($request) {
+
             $due_amount = $request->total_amount - $request->paid_amount;
 
             if ($due_amount == $request->total_amount) {

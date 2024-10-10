@@ -23,6 +23,10 @@ return new class extends Migration
             $table->text('image');
             $table->string('action')->default('deeplink');
             $table->string('reference')->nullable();
+            $table->string('fee_type_1')->nullable();
+            $table->decimal('fee_value_1',14,4)->nullable();
+            $table->string('fee_type_2')->nullable();
+            $table->decimal('fee_value_2',14,4)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
