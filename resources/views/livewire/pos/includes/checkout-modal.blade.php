@@ -55,7 +55,7 @@
 
                             <div class="form-group">
                                 <label for="note">Note (If Needed)</label>
-                                <textarea name="note" id="note" rows="2" class="form-control"> {{ $paymentAccountText }}</textarea>
+                                <textarea name="note" id="note" rows="2" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="col-lg-5">
@@ -99,8 +99,6 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button wire:click="showLabel">Tampilkan Label Payment By</button>
-                    <button wire:click="changeText">Ubah Teks Account</button>
                     {{-- <button id='submitBtn' name='submitBtn' type="submit" class="btn btn-primary">Submit</button> --}}
                     <button id='submitBtn' name='submitBtn' type="submit" class="btn btn-primary" hidden>Submit</button>
                     <button id='continuePayment' name='continuePayment' type="button" class="btn btn-success" hidden>Process to Payment</button>
