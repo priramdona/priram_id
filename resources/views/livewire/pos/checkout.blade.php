@@ -131,6 +131,7 @@
                         <input wire:model.blur="shipping" type="number" class="form-control" min="0" value="0" required step="0.01">
                     </div>
                 </div>
+
             </div>
 
             <div class="form-group d-flex justify-content-center flex-wrap mb-0">
@@ -144,5 +145,7 @@
     {{-- @include('livewire.pos.includes.checkout-modal')
      --}}
      @include('livewire.pos.includes.checkout-modal')
+     {{-- @include('livewire.pos.includes.checkout-payment') --}}
+
 </div>
 

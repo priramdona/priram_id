@@ -3,10 +3,14 @@
 namespace Modules\PaymentGateway\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Business;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Modules\PaymentGateway\Entities\xenditPaymentRequest;
 use Xendit\Configuration;
 use Xendit\PaymentMethod\PaymentMethodApi;
 use Illuminate\Support\Facades\Http;
@@ -24,21 +28,43 @@ class PaymentGatewayController extends Controller
 
         Configuration::setXenditKey(env('XENDIT_KEY'));
 
-        $customerId = '66fad06d0abd34c4121e089c'; // Ganti dengan customer_id Anda
-
         $apiInstance = new PaymentRequestApi();
+        $payment_request_parameters = new PaymentRequestParameters([
+            'reference_id' => 'asd'.rand(1,10000) ,
+            'amount' => 15000,
+            'currency' => 'IDR',
+            'country' => 'ID',
+            'payment_method' => [
+              'type' => 'EWALLET',
+              'ewallet' => [
+                'channel_code' => 'ID_OVO',
+                'channel_properties' => [
+                  'mobile_number' => '6281314569045',
+                  'expires_at' => Carbon::now()->addDays(1)->toIso8601String()
+
+                ]
+              ],
+              'reusability' => 'ONE_TIME_USE'
+            ]
+          ]);
+
+        // $customerId = '66fad06d0abd34c4121e089c'; // Ganti dengan customer_id Anda
+
         $for_user_id = null; // string// string[]
-        $reference_id = []; // st
-        $id =[]; // string[]
-        // $idempotency_key = rand(1,10000);
-        $customer_id = []; // string[]
-        $limit = 56; // int
-        $before_id = null; // string
-        $after_id =null; // string
+        // $reference_id = []; // st
+        // $id =[]; // string[]
+        $idempotency_key = rand(1,10000);
+        // $customer_id = []; // string[]
+        // $limit = 56; // int
+        // $before_id = null; // string
+        // $after_id =null; // string
+    // $result = $apiInstance->createPaymentRequest($idempotency_key, $forUserId, $withSplitRule, $paymentRequestParameters);
 
 
         try {
-            $result = $apiInstance->getAllPaymentRequests($for_user_id, $reference_id, $id, $customer_id, $limit, $before_id, $after_id);
+            $result = $apiInstance->createPaymentRequest($idempotency_key, $for_user_id, null, $payment_request_parameters);
+
+            // $result = $apiInstance->getAllPaymentRequests($for_user_id, $reference_id, $id, $customer_id, $limit, $before_id, $after_id);
 
             $resultDetails = null;
         } catch (\Xendit\XenditSdkException $e) {
@@ -50,67 +76,137 @@ class PaymentGatewayController extends Controller
         return view('paymentgateway::index',compact('result','resultDetails'));
     }
 
-    public function createPaymentRequest($refId,
-                                        $forUserId = null,
-                                        $withSplitRule = null,
+    public function createPaymentRequest(string $refId,
+                                        ?string $forUserId = null,
+                                        ?string $withSplitRule = null,
                                         int $amount,
                                         string $type,
                                         string $channelCode,
-                                        string $successReturn,
-                                        string $reusability){
+                                        ?string $reusability = 'ONE_TIME_USE',
+                                        ?array $basket = null,
+                                        ?array $metadata = null){
 
         Configuration::setXenditKey(env('XENDIT_KEY'));
         $apiInstance = new PaymentRequestApi();
-        $idempotency_key = rand(1,10000);
-        $for_user_id = null; // string
-        $with_split_rule = null; // string
-        $paymentMethod = [];
+        $idempotency_key = rand(1,10000) . Carbon::now()->format('Ymmddss');
+        $paymentMethod = null;
+        $channelProperties = null;
+        $getBusinessData = Business::find(Auth::user()->business_id);
+        $payloadType = null;
 
-        if ($type = 'EWALLET' && $channelCode = 'SHOPEEPAY'){
-            $paymentMethod = [
-                'type' => 'EWALLET',
-                'ewallet' => [
-                  'channel_code' => 'SHOPEEPAY',
-                  'channel_properties' => [
-                    'success_return_url' => 'https://redirect.me/success'
-                  ]
-                ],
-                'reusability' => 'ONE_TIME_USE'
+        if ($type === 'EWALLET'){
+            if ($channelCode == 'OVO'){
+                $channelProperties = [
+                    'mobile_number' => '6281314569045',
+                    'expires_at' => Carbon::now()->addMinutes(60)->toIso8601String(),
+                ];
+            }
+            else if ($channelCode == 'DANA' || $channelCode == 'LINKAJA' || $channelCode == 'SHOPEEPAY'  ){
+                $channelProperties = [
+                    'success_return_url' => 'https://redirect.me/success',
+                ];
+            }
+            else{
+                $channelProperties = [
+                    'success_return_url' => 'https://redirect.me/success',
+                    'failure_return_url' => 'https://redirect.me/failure',
+                ];
+            }
+
+            $payloadType = [
+                'channel_code' => $channelCode,
+                'channel_properties' => $channelProperties,
             ];
-        }
-        if ($type = 'QR_CODE'){
+
+            $paymentMethod = [
+                'type' => $type,
+                'reusability' => $reusability,
+                'ewallet' => $payloadType,
+            ];
+        }else if ($type === 'QR_CODE'){
             $paymentMethod =  [
-                'type' => 'QR_CODE',
-                'reusability' => 'ONE_TIME_USE',
+                'type' => $type,
+                'reusability' => $reusability,
                 'qr_code' => [
-                  'channel_code' => 'QRIS'
+                  'channel_code' => $channelCode
                 ]
               ];
+        }else if ($type === 'VIRTUAL_ACCOUNT'){
+            $paymentMethod = [
+                'type' => $type,
+                'reusability' => $reusability,
+                'reference_id' => $refId,
+                'virtual_account' => [
+                        'channel_code' => $channelCode,
+                        'channel_properties' => [
+                        'customer_name' => preg_replace('/[^a-zA-Z]/','', $getBusinessData->name),
+                        'expires_at' =>  Carbon::now()->addDays(1)->toIso8601String(),
+                        // 'virtual_account_number' => '8860810000000'
+                    ]
+                ]
+                ];
+        }else{
+            throw new \Exception('Payment Channel not Exist in Payment Gateway');
         }
 
-        $paymentRequestParameters = new PaymentRequestParameters([
-          'reference_id' => 'example-ref-1234',
+        $payloadRequest = [
+          'reference_id' => $refId,
           'amount' => $amount,
           'currency' => 'IDR',
           'country' => 'ID',
-          'metadata' => [
-              'sku' => 'example-sku-1234'
-          ],
+          'basket' => $basket,
+          'metadata' => $metadata,
           'payment_method' => $paymentMethod
-        ]);
+        ];
+
+        $paymentRequestParameters = new PaymentRequestParameters($payloadRequest);
 
         try {
-            $result = $apiInstance->createPaymentRequest($idempotency_key, $forUserId, $withSplitRule, $paymentRequestParameters);
-
+            $dataResult = $apiInstance->createPaymentRequest($idempotency_key, $forUserId, $withSplitRule, $paymentRequestParameters);
             $resultDetails = null;
-        } catch (\Xendit\XenditSdkException $e) {
 
-            $result = $e->getMessage();
-            $resultDetails = json_encode($e->getFullError());
+            $xenditPaymentRequestResponsePayload = [
+                'payment_request_id'=> $dataResult['id'],
+                'created'=> Carbon::parse($dataResult['created'])->format('Y-m-d H:i:s'),  // Konversi ke format MySQL
+                'updated'=> Carbon::parse($dataResult['updated'])->format('Y-m-d H:i:s'),
+                'reference_id'=> $dataResult['reference_id'],
+                'business_id'=> $dataResult['business_id'],
+                'customer_id'=> $dataResult['customer_id'],
+                'customer'=> ($dataResult['customer']),
+                'amount'=> $dataResult['amount'],
+                'min_amount'=> $dataResult['min_amount'] ?? 0,
+                'max_amount'=> $dataResult['max_amount'] ?? 0,
+                'country'=> $dataResult['country'],
+                'currency'=> $dataResult['currency'],
+                'payment_method'=> json_encode($dataResult['payment_method']),
+                'description'=> $dataResult['description'],
+                'failure_code'=> $dataResult['failure_code'],
+                'capture_method'=> $dataResult['capture_method'],
+                'initiator'=> $dataResult['initiator'],
+                'card_verification_results'=> $dataResult['card_verification_results'],
+                'status'=> $dataResult['status'],
+                'actions'=> json_encode($dataResult['actions']),
+                'metadata'=> json_encode($dataResult['metadata']),
+                'shipping_information'=> json_encode($dataResult['shipping_information']),
+                'items'=> json_encode($dataResult['items']),
+            ];
+
+
+            $xenditPaymentRequest = xenditPaymentRequest::create($xenditPaymentRequestResponsePayload);
+
+            $result = $xenditPaymentRequest;
+        } catch (\Xendit\XenditSdkException $e) {
+            // $result = $e->getMessage();
+            throw new \Exception(json_encode($e->getMessage()));
         }
 
-        return view('paymentgateway::index',compact('result','resultDetails'));
-    }
+        return response()->json([
+            'message' => __('Success'),
+            'data' => $result,
+        ], 200);
+
+     }
+
     public function showBalance($forUserId = null){
         $apiInstance = new PaymentMethodApi();
         Configuration::setXenditKey(env('XENDIT_KEY'));
@@ -138,19 +234,19 @@ class PaymentGatewayController extends Controller
         // return view('layouts.app',compact('result','resultDetails'));
 
     }
-    public function create()
-    {
+    // public function create()
+    // {
 
-        return view('paymentgateway::create');
-    }
+    //     return view('paymentgateway::create');
+    // }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
+    // /**
+    //  * Store a newly created resource in storage.
+    //  */
+    // public function store(Request $request): RedirectResponse
+    // {
+    //     //
+    // }
 
     /**
      * Show the specified resource.
@@ -193,13 +289,13 @@ class PaymentGatewayController extends Controller
         return view('paymentgateway::edit');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
+    // /**
+    //  * Update the specified resource in storage.
+    //  */
+    // public function update(Request $request, $id): RedirectResponse
+    // {
+    //     //
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -207,5 +303,31 @@ class PaymentGatewayController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function createAccount(Business $business)
+    {
+        $base64 = base64_encode(config('setting.payments.xendit.development.secret_key').':');
+        $secret_key = 'Basic ' . $base64;
+        $accountId = config('setting.payments.xendit.development.parent_account_id');
+
+        try {
+            $dataRequest = Http::withHeaders([
+                'Authorization' => $secret_key,
+                'for-user-id' => $accountId
+            ])->post('https://api.xendit.co/v2/accounts', [
+                'email' => $business->branch->email,
+                'type' => 'OWNED',
+                'public_profile' => [
+                    'business_name' => $business->name
+                ]
+            ]);
+
+            $result = $dataRequest->object();
+        } catch (\Exception $e) {
+            return $e;
+        }
+
+        return $result;
     }
 }

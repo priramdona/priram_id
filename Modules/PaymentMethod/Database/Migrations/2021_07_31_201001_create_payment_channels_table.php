@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('max');
             $table->boolean('status');
             $table->text('image');
+            $table->string('source');
             $table->string('action')->default('deeplink');
             $table->string('reference')->nullable();
             $table->string('fee_type_1')->nullable();

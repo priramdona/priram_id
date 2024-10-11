@@ -19,5 +19,6 @@ Route::group([], function () {
     Route::get('/get-payment-channels', [PaymentMethodController::class, 'getPaymentChannels']);
     Route::get('/get-payment-channel-details', [PaymentMethodController::class, 'getPaymentChannelDetail']);
     Route::get('/get-payment-method', [PaymentMethodController::class, 'getAllPaymentMethod']);
+    Route::get('/payment-request', [PaymentMethodController::class, 'PaymentRequest']);
 
 });

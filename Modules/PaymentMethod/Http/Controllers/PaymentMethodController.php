@@ -3,11 +3,13 @@
 namespace Modules\PaymentMethod\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\PaymentMethod\Entities\PaymentMethod;
+use Modules\Sale\Http\Controllers\PosController;
 
 class PaymentMethodController extends Controller
 {
@@ -51,6 +53,46 @@ class PaymentMethodController extends Controller
         ]);
     }
 
+    public function PaymentRequest(Request $request)
+    {
+        dd();
+        try
+        {
+            $posController = new PosController();
+            // $paymentChannels = PaymentChannel::find($request->payment_channel_id);
+
+
+                if ($request->source == 'xendit'){
+                    $requestPayment = $posController->createPaymentXendit($request->payment_channel_id, $request->amount);
+
+                    if ($request->action == 'account'){
+                        $valueResponse = 12345789101112;
+                    }
+                    else if ($request->action == 'account'){
+                        $valueResponse = 'some-qr-string';
+                    }else{
+                        throw new \Exception('Payment Channel Under Develope');
+                    }
+                }
+
+
+            return response()->json([
+                'reference_id' => $requestPayment['reference_id'] ?? null,
+                'xendit_create_payment_id' =>  $requestPayment['id'] ?? null,
+                'value_response' => $valueResponse,
+                'payment_action' => $request->action,
+            ]);
+
+        }
+        catch (Exception $e)   {
+            $result = $e->getMessage();
+            toast($e->getMessage(), 'error');
+        }
+
+        toast('POS Sale Created!', 'success');
+
+    }
+
     public function index()
     {
         return view('paymentmethod::index');
@@ -62,14 +104,6 @@ class PaymentMethodController extends Controller
     public function create()
     {
         return view('paymentmethod::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
     }
 
     /**
@@ -86,14 +120,6 @@ class PaymentMethodController extends Controller
     public function edit($id)
     {
         return view('paymentmethod::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
     }
 
     /**

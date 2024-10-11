@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('xendit_balances', function (Blueprint $table) {
             $table->id();
-            
+
             $table->timestamps();
         });
     }

@@ -55,7 +55,8 @@
 
                             <div class="form-group">
                                 <label for="note">Note (If Needed)</label>
-                                <textarea name="note" id="note" rows="2" class="form-control"> {{ $paymentAccountText }}</textarea>
+                                <textarea name="note" id="note" rows="2" class="form-control">{{  $paymentAccountText }}</textarea>
+                                <button wire:click="changeText">Ubah Teks Account</button>
                             </div>
                         </div>
                         <div class="col-lg-5">
@@ -99,8 +100,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button wire:click="showLabel">Tampilkan Label Payment By</button>
-                    <button wire:click="changeText">Ubah Teks Account</button>
+
                     {{-- <button id='submitBtn' name='submitBtn' type="submit" class="btn btn-primary">Submit</button> --}}
                     <button id='submitBtn' name='submitBtn' type="submit" class="btn btn-primary" hidden>Submit</button>
                     <button id='continuePayment' name='continuePayment' type="button" class="btn btn-success" hidden>Process to Payment</button>
@@ -120,8 +120,8 @@
                 <p id="lbl_payment_action"></p>
                 <div class="form-group align-middle text-center" name="payment_action" id="payment_action" hidden>
                     <div class="qris-action_qrcode" name="action_account_barcode" id="action_account_barcode" hidden>
-                        {{-- <div id="qr-code-container"></div> --}}
-                         {!! QrCode::size(200)->generate('some-random-qr-string') !!}
+                        <div id="qr-code-container"></div>
+                         {{-- {!! QrCode::size(200)->generate('some-random-qr-string') !!} --}}
                     </div>
                     <div  name="action_account_account" id="action_account_account" hidden>
                         <label class="text-primary" style="font-weight: bold; font-size: 24px;" name="input_payment_action_account" id="input_payment_action_account">123456789</label>
@@ -209,7 +209,7 @@
 
                     if(data.action == 'account'){
                         $('#lbl_payment_action').text('Please Transfer to '+ data.name + ' Virtual Account :');
-                        $('#input_payment_action_account').text('12345678910');
+                        // $('#input_payment_action_account').text('12345678910');
 
                         $('#action_account_account').attr('hidden', false);
                         $('#action_account_barcode').attr('hidden', true);
@@ -298,6 +298,14 @@
                 $('#continuePayment').attr('hidden', false);
             }
         }
+
+        document.addEventListener('livewire:load', function () {
+        // Dengarkan event yang dipanggil oleh Livewire
+        Livewire.on('keepModalOpen', () => {
+            // Cegah modal tertutup
+            $('#yourModalId').modal({backdrop: 'static', keyboard: false});
+        });
+    });
 </script>
 
 @endpush

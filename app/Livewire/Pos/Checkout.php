@@ -26,6 +26,8 @@ class Checkout extends Component
     public $total_amount;
     public $payment_method;
     public $payment_channels = [];
+    public $lblPaymentHidden = true; // Kontrol visibility lbl_payment_by
+    public $paymentAccountText = '1234589'; // Isi teks label
 
     public function mount($cartInstance, $customers) {
         $this->cart_instance = $cartInstance;
@@ -40,6 +42,15 @@ class Checkout extends Component
         $this->total_amount = 0;
     }
 
+    public function changeText()
+    {
+        // toast('POS Sale clicked!', 'success');
+
+       $this->paymentAccountText = 'Silahkan ketik 123456789';
+
+       $this->emit('keepModalOpen');
+    }
+
     public function hydrate() {
         $this->total_amount = $this->calculateTotal();
     }
@@ -48,7 +59,8 @@ class Checkout extends Component
         $cart_items = Cart::instance($this->cart_instance)->content();
 
         return view('livewire.pos.checkout', [
-            'cart_items' => $cart_items
+            'cart_items' => $cart_items,
+            'paymentAccountText' => $this->paymentAccountText
         ]);
     }
 
