@@ -15,6 +15,9 @@
         <div class="row mb-3">
             <div class="col-md-12">
                 {!! \Milon\Barcode\Facades\DNS1DFacade::getBarCodeSVG($product->product_code, $product->product_barcode_symbology, 2, 100) !!}
+                {{-- {!! \Milon\Barcode\Facades\DNS2DFacade::getBarcodeHTML('4445645656', 'QRCODE') !!} --}}
+
+
             </div>
         </div>
         <div class="row">

@@ -89,8 +89,14 @@
         });
         $('#closeModalCheckout').on('click', function() {
             // Menyembunyikan modal
-            // $('#checkoutModal').modal('dispose');
             $('#checkoutModal').modal('hide');
+                // Menyembunyikan modal checkout
+            // $('#checkoutModal').modal('hide');
+
+        // Mengecek jika #actionModal masih terbuka, maka mengembalikan kemampuan scroll
+            // if ($('#actionModal').hasClass('show')) {
+            //     $('body').addClass('modal-open'); // Mengembalikan class 'modal-open' untuk menjaga scroll
+            // }
 
             // Mengembalikan interaksi setelah modal ditutup
             $('body').css('pointer-events', 'auto');

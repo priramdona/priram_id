@@ -20,9 +20,14 @@ use Modules\Sale\Entities\SaleDetails;
 use Modules\Sale\Entities\SalePayment;
 use Modules\Sale\Http\Requests\StorePosSaleRequest;
 use Illuminate\Support\Str;
+use Milon\Barcode\DNS1D;
+use Milon\Barcode\DNS2D;
 use Modules\PaymentGateway\Entities\xenditCreatePayment;
 use Modules\PaymentGateway\Entities\xenditPaymentRequest;
 use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Milon\Barcode\Facades\DNS1DFacade;
+use Milon\Barcode\Facades\DNS2DFacade;
 
 class PosController extends Controller
 {
@@ -35,11 +40,118 @@ class PosController extends Controller
 
         return view('sale::pos.index', compact('product_categories', 'customers'));
     }
+    public function createPaymentGatewayRequest(
+        request $request){
+        $valueResponse = null;
+        $responseType = null;
+        $nameResponse = null;
+        $expireResponse = null;
+        $valueQr = 'sample-barcode-text';
+        $paymentChannelData = PaymentChannel::find($request->payment_channel_id);
+        $reffPayment =  Str::orderedUuid()->toString() . '-' . Carbon::now()->format('Ymdss');
+        $phoneNumber = $request->number_phone ?? null;
+        $dataResult = null;
+
+        if ($paymentChannelData->code == 'OVO'){
+            if(Str::length($phoneNumber) <= 7){
+                throw new \Exception("Payment failed, Phone Number Error! " . "Check again ". $paymentChannelData->code . ' Numbers');
+            }
+        }
+        if ($paymentChannelData){
+            $paymentGatewayController = new PaymentGatewayController();
+
+                $paymentResponse = $paymentGatewayController->createPaymentRequest(
+                    refId: $reffPayment,
+                    forUserId:null,
+                    withSplitRule:null,
+                    amount: $request->amount ,
+                    type:$paymentChannelData->type,
+                    channelCode:$paymentChannelData->code,
+                    reusability:'ONE_TIME_USE',
+                    phoneNumber: $phoneNumber
+                );
+
+                $responseArray = $paymentResponse->getData(true);
+                $dataResult = $responseArray['data'];
+            }
+
+
+            $responseActions = json_decode($dataResult['actions'], true);
+            if ($responseActions){
+                foreach ($responseActions as $item) {
+                    if($paymentChannelData->type =='EWALLET'){
+                        if (($paymentChannelData->code == 'ASTRAPAY') || ($paymentChannelData->code == 'LINKAJA') || ($paymentChannelData->code == 'DANA')){
+                            if ($item['url_type']== 'MOBILE'){
+                                if (isset($item['qr_code']) && !is_null($item['qr_code'])) {
+                                    $valueResponse = DNS2DFacade::getBarcodeHTML($item['qr_code'], 'QRCODE', 8,8 );
+                                    $responseType = 'qrcode';
+                                }
+                                else{
+                                    if (isset($item['url']) && !is_null($item['url'])){
+                                        $valueResponse = $item['url'];
+                                        $responseType = 'url';
+                                    }else{
+                                        throw new \Exception('Payment failed., Please try again');
+                                    }
+                                }
+                            }
+                        }elseif($paymentChannelData->code == 'SHOPEEPAY'){
+                            if ($item['action']== 'PRESENT_TO_CUSTOMER'){
+                                if (isset($item['qr_code']) && !is_null($item['qr_code'])) {
+                                    $valueResponse = DNS2DFacade::getBarcodeHTML($item['qr_code'], 'QRCODE', 8,8 );
+                                    $responseType = 'qrcode';
+                                }
+                                else{
+                                    throw new \Exception('Payment failed., Please try again');
+                                }
+                            }
+                        }elseif($paymentChannelData->code == 'OVO'){
+                            $valueResponse = "Please payment on Customer OVO's Account";
+                            $responseType = 'info';
+                        }else{
+                            throw new \Exception("Payment failed, Payment Channel doesn't exist" . $paymentChannelData->code);
+                        }
+                    }else{
+                        throw new \Exception("Payment failed, Payment Type doesn't exist for ". $paymentChannelData->type);
+                    }
+                }
+            }else{
+                $responseActions = json_decode($dataResult['payment_method'], true);
+                if ($responseActions){
+                    if($paymentChannelData->type =='VIRTUAL_ACCOUNT'){
+                        $nameResponse = $responseActions['virtual_account']['channel_properties']['customer_name'];
+                        $valueResponse = $responseActions['virtual_account']['channel_properties']['virtual_account_number'];
+                        $expireResponse = $responseActions['virtual_account']['channel_properties']['expires_at'];
+                        $responseType = 'account';
+                    }elseif(($paymentChannelData->type =='EWALLET') && ($paymentChannelData->code =='OVO')){
+                        $valueResponse = $responseActions['ewallet']['channel_properties']['mobile_number'];
+                        $responseType = 'info';
+                    }elseif($paymentChannelData->type =='QR_CODE'){
+                        $valueResponse = DNS2DFacade::getBarcodeHTML($responseActions['qr_code']['channel_properties']['qr_string'], 'QRCODE', 8,8 );
+
+                        $responseType = 'qrcode';
+                    }else{
+                        throw new \Exception('Payment failed., Please try again');
+                    }
+                }
+            }
+
+            $paymentRequestId = $dataResult['id'];
+            $paymentReferenceId = $dataResult['reference_id'];
+            return response()->json(data: [
+                'payment_request_id' => $paymentRequestId ?? null,
+                'reference_id' => $paymentReferenceId ?? null,
+                'name_response' => $nameResponse ?? null,
+                'value_response' => $valueResponse,
+                'expired_response' => carbon::parse($expireResponse)->format('d-m-Y H:m') ?? null,
+                'response_type' => $responseType,
+            ]);
+    }
 
     public function createPaymentXendit(
         string $paymentChannelId,
         int $amount){
-
+        $dataResult = null;
         $paymentChannelData = PaymentChannel::find($paymentChannelId);
         $reffPayment =  Str::orderedUuid()->toString() . '-' . Carbon::now()->format('Ymdss');
 
@@ -125,18 +237,14 @@ class PosController extends Controller
                     $paymentMethodData = PaymentMethod::find($request->payment_method);
                     $paymentChannelData = PaymentChannel::find($request->payment_channel);
 
-                    //todo nanti ini dipindahkan ke proses Continue Payment
                     if ($paymentChannelData){
-                        if ($paymentChannelData->source == 'xendit'){
-                            $paymentGatewayResult = $this->createPaymentXendit($request->payment_channel,$sale->paid_amount);
-                        }
+                        $paymentRequestData = xenditPaymentRequest::find($request->payment_id);
                     }
-                    // dd($paymentGatewayResult);
-                    //end Todo
+
                     SalePayment::create([
                         'date' => now()->format('Y-m-d'),
                         'reference' => 'INV/'.$sale->reference,
-                        'reference_id' => $paymentGatewayResult['reference_id'] ?? null,
+                        'reference_id' => $paymentRequestData['reference_id'] ?? null,
                         'amount' => $sale->paid_amount,
                         'sale_id' => $sale->id,
                         'payment_method' => $paymentMethodData->id,
@@ -145,7 +253,7 @@ class PosController extends Controller
                         'payment_channel_id' => $paymentChannelData->id ?? null,
                         'payment_channel_name' => $paymentChannelData->name ?? null,
                         'business_id' => $request->user()->business_id,
-                        'xendit_create_payment_id' => $paymentGatewayResult['id'] ?? null,
+                        'xendit_create_payment_id' => $paymentRequestData['id'] ?? null,
                     ]);
                 }
             });

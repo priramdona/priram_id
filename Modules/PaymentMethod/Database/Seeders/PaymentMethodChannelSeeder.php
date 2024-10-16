@@ -94,6 +94,14 @@ class PaymentMethodChannelSeeder extends Seeder
                 };
 
             }
+            if ($paymentMethod['code'] == 'QR_CODE') {
+
+                $qrisData = $this->qrisData($paymentMethodData->id);
+
+                foreach($qrisData as $qris){
+                    PaymentChannel::create($qris);
+                };
+            }
         }
 }
 public function virtualAccount($idPaymentMethod): array
@@ -208,7 +216,7 @@ public function virtualAccount($idPaymentMethod): array
                 'code' => 'BSS',
                 'type' => 'VIRTUAL_ACCOUNT',
                 'reference' => null,
-                'status' => true,
+                'status' => false,
                 'source' => 'xendit',
                 'image' => 'VA/BSS.png',
                 'action' => 'account',
@@ -241,13 +249,38 @@ public function virtualAccount($idPaymentMethod): array
 
     return $dataEWallet;
     }
+    public function qrisData($idPaymentMethod): array
+    {
+        $dataQRIS = [
+            [
+                'name' => 'QRIS',
+                'payment_method_id' => $idPaymentMethod,
+                'code' => 'QRIS',
+                'type' => 'QR_CODE',
+                'reference' => null,
+                'status' => true,
+                'source' => 'xendit',
+                'image' => 'qris/qris-logo.png',
+                'action' => 'qrcode',
+                'min' => 10000,
+                'max' => 10000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 1.5,
+                'fee_type_2' => '%',
+                'fee_value_2' => '11',
+
+            ]
+
+    ];
+        return $dataQRIS;
+    }
 public function eWallet($idPaymentMethod): array
     {
         $dataEWallet = [
             [
                 'name' => 'OVO',
                 'payment_method_id' => $idPaymentMethod,
-                'code' => 'ID_OVO',
+                'code' => 'OVO',
                 'type' => 'EWALLET',
                 'reference' => null,
                 'status' => true,
@@ -265,7 +298,7 @@ public function eWallet($idPaymentMethod): array
             [
                 'name' => 'DANA',
                 'payment_method_id' => $idPaymentMethod,
-                'code' => 'ID_DANA',
+                'code' => 'DANA',
                 'type' => 'EWALLET',
                 'reference' => null,
                 'status' => true,
@@ -282,7 +315,7 @@ public function eWallet($idPaymentMethod): array
             [
                 'name' => 'LinkAja',
                 'payment_method_id' => $idPaymentMethod,
-                'code' => 'ID_LINKAJA',
+                'code' => 'LINKAJA',
                 'type' => 'EWALLET',
                 'reference' => null,
                 'status' => true,
@@ -299,7 +332,7 @@ public function eWallet($idPaymentMethod): array
             [
                 'name' => 'Shopeepay',
                 'payment_method_id' => $idPaymentMethod,
-                'code' => 'ID_SHOPEEPAY',
+                'code' => 'SHOPEEPAY',
                 'type' => 'EWALLET',
                 'reference' => null,
                 'status' => true,
@@ -316,7 +349,7 @@ public function eWallet($idPaymentMethod): array
             [
                 'name' => 'AstraPay',
                 'payment_method_id' => $idPaymentMethod,
-                'code' => 'ID_ASTRAPAY',
+                'code' => 'ASTRAPAY',
                 'type' => 'EWALLET',
                 'reference' => null,
                 'status' => true,

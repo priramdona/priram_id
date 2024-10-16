@@ -7,7 +7,7 @@ return [
  * Terjemahan umum.
  *
  */
-'title' => 'Triangle POS',
+'title' => 'Kasir Mulia',
 'next' => 'Langkah Berikutnya',
 'back' => 'Sebelumnya',
 'finish' => 'Instal',
@@ -22,7 +22,7 @@ return [
  */
 'welcome' => [
     'templateTitle' => 'Selamat Datang',
-    'title'   => 'Instal Triangle POS',
+    'title'   => 'Instal Kasir Mulia',
     'message' => 'Wizard Instalasi dan Pengaturan yang Mudah.',
     'next'    => 'Periksa Persyaratan',
 ],

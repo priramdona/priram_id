@@ -30,6 +30,7 @@ class Checkout extends Component
     public function mount($cartInstance, $customers) {
         $this->cart_instance = $cartInstance;
         $this->customers = $customers;
+
         $this->global_discount = 0;
         $this->global_tax = 0;
         $this->shipping = 0.00;
