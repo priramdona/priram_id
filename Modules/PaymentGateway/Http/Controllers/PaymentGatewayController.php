@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Modules\PaymentGateway\Entities\xenditPaymentMethod;
 use Modules\PaymentGateway\Entities\xenditPaymentRequest;
+use Modules\Whatsapp\Http\Controllers\WhatsappController;
 use Xendit\Configuration;
 use Xendit\PaymentMethod\PaymentMethodApi;
 use Illuminate\Support\Facades\Http;
@@ -202,8 +203,6 @@ class PaymentGatewayController extends Controller
             ];
 
             $xenditPaymentMethodData = xenditPaymentMethod::create($payloadPaymentMethod);
-
-
             $payloadBusinessAmount = [
                 'business_id' => Auth::user()->business_id ?? null,
                 'status_credit' => 1,
@@ -218,6 +217,17 @@ class PaymentGatewayController extends Controller
             ];
 
             businessAmount::create($payloadBusinessAmount);
+            $waController = New WhatsappController();
+
+            $cekStatusDevice = $waController->waCekDevice();
+
+            if ($cekStatusDevice){
+                $waController->sendMessageWa('Submit Request : ' .
+                    'Amount : '. format_currency($amount) .
+                    ' Sale : '. format_currency($saleAmount) .
+                    ' Fee : '. format_currency($amount - $saleAmount) .
+                    ' type : ' . $type . ' Code : ' . $channelCode);
+            }
 
             $result = $xenditPaymentRequest;
         } catch (\Xendit\XenditSdkException $e) {

@@ -11,6 +11,11 @@
 |
 */
 
-Route::prefix('whatsapp')->group(function() {
-    Route::get('/', 'WhatsappController@index');
+use Modules\Whatsapp\Http\Controllers\WhatsappController;
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('whatsapp', 'WhatsappController');
+    Route::post('/send-message-image', [WhatsappController::class, 'sendMessageImage'])->name('messages.sendImage');
+    Route::post('/broadcast-message', [WhatsappController::class, 'broadcastMessage'])->name('messages.broadcast');
+
 });

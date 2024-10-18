@@ -242,8 +242,8 @@
         <ul class="c-sidebar-nav-dropdown-items">
             {{-- @can('access_customers') --}}
                 <li class="c-sidebar-nav-item">
-                    <a class="c-sidebar-nav-link {{ request()->routeIs('customers.*') ? 'c-active' : '' }}" href="{{ route('customers.index') }}">
-                        <i class="c-sidebar-nav-icon bi bi-people-fill" style="line-height: 1;"></i> {{ __('menu.whatsapp_blast') }}
+                    <a class="c-sidebar-nav-link {{ request()->routeIs('whatsapp.*') ? 'c-active' : '' }}" href="{{ route('whatsapp.index') }}">
+                        <i class="c-sidebar-nav-icon bi bi-people-fill" style="line-height: 1;"></i> {{ __('menu.whatsapp_index') }}
                     </a>
                 </li>
             {{-- @endcan
