@@ -2,6 +2,7 @@
 
 namespace Modules\PaymentGateway\Entities;
 
+use App\Models\businessAmount;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,8 +20,8 @@ class xenditPaymentMethod extends Model
      */
     protected $guarded = [];
 
-    protected static function newFactory(): XenditPaymentMethodFactory
+    public function businessAmount()
     {
-        //return XenditPaymentMethodFactory::new();
+        return $this->morphOne(businessAmount::class, 'transactional');
     }
 }

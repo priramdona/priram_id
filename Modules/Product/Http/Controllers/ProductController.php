@@ -65,7 +65,9 @@ class ProductController extends Controller
 
 
     public function update(UpdateProductRequest $request, Product $product) {
-        if ($product->is_default = true){
+
+
+        if ($product->is_default == true){
             toast('Product is Default, Cannot Update or Modify!', 'info');
         }else{
             $product->update($request->except('document'));

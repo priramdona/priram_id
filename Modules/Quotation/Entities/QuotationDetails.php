@@ -23,22 +23,23 @@ class QuotationDetails extends Model
         return $this->belongsTo(Quotation::class, 'quotation_id', 'id');
     }
 
-    public function getPriceAttribute($value) {
-        return $value / 100;
-    }
+    // public function getPriceAttribute($value) {
+    //     return $value / 100;
+    // }
 
-    public function getUnitPriceAttribute($value) {
-        return $value / 100;
-    }
+    // public function getUnitPriceAttribute($value) {
+    //     return $value / 100;
+    // }
 
-    public function getSubTotalAttribute($value) {
-        return $value / 100;
-    }
+    // public function getSubTotalAttribute($value) {
+    //     return $value / 100;
+    // }
 
-    public function getProductDiscountAmountAttribute($value) {
-        return $value / 100;
-    }
+    // public function getProductDiscountAmountAttribute($value) {
+    //     return $value / 100;
+    // }
 
-    public function getProductTaxAmountAttribute($value) {
-        return $value / 100;
-    }}
+    // public function getProductTaxAmountAttribute($value) {
+    //     return $value / 100;
+    // }
+}

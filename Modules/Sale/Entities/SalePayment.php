@@ -22,9 +22,9 @@ class SalePayment extends Model
         $this->attributes['amount'] = decryptWithKey($value) * 100;
     }
 
-    public function getAmountAttribute($value) {
-        return $value / 100;
-    }
+    // public function getAmountAttribute($value) {
+    //     return $value / 100;
+    // }
 
     public function getDateAttribute($value) {
         return Carbon::parse($value)->format('d M, Y');

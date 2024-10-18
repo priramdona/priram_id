@@ -21,9 +21,9 @@ class PurchasePayment extends Model
         $this->attributes['amount'] = $value * 100;
     }
 
-    public function getAmountAttribute($value) {
-        return $value / 100;
-    }
+    // public function getAmountAttribute($value) {
+    //     return $value / 100;
+    // }
 
     public function getDateAttribute($value) {
         return Carbon::parse($value)->format('d M, Y');

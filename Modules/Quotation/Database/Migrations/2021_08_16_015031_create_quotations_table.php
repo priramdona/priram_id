@@ -19,12 +19,12 @@ class CreateQuotationsTable extends Migration
             $table->string('reference');
             $table->foreignUuid('customer_id')->references('id')->on('customers');
             $table->string('customer_name');
-            $table->integer('tax_percentage')->default(0);
-            $table->integer('tax_amount')->default(0);
-            $table->integer('discount_percentage')->default(0);
-            $table->integer('discount_amount')->default(0);
-            $table->integer('shipping_amount')->default(0);
-            $table->integer('total_amount');
+            $table->decimal('tax_percentage',14,2)->default(0);
+            $table->decimal('tax_amount',14,2)->default(0);
+            $table->decimal('discount_percentage',14,2)->default(0);
+            $table->decimal('discount_amount',14,2)->default(0);
+            $table->decimal('shipping_amount',14,2)->default(0);
+            $table->decimal('total_amount',14,2)->default(0);
             $table->string('status');
             $table->text('note')->nullable();
             $table->timestamps();

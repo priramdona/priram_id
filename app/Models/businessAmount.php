@@ -15,4 +15,10 @@ class businessAmount extends Model
 
 
     protected $guarded = [];
+
+
+    public function transactional()
+    {
+        return $this->morphTo();
+    }
 }

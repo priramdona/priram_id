@@ -16,7 +16,7 @@ class CreatePurchasePaymentsTable extends Migration
         Schema::create('purchase_payments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('purchase_id')->references('id')->on('purchases')->cascadeOnDelete();
-            $table->integer('amount');
+            $table->decimal('amount',14,2)->nullable();
             $table->date('date');
             $table->string('reference');
             $table->string('payment_method');

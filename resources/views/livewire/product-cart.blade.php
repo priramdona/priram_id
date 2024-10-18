@@ -96,19 +96,25 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="tax_percentage">Tax (%)</label>
-                <input wire:change="globalTaxChange($event.target.value)"  type="number" class="form-control" name="tax_percentage" min="0" max="100" value="{{ $global_tax }}" required>
+                <input wire:change="globalTaxChange($event.target.value)"
+                onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
+                type="text" class="form-control" name="tax_percentage" min="0" max="100" value="{{ $global_tax }}" required>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="discount_percentage">Discount (%)</label>
-                <input wire:change="globalDiscountChange($event.target.value)" type="number" class="form-control" name="discount_percentage" min="0" max="100" value="{{ $global_discount }}" required>
+                <input wire:change="globalDiscountChange($event.target.value)"
+                onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
+                type="text" class="form-control" name="discount_percentage" min="0" max="100" value="{{ $global_discount }}" required>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="shipping_amount">Shipping</label>
-                <input wire:change="shippingChange($event.target.value)" type="number" class="form-control" name="shipping_amount" min="0" value="0" required step="0.01">
+                <input wire:change="shippingChange($event.target.value)"
+                onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
+                type="number" class="form-control" name="shipping_amount" min="0" value="0" required step="0.01">
             </div>
         </div>
     </div>

@@ -22,7 +22,7 @@ class CreateSalePaymentsTable extends Migration
             $table->string('payment_method_name')->nullable();
             $table->foreignUuid('payment_channel_id')->nullable();
             $table->string('payment_channel_name')->nullable();
-            $table->integer('amount');
+            $table->decimal('amount',14,2)->nullable();
             $table->date('date');
             $table->string('reference');
             $table->string('reference_id')->nullable();

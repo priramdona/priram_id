@@ -4,6 +4,7 @@ namespace Modules\PaymentGateway\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Business;
+use App\Models\businessAmount;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -135,7 +136,7 @@ class PaymentGatewayController extends Controller
           'metadata' => $metadata,
           'payment_method' => $paymentMethod
         ];
-// dd($payloadRequest);
+
         $paymentRequestParameters = new PaymentRequestParameters($payloadRequest);
 
         try {
@@ -200,7 +201,23 @@ class PaymentGatewayController extends Controller
                 'metadata' => json_encode($dataPaymentMethods['metadata'] ?? null) ?? null,
             ];
 
-            xenditPaymentMethod::create($payloadPaymentMethod);
+            $xenditPaymentMethodData = xenditPaymentMethod::create($payloadPaymentMethod);
+
+
+            $payloadBusinessAmount = [
+                'business_id' => Auth::user()->business_id ?? null,
+                'status_credit' => 1,
+                'transactional_type' => xenditPaymentMethod::class ?? null,
+                'transactional_id' => $xenditPaymentMethodData['id'] ?? null,
+                'reference_id' => $dataPaymentMethods['reference_id'] ?? null,
+                'amount' => $amount ?? null,
+                'sale_amount' =>  $saleAmount ?? null,
+                'received_amount' => 0,
+                'fee_amount' => 0,
+                'status' => 'PENDING_PAYMENT',
+            ];
+
+            businessAmount::create($payloadBusinessAmount);
 
             $result = $xenditPaymentRequest;
         } catch (\Xendit\XenditSdkException $e) {

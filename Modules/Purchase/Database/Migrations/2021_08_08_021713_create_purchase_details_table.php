@@ -21,11 +21,11 @@ class CreatePurchaseDetailsTable extends Migration
             $table->string('product_code');
             $table->integer('quantity');
             $table->integer('price');
-            $table->integer('unit_price');
-            $table->integer('sub_total');
-            $table->integer('product_discount_amount');
+            $table->decimal('unit_price',14,2)->nullable();
+            $table->decimal('sub_total',14,2)->nullable();
+            $table->decimal('product_discount_amount',14,2)->nullable();
             $table->string('product_discount_type')->default('fixed');
-            $table->integer('product_tax_amount');
+            $table->decimal('product_tax_amount',14,2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

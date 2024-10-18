@@ -23,8 +23,8 @@ return new class extends Migration
             $table->dateTime('updated')->nullable();
             $table->text('description')->nullable();
             $table->string('reference_id')->nullable();
-            $table->integer('amount')->nullable();
-            $table->integer('transaction_amount')->nullable();
+            $table->decimal('amount',14,2)->nullable();
+            $table->decimal('transaction_amount',14,2)->nullable();
             $table->json('actions')->nullable();
             $table->json('card')->nullable();
             $table->json('direct_debit')->nullable();

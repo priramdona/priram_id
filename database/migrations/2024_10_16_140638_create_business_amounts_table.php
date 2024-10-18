@@ -16,8 +16,12 @@ return new class extends Migration
             $table->foreignUuid('business_id')->references('id')->on('businesses')->after('id');
             $table->tinyInteger('status_credit')->default(1)->nullable();
             $table->nullableUuidMorphs('transactional');
+            $table->string('reference_id');
             $table->decimal('amount',14,4)->nullable();
             $table->decimal('sale_amount',14,4)->nullable();
+            $table->decimal('received_amount',14,4)->nullable();
+            $table->decimal('fee_amount',14,4)->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

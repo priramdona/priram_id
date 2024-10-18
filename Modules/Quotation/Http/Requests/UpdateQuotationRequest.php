@@ -15,10 +15,10 @@ class UpdateQuotationRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer_id' => 'required|numeric',
+            'customer_id' => 'required|string',
             'reference' => 'required|string|max:255',
-            'tax_percentage' => 'required|integer|min:0|max:100',
-            'discount_percentage' => 'required|integer|min:0|max:100',
+            'tax_percentage' => 'required|numeric|min:0|max:100',
+            'discount_percentage' => 'required|numeric|min:0|max:100',
             'shipping_amount' => 'required|numeric',
             'total_amount' => 'required|numeric',
             'status' => 'required|string|max:255',

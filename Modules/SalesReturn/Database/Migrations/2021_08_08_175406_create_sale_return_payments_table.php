@@ -16,7 +16,7 @@ class CreateSaleReturnPaymentsTable extends Migration
         Schema::create('sale_return_payments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('sale_return_id')->references('id')->on('sale_returns')->cascadeOnDelete();
-            $table->integer('amount');
+            $table->decimal('amount',14,2)->default(0);
             $table->date('date');
             $table->string('reference');
             $table->string('payment_method');

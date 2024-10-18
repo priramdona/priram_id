@@ -26,7 +26,7 @@ class Adjustment extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $number = Adjustment::max('id') + 1;
+            $number = Adjustment::count('id') + 1;
             $model->reference = make_reference_id('ADJ', $number);
         });
     }

@@ -58,7 +58,7 @@ class CategoriesController extends Controller
 
         $category = Category::findOrFail($id);
 
-        if ($category->is_default = true){
+        if ($category->is_default == true){
             toast('Category is Default, Cannot Update or Modify!', 'info');
         }else{
             $category->update([

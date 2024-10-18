@@ -18,6 +18,7 @@
             min="1"
             onkeypress="return isNumberKey(event)"
             onchange="validateMinimum(this)"
+            onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
         >
     </div>
     @push('page_scripts')

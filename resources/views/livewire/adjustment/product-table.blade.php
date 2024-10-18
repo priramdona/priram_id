@@ -41,7 +41,7 @@
                         </td>
                         <input type="hidden" name="product_ids[]" value="{{ $product['product']['id'] ?? $product['id'] }}">
                         <td class="align-middle">
-                            <input type="number" name="quantities[]" min="1" class="form-control" value="{{ $product['quantity'] ?? 1 }}">
+                            <input type="number" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" name="quantities[]" min="1" class="form-control" value="{{ $product['quantity'] ?? 1 }}">
                         </td>
                         <td class="align-middle">
                             @if(isset($product['type']))

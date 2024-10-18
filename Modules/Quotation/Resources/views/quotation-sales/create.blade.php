@@ -76,7 +76,6 @@
                                                 <option value="Cash">Cash</option>
                                                 <option value="Credit Card">Credit Card</option>
                                                 <option value="Bank Transfer">Bank Transfer</option>
-                                                <option value="Cheque">Cheque</option>
                                                 <option value="Other">Other</option>
                                             </select>
                                         </div>

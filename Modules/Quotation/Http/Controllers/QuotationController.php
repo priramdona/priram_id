@@ -5,6 +5,7 @@ namespace Modules\Quotation\Http\Controllers;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Modules\People\Entities\Customer;
@@ -42,12 +43,12 @@ class QuotationController extends Controller
                 'customer_name' => Customer::findOrFail($request->customer_id)->customer_name,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
-                'shipping_amount' => $request->shipping_amount * 100,
-                'total_amount' => $request->total_amount * 100,
+                'shipping_amount' => $request->shipping_amount,
+                'total_amount' => $request->total_amount,
                 'status' => $request->status,
                 'note' => $request->note,
-                'tax_amount' => Cart::instance('quotation')->tax() * 100,
-                'discount_amount' => Cart::instance('quotation')->discount() * 100,
+                'tax_amount' => Cart::instance('quotation')->tax(),
+                'discount_amount' => Cart::instance('quotation')->discount(),
                 'business_id' => $request->user()->business_id
             ]);
 
@@ -58,12 +59,12 @@ class QuotationController extends Controller
                     'product_name' => $cart_item->name,
                     'product_code' => $cart_item->options->code,
                     'quantity' => $cart_item->qty,
-                    'price' => $cart_item->price * 100,
-                    'unit_price' => $cart_item->options->unit_price * 100,
-                    'sub_total' => $cart_item->options->sub_total * 100,
-                    'product_discount_amount' => $cart_item->options->product_discount * 100,
+                    'price' => $cart_item->price,
+                    'unit_price' => $cart_item->options->unit_price,
+                    'sub_total' => $cart_item->options->sub_total,
+                    'product_discount_amount' => $cart_item->options->product_discount,
                     'product_discount_type' => $cart_item->options->product_discount_type,
-                    'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'product_tax_amount' => $cart_item->options->product_tax,
                     'business_id' => $request->user()->business_id,
                 ]);
             }
@@ -131,27 +132,28 @@ class QuotationController extends Controller
                 'customer_name' => Customer::findOrFail($request->customer_id)->customer_name,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
-                'shipping_amount' => $request->shipping_amount * 100,
-                'total_amount' => $request->total_amount * 100,
+                'shipping_amount' => $request->shipping_amount,
+                'total_amount' => $request->total_amount,
                 'status' => $request->status,
                 'note' => $request->note,
-                'tax_amount' => Cart::instance('quotation')->tax() * 100,
-                'discount_amount' => Cart::instance('quotation')->discount() * 100,
+                'tax_amount' => Cart::instance('quotation')->tax(),
+                'discount_amount' => Cart::instance('quotation')->discount(),
             ]);
 
             foreach (Cart::instance('quotation')->content() as $cart_item) {
                 QuotationDetails::create([
                     'quotation_id' => $quotation->id,
+                    'business_id' => Auth::user()->business_id,
                     'product_id' => $cart_item->id,
                     'product_name' => $cart_item->name,
                     'product_code' => $cart_item->options->code,
                     'quantity' => $cart_item->qty,
-                    'price' => $cart_item->price * 100,
-                    'unit_price' => $cart_item->options->unit_price * 100,
-                    'sub_total' => $cart_item->options->sub_total * 100,
-                    'product_discount_amount' => $cart_item->options->product_discount * 100,
+                    'price' => $cart_item->price,
+                    'unit_price' => $cart_item->options->unit_price,
+                    'sub_total' => $cart_item->options->sub_total,
+                    'product_discount_amount' => $cart_item->options->product_discount_amount ?? 0,
                     'product_discount_type' => $cart_item->options->product_discount_type,
-                    'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'product_tax_amount' => $cart_item->options->product_tax,
                 ]);
             }
 

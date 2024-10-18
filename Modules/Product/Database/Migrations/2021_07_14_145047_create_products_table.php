@@ -20,11 +20,11 @@ class CreateProductsTable extends Migration
             $table->string('product_code')->unique()->nullable();
             $table->string('product_barcode_symbology')->nullable();
             $table->integer('product_quantity');
-            $table->integer('product_cost');
-            $table->integer('product_price');
+            $table->decimal('product_cost',14,2)->nullable();
+            $table->decimal('product_price',14,2)->nullable();
+            $table->decimal('product_stock_alert',14,2)->nullable();
+            $table->decimal('product_order_tax',14,2)->nullable();
             $table->string('product_unit')->nullable();
-            $table->integer('product_stock_alert');
-            $table->integer('product_order_tax')->nullable();
             $table->tinyInteger('product_tax_type')->nullable();
             $table->text('product_note')->nullable();
             $table->boolean('is_default')->nullable()->nullable()->default(false);

@@ -122,13 +122,17 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label for="discount_percentage">Discount (%)</label>
-                        <input wire:model.blur="global_discount" type="number" class="form-control" min="0" max="100" value="{{ $global_discount }}" required>
+                        <input wire:model.blur="global_discount" onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }
+                        const newValue = parseFloat(this.value + event.key);
+                                if (newValue > 100 || (newValue < 0 && this.value.length > 0)) {
+                                    event.preventDefault();}
+                                    " type="number" class="form-control" min="0" max="100" value="{{ $global_discount }}" required>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label for="shipping_amount">Shipping</label>
-                        <input wire:model.blur="shipping" type="number" class="form-control" min="0" value="0" required step="0.01">
+                        <input wire:model.blur="shipping"onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" type="number" class="form-control" min="0" value="0" required step="0.01">
                     </div>
                 </div>
 

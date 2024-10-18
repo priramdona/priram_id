@@ -19,14 +19,17 @@ class CreatePurchaseReturnsTable extends Migration
             $table->string('reference');
             $table->foreignUuid('supplier_id')->nullable()->references('id')->on('suppliers')->nullOnDelete();;
             $table->string('supplier_name');
-            $table->integer('tax_percentage')->default(0);
-            $table->integer('tax_amount')->default(0);
-            $table->integer('discount_percentage')->default(0);
-            $table->integer('discount_amount')->default(0);
-            $table->integer('shipping_amount')->default(0);
-            $table->integer('total_amount');
-            $table->integer('paid_amount');
-            $table->integer('due_amount');
+
+            $table->decimal('tax_percentage',14,2)->default(0);
+
+            $table->decimal('tax_amount',14,2)->default(0);
+            $table->decimal('discount_percentage',14,2)->default(0);
+            $table->decimal('discount_amount',14,2)->default(0);
+            $table->decimal('shipping_amount',14,2)->default(0);
+            $table->decimal('total_amount',14,2)->default(0);
+            $table->decimal('paid_amount',14,2)->default(0);
+            $table->decimal('due_amount',14,2)->default(0);
+            $table->decimal('product_tax_amount',14,2)->default(0);
             $table->string('status');
             $table->string('payment_status');
             $table->string('payment_method');

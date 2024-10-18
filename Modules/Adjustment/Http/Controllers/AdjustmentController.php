@@ -131,7 +131,8 @@ class AdjustmentController extends Controller
                     'adjustment_id' => $adjustment->id,
                     'product_id'    => $id,
                     'quantity'      => $request->quantities[$key],
-                    'type'          => $request->types[$key]
+                    'type'          => $request->types[$key],
+                    'business_id' => $request->user()->business_id
                 ]);
 
                 $product = Product::findOrFail($id);

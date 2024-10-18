@@ -244,8 +244,6 @@ class PosController extends Controller
                     }
                 }
 
-
-
                 $sale = Sale::create([
                     'date' => now()->format('Y-m-d'),
                     'reference' => 'PSL',
@@ -254,7 +252,9 @@ class PosController extends Controller
                     'tax_percentage' => $request->tax_percentage,
                     'discount_percentage' => $request->discount_percentage,
                     'shipping_amount' => $request->shipping_amount,
-                    'paid_amount' => $request->grand_total,
+                    'paid_amount' => $request->amount_sale,
+                    'additional_paid_amount' => $request->grand_total - $request->amount_sale,
+                    'total_paid_amount' => $request->grand_total,
                     'total_amount' => $request->amount_sale,
                     'due_amount' => $due_amount,
                     'status' => 'Completed',
