@@ -46,8 +46,6 @@ class HomeController extends Controller
             'balance' => $balance,
         ]);
     }
-
-
     public function currentMonthChart() {
         abort_if(!request()->ajax(), 404);
 

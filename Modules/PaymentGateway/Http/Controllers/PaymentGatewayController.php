@@ -15,6 +15,7 @@ use Modules\PaymentGateway\Entities\xenditPaymentRequest;
 use Xendit\Configuration;
 use Xendit\PaymentMethod\PaymentMethodApi;
 use Illuminate\Support\Facades\Http;
+use Modules\PaymentMethod\Entities\PaymentChannel;
 use Xendit\BalanceAndTransaction\BalanceApi;
 use Xendit\PaymentRequest\PaymentRequestApi;
 use Xendit\PaymentRequest\PaymentRequestParameters;
@@ -27,49 +28,34 @@ class PaymentGatewayController extends Controller
     public function index()
     {
 
-        // Configuration::setXenditKey(env('XENDIT_KEY'));
-
-        $base64 = base64_encode(env('XENDIT_KEY').':');
-        $secret_key = 'Basic ' . $base64;
-        // $accountId = config('setting.payments.xendit.development.parent_account_id');
-
         try {
-            $dataRequest = Http::withHeaders([
-                'Authorization' => $secret_key,
-                'for-user-id' => null
-            ])->post('https://api.xendit.co/ewallets/charges', [
-                'reference_id' => 'Ref'.rand(10001,99999),
-                'currency' => 'IDR',
-                'amount' => 30000,
-                'checkout_method' => 'ONE_TIME_PAYMENT',
-                'channel_code' => 'ID_SHOPEEPAY',
+           $result = PaymentChannel::where('status',true)->get();
 
-                'channel_properties' => [
-                    'success_redirect_url' => "https://redirect.me/payment"
-                ],
 
-                'metadata' => [
-                    'branch_area' => "PLUIT",
-                    'branch_city' => "JAKARTA"
-
-                ]
-            ]);
-
-            $result = $dataRequest->object();
-
-            dd($result);
-            $resultDetails = null;
         } catch (\Exception $e) {
             return $e;
         }
 
-        return view('paymentgateway::index',compact('result','resultDetails'));
+        return view('paymentgateway::index',compact('result'));
     }
+    public function setting()
+    {
 
+        try {
+           $result = PaymentChannel::where('status',true)->get();
+
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+
+        return view('paymentgateway::layouts.settings',compact('result'));
+    }
     public function createPaymentRequest(string $refId,
                                         ?string $forUserId = null,
                                         ?string $withSplitRule = null,
                                         int $amount,
+                                        int $saleAmount,
                                         string $type,
                                         string $channelCode,
                                         ?string $reusability = 'ONE_TIME_USE',
@@ -193,6 +179,8 @@ class PaymentGatewayController extends Controller
                 'xendit_payment_request_id' => $xenditPaymentRequest['id'] ?? null,
                 'type' => $dataPaymentMethods['type'] ?? null,
                 'country' => $dataPaymentMethods['country'] ?? null,
+                'amount' => $amount ?? null,
+                'transaction_amount' => $saleAmount ?? null,
                 'created' => Carbon::parse($dataPaymentMethods['created'])->format('Y-m-d H:i:s') ?? null,
                 'updated' => Carbon::parse($dataPaymentMethods['updated'])->format('Y-m-d H:i:s') ?? null,
                 'description' => $dataPaymentMethods['description'] ?? null,

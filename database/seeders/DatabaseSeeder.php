@@ -30,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SupplierDatabaseSeeder::class);
         $this->call(ExpenseCategoryDatabaseSeeder::class);
         $this->call(PaymentMethodChannelSeeder::class);
+        $this->call(MasterConfigSeeder::class);
     }
 }

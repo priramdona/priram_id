@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('code');
             $table->string('type');
-            $table->integer('min');
-            $table->integer('max');
+            $table->decimal('min',14,4)->nullable();
+            $table->decimal('max',14,4)->nullable();
             $table->boolean('status');
             $table->text('image');
             $table->string('source');
@@ -28,6 +28,10 @@ return new class extends Migration
             $table->decimal('fee_value_1',14,4)->nullable();
             $table->string('fee_type_2')->nullable();
             $table->decimal('fee_value_2',14,4)->nullable();
+            $table->boolean('is_ppn')->default(true);
+            $table->string('payment_process')->default('instant');
+            $table->integer('expired')->default(1);
+            $table->integer('settlement')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

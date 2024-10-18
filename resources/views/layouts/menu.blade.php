@@ -259,9 +259,15 @@
         </a>
         <ul class="c-sidebar-nav-dropdown-items">
             {{-- @can('access_customers') --}}
+
                 <li class="c-sidebar-nav-item">
                     <a class="c-sidebar-nav-link {{ request()->routeIs('payment-gateways.*') ? 'c-active' : '' }}" href="{{ route('payment-gateways.index') }}">
                         <i class="c-sidebar-nav-icon bi bi-people-fill" style="line-height: 1;"></i> {{ __('menu.show_list') }}
+                    </a>
+                </li>
+                <li class="c-sidebar-nav-item">
+                    <a class="c-sidebar-nav-link {{ request()->routeIs('payment-gateways.setting') ? 'c-active' : '' }}" href="{{ route('payment-gateways.setting') }}">
+                        <i class="c-sidebar-nav-icon bi bi-people-fill" style="line-height: 1;"></i> {{ __('menu.payment_gateway.list') }}
                     </a>
                 </li>
             {{-- @endcan

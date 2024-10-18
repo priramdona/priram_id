@@ -17,6 +17,12 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->text('address');
             $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->foreignUuid('bank_id')->nullable();
+            $table->string('account_no')->nullable();
+            $table->string('account_name')->nullable();
+            $table->string('account_picture')->nullable();
+            $table->boolean('account_status')->default(false);
             $table->string(column: 'prefix')->nullable();
             $table->timestamps();
             $table->softDeletes();

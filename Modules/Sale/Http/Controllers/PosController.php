@@ -2,6 +2,9 @@
 
 namespace Modules\Sale\Http\Controllers;
 
+use App\Models\DataConfig;
+use App\Models\masterConfig;
+use App\Models\MasterConfig as ModelsMasterConfig;
 use Carbon\Carbon;
 use Exception;
 use Gloudemans\Shoppingcart\Facades\Cart;
@@ -40,6 +43,45 @@ class PosController extends Controller
 
         return view('sale::pos.index', compact('product_categories', 'customers'));
     }
+    public function paymentFeeChange(request $request) {
+
+        $paymentChannelData = PaymentChannel::find($request->id);
+        $paymentFeePPN = 0;
+        $applicationFee = 0;
+        $amount = $request->amount;
+        $paymentFee = 0;
+
+
+        if ($paymentChannelData->fee_type_1 == '%'){
+            $paymentFee = ($amount * $paymentChannelData->fee_value_1) / 100;
+        }else
+        {
+            $paymentFee = $paymentChannelData->fee_value_1;
+        }
+
+        $dataConfigs = DataConfig::first();
+
+        if ($paymentChannelData->is_ppn == true){
+            $ratePPN = $dataConfigs->ppn_value;
+            $paymentFeePPN = ($paymentFee * $ratePPN) / 100;
+        }
+
+        $applicationFee = $dataConfigs->app_fee_value;
+
+        $grandTotal = $amount + $paymentFee + $applicationFee + $paymentFeePPN;
+
+        return response()->json([
+            'payment_fee' => $paymentFee,
+            'payment_fee_masked' => format_currency($paymentFee),
+            'payment_ppn_masked' => format_currency($paymentFeePPN),
+            'payment_ppn' => $paymentFeePPN,
+            'grand_total_masked' => format_currency($grandTotal),
+            'grand_total' => $grandTotal,
+            'application_fee_masked' => format_currency($applicationFee),
+            'application_fee' => $applicationFee
+
+        ]);
+    }
     public function createPaymentGatewayRequest(
         request $request){
         $valueResponse = null;
@@ -65,6 +107,7 @@ class PosController extends Controller
                     forUserId:null,
                     withSplitRule:null,
                     amount: $request->amount ,
+                    saleAmount: $request->sale_amount ,
                     type:$paymentChannelData->type,
                     channelCode:$paymentChannelData->code,
                     reusability:'ONE_TIME_USE',
@@ -145,6 +188,7 @@ class PosController extends Controller
                 'value_response' => $valueResponse,
                 'expired_response' => carbon::parse($expireResponse)->format('d-m-Y H:m') ?? null,
                 'response_type' => $responseType,
+                'nominal_information' => format_currency($request->amount),
             ]);
     }
 
@@ -162,7 +206,8 @@ class PosController extends Controller
                     refId: $reffPayment,
                     forUserId:null,
                     withSplitRule:null,
-                    amount: $amount * 100,
+                    amount: $amount,
+                    saleAmount: $amount,
                     type:$paymentChannelData->type,
                     channelCode:$paymentChannelData->code,
                     reusability:'ONE_TIME_USE'
@@ -179,15 +224,27 @@ class PosController extends Controller
     public function store(StorePosSaleRequest $request) {
         try{
             DB::transaction(function () use ($request) {
-                $due_amount = $request->total_amount - $request->paid_amount;
+                $due_amount = 0;//$request->total_amount - $request->paid_amount;
 
-                if ($due_amount == $request->total_amount) {
-                    $payment_status = 'Unpaid';
-                } elseif ($due_amount > 0) {
-                    $payment_status = 'Partial';
-                } else {
-                    $payment_status = 'Paid';
+                if ($request->payment_channel){
+                    if ($due_amount == $request->total_amount) {
+                        $payment_status = 'Unpaid';
+                    } elseif ($due_amount > 0) {
+                        $payment_status = 'Partial';
+                    } else {
+                        $payment_status = 'waiting';
+                    }
+                }else{
+                    if ($due_amount == $request->total_amount) {
+                        $payment_status = 'Unpaid';
+                    } elseif ($due_amount > 0) {
+                        $payment_status = 'Partial';
+                    } else {
+                        $payment_status = 'Paid';
+                    }
                 }
+
+
 
                 $sale = Sale::create([
                     'date' => now()->format('Y-m-d'),
@@ -196,16 +253,16 @@ class PosController extends Controller
                     'customer_name' => Customer::find($request->customer_id)->customer_name ?? null,
                     'tax_percentage' => $request->tax_percentage,
                     'discount_percentage' => $request->discount_percentage,
-                    'shipping_amount' => $request->shipping_amount * 100,
-                    'paid_amount' => $request->paid_amount * 100,
-                    'total_amount' => $request->total_amount * 100,
-                    'due_amount' => $due_amount * 100,
+                    'shipping_amount' => $request->shipping_amount,
+                    'paid_amount' => $request->grand_total,
+                    'total_amount' => $request->amount_sale,
+                    'due_amount' => $due_amount,
                     'status' => 'Completed',
                     'payment_status' => $payment_status,
                     'payment_method' => $request->payment_method,
                     'note' => $request->note,
-                    'tax_amount' => Cart::instance('sale')->tax() * 100,
-                    'discount_amount' => Cart::instance('sale')->discount() * 100,
+                    'tax_amount' => Cart::instance('sale')->tax(),
+                    'discount_amount' => Cart::instance('sale')->discount(),
                     'business_id' => $request->user()->business_id,
                 ]);
 
@@ -216,12 +273,12 @@ class PosController extends Controller
                         'product_name' => $cart_item->name,
                         'product_code' => $cart_item->options->code,
                         'quantity' => $cart_item->qty,
-                        'price' => $cart_item->price * 100,
-                        'unit_price' => $cart_item->options->unit_price * 100,
-                        'sub_total' => $cart_item->options->sub_total * 100,
-                        'product_discount_amount' => $cart_item->options->product_discount * 100,
+                        'price' => $cart_item->price,
+                        'unit_price' => $cart_item->options->unit_price,
+                        'sub_total' => $cart_item->options->sub_total,
+                        'product_discount_amount' => $cart_item->options->product_discount,
                         'product_discount_type' => $cart_item->options->product_discount_type,
-                        'product_tax_amount' => $cart_item->options->product_tax * 100,
+                        'product_tax_amount' => $cart_item->options->product_tax,
                         'business_id' => $request->user()->business_id,
                     ]);
 
@@ -243,9 +300,9 @@ class PosController extends Controller
 
                     SalePayment::create([
                         'date' => now()->format('Y-m-d'),
-                        'reference' => 'INV/'.$sale->reference,
+                        'reference' => 'asd/'.$sale->reference,
                         'reference_id' => $paymentRequestData['reference_id'] ?? null,
-                        'amount' => $sale->paid_amount,
+                        'amount' => 0,
                         'sale_id' => $sale->id,
                         'payment_method' => $paymentMethodData->id,
                         'payment_method_id' => $paymentMethodData->id,

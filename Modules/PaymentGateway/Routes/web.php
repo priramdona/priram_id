@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
+use Modules\PaymentGateway\Http\Controllers\XenditWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,21 @@ use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
 |
 */
 
+Route::group([
+    'prefix' => 'payment-gateways',
+], function () {
+    Route::any('/callback', [XenditWebhookController::class, 'callback']);
+});
 
 Route::group(['middleware' => 'auth'], function() {
+     Route::get('payment-gateways/setting', [PaymentGatewayController::class, 'setting'])->name('payment-gateways.setting');
 
-    Route::resource('payment-gateways', 'PaymentGatewayController');
+    Route::resource('payment-gateways', PaymentGatewayController::class);
+    // Route::get('payment-gateways/setting', [PaymentGatewayController::class, 'setting']);
+    // Route::get('payment-gateways/setting', [PaymentGatewayController::class, 'setting'])->name('payment-gateways.setting');
 
-
+    // Route::get('/settings', 'PaymentGatewayController@settingan')->name('payment.setting');
+    // Route::get('', [PaymentGatewayController::class, 'setting']);
+    // Route::get('/payment-gateways-settings', [PaymentGatewayController::class,'setting']);
+        // ->name('setting-payment-gateways');
 });

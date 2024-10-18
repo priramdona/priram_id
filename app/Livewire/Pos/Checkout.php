@@ -54,12 +54,20 @@ class Checkout extends Component
         ]);
     }
 
-    public function proceed() {
+    public function proceed($grandTotal) {
         // if ($this->customer_id != null) {
-            $this->dispatch('showCheckoutModal');
+            $this->dispatch('dispatchBrowserEvent', ['grandTotal' => $grandTotal]);
         // } else {
         //     session()->flash('message', 'Please Select Customer!');
         // }
+
+    // Misalnya menghitung grand total berdasarkan total_with_shipping dan paidAmount
+        // $grandTotal = $this->total_with_shipping + $paidAmount;
+
+        // // Dispatch event ke frontend dengan nilai grandTotal
+        // $this->dispatchBrowserEvent('update-grand-total', [
+        //     'grandTotal' => $grandTotal
+        // ]);
     }
 
     public function calculateTotal() {

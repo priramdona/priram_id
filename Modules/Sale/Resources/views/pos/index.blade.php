@@ -35,7 +35,7 @@
     <script>
         $(document).ready(function () {
             $("#payment_method").empty();
-            window.addEventListener('showCheckoutModal', event => {
+            window.addEventListener('dispatchBrowserEvent',function(event)  {
                 $.ajax({
                 url: "{{ url('/get-payment-method') }}/",
                 method: "GET",
@@ -59,48 +59,66 @@
                 }
             });
 
+
+
                 $('#checkoutModal').modal('show');
                 $('body').css('pointer-events', 'none'); // Menonaktifkan semua interaksi
 
-                $('#paid_amount').maskMoney({
-                    prefix:'{{ settings()->currency->symbol }}',
-                    thousands:'{{ settings()->currency->thousand_separator }}',
-                    decimal:'{{ settings()->currency->decimal_separator }}',
-                    allowZero: false,
-                });
+                // $('#paid_amount').maskMoney({
+                //     prefix:'{{ settings()->currency->symbol }}',
+                //     thousands:'{{ settings()->currency->thousand_separator }}',
+                //     decimal:'{{ settings()->currency->decimal_separator }}',
+                //     allowZero: false,
+                // });
 
-                $('#total_amount').maskMoney({
-                    prefix:'{{ settings()->currency->symbol }}',
-                    thousands:'{{ settings()->currency->thousand_separator }}',
-                    decimal:'{{ settings()->currency->decimal_separator }}',
-                    allowZero: true,
-                });
+                // $('#total_amount').maskMoney({
+                //     prefix:'{{ settings()->currency->symbol }}',
+                //     thousands:'{{ settings()->currency->thousand_separator }}',
+                //     decimal:'{{ settings()->currency->decimal_separator }}',
+                //     allowZero: true,
+                // });
 
-                $('#paid_amount').maskMoney('mask');
-                $('#total_amount').maskMoney('mask');
+                // $('#paid_amount').maskMoney('mask');
+                // $('#total_amount').maskMoney('mask');
 
-                $('#checkout-form').submit(function () {
-                    var paid_amount = $('#paid_amount').maskMoney('unmasked')[0];
-                    $('#paid_amount').val(paid_amount);
-                    var total_amount = $('#total_amount').maskMoney('unmasked')[0];
-                    $('#total_amount').val(total_amount);
-                });
+                // $('#checkout-form').submit(function () {
+                //     var paid_amount = $('#paid_amount').maskMoney('unmasked')[0];
+                //     $('#paid_amount').val(paid_amount);
+                //     var total_amount = $('#total_amount').maskMoney('unmasked')[0];
+                //     $('#total_amount').val(total_amount);
+                // });
+
+                // var sale_amount = document.getElementById('amount_sale').value;
+                var grandTotal = event.detail[0].grandTotal;
+                $('#paid_amount').val(grandTotal);
+                $('#total_amount').val(grandTotal);
+
             });
         });
+
+
         $('#closeModalCheckout').on('click', function() {
-            // Menyembunyikan modal
             $('#checkoutModal').modal('hide');
-                // Menyembunyikan modal checkout
-            // $('#checkoutModal').modal('hide');
-
-        // Mengecek jika #actionModal masih terbuka, maka mengembalikan kemampuan scroll
-            // if ($('#actionModal').hasClass('show')) {
-            //     $('body').addClass('modal-open'); // Mengembalikan class 'modal-open' untuk menjaga scroll
-            // }
-
-            // Mengembalikan interaksi setelah modal ditutup
             $('body').css('pointer-events', 'auto');
         });
+
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            //tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if (ribuan) {
+                separator = sisa ? ',' : '';
+                rupiah += separator + ribuan.join(',');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            rupiahDecial = rupiah + '.00'
+            return prefix == undefined ? rupiahDecial : (rupiahDecial ? 'Rp. ' + rupiahDecial : '');
+        }
     </script>
 
 @endpush

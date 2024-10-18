@@ -23,7 +23,8 @@ return new class extends Migration
             $table->dateTime('updated')->nullable();
             $table->text('description')->nullable();
             $table->string('reference_id')->nullable();
-            $table->string('failure_code')->nullable();
+            $table->integer('amount')->nullable();
+            $table->integer('transaction_amount')->nullable();
             $table->json('actions')->nullable();
             $table->json('card')->nullable();
             $table->json('direct_debit')->nullable();
@@ -35,7 +36,9 @@ return new class extends Migration
             $table->string('reusability');
             $table->string('direct_bank_transfer')->nullable();
             $table->string('status');
+            $table->string('failure_code')->nullable();
             $table->json('metadata')->nullable();
+            $table->boolean('is_disbursement')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
