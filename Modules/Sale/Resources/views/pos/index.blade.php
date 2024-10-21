@@ -19,6 +19,7 @@
             <div class="col-12">
                 @include('utils.alerts')
             </div>
+
             <div class="col-lg-7">
                 <livewire:search-product-sale/>
                 <livewire:pos.product-list :categories="$product_categories"/>

@@ -12,12 +12,13 @@
             id="quantity-input-{{ $cart_item->rowId }}"
             wire:change="quantityChange($event.target.value,'{{ $cart_item->rowId }}', '{{ $cart_item->id }}')"
             style="min-width: 40px; max-width: 90px;"
-            type="text"
+            type="number"
             class="form-control"
             value="{{ $cart_item->qty }}"
             min="1"
-            onkeypress="return isNumberKey(event)"
-            onchange="validateMinimum(this)"
+            {{-- onkeypress="return isNumberKey(event)" --}}
+            {{-- onchange="validateMinimum(this)" --}}
+            {{-- onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" --}}
             onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
         >
     </div>
@@ -28,15 +29,15 @@
                 document.getElementById(`quantity-input-${rowId}`).value = newQuantity;
             });
 
-            function isNumberKey(evt) {
-                // Mencegah karakter non-numerik
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                // Izinkan hanya angka dan tombol backspace
-                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                    return false;
-                }
-                return true;
-            }
+            // function isNumberKey(evt) {
+            //     // Mencegah karakter non-numerik
+            //     var charCode = (evt.which) ? evt.which : evt.keyCode;
+            //     // Izinkan hanya angka dan tombol backspace
+            //     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            //         return false;
+            //     }
+            //     return true;
+            // }
         </script>
 @endpush
 

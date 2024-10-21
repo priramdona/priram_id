@@ -11,37 +11,40 @@
     @endif
     <div class="card">
         <div class="card-body">
-            <div class="table-responsive-md">
-                <table class="table table-bordered mb-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mobile-table">
                     <thead>
-                    <tr class="align-middle">
-                        <th class="align-middle">Product Name</th>
-                        <th class="align-middle">Code</th>
-                        <th class="align-middle" >
-                            Quantity <i class="bi bi-question-circle-fill text-info" data-toggle="tooltip" data-placement="top" title="Max Quantity: 100"></i>
+                    <tr>
+                        <th>{{__('products.barcode.datatable.name') }}</th>
+                        <th>{{__('products.barcode.datatable.code') }}</th>
+                        <th>
+                            {{__('products.barcode.datatable.quantity') }}
+                            <i class="bi bi-question-circle-fill text-info" data-toggle="tooltip" data-placement="top" title="{{__('products.barcode.datatable.max_tooltip') }}"></i>
                         </th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        @if(!empty($product))
-                            <td class="align-middle">{{ $product->product_name }}</td>
-                            <td class="align-middle">{{ $product->product_code }}</td>
-                            <td class="align-middle text-center" style="width: 200px;">
-                                <input wire:model.live="quantity" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" type="number" min="1" max="100" value="{{ $quantity }}">
+                    @if(!empty($product))
+                        <tr>
+                            <td data-label="{{__('products.barcode.datatable.name') }}" class="align-right">{{ $product->product_name }}</td>
+                            <td data-label="{{__('products.barcode.datatable.code') }}" class="align-right">{{ $product->product_code }}</td>
+                            <td data-label="{{__('products.barcode.datatable.quantity') }}" class="align-right">
+                                <input wire:model.live="quantity" class="form-control quantity-input" class="align-right" type="number" min="1" max="100" value="{{ $quantity }}">
                             </td>
-                        @else
+                        </tr>
+                    @else
+                        <tr>
                             <td colspan="3" class="text-center">
-                                <span class="text-danger">Please search & select a product!</span>
+                                <span class="text-danger">{{ __('products.barcode.info_table') }}</span>
                             </td>
-                        @endif
-                    </tr>
+                        </tr>
+                    @endif
                     </tbody>
                 </table>
             </div>
             <div class="mt-3">
                 <button wire:click="generateBarcodes({{ $product }}, {{ $quantity }})" type="button" class="btn btn-primary">
-                    <i class="bi bi-upc-scan"></i> Generate Barcodes
+                    <i class="bi bi-upc-scan"></i> {{ __('products.barcode.generate') }}
                 </button>
             </div>
         </div>
@@ -50,7 +53,7 @@
     <div wire:loading wire:target="generateBarcodes" class="w-100">
         <div class="d-flex justify-content-center">
             <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
+                <span class="sr-only">{{ __('products.barcode.load') }}</span>
             </div>
         </div>
     </div>
@@ -59,7 +62,7 @@
         <div class="text-right mb-3">
             <button wire:click="getPdf" wire:loading.attr="disabled" type="button" class="btn btn-primary">
                 <span wire:loading wire:target="getPdf" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                <i wire:loading.remove wire:target="getPdf" class="bi bi-file-earmark-pdf"></i> Download PDF
+                <i wire:loading.remove wire:target="getPdf" class="bi bi-file-earmark-pdf"></i> {{ __('products.barcode.download_pdf') }}
             </button>
         </div>
         <div class="card">
@@ -74,7 +77,7 @@
                                 {!! $barcode !!}
                             </div>
                             <p style="font-size: 15px;color: #000;">
-                                Price:: {{ format_currency($product->product_price) }}
+                                {{ __('products.barcode.price') }}{{ format_currency($product->product_price) }}
                             </p>
                         </div>
                     @endforeach
@@ -83,3 +86,76 @@
         </div>
     @endif
 </div>
+
+
+@push('page_css')
+<style>
+@media screen and (max-width: 767px) {
+    .mobile-table thead {
+        display: none;
+    }
+
+    .mobile-table,
+    .mobile-table tbody,
+    .mobile-table tr,
+    .mobile-table td {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .mobile-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .mobile-table td {
+        padding: 0.75rem;
+        border-top: none;
+        flex: 1;
+        text-align: left;
+        position: relative;
+    }
+
+    .mobile-table td::before {
+        display: none; /* Remove the before content for mobile to simplify layout */
+    }
+
+    .align-right {
+        text-align: right;
+    }
+
+    .quantity-input {
+        width: 100px;
+        display: inline-block;
+        max-width: 100px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .mobile-table {
+        display: block;
+        width: 100%;
+    }
+
+    .mobile-table td {
+        display: block;
+        text-align: center;
+    }
+
+    .align-right {
+        text-align: center;
+    }
+
+    .quantity-input {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+</style>
+@endpush

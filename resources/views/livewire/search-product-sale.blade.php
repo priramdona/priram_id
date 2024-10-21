@@ -1,5 +1,10 @@
 <div class="position-relative">
     <div class="card mb-0 border-0 shadow-sm">
+        <div id="interactive" class="viewport">
+            <video id="video" autoplay></video>
+            <div class="scanner-laser"></div>
+        </div>
+
         <div class="card-body">
             <div class="form-group mb-0">
                 <div class="input-group">
@@ -8,7 +13,7 @@
                             <i class="bi bi-search text-primary"></i>
                         </div>
                     </div>
-                    <input wire:keydown.escape="resetQuery" wire:model.live.debounce.500ms="query" type="text" class="form-control" placeholder="Type product name or code....">
+                    <input id="productcode" wire:keydown.escape="resetQuery" wire:model.live.debounce.500ms="query" type="text" class="form-control" placeholder="Scan the Barcode or Type product name or code....">
                 </div>
             </div>
         </div>
@@ -58,3 +63,100 @@
         @endif
     @endif
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inisialisasi suara beep
+        var beepSound = new Audio("{{ asset('sounds/beep.mp3') }}");
+        var klikSound = new Audio("{{ asset('sounds/klik.mp3') }}");
+
+        // Inisialisasi Quagga untuk scan barcode
+        // Quagga.init({
+        //     inputStream : {
+        //         name : "Live",
+        //         type : "LiveStream",
+        //         target: document.querySelector('#interactive'),
+        //         constraints: {
+        //             facingMode: "environment"
+        //         }
+        //     },
+        //     decoder : {
+        //         readers : ["code_128_reader", "ean_reader"]
+        //     }
+        // }, function(err) {
+        //     if (err) {
+        //         return;
+        //     }
+        //     Quagga.start();
+        // });
+        Quagga.init({
+                inputStream : {
+                    name : "Live",
+                    type : "LiveStream",
+                    target: document.querySelector('#interactive'), // Elemen video
+                    constraints: {
+                        facingMode: "environment", // Menggunakan kamera belakang
+                        advanced: [
+                            { focusMode: "manual" }, // Nonaktifkan autofokus
+                            { zoom: 4 },  // Perbesar tampilan untuk barcode kecil
+                        ]
+                    }
+                },
+                locator: {
+                    patchSize: "small",  // Ukuran deteksi lebih kecil untuk barcode kecil
+                    halfSample: false,    // Tidak perlu sampling 50% untuk akurasi yang lebih baik
+                    debug: {
+                        showCanvas: true, // Menampilkan canvas untuk debug
+                        showPatches: true,
+                        showFoundPatches: true,
+                        showSkeleton: true,
+                        showLabels: true,
+                        showPatchLabels: true,
+                        showRemainingPatchLabels: true,
+                    }
+                },
+                area: { // Fokus deteksi hanya pada bagian tengah
+                    top: "30%",    // 30% dari atas
+                    right: "30%",  // 30% dari kanan
+                    left: "30%",   // 30% dari kiri
+                    bottom: "30%"  // 30% dari bawah
+                },
+                decoder : {
+                    readers : ["code_128_reader", "ean_reader"],  // Jenis barcode yang ingin di-scan
+                },
+                locate: true // Aktifkan mode pelacakan barcode
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log("Quagga initialized successfully");
+                Quagga.start();
+            });
+        // Event handler ketika barcode terdeteksi
+        Quagga.onDetected(function(result) {
+            var code = result.codeResult.code;
+            let inputField = document.getElementById('productcode');
+            if(inputField) {
+                inputField.value = code;
+                inputField.dispatchEvent(new Event('input'));
+
+                // Mainkan suara beep setelah barcode terdeteksi
+                klikSound.play();
+            }
+        });
+
+        // Event handler ketika produk dipilih dari list
+        document.querySelectorAll('a[wire\\:click]').forEach(function(element) {
+            element.addEventListener('click', function() {
+                // Mainkan suara beep setelah produk dipilih dari hasil pencarian
+                beepSound.play();
+            });
+        });
+        // Dengarkan event 'playBeep' dari Livewire
+        window.addEventListener('playBeep', function () {
+                beepSound.play(); // Memutar suara beep
+            });
+
+    });
+</script>

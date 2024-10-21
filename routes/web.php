@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BarcodeScannerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,5 +27,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/payment-flow/chart-data', 'HomeController@paymentChart')
         ->name('payment-flow.chart');
+
+        Route::get('/scan-barcode', [BarcodeScannerController::class, 'index'])->name('scan.barcode');
 });
 

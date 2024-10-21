@@ -44,6 +44,7 @@ class SearchProduct extends Component
     }
 
     public function selectProduct($productData) {
+        // dd($productData);
         $product = Product::find($productData['id']);
         $this->dispatch('productSelected', $product);
     }

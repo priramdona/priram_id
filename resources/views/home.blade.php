@@ -9,6 +9,57 @@
 @endsection
 
 @section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="my-4">Scan Barcode</h1>
+            <div class="scanner-container">
+                <div id="reader" class="border p-3"></div>
+            </div>
+            <div class="barcode-result">
+                <label for="barcode-result" class="form-label">Hasil Barcode:</label>
+                <input type="text" id="barcode-result" class="form-control" placeholder="Barcode belum terbaca" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+<script>
+    // Deteksi perangkat (mobile atau desktop)
+    function isMobile() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        // Menampilkan hasil barcode ke input field
+        document.getElementById("barcode-result").value = decodedText;
+    }
+
+    function onScanFailure(error) {
+        // Menangani kegagalan scan, Anda bisa log atau abaikan error
+        console.warn(`Kode tidak terbaca: ${error}`);
+    }
+
+    function startCamera() {
+        // Memulai scanner dengan Html5QrcodeScanner
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", {
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                // Menyesuaikan dengan perangkat
+                aspectRatio: isMobile() ? undefined : 1,
+            }
+        );
+        // Render scan
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    }
+
+    // Secara otomatis memulai scanner saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        startCamera();
+    });
+</script>
     <div class="container-fluid">
         @can('show_total_stats')
         <div class="row">

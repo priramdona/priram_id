@@ -87,6 +87,7 @@ class Checkout extends Component
         $this->updateQuantity($rowId,$cartItemId);
     }
     public function productSelected($product) {
+
         $cart = Cart::instance($this->cart_instance);
 
         $exists = $cart->search(function ($cartItem, $rowId) use ($product) {

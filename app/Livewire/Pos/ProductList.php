@@ -49,6 +49,9 @@ class ProductList extends Component
     }
 
     public function selectProduct($product) {
+
+        $this->dispatch('playBeep');
         $this->dispatch('productSelected', $product);
+
     }
 }

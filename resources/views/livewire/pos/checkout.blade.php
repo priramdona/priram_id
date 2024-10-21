@@ -31,35 +31,34 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr class="text-center">
-                            <th class="align-middle">Product</th>
-                            <th class="align-middle">Price</th>
-                            <th class="align-middle">Quantity</th>
-                            <th class="align-middle">Action</th>
-                        </tr>
+                    <table class="table table-hover text-right">
+                        <thead class="thead-default">
+                    {{-- <table class="table table-bordered table-hover table-sm">
+                        <thead> --}}
+                            <tr class="text-center">
+                                <th class="align-middle">Product</th>
+                                <th class="align-middle">Price</th>
+                                <th class="align-middle">Quantity</th>
+                                <th class="align-middle">Action</th>
+                            </tr>
                         </thead>
                         <tbody>
                         @if($cart_items->isNotEmpty())
                             @foreach($cart_items as $cart_item)
                                 <tr>
-                                    <td class="align-middle">
+                                    <td class="text-left">
                                         {{ $cart_item->name }} <br>
                                         <span class="badge badge-success">
-                                        {{ $cart_item->options->code }}
-                                    </span>
+                                            {{ $cart_item->options->code }}
+                                        </span>
                                         @include('livewire.includes.product-cart-modal')
                                     </td>
-
-                                    <td class="align-middle">
+                                    <td class="text-right">
                                         {{ format_currency($cart_item->price) }}
                                     </td>
-
-                                    <td class="align-middle">
+                                    <td class="text-right">
                                         @include('livewire.includes.product-cart-quantity')
                                     </td>
-
                                     <td class="align-middle text-center">
                                         <a href="#" wire:click.prevent="removeItem('{{ $cart_item->rowId }}')">
                                             <i class="bi bi-x-circle font-2xl text-danger"></i>
@@ -70,15 +69,16 @@
                         @else
                             <tr>
                                 <td colspan="8" class="text-center">
-                        <span class="text-danger">
-                            Please search & select products!
-                        </span>
+                                    <span class="text-danger">
+                                        Please search & select products!
+                                    </span>
                                 </td>
                             </tr>
                         @endif
                         </tbody>
                     </table>
                 </div>
+
             </div>
 
             <div class="row">
@@ -152,4 +152,22 @@
      {{-- @include('livewire.pos.includes.checkout-payment') --}}
 
 </div>
-
+@section('styles')
+    <style>
+        /* Kustomisasi CSS untuk tampilan mobile */
+        @media (max-width: 768px) {
+            .table-responsive table {
+                font-size: 12px;
+            }
+            .table-responsive th, .table-responsive td {
+                padding: 0.5rem;
+            }
+            .table-responsive .badge {
+                font-size: 10px;
+            }
+            .table-responsive i {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+@endsection

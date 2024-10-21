@@ -40,9 +40,30 @@ class SearchProductSale extends Component
         $this->how_many = 5;
         $this->search_results = Collection::empty();
     }
+    public function searchProduct($code)
+    {
+        // Cari produk berdasarkan kode
+        $product = Product::where('product_code', $code)->first();
+
+        if ($product) {
+            $this->selectProduct($product->id); // Langsung panggil selectProduct jika produk ditemukan
+        }
+    }
 
     public function selectProduct($productData) {
-        $product = Product::find($productData['id']);
+        //ini dari search
+        // dd('asd',$productData);
+        $isDataTable = $productData['id'] ?? null;
+
+        if($isDataTable){
+
+            $product = Product::find($productData['id']);
+        }else{
+            $product = Product::find($productData);
+        }
+        $this->dispatch('playBeep');
+
+        toast('Product Selected', 'success');
         $this->dispatch('productSelected', $product);
     }
 }
