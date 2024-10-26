@@ -2,12 +2,16 @@
 
 namespace Modules\People\Http\Controllers;
 
+use Exception;
+use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
 use Modules\People\DataTables\CustomersDataTable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Modules\People\Entities\Customer;
+
+use Illuminate\Support\Str;
 
 class CustomersController extends Controller
 {
@@ -30,23 +34,58 @@ class CustomersController extends Controller
         abort_if(Gate::denies('create_customers'), 403);
 
         $request->validate([
-            'customer_name'  => 'required|string|max:255',
+            'customer_first_name'  => 'required|string|max:255',
+            'customer_last_name'  => 'required|string|max:255',
             'customer_phone' => 'required|max:255',
             'customer_email' => 'required|email|max:255',
             'city'           => 'required|string|max:255',
             'country'        => 'required|string|max:255',
+            'postalCode' => 'required|numeric|digits:5',
             'address'        => 'required|string|max:500',
         ]);
 
-        Customer::create([
-            'customer_name'  => $request->customer_name,
-            'customer_phone' => $request->customer_phone,
-            'customer_email' => $request->customer_email,
-            'city'           => $request->city,
-            'country'        => $request->country,
-            'address'        => $request->address,
-            'business_id' => $request->user()->business_id,
-        ]);
+        $custId = Str::orderedUuid()->toString();
+
+        try{
+
+            $paymentGateway = new PaymentGatewayController();
+            $registCustomer = $paymentGateway->createCustomer(
+                reffId: $custId,
+                firstName: $request->customer_first_name,
+                lastName: $request->customer_last_name,
+                dob: $request->dob,
+                email: $request->customer_email,
+                mobileNumber: $request->customer_phone,
+                gender: $request->gender,
+                streetLine1: $request->address,
+                city: $request->city,
+                postalCode: $request->postalCode,
+                description: $request->postalCode,
+            );
+
+            $dataCustomer = [
+                'id' => $custId,
+                'customer_name'=> $request->customer_first_name . ' ' . $request->customer_last_name,
+                'customer_first_name' => $request->customer_first_name,
+                'customer_last_name' => $request->customer_last_name,
+                'dob' => $request->dob,
+                'gender' => $request->gender,
+                'customer_phone' => $request->customer_phone,
+                'customer_email' => $request->customer_email,
+                'city' => $request->city,
+                'country' => $request->country,
+                'address' => $request->address,
+                'postal_code' => $request->postalCode,
+                'reference_id' => $registCustomer['id'],
+                'business_id' => $request->user()->business_id,
+            ];
+
+            $dataCustomer = Customer::create($dataCustomer);
+
+        }
+        catch(Exception $e){
+            toast($e->getMessage(), 'error');
+        }
 
         toast('Customer Created!', 'success');
 
@@ -72,22 +111,50 @@ class CustomersController extends Controller
         abort_if(Gate::denies('update_customers'), 403);
 
         $request->validate([
-            'customer_name'  => 'required|string|max:255',
+            'customer_first_name'  => 'required|string|max:255',
+            'customer_last_name'  => 'required|string|max:255',
             'customer_phone' => 'required|max:255',
             'customer_email' => 'required|email|max:255',
             'city'           => 'required|string|max:255',
             'country'        => 'required|string|max:255',
+            'postalCode' => 'required|numeric|digits:5',
             'address'        => 'required|string|max:500',
         ]);
-
+        try{
         $customer->update([
-            'customer_name'  => $request->customer_name,
+            'customer_name'  => $request->customer_first_name . ' ' . $request->customer_last_name,
+            'customer_first_name'  => $request->customer_first_name,
+            'customer_last_name'  => $request->customer_last_name,
             'customer_phone' => $request->customer_phone,
             'customer_email' => $request->customer_email,
             'city'           => $request->city,
             'country'        => $request->country,
-            'address'        => $request->address
+            'address'        => $request->address,
+            'dob' => $request->dob,
+            'gender' => $request->gender,
+            'postal_code' => $request->postalCode,
         ]);
+
+        $paymentGateway = new PaymentGatewayController();
+        $registCustomer = $paymentGateway->updateCustomer(
+            id: $customer->reference_id,
+            refId: $customer->id,
+            firstName: $request->customer_first_name,
+            lastName: $request->customer_last_name,
+            dob: $request->dob,
+            email: $request->customer_email,
+            mobileNumber: $request->customer_phone,
+            gender: $request->gender,
+            streetLine1: $request->address,
+            city: $request->city,
+            postalCode: $request->postalCode,
+            description: $request->postalCode,
+        );
+    }
+
+        catch(Exception $e){
+            toast($e->getMessage(), 'error');
+        }
 
         toast('Customer Updated!', 'info');
 

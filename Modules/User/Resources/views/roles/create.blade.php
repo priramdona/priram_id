@@ -183,6 +183,14 @@
                                                 <div class="col-6">
                                                     <div class="custom-control custom-switch">
                                                         <input type="checkbox" class="custom-control-input"
+                                                               id="access_units" name="permissions[]"
+                                                               value="access_units" {{ old('access_units') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="access_units">Unit</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
                                                                id="access_product_categories" name="permissions[]"
                                                                value="access_product_categories" {{ old('access_product_categories') ? 'checked' : '' }}>
                                                         <label class="custom-control-label" for="access_product_categories">Category</label>
@@ -788,7 +796,7 @@
                                 </div>
 
                                 <!-- Currencies Permission -->
-                                <div class="col-lg-4 col-md-6 mb-3">
+                                {{-- <div class="col-lg-4 col-md-6 mb-3">
                                     <div class="card h-100 border-0 shadow">
                                         <div class="card-header">
                                             Currencies
@@ -825,6 +833,27 @@
                                                                id="delete_currencies" name="permissions[]"
                                                                value="delete_currencies" {{ old('delete_currencies') ? 'checked' : '' }}>
                                                         <label class="custom-control-label" for="delete_currencies">Delete</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> --}}
+
+                                  <!-- Payment Gateways -->
+                                  <div class="col-lg-4 col-md-6 mb-3">
+                                    <div class="card h-100 border-0 shadow">
+                                        <div class="card-header">
+                                            Payment Gateways
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                               id="access_payment_gateways" name="permissions[]"
+                                                               value="access_payment_gateways" {{ old('access_payment_gateways') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="access_payment_gateways">Access</label>
                                                     </div>
                                                 </div>
                                             </div>

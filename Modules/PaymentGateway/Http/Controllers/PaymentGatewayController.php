@@ -15,6 +15,7 @@ use Modules\PaymentGateway\Entities\xenditPaymentMethod;
 use Modules\PaymentGateway\Entities\xenditPaymentRequest;
 use Modules\Whatsapp\Http\Controllers\WhatsappController;
 use Xendit\Configuration;
+use Xendit\Customer\CustomerRequest;
 use Xendit\PaymentMethod\PaymentMethodApi;
 use Illuminate\Support\Facades\Http;
 use Modules\Income\Entities\Income;
@@ -23,7 +24,7 @@ use Modules\Sale\Entities\Sale;
 use Xendit\BalanceAndTransaction\BalanceApi;
 use Xendit\PaymentRequest\PaymentRequestApi;
 use Xendit\PaymentRequest\PaymentRequestParameters;
-
+use Xendit\Customer\CustomerApi;
 class PaymentGatewayController extends Controller
 {
     /**
@@ -54,6 +55,244 @@ class PaymentGatewayController extends Controller
         }
 
         return view('paymentgateway::layouts.settings',compact('result'));
+    }
+    public function createCustomerHttp(
+        string $reffId,
+        string $firstName,
+        string $lastName,
+        string $dob,
+        string $email,
+        string $mobileNumber,
+        string $gender,
+        string $streetLine1,
+        string $city,
+        string $postalCode,
+        string $description,
+
+    )
+    {
+        $base64 = base64_encode(env('XENDIT_KEY').':');
+        $secret_key = 'Basic ' . $base64;
+
+        try {
+
+        $businessData = Business::find(Auth::user()->business_id);
+
+            $addressInfo = [
+                [
+                    'country' => 'ID',
+                    'street_line1' => $streetLine1,
+                    'city' => $city,
+                    'postal_code' => $postalCode,
+                    'category' => 'HOME',
+                    'is_primary' => true
+                ]
+            ];
+
+            $payloadRequest = [
+                'client_name' => preg_replace('/[^a-zA-Z\s]/','', $businessData['name']),
+                'reference_id' => $reffId,
+                'type' => 'INDIVIDUAL',
+                'individual_detail' => [
+                    'given_names' => $firstName,
+                    'surname' => $lastName,
+                    'gender' => $gender,
+                    'date_of_birth' => $dob,
+                    'nationality' => 'ID',
+                ],
+                'description' => $description,
+                'email' => $email,
+                'mobile_number' => $mobileNumber,
+                'addresses' => $addressInfo
+            ];
+
+            // DD($payloadRequest);
+            $dataRequest = Http::withHeaders([
+                'Authorization' => $secret_key,
+                'for-user-id' => null
+            ])->post('https://api.xendit.co/customers', $payloadRequest);
+
+            $result = $dataRequest->object();
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+
+        return $result;
+    }
+    public function updateCustomerHttp(
+        string $id,
+        string $refId,
+        string $firstName,
+        string $lastName,
+        string $dob,
+        string $email,
+        string $mobileNumber,
+        string $gender,
+        string $streetLine1,
+        string $city,
+        string $postalCode,
+        string $description,
+        ){
+
+            $base64 = base64_encode(env('XENDIT_KEY').':');
+        $secret_key = 'Basic ' . $base64;
+
+        try {
+
+            $addressInfo = [
+                [
+                    'country' => 'ID',
+                    'street_line1' => $streetLine1,
+                    'city' => $city,
+                    'postal_code' => $postalCode,
+                    'category' => 'HOME',
+                    'is_primary' => true
+                ]
+            ];
+
+            $payloadRequest = [
+                'reference_id' => $refId,
+                'individual_detail' => [
+                    'given_names' => $firstName,
+                    'surname' => $lastName,
+                    'gender' => $gender,
+                    'date_of_birth' => $dob,
+                    'nationality' => 'ID',
+                ],
+                'description' => $description,
+                'email' => $email,
+                'mobile_number' => $mobileNumber,
+                'addresses' => $addressInfo
+            ];
+
+            // DD($payloadRequest);
+            $dataRequest = Http::withHeaders([
+                'Authorization' => $secret_key,
+                'for-user-id' => null
+            ])->patch('https://api.xendit.co/customers/'.$id, $payloadRequest);
+
+            $result = $dataRequest->object();
+        } catch (\Exception $e) {
+            return $e;
+        }
+
+        return $result;
+    }
+    public function updateCustomer(
+        string $id,
+        string $refId,
+        string $firstName,
+        string $lastName,
+        string $dob,
+        string $email,
+        string $mobileNumber,
+        string $gender,
+        string $streetLine1,
+        string $city,
+        string $postalCode,
+        string $description,
+        ){
+        Configuration::setXenditKey(env('XENDIT_KEY'));
+        $apiInstance = new CustomerApi();
+        $idempotency_key = 'cust' . rand(1,10000) . Carbon::now()->format('Ymmddss');
+        $forUserId = null;
+
+        try {
+
+        $addressInfo = [
+            [
+                'country' => 'ID',
+                'street_line1' => $streetLine1,
+                'city' => $city,
+                'postal_code' => $postalCode,
+                'category' => 'HOME',
+                'is_primary' => true
+            ]
+        ];
+
+        $payloadRequest = [
+            'reference_id' => $refId,
+            'individual_detail' => [
+                'given_names' => $firstName,
+                'surname' => $lastName,
+                'gender' => $gender,
+                'date_of_birth' => $dob,
+                'nationality' => 'ID',
+            ],
+            'description' => $description,
+            'email' => $email,
+            'mobile_number' => $mobileNumber,
+            'addresses' => $addressInfo
+        ];
+
+        $result = $apiInstance->updateCustomer($id, $forUserId, $payloadRequest);
+
+        return $result;
+
+        } catch (\Xendit\XenditSdkException $e) {
+            throw new \Exception(json_encode($e->getMessage()));
+        }
+    }
+    public function createCustomer(
+        string $reffId,
+        string $firstName,
+        string $lastName,
+        string $dob,
+        string $email,
+        string $mobileNumber,
+        string $gender,
+        string $streetLine1,
+        string $city,
+        string $postalCode,
+        string $description,
+        ){
+        Configuration::setXenditKey(env('XENDIT_KEY'));
+        $apiInstance = new CustomerApi();
+        $idempotency_key = 'cust' . rand(1,10000) . Carbon::now()->format('Ymmddss');
+        $forUserId = null;
+
+        try {
+
+        $businessData = Business::find(Auth::user()->business_id);
+
+        $addressInfo = [
+            [
+                'country' => 'ID',
+                'street_line1' => $streetLine1,
+                'city' => $city,
+                'postal_code' => $postalCode,
+                'category' => 'HOME',
+                'is_primary' => true
+            ]
+        ];
+
+        $payloadRequest = [
+            'client_name' => preg_replace('/[^a-zA-Z\s]/','', $businessData['name']),
+            'reference_id' => $reffId,
+            'type' => 'INDIVIDUAL',
+            'individual_detail' => [
+                'given_names' => $firstName,
+                'surname' => $lastName,
+                'gender' => $gender,
+                'date_of_birth' => $dob,
+                'nationality' => 'ID',
+            ],
+            'description' => $description,
+            'email' => $email,
+            'mobile_number' => $mobileNumber,
+            'addresses' => $addressInfo
+        ];
+
+        $customer_request = new CustomerRequest($payloadRequest);
+
+        $result = $apiInstance->createCustomer($idempotency_key, $forUserId, $customer_request);
+
+        return $result;
+
+        } catch (\Xendit\XenditSdkException $e) {
+            throw new \Exception(json_encode($e->getMessage()));
+        }
     }
     public function createPaymentRequest(string $refId,
                                         ?string $forUserId = null,
@@ -257,8 +496,8 @@ class PaymentGatewayController extends Controller
         $apiInstance = new PaymentMethodApi();
         Configuration::setXenditKey(env('XENDIT_KEY'));
 
-        $customerId = '66fad06d0abd34c4121e089c'; // Ganti dengan customer_id Anda
-        $apiKey = env('XENDIT_KEY');  // Ganti dengan API key Xendit Anda
+        $customerId = '66fad06d0abd34c4121e089c';
+        $apiKey = env('XENDIT_KEY');
 
         Configuration::setXenditKey($apiKey);
 
@@ -277,27 +516,7 @@ class PaymentGatewayController extends Controller
         }
         return $result;
 
-        // return view('layouts.app',compact('result','resultDetails'));
-
     }
-    // public function create()
-    // {
-
-    //     return view('paymentgateway::create');
-    // }
-
-    // /**
-    //  * Store a newly created resource in storage.
-    //  */
-    // public function store(Request $request): RedirectResponse
-    // {
-    //     //
-    // }
-
-    /**
-     * Show the specified resource.
-     */
-
      public function payCC()
      {
          return view('paymentgateway::payment.cc');

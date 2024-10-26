@@ -19,21 +19,31 @@ class CustomerDatabaseSeeder extends Seeder
       foreach ($businessData as $business){
         $dataCustomerDefault = [
             [
+            'customer_first_name' => 'Pelanggan',
+            'customer_last_name' => 'Pertama '.$business->prefix,
             'customer_name' => 'Pelanggan Pertama '.$business->prefix,
             'customer_email' => 'pelangganpertama@email.com',
-            'customer_phone' => '628151234567',
+            'dob' => '2000-07-21',
+            'gender' => 'MALE',
+            'customer_phone' => '+628151234567',
             'city' => 'Kota Pelanggan Pertama '.$business->prefix,
-            'country' => 'Indonesia',
+            'country' => 'ID',
             'address' => 'Alamat Pelanggan Pertama '.$business->prefix,
+            'postal_code' => '43152',
             'business_id' => $business->id
            ],
            [
+            'customer_first_name' => 'Pelanggan',
+            'customer_last_name' => 'Kedua '.$business->prefix,
             'customer_name' => 'Pelanggan Kedua '.$business->prefix,
+            'dob' => '2000-07-21',
+            'gender' => 'MALE',
            'customer_email' => 'pelangganpertama@email.com '.$business->prefix,
            'customer_phone' => '628151234567',
            'city' => 'Kota Pelanggan Kedua '.$business->prefix,
            'country' => 'Indonesia',
            'address' => 'Alamat Pelanggan Kedua '.$business->prefix,
+           'postal_code' => '43152',
            'business_id' => $business->id
           ]
         ];

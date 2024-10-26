@@ -10,6 +10,15 @@
         <i class="c-sidebar-nav-icon bi bi-journal-bookmark" style="line-height: 1;"></i> {{ __('menu.products') }}
     </a>
     <ul class="c-sidebar-nav-dropdown-items">
+        @can('access_units')
+        {{-- <ul class="c-sidebar-nav-dropdown-items"> --}}
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link {{ request()->routeIs('units*') ? 'c-active' : '' }}" href="{{ route('units.index') }}">
+                    <i class="c-sidebar-nav-icon bi bi-calculator" style="line-height: 1;"></i> {{ __('menu.units') }}
+                </a>
+            </li>
+        {{-- </ul> --}}
+        @endcan
         @can('access_product_categories')
         <li class="c-sidebar-nav-item">
             <a class="c-sidebar-nav-link {{ request()->routeIs('product-categories') ? 'c-active' : '' }}" href="{{ route('product-categories.index') }}">
@@ -265,30 +274,30 @@
 
 
 {{-- @can('access_customers|access_suppliers') --}}
-<li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
+{{-- <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
             <i class="c-sidebar-nav-icon bi bi-whatsapp" style="line-height: 1;"></i> {{ __('menu.whatsapp') }}
         </a>
-        <ul class="c-sidebar-nav-dropdown-items">
+        <ul class="c-sidebar-nav-dropdown-items"> --}}
             {{-- @can('access_customers') --}}
-                <li class="c-sidebar-nav-item">
+                {{-- <li class="c-sidebar-nav-item">
                     <a class="c-sidebar-nav-link {{ request()->routeIs('whatsapp.*') ? 'c-active' : '' }}" href="{{ route('whatsapp.index') }}">
                         <i class="c-sidebar-nav-icon bi bi-broadcast" style="line-height: 1;"></i> {{ __('menu.whatsapp_broadcast') }}
                     </a>
-                </li>
+                </li> --}}
             {{-- @endcan
             @can('access_suppliers') --}}
 
             {{-- @endcan --}}
-        </ul>
-    </li>
+        {{-- </ul>
+    </li> --}}
 
+@can('access_payment_gateways')
     <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
             <i class="c-sidebar-nav-icon bi bi-credit-card-2-front" style="line-height: 1;"></i> {{ __('menu.paymentgateway') }}
         </a>
         <ul class="c-sidebar-nav-dropdown-items">
-            {{-- @can('access_customers') --}}
 
                 <li class="c-sidebar-nav-item">
                     <a class="c-sidebar-nav-link {{ request()->routeIs('payment-gateways.*') ? 'c-active' : '' }}" href="{{ route('payment-gateways.index') }}">
@@ -300,13 +309,9 @@
                         <i class="c-sidebar-nav-icon bi bi-gear-fill" style="line-height: 1;"></i> {{ __('menu.payment_setting') }}
                     </a>
                 </li>
-            {{-- @endcan
-            @can('access_suppliers') --}}
-
-            {{-- @endcan --}}
         </ul>
     </li>
-{{-- @endcan --}}
+@endcan
 
 @can('access_reports')
     <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('*-report.index') ? 'c-show' : '' }}">
@@ -391,7 +396,7 @@
     </li>
 @endcan
 
-@can('access_currencies|access_settings')
+{{-- @can('access_currencies|access_settings')
     <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('currencies*') || request()->routeIs('units*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
             <i class="c-sidebar-nav-icon bi bi-gear" style="line-height: 1;"></i> {{ __('menu.settings') }}
@@ -414,6 +419,24 @@
             </li>
         </ul>
         @endcan
+        @can('access_settings')
+        <ul class="c-sidebar-nav-dropdown-items">
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link {{ request()->routeIs('settings*') ? 'c-active' : '' }}" href="{{ route('settings.index') }}">
+                    <i class="c-sidebar-nav-icon bi bi-sliders" style="line-height: 1;"></i> {{ __('menu.system_settings') }}
+                </a>
+            </li>
+        </ul>
+        @endcan
+    </li>
+@endcan --}}
+@can('access_settings')
+    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('currencies*') || request()->routeIs('units*') ? 'c-show' : '' }}">
+        <a class="c-sidebar-nav-dropdown-toggle">
+            <i class="c-sidebar-nav-icon bi bi-gear" style="line-height: 1;"></i> {{ __('menu.settings') }}
+        </a>
+
+
         @can('access_settings')
         <ul class="c-sidebar-nav-dropdown-items">
             <li class="c-sidebar-nav-item">
