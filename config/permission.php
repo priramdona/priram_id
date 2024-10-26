@@ -1,6 +1,9 @@
 <?php
 
 return [
+    // 'teams' => true, // Aktifkan fitur 'teams'
+    // 'team_foreign_key' => 'business_id', // Ubah ini menjadi 'business_id'
+
 
     'models' => [
 

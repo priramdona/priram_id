@@ -53,6 +53,13 @@ class PermissionsTableSeeder extends Seeder
             'create_quotation_sales',
             //Send Quotation On Email
             'send_quotation_mails',
+            //Incomes
+            'access_incomes',
+            'create_incomes',
+            'edit_incomes',
+            'delete_incomes',
+            //Income Categories
+            'access_income_categories',
             //Expenses
             'access_expenses',
             'create_expenses',

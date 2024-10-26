@@ -69,7 +69,7 @@ class PaymentMethodChannelSeeder extends Seeder
                     'code' => 'CARD',
                     'type' => 'CARD',
                     'reference' => null,
-                    'status' => false,
+                    'status' => true,
                 ]
            ];
 
@@ -103,8 +103,46 @@ class PaymentMethodChannelSeeder extends Seeder
                     PaymentChannel::create($qris);
                 };
             }
+
+            if ($paymentMethod['code'] == 'CARD') {
+
+                $ccDatas = $this->creditCard($paymentMethodData->id);
+
+                foreach($ccDatas as $ccData){
+                    PaymentChannel::create($ccData);
+                };
+            }
         }
 }
+public function creditCard($idPaymentMethod): array
+    {
+        $dataCreditCard = [
+            [
+                'name' => 'Visa, Mastercard, JCB',
+                'payment_method_id' => $idPaymentMethod,
+                'code' => 'card',
+                'type' => 'card',
+                'reference' => null,
+                'status' => true,
+                'source' => 'xendit',
+                'image' => 'cc/cc.png',
+                'action' => 'account',
+                'min' => 10000,
+                'max' => 200000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 3.5,
+                'fee_type_2' => 'amount',
+                'fee_value_2' => 2000,
+                'is_ppn' => true,
+                'expired' => 15,
+                'payment_process' => 'instant',
+                'settlement' => 5,
+            ]
+
+    ];
+
+    return $dataCreditCard;
+    }
 public function virtualAccount($idPaymentMethod): array
     {
         $dataEWallet = [

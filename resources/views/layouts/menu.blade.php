@@ -209,6 +209,36 @@
     </li>
 @endcan
 
+
+@can('access_incomes')
+    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('incomes.*') || request()->routeIs('income-categories.*') ? 'c-show' : '' }}">
+        <a class="c-sidebar-nav-dropdown-toggle">
+            <i class="c-sidebar-nav-icon bi bi-wallet" style="line-height: 1;"></i> {{ __('menu.incomes') }}
+        </a>
+        <ul class="c-sidebar-nav-dropdown-items">
+            @can('access_income_categories')
+                <li class="c-sidebar-nav-item">
+                    <a class="c-sidebar-nav-link {{ request()->routeIs('income-categories.*') ? 'c-active' : '' }}" href="{{ route('income-categories.index') }}">
+                        <i class="c-sidebar-nav-icon bi bi-collection" style="line-height: 1;"></i> {{ __('menu.income_categories') }}
+                    </a>
+                </li>
+            @endcan
+            @can('create_incomes')
+                <li class="c-sidebar-nav-item">
+                    <a class="c-sidebar-nav-link {{ request()->routeIs('incomes.create') ? 'c-active' : '' }}" href="{{ route('incomes.create') }}">
+                        <i class="c-sidebar-nav-icon bi bi-journal-plus" style="line-height: 1;"></i> {{ __('menu.create_income') }}
+                    </a>
+                </li>
+            @endcan
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link {{ request()->routeIs('incomes.index') ? 'c-active' : '' }}" href="{{ route('incomes.index') }}">
+                    <i class="c-sidebar-nav-icon bi bi-journals" style="line-height: 1;"></i> {{ __('menu.all_incomes') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+@endcan
+
 @can('access_customers|access_suppliers')
     <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
@@ -243,7 +273,7 @@
             {{-- @can('access_customers') --}}
                 <li class="c-sidebar-nav-item">
                     <a class="c-sidebar-nav-link {{ request()->routeIs('whatsapp.*') ? 'c-active' : '' }}" href="{{ route('whatsapp.index') }}">
-                        <i class="c-sidebar-nav-icon bi bi-people-fill" style="line-height: 1;"></i> {{ __('menu.whatsapp_index') }}
+                        <i class="c-sidebar-nav-icon bi bi-broadcast" style="line-height: 1;"></i> {{ __('menu.whatsapp_broadcast') }}
                     </a>
                 </li>
             {{-- @endcan
@@ -255,19 +285,19 @@
 
     <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
-            <i class="c-sidebar-nav-icon bi bi-whatsapp" style="line-height: 1;"></i> {{ __('menu.paymentgateway') }}
+            <i class="c-sidebar-nav-icon bi bi-credit-card-2-front" style="line-height: 1;"></i> {{ __('menu.paymentgateway') }}
         </a>
         <ul class="c-sidebar-nav-dropdown-items">
             {{-- @can('access_customers') --}}
 
                 <li class="c-sidebar-nav-item">
                     <a class="c-sidebar-nav-link {{ request()->routeIs('payment-gateways.*') ? 'c-active' : '' }}" href="{{ route('payment-gateways.index') }}">
-                        <i class="c-sidebar-nav-icon bi bi-people-fill" style="line-height: 1;"></i> {{ __('menu.show_list') }}
+                        <i class="c-sidebar-nav-icon bi bi-newspaper" style="line-height: 1;"></i> {{ __('menu.show_list') }}
                     </a>
                 </li>
                 <li class="c-sidebar-nav-item">
                     <a class="c-sidebar-nav-link {{ request()->routeIs('payment-gateways.setting') ? 'c-active' : '' }}" href="{{ route('payment-gateways.setting') }}">
-                        <i class="c-sidebar-nav-icon bi bi-people-fill" style="line-height: 1;"></i> {{ __('menu.payment_gateway.list') }}
+                        <i class="c-sidebar-nav-icon bi bi-gear-fill" style="line-height: 1;"></i> {{ __('menu.payment_setting') }}
                     </a>
                 </li>
             {{-- @endcan

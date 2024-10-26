@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('amount',14,4)->nullable();
             $table->decimal('sale_amount',14,4)->nullable();
             $table->decimal('received_amount',14,4)->nullable();
-            $table->decimal('fee_amount',14,4)->nullable();
+            $table->decimal('deduction_amount',14,4)->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
             $table->softDeletes();

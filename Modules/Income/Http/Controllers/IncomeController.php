@@ -1,0 +1,139 @@
+<?php
+
+namespace Modules\Income\Http\Controllers;
+
+use Modules\Income\DataTables\IncomesDataTable;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
+use Modules\Income\Entities\Income;
+use Modules\Income\Entities\IncomePayment;
+use Modules\PaymentGateway\Entities\xenditPaymentMethod;
+use Modules\PaymentGateway\Entities\xenditPaymentRequest;
+use Modules\PaymentMethod\Entities\PaymentChannel;
+use Modules\PaymentMethod\Entities\PaymentMethod;
+use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Exp;
+
+class IncomeController extends Controller
+{
+
+    public function index(IncomesDataTable $dataTable) {
+        abort_if(Gate::denies('access_incomes'), 403);
+
+        return $dataTable->render('income::incomes.index');
+    }
+
+
+    public function create() {
+        abort_if(Gate::denies('create_incomes'), 403);
+
+        return view('income::incomes.create');
+    }
+
+
+    public function store(Request $request) {
+        abort_if(Gate::denies('create_incomes'), 403);
+
+        $request->validate([
+            'date' => 'required|date',
+            'reference' => 'required|string|max:255',
+            'category_id' => 'required',
+            'amount' => 'required|numeric|max:2147483647',
+            'details' => 'nullable|string|max:1000'
+        ]);
+
+        $income = Income::create([
+            'date' => $request->date,
+            'category_id' => $request->category_id,
+            'amount' => $request->amount,
+            'paid_amount' => $request->grand_total,
+            'additional_amount' => $request->grand_total - $request->amount,
+            'payment_status' => 'waiting',
+            'details' => $request->details,
+            'business_id' => $request->user()->business_id,
+        ]);
+
+        if ($income->paid_amount > 0) {
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
+            $paymentChannelData = PaymentChannel::find($request->payment_channel);
+
+            if ($paymentChannelData){
+                $paymentRequestData = xenditPaymentRequest::find($request->payment_id);
+            }
+
+            $refIdData = $paymentRequestData['reference_id'] ?? null;
+
+            IncomePayment::create([
+                'date' => now()->format('Y-m-d'),
+                'reference' => 'pay-inc/'.$income->reference,
+                'reference_id' => $refIdData,
+                'amount' => $income->amount,
+                'income_id' => $income->id,
+                'payment_method' => $paymentMethodData->id,
+                'payment_method_id' => $paymentMethodData->id,
+                'payment_method_name' => $paymentMethodData->name,
+                'payment_channel_id' => $paymentChannelData->id ?? null,
+                'payment_channel_name' => $paymentChannelData->name ?? null,
+                'business_id' => $request->user()->business_id,
+                'xendit_create_payment_id' => $paymentRequestData['id'] ?? null,
+            ]);
+
+            $paymentMethod = xenditPaymentMethod::query()
+            ->where('reference_id', $refIdData)
+            ->first();
+
+            if ($paymentMethod) {
+                $paymentMethod->transactional_id = $income->id;
+                $paymentMethod->save();
+            }
+        }
+
+        toast('Income Created!', 'success');
+
+        return redirect()->route('incomes.index');
+    }
+
+
+    public function edit(Income $income) {
+        abort_if(Gate::denies('edit_incomes'), 403);
+
+        return view('income::incomes.edit', compact('income'));
+    }
+
+
+    public function update(Request $request, Income $income) {
+        abort_if(Gate::denies('edit_incomes'), 403);
+
+        $request->validate([
+            'date' => 'required|date',
+            'reference' => 'required|string|max:255',
+            'category_id' => 'required',
+            'amount' => 'required|numeric|max:2147483647',
+            'details' => 'nullable|string|max:1000'
+        ]);
+
+        $income->update([
+            'date' => $request->date,
+            'reference' => $request->reference,
+            'category_id' => $request->category_id,
+            'amount' => $request->amount,
+            'details' => $request->details
+        ]);
+
+        toast('Income Updated!', 'info');
+
+        return redirect()->route('incomes.index');
+    }
+
+
+    public function destroy(Income $income) {
+        abort_if(Gate::denies('delete_incomes'), 403);
+
+        $income->delete();
+
+        toast('Income Deleted!', 'warning');
+
+        return redirect()->route('incomes.index');
+    }
+}

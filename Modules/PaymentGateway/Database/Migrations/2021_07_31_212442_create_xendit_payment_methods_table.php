@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('reference_id')->nullable();
             $table->decimal('amount',14,2)->nullable();
             $table->decimal('transaction_amount',14,2)->nullable();
+            $table->nullableUuidMorphs('transactional');
+            $table->decimal('received_amount',14,4)->nullable();
+            $table->decimal('deduction_amount',14,4)->nullable();
             $table->json('actions')->nullable();
             $table->json('card')->nullable();
             $table->json('direct_debit')->nullable();

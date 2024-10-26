@@ -1,57 +1,42 @@
 @extends('layouts.app')
 
-@section('title', 'Product Details')
+@section('title', __('menu.show_list'))
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('payment-gateways.index') }}">Products</a></li>
-        <li class="breadcrumb-item active">Details</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('menu.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('payment-gateways.index') }}">{{ __('menu.paymentgateway') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('menu.show_list') }}</li>
     </ol>
 @endsection
 
 @section('content')
-    {{-- <div class="container-fluid mb-4">
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <input type="text" class="form-control" name="result" value="{{ $result }}">
-                <input type="text" class="form-control" name="result_details" value="{{ $resultDetails }}">
-
-                {{-- {!! \Milon\Barcode\Facades\DNS1DFacade::getBarCodeSVG($product->product_code, $product->product_barcode_symbology, 2, 110) !!} --}}
-            {{-- </div>
-        </div>
-
-    </div> --}}
-
     <div class="container">
-        <h2 class="my-4">Payment Channels information</h2>
-
-        <!-- Cek apakah ada hasil dari query -->
+        <h2 class="my-4">Payment Channels Information</h2>
 
         @if($result->isNotEmpty())
-            <!-- Wrapper for table to be scrollable via dragging -->
             <div class="table-responsive" id="table-wrapper">
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered table-hover" style="table-layout: auto; width: 100%;">
                     <thead class="thead-dark">
                         <tr>
                             <th>Name</th>
                             <th>Type</th>
-                            <th>Payment Fee</th>
-                            <th>PPN (From Payment Fee)</th>
-                            <th>Min Amount</th>
-                            <th>Max Amount</th>
-                            <th>Payment Process</th>
+                            <th>Fee 1</th>
+                            <th>Fee 2</th>
+                            <th>PPN <span class="small ">(From Fees)</span></th>
+                            <th>Min</th>
+                            <th>Max</th>
+                            <th>Process</th>
                             <th>Settlement</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Looping hasil dari $result -->
                         @foreach($result as $channel)
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($channel->image_url)
-                                            <img src="{{ $channel->image_url }}" alt="{{ $channel->name }} Image" class="img-fluid mr-2" style="max-width: 50px;">
+                                            <img src="{{ $channel->image_url }}" alt="{{ $channel->name }} Image" class="img-fluid me-2" style="max-width: 30px;">
                                         @else
                                             <span>No Image</span>
                                         @endif
@@ -67,8 +52,19 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @if($channel->fee_type_2)
+                                        @if($channel->fee_type_2 == "%")
+                                            {{ round($channel->fee_value_2, 2) }} %
+                                        @else
+                                            {{ format_currency($channel->fee_value_2) }}
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
                                     @if($channel->is_ppn)
-                                        <i class="bi bi-check bg-success"></i>
+                                    <i class="bi bi-check bg-success"></i>
                                     @else
                                         <i class="bi bi-x bg-danger"></i>
                                     @endif
@@ -86,6 +82,7 @@
             <p>No Payment Channels found.</p>
         @endif
     </div>
+
 @endsection
 
 @section('scripts')
@@ -135,3 +132,29 @@
     });
 </script>
 @endsection
+
+@push('page_css')
+<style>
+    #table-wrapper {
+        overflow-x: auto;
+    }
+
+    /* Mencegah tabel melebar */
+    table {
+        width: 100%;
+    }
+
+    /* Menyelaraskan teks dan gambar */
+    .table td, .table th {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    /* Ukuran tetap untuk gambar */
+    .img-fluid {
+        max-width: 30px;
+        height: auto;
+    }
+</style>
+
+@endpush

@@ -9,20 +9,7 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h1 class="my-4">Scan Barcode</h1>
-            <div class="scanner-container">
-                <div id="reader" class="border p-3"></div>
-            </div>
-            <div class="barcode-result">
-                <label for="barcode-result" class="form-label">Hasil Barcode:</label>
-                <input type="text" id="barcode-result" class="form-control" placeholder="Barcode belum terbaca" readonly>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 <script>

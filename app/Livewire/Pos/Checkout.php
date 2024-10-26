@@ -6,11 +6,12 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Livewire\Component;
 use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\PaymentMethod\Entities\PaymentMethod;
-
+use Modules\Product\Entities\Product;
+use Illuminate\Support\Str;
 class Checkout extends Component
 {
 
-    public $listeners = ['productSelected', 'discountModalRefresh'];
+    public $listeners = ['productSelected', 'addRowToTable', 'discountModalRefresh'];
 
     public $cart_instance;
     public $customers;
@@ -25,7 +26,9 @@ class Checkout extends Component
     public $customer_id;
     public $total_amount;
     public $payment_method;
+    public $quantity_action_existing;
     public $payment_channels = [];
+    public $itemActions = [];
 
     public function mount($cartInstance, $customers) {
         $this->cart_instance = $cartInstance;
@@ -55,8 +58,14 @@ class Checkout extends Component
     }
 
     public function proceed($grandTotal) {
-        // if ($this->customer_id != null) {
+
+        if (blank($this->itemActions)){
             $this->dispatch('dispatchBrowserEvent', ['grandTotal' => $grandTotal]);
+        }else{
+            $this->dispatch('dispatchBrowserAction');
+        }
+
+        // if ($this->customer_id != null) {
         // } else {
         //     session()->flash('message', 'Please Select Customer!');
         // }
@@ -83,6 +92,7 @@ class Checkout extends Component
             $quantityItem = 1;
         }
 
+        $this->quantity_action_existing = $this->quantity[$cartItemId];
         $this->quantity[$cartItemId] = $quantityItem;
         $this->updateQuantity($rowId,$cartItemId);
     }
@@ -99,12 +109,14 @@ class Checkout extends Component
                 return $cartItem->id === $product['id'];
             })->first()->rowId;
             $currentQty = $cart->get($rowId)->qty;
+            $this->quantity_action_existing = $currentQty;
             $this->quantity[$product['id']] = $currentQty + 1;
             $this->updateQuantity($rowId,$product['id']);
+
             return;
         }
 
-        $cart->add([
+        $dataAdd = $cart->add([
             'id'      => $product['id'],
             'name'    => $product['product_name'],
             'qty'     => 1,
@@ -122,6 +134,17 @@ class Checkout extends Component
             ]
         ]);
 
+        $rowId = $dataAdd->rowId;
+
+        if ($product['is_action'] == true){
+            $this->itemActions[] = [
+                'row_id' => $rowId,
+                'action_id'=>  str::orderedUuid()->toString(),
+                'product_id'=> $product['id'],
+                'product_name'=> $product['product_name'],
+            ];
+        }
+
         $this->check_quantity[$product['id']] = $product['product_quantity'];
         $this->quantity[$product['id']] = 1;
         $this->discount_type[$product['id']] = 'fixed';
@@ -130,7 +153,20 @@ class Checkout extends Component
     }
 
     public function removeItem($row_id) {
-        Cart::instance($this->cart_instance)->remove($row_id);
+
+        $cartInstance = Cart::instance($this->cart_instance); // Menggunakan instance yang sesuai
+
+        $item = $cartInstance->search(function ($cartItem, $rowIdKey) use ($row_id) {
+            return $cartItem->rowId === $row_id;
+        })->first();
+
+        $productId = $item->id;
+
+        $this->itemActions = array_values(array_filter($this->itemActions, function($item) use ($productId) {
+            return $item['product_id'] !== $productId;
+        }));
+
+        $cartInstance->remove($row_id);
     }
 
     public function updatedGlobalTax() {
@@ -142,6 +178,7 @@ class Checkout extends Component
     }
 
     public function updateQuantity($row_id, $product_id) {
+
         if ($this->check_quantity[$product_id] < $this->quantity[$product_id]) {
             session()->flash('message', 'The requested quantity is not available in stock.');
 
@@ -152,7 +189,7 @@ class Checkout extends Component
 
         $cart_item = Cart::instance($this->cart_instance)->get($row_id);
 
-        Cart::instance($this->cart_instance)->update($row_id, [
+        $cartUpdate = Cart::instance($this->cart_instance)->update($row_id, [
             'options' => [
                 'sub_total'             => $cart_item->price * $cart_item->qty,
                 'code'                  => $cart_item->options->code,
@@ -164,6 +201,23 @@ class Checkout extends Component
                 'product_discount_type' => $cart_item->options->product_discount_type,
             ]
         ]);
+
+        $product = Product::find($product_id);
+
+        $this->itemActions = array_values(array_filter($this->itemActions, function($item) use ($product_id) {
+            return $item['product_id'] !== $product_id;
+        }));
+
+        if ($product['is_action'] == true){
+        for ($i =1; $i <= $this->quantity[$product_id]; $i++) {
+            $this->itemActions[] = [
+                'row_id' => $cartUpdate->rowId,
+                'action_id'=>  str::orderedUuid()->toString(),
+                'product_id'=> $product['id'],
+                'product_name'=> $product['product_name'],
+            ];
+        }
+        }
     }
 
     public function updatedDiscountType($value, $name) {

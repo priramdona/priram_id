@@ -26,6 +26,7 @@
             </div>
             <div class="col-lg-5">
                 <livewire:pos.checkout :cart-instance="'sale'" :customers="$customers"/>
+
             </div>
         </div>
     </div>
@@ -59,47 +60,71 @@
                     }
                 }
             });
-
-
-
                 $('#checkoutModal').modal('show');
-                $('body').css('pointer-events', 'none'); // Menonaktifkan semua interaksi
+                $('body').css('pointer-events', 'none');
 
-                // $('#paid_amount').maskMoney({
-                //     prefix:'{{ settings()->currency->symbol }}',
-                //     thousands:'{{ settings()->currency->thousand_separator }}',
-                //     decimal:'{{ settings()->currency->decimal_separator }}',
-                //     allowZero: false,
-                // });
-
-                // $('#total_amount').maskMoney({
-                //     prefix:'{{ settings()->currency->symbol }}',
-                //     thousands:'{{ settings()->currency->thousand_separator }}',
-                //     decimal:'{{ settings()->currency->decimal_separator }}',
-                //     allowZero: true,
-                // });
-
-                // $('#paid_amount').maskMoney('mask');
-                // $('#total_amount').maskMoney('mask');
-
-                // $('#checkout-form').submit(function () {
-                //     var paid_amount = $('#paid_amount').maskMoney('unmasked')[0];
-                //     $('#paid_amount').val(paid_amount);
-                //     var total_amount = $('#total_amount').maskMoney('unmasked')[0];
-                //     $('#total_amount').val(total_amount);
-                // });
-
-                // var sale_amount = document.getElementById('amount_sale').value;
                 var grandTotal = event.detail[0].grandTotal;
                 $('#paid_amount').val(grandTotal);
                 $('#total_amount').val(grandTotal);
 
             });
+
+            window.addEventListener('dispatchBrowserAction',function(event)  {
+                $('#applyAction').modal('show');
+                $('body').css('pointer-events', 'none');
+            });
         });
 
+        function generatePhone(id, productName) {
+            var phoneNumber = document.getElementById('phone_number_' + id).value;
+            // alert(phoneNumber + ' id = ' +  id);
+            var generateButton = document.getElementById('generate_button_' + id);
+            generateButton.classList.remove('btn-primary');
+            generateButton.classList.add('btn-success');
+            generateButton.innerHTML = '<i class="bi bi-check"></i> Applied';
+            generateButton.disabled = true;
+
+            checkAllGenerated();
+        }
+        function removeRow(id) {
+            // Hapus baris berdasarkan ID row
+            var row = document.getElementById('row_' + id);
+
+            if (row) {
+                row.remove();
+            }
+
+            // Periksa lagi apakah semua tombol Generate sudah di-disable
+            checkAllGenerated();
+        }
+        function checkAllGenerated() {
+            // Dapatkan semua tombol Generate
+            var buttons = document.querySelectorAll('button[id^="generate_button_"]');
+            var allGenerated = true;
+
+            // Cek apakah semua tombol sudah di-disable
+            buttons.forEach(function(button) {
+                if (!button.disabled) {
+                    allGenerated = false;
+                }
+            });
+
+            // Tampilkan tombol Proceed jika semua tombol sudah di-disable
+            var proceedButton = document.getElementById('proccedaction');
+            if (allGenerated) {
+                proceedButton.hidden = false;
+            } else {
+                proceedButton.hidden = true;
+            }
+        }
 
         $('#closeModalCheckout').on('click', function() {
             $('#checkoutModal').modal('hide');
+            $('body').css('pointer-events', 'auto');
+        });
+
+        $('#closeModalAction').on('click', function() {
+            $('#applyAction').modal('hide');
             $('body').css('pointer-events', 'auto');
         });
 

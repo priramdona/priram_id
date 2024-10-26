@@ -8,6 +8,44 @@
 
 <ul class="c-header-nav ml-auto">
 
+    @can('show_notifications')
+    <li class="c-header-nav-item dropdown">
+        <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="bi bi-bell" style="font-size: 20px;"></i>
+
+            @php
+                $low_quantity_products = \Modules\Product\Entities\Product::select('id', 'product_quantity', 'product_stock_alert', 'product_code', 'product_name')->whereColumn('product_quantity', '<=', 'product_stock_alert')->get();
+
+            @endphp
+            @if($low_quantity_products->isNotEmpty())
+               <span class="badge badge-pill badge-danger">
+            @else
+            <span class="badge badge-pill">
+            @endif
+
+            @php
+                     echo $low_quantity_products->count();
+            @endphp
+            </span>
+            {{-- $low_quantity_products->isNotEmpty() ? 'A' : 'B'; --}}
+        </a>
+        {{-- <div class="dropdown-menu dropdown-menu-center pt-0"> --}}
+        <div class="dropdown-menu dropdown-menu-left dropdown-menu-lg pt-0">
+            <div class="dropdown-header bg-light">
+                <strong>{{ $low_quantity_products->count() }} Notifications</strong>
+            </div>
+            @forelse($low_quantity_products as $product)
+                <a class="dropdown-item" href="{{ route('products.show', $product->id) }}">
+                    <i class="bi bi-hash mr-1 text-primary"></i> Product: "{{ $product->product_code }}" | "{{ $product->product_name }}" is low in quantity!
+                </a>
+            @empty
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-app-indicator mr-2"></i> No notifications available.
+                </a>
+            @endforelse
+        </div>
+    </li>
+    @endcan
 </ul>
 <ul class="c-header-nav ml-auto mr-4">
     @can('create_pos_sales')
@@ -18,20 +56,30 @@
     </li>
     @endcan
 
-    @can('show_notifications')
-    <li class="c-header-nav-item dropdown d-md-down-none mr-2">
+
+    {{-- @can('show_notifications') --}}
+    {{-- <li class="c-header-nav-item dropdown">
+
         <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="bi bi-bell" style="font-size: 20px;"></i>
-            <span class="badge badge-pill badge-danger">
+            <i class="bi bi-envelope" style="font-size: 20px;"></i>
             @php
                 $low_quantity_products = \Modules\Product\Entities\Product::select('id', 'product_quantity', 'product_stock_alert', 'product_code')->whereColumn('product_quantity', '<=', 'product_stock_alert')->get();
-                echo $low_quantity_products->count();
+
+            @endphp
+            @if($low_quantity_products->isNotEmpty())
+               <span class="badge badge-pill badge-danger">
+            @else
+            <span class="badge badge-pill">
+            @endif
+
+            @php
+                     echo $low_quantity_products->count();
             @endphp
             </span>
         </a>
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg pt-0">
             <div class="dropdown-header bg-light">
-                <strong>{{ $low_quantity_products->count() }} Notifications</strong>
+                <strong>{{ $low_quantity_products->count() }} Inbox</strong>
             </div>
             @forelse($low_quantity_products as $product)
                 <a class="dropdown-item" href="{{ route('products.show', $product->id) }}">
@@ -39,14 +87,15 @@
                 </a>
             @empty
                 <a class="dropdown-item" href="#">
-                    <i class="bi bi-app-indicator mr-2 text-danger"></i> No notifications available.
+                    <i class="bi bi-app-indicator mr-2"></i> No inboxes available.
                 </a>
             @endforelse
         </div>
-    </li>
-    @endcan
+    </li> --}}
+    {{-- @endcan --}}
 
     <li class="c-header-nav-item dropdown">
+
         <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button"
            aria-haspopup="true" aria-expanded="false">
             <div class="c-avatar mr-2">
@@ -58,7 +107,9 @@
             </div>
         </a>
         <div class="dropdown-menu dropdown-menu-right pt-0">
+
             <div class="dropdown-header bg-light py-2"><strong>Account</strong></div>
+
             <a class="dropdown-item" href="{{ route('profile.edit') }}">
                 <i class="mfe-2  bi bi-person" style="font-size: 1.2rem;"></i> Profile
             </a>

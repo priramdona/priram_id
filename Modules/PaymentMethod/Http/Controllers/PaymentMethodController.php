@@ -55,68 +55,6 @@ class PaymentMethodController extends Controller
             'image_url' => $paymentChannels->image_url,
         ]);
     }
-    // public function createPaymentXendit(
-    //     string $paymentChannelId,
-    //     int $amount){
-
-    //     $paymentChannelData = PaymentChannel::find($paymentChannelId);
-    //     $reffPayment =  Str::orderedUuid()::orderedUuid()->toString() . '-' . Carbon::now()->format('Ymdss');
-
-    //     if ($paymentChannelData){
-    //         $paymentGatewayController = new PaymentGatewayController();
-
-    //             $paymentResponse = $paymentGatewayController->createPaymentRequest(
-    //                 refId: $reffPayment,
-    //                 forUserId:null,
-    //                 withSplitRule:null,
-    //                 amount: $amount * 100,
-    //                 type:$paymentChannelData->type,
-    //                 channelCode:$paymentChannelData->code,
-    //                 reusability:'ONE_TIME_USE'
-    //             );
-
-    //             $responseArray = $paymentResponse->getData(true);
-    //             $dataResult = $responseArray['data'];
-
-    //     }
-
-    //     return $dataResult;
-    // }
-    // public function PaymentRequest(Request $request)
-    // {
-    //     try
-    //     {
-    //         $posController = new PosController();
-    //         // $paymentChannels = PaymentChannel::find($request->payment_channel_id);
-
-    //             if ($request->source == 'xendit'){
-    //                 $requestPayment = $posController->createPaymentXendit($request->payment_channel_id, $request->amount);
-
-    //                 if ($request->action == 'account'){
-    //                     $valueResponse = 12345789101112;
-    //                 }
-    //                 else if ($request->action == 'account'){
-    //                     $valueResponse = 'some-qr-string';
-    //                 }else{
-    //                     throw new \Exception('Payment Channel Under Develope');
-    //                 }
-    //             }
-    //         return response()->json(data: [
-    //             'reference_id' => $requestPayment['reference_id'] ?? null,
-    //             'xendit_create_payment_id' =>  $requestPayment['id'] ?? null,
-    //             'value_response' => $valueResponse,
-    //             'payment_action' => $request->action,
-    //         ]);
-
-    //     }
-    //     catch (Exception $e)   {
-    //         $result = $e->getMessage();
-    //         toast($e->getMessage(), 'error');
-    //     }
-
-    //     toast('POS Sale Created!', 'success');
-
-    // }
 
     public function index()
     {

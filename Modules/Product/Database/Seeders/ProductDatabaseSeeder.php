@@ -75,6 +75,8 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
                 'is_showlist' => false,
                 'is_default' => true,
+                'is_action' => true,
+                'action' => 'phone_number',
             ]);
         }
 

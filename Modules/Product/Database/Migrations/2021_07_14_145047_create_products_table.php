@@ -29,6 +29,8 @@ class CreateProductsTable extends Migration
             $table->text('product_note')->nullable();
             $table->boolean('is_default')->nullable()->nullable()->default(false);
             $table->boolean('is_showlist')->nullable()->default(true);
+            $table->boolean('is_action')->nullable()->default(false);
+            $table->string('action')->nullable()->default(null);
             $table->timestamps();
             $table->softDeletes();
         });

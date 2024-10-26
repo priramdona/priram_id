@@ -21,6 +21,9 @@ Route::group([
     Route::any('/callback', [XenditWebhookController::class, 'callback']);
 });
 
+
+Route::get('/pay-cc', [PaymentGatewayController::class, 'payCC'])->name('pay.cc');
+
 Route::group(['middleware' => 'auth'], function() {
      Route::get('payment-gateways/setting', [PaymentGatewayController::class, 'setting'])->name('payment-gateways.setting');
 

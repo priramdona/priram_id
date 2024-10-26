@@ -41,10 +41,10 @@
                                       <i class="bi bi-person"></i>
                                     </span>
                             </div>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                                   name="email" value="{{ old('email') }}"
-                                   placeholder="Email">
-                            @error('email')
+                            <input id="phone_number" type="number" class="form-control @error('phone_number') is-invalid @enderror"
+                                   name="phone_number" value="{{ old('phone_number') }}"
+                                   placeholder="Phone Number">
+                            @error('phone_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -84,7 +84,7 @@
 
             <p class="text-center mt-5 lead">
                 Developed By
-                <a href="priram.id" class="font-weight-bold text-primary">Prima Raharja Mulia</a>
+                <a href="priram.id" class="font-weight-bold text-primary">Utama Yaksa Mandiri</a>
             </p>
         </div>
     </div>
@@ -95,13 +95,13 @@
 <script>
     let login = document.getElementById('login');
     let submit = document.getElementById('submit');
-    let email = document.getElementById('email');
+    let phone_number = document.getElementById('phone_number');
     let password = document.getElementById('password');
     let spinner = document.getElementById('spinner')
 
     login.addEventListener('submit', (e) => {
         submit.disabled = true;
-        email.readonly = true;
+        phone_number.readonly = true;
         password.readonly = true;
 
         spinner.style.display = 'block';
@@ -111,7 +111,7 @@
 
     setTimeout(() => {
         submit.disabled = false;
-        email.readonly = false;
+        phone_number.readonly = false;
         password.readonly = false;
 
         spinner.style.display = 'none';

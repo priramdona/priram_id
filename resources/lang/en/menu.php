@@ -31,6 +31,10 @@ return [
     'expense_categories' => 'Expense Categories',
     'create_expense' => 'Create Expense',
     'all_expenses' => 'All Expenses',
+    'incomes' => 'Incomes',
+    'create_income' => 'Create Income',
+    'income_categories' => 'Income Categories',
+    'all_incomes' => 'All Incomes',
     'parties' => 'Parties',
     'customers' => 'Customers',
     'suppliers' => 'Suppliers',
@@ -49,4 +53,7 @@ return [
     'units' => 'Units',
     'currencies' => 'Currencies',
     'system_settings' => 'System Settings',
+    'paymentgateway' => 'Payment Gateway',
+    'show_list' => 'Payments List',
+    'payment_setting' => 'Payment Settings',
 ];

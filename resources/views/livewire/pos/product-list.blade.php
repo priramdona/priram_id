@@ -5,7 +5,7 @@
             <i class="bi bi-caret-down-fill" id='iconexpand'></i>
         </button>
     </div>
-    <div id="productList">
+    <div  wire:ignore.self id="productList" hidden>
         <div class="card-body">
             <livewire:pos.filter :categories="$categories"/>
             <div class="row position-relative">

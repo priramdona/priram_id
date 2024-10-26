@@ -17,5 +17,6 @@
     "Whatsapp": true,
     "Pulsa": true,
     "PaymentGateway": true,
-    "PaymentMethod": true
+    "PaymentMethod": true,
+    "Income": true
 }

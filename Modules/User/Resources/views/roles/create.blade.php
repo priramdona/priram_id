@@ -323,6 +323,59 @@
                                     </div>
                                 </div>
 
+                                <!-- Incomes Permission -->
+                                <div class="col-lg-4 col-md-6 mb-3">
+                                    <div class="card h-100 border-0 shadow">
+                                        <div class="card-header">
+                                            Incomes
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                               id="access_incomes" name="permissions[]"
+                                                               value="access_incomes" {{ old('access_incomes') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="access_incomes">Access</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                               id="create_incomes" name="permissions[]"
+                                                               value="create_incomes" {{ old('create_incomes') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="create_incomes">Create</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                               id="edit_incomes" name="permissions[]"
+                                                               value="edit_incomes" {{ old('edit_incomes') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="edit_incomes">Edit</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                               id="delete_incomes" name="permissions[]"
+                                                               value="delete_incomes" {{ old('delete_incomes') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="delete_incomes">Delete</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                               id="access_income_categories" name="permissions[]"
+                                                               value="access_income_categories" {{ old('access_income_categories') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="access_income_categories">Category</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Expenses Permission -->
                                 <div class="col-lg-4 col-md-6 mb-3">
                                     <div class="card h-100 border-0 shadow">

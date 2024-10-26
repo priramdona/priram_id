@@ -19,7 +19,7 @@ class SalePayment extends Model
     }
 
     public function setAmountAttribute($value) {
-        $this->attributes['amount'] = decryptWithKey($value) * 100;
+        $this->attributes['amount'] = decryptWithKey($value);
     }
 
     // public function getAmountAttribute($value) {

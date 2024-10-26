@@ -1,5 +1,6 @@
 <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="checkoutModalLabel">
@@ -21,7 +22,7 @@
                         </div>
                     @endif
                     <div class="row">
-                        <div class="col-lg-7">
+                        <div>
                             <input type="hidden" value="{{ $customer_id }}" name="customer_id">
                             <input type="hidden" id="payment_id" name="payment_id">
                             <input type="hidden" value="{{ $global_tax }}" name="tax_percentage">
@@ -63,65 +64,66 @@
                                 <label for="note">Note (If Needed)</label>
                                 <textarea name="note" id="note" rows="2" class="form-control"></textarea>
                             </div>
-                        </div>
-                        <div class="col-lg-5">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <tr>
-                                        <th>Total Products</th>
-                                        <td>
-                                                <span class="badge badge-success">
-                                                    {{ Cart::instance($cart_instance)->count() }}
-                                                </span>
-                                        </td>
-                                    </tr>
-                                    {{-- <tr>
-                                        <th>Order Tax ({{ $global_tax }}%)</th>
-                                        <td>(+) {{ format_currency(Cart::instance($cart_instance)->tax()) }}</td>
-                                    </tr> --}}
-                                    <tr>
-                                        <th>Discount ({{ $global_discount }}%)</th>
-                                        <td>(-) {{ format_currency(Cart::instance($cart_instance)->discount()) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Shipping</th>
-                                        <input type="hidden" value="{{ $shipping }}" name="shipping_amount">
-                                        <td>(+) {{ format_currency($shipping) }}</td>
-                                    </tr>
-                                    <tr class="text-primary">
-                                        <th>Total</th>
-                                        @php
-                                            $total_with_shipping = Cart::instance($cart_instance)->total() + (float) $shipping
-                                        @endphp
+                            <div class="form-group">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <th>Total Products</th>
+                                            <td>
+                                                    <span class="badge badge-success">
+                                                        {{ Cart::instance($cart_instance)->count() }}
+                                                    </span>
+                                            </td>
+                                        </tr>
+                                        {{-- <tr>
+                                            <th>Order Tax ({{ $global_tax }}%)</th>
+                                            <td>(+) {{ format_currency(Cart::instance($cart_instance)->tax()) }}</td>
+                                        </tr> --}}
+                                        <tr>
+                                            <th>Discount ({{ $global_discount }}%)</th>
+                                            <td>(-) {{ format_currency(Cart::instance($cart_instance)->discount()) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Shipping</th>
+                                            <input type="hidden" value="{{ $shipping }}" name="shipping_amount">
+                                            <td>(+) {{ format_currency($shipping) }}</td>
+                                        </tr>
+                                        <tr class="text-primary">
+                                            <th>Total</th>
+                                            @php
+                                                $total_with_shipping = Cart::instance($cart_instance)->total() + (float) $shipping
+                                            @endphp
 
-                                        <input name="amount_sale" id="amount_sale" type="hidden" value="{{ $total_with_shipping }}" name="shipping_amount">
-                                        <td>
-                                            (=) {{ format_currency($total_with_shipping) }}
-                                        </td>
-                                    </tr>
-                                    <tr class="text-success">
-                                        <th>Payment Fee</th>
-                                        <input name="payment_fee" id="payment_fee" type="hidden" value="0">
-                                        <td id="payment_fee_info">Rp. 0.00</td>
-                                    </tr>
-                                    <tr class="text-success">
-                                        <th>PPN</th>
-                                        <input name="payment_ppn" id="payment_ppn" type="hidden" value="0">
-                                        <td id="payment_ppn_info">Rp. 0.00</td>
-                                    </tr>
-                                    <tr class="text-success">
-                                        <th>Application Fee</th>
-                                        <input name="application_fee" id="application_fee" type="hidden" value="0">
-                                        <td id="application_fee_info">Rp. 0.00</td>
-                                    </tr>
-                                    <tr class="text-primary">
-                                        <th>Grand Total</th>
-                                        <input name="grand_total" id="grand_total" type="hidden">
-                                        <th id="grand_total_info"></th>
-                                    </tr>
-                                </table>
+                                            <input name="amount_sale" id="amount_sale" type="hidden" value="{{ $total_with_shipping }}" name="shipping_amount">
+                                            <td>
+                                                (=) {{ format_currency($total_with_shipping) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="text-success">
+                                            <th>Payment Fee</th>
+                                            <input name="payment_fee" id="payment_fee" type="hidden" value="0">
+                                            <td id="payment_fee_info">Rp. 0.00</td>
+                                        </tr>
+                                        <tr class="text-success">
+                                            <th>PPN</th>
+                                            <input name="payment_ppn" id="payment_ppn" type="hidden" value="0">
+                                            <td id="payment_ppn_info">Rp. 0.00</td>
+                                        </tr>
+                                        <tr class="text-success">
+                                            <th>Application Fee</th>
+                                            <input name="application_fee" id="application_fee" type="hidden" value="0">
+                                            <td id="application_fee_info">Rp. 0.00</td>
+                                        </tr>
+                                        <tr class="text-primary">
+                                            <th>Grand Total</th>
+                                            <input name="grand_total" id="grand_total" type="hidden">
+                                            <th id="grand_total_info"></th>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
 
@@ -289,6 +291,7 @@
                                                 'amount': amount,
                                                 'sale_amount': sale_amount,
                                                 'number_phone': numberPhone,
+                                                'transaction_type': 'sale',
                                                 // 'action': data.action,
                                                 // 'source': data.source
                                             },

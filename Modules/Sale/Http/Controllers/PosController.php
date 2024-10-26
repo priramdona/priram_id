@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\PaymentGateway\Entities\xenditPaymentMethod;
 use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\People\Entities\Customer;
@@ -68,6 +69,14 @@ class PosController extends Controller
 
         $applicationFee = $dataConfigs->app_fee_value;
 
+        if ($amount > 9999999){
+            $applicationFee = $amount * 0.01;
+        }
+
+        if ($amount > 99999999){
+            $applicationFee = $amount * 0.025;
+        }
+
         $grandTotal = $amount + $paymentFee + $applicationFee + $paymentFeePPN;
 
         return response()->json([
@@ -111,7 +120,8 @@ class PosController extends Controller
                     type:$paymentChannelData->type,
                     channelCode:$paymentChannelData->code,
                     reusability:'ONE_TIME_USE',
-                    phoneNumber: $phoneNumber
+                    phoneNumber: $phoneNumber,
+                    transactionalType: $request->transaction_type,
                 );
 
                 $responseArray = $paymentResponse->getData(true);
@@ -192,35 +202,6 @@ class PosController extends Controller
             ]);
     }
 
-    public function createPaymentXendit(
-        string $paymentChannelId,
-        int $amount){
-        $dataResult = null;
-        $paymentChannelData = PaymentChannel::find($paymentChannelId);
-        $reffPayment =  Str::orderedUuid()->toString() . '-' . Carbon::now()->format('Ymdss');
-
-        if ($paymentChannelData){
-            $paymentGatewayController = new PaymentGatewayController();
-
-                $paymentResponse = $paymentGatewayController->createPaymentRequest(
-                    refId: $reffPayment,
-                    forUserId:null,
-                    withSplitRule:null,
-                    amount: $amount,
-                    saleAmount: $amount,
-                    type:$paymentChannelData->type,
-                    channelCode:$paymentChannelData->code,
-                    reusability:'ONE_TIME_USE'
-                );
-
-                $responseArray = $paymentResponse->getData(true);
-                $dataResult = $responseArray['data'];
-
-        }
-
-        return $dataResult;
-    }
-
     public function store(StorePosSaleRequest $request) {
         try{
             DB::transaction(function () use ($request) {
@@ -298,11 +279,13 @@ class PosController extends Controller
                         $paymentRequestData = xenditPaymentRequest::find($request->payment_id);
                     }
 
+                    $refIdData = $paymentRequestData['reference_id'] ?? null;
+
                     SalePayment::create([
                         'date' => now()->format('Y-m-d'),
                         'reference' => 'asd/'.$sale->reference,
-                        'reference_id' => $paymentRequestData['reference_id'] ?? null,
-                        'amount' => 0,
+                        'reference_id' => $refIdData,
+                        'amount' => $request->amount_sale,
                         'sale_id' => $sale->id,
                         'payment_method' => $paymentMethodData->id,
                         'payment_method_id' => $paymentMethodData->id,
@@ -312,8 +295,18 @@ class PosController extends Controller
                         'business_id' => $request->user()->business_id,
                         'xendit_create_payment_id' => $paymentRequestData['id'] ?? null,
                     ]);
+
+                    $paymentMethod = xenditPaymentMethod::query()
+                    ->where('reference_id', $refIdData)
+                    ->first();
+
+                    if ($paymentMethod) {
+                        $paymentMethod->transactional_id = $sale->id;
+                        $paymentMethod->save();
+                    }
                 }
             });
+
 
 
         toast('POS Sale Created!', 'success');

@@ -22,20 +22,12 @@ class Expense extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $number = Expense::max('id') + 1;
+            $number = Expense::count('id') + 1;
             $model->reference = make_reference_id('EXP', $number);
         });
     }
 
     public function getDateAttribute($value) {
         return Carbon::parse($value)->format('d M, Y');
-    }
-
-    public function setAmountAttribute($value) {
-        $this->attributes['amount'] = ($value * 100);
-    }
-
-    public function getAmountAttribute($value) {
-        return ($value / 100);
     }
 }

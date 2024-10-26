@@ -17,7 +17,9 @@ use Modules\Whatsapp\Http\Controllers\WhatsappController;
 use Xendit\Configuration;
 use Xendit\PaymentMethod\PaymentMethodApi;
 use Illuminate\Support\Facades\Http;
+use Modules\Income\Entities\Income;
 use Modules\PaymentMethod\Entities\PaymentChannel;
+use Modules\Sale\Entities\Sale;
 use Xendit\BalanceAndTransaction\BalanceApi;
 use Xendit\PaymentRequest\PaymentRequestApi;
 use Xendit\PaymentRequest\PaymentRequestParameters;
@@ -60,10 +62,12 @@ class PaymentGatewayController extends Controller
                                         int $saleAmount,
                                         string $type,
                                         string $channelCode,
+                                        mixed $transactionalType,
                                         ?string $reusability = 'ONE_TIME_USE',
                                         ?string $phoneNumber = null,
                                         ?array $basket = null,
-                                        ?array $metadata = null){
+                                        ?array $metadata = null,
+                                        ?string $transactionalId = null){
 
         Configuration::setXenditKey(env('XENDIT_KEY'));
         $apiInstance = new PaymentRequestApi();
@@ -72,6 +76,12 @@ class PaymentGatewayController extends Controller
         $channelProperties = null;
         $getBusinessData = Business::find(Auth::user()->business_id);
         $payloadType = null;
+
+        if ($transactionalType == 'sale'){
+            $transactionModel = Sale::class;
+        }else{
+            $transactionModel = Income::class;
+        }
 
         if ($type === 'EWALLET'){
             if ($channelCode == 'OVO'){
@@ -183,6 +193,7 @@ class PaymentGatewayController extends Controller
                 'country' => $dataPaymentMethods['country'] ?? null,
                 'amount' => $amount ?? null,
                 'transaction_amount' => $saleAmount ?? null,
+                'transactional_type' => $transactionModel,
                 'created' => Carbon::parse($dataPaymentMethods['created'])->format('Y-m-d H:i:s') ?? null,
                 'updated' => Carbon::parse($dataPaymentMethods['updated'])->format('Y-m-d H:i:s') ?? null,
                 'description' => $dataPaymentMethods['description'] ?? null,
@@ -212,7 +223,7 @@ class PaymentGatewayController extends Controller
                 'amount' => $amount ?? null,
                 'sale_amount' =>  $saleAmount ?? null,
                 'received_amount' => 0,
-                'fee_amount' => 0,
+                'deduction_amount' => 0,
                 'status' => 'PENDING_PAYMENT',
             ];
 
@@ -286,6 +297,11 @@ class PaymentGatewayController extends Controller
     /**
      * Show the specified resource.
      */
+
+     public function payCC()
+     {
+         return view('paymentgateway::payment.cc');
+     }
     public function show($id)
     {
 
