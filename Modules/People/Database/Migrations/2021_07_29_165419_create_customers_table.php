@@ -23,10 +23,11 @@ class CreateCustomersTable extends Migration
             $table->string('gender');
             $table->date('dob')->nullable();
             $table->string('city');
+            $table->string('province');
             $table->string('country');
             $table->text('address');
             $table->string('postal_code');
-            $table->string('reference_id')->nullable();
+            $table->string('cust_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

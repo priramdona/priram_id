@@ -43,7 +43,7 @@
                                         <span>{{ $channel->name }}</span>
                                     </div>
                                 </td>
-                                <td>{{ $channel->type == 'VIRTUAL_ACCOUNT' ? 'VA' : 'EWallet' }}</td>
+                                <td>{{ $channel->type == 'VIRTUAL_ACCOUNT' ? 'VA' : $channel->type }}</td>
                                 <td>
                                     @if($channel->fee_type_1 == "%")
                                         {{ round($channel->fee_value_1, 2) }} %

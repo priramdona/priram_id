@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\PhoneHelper;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -22,6 +23,18 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+    protected function credentials(Request $request)
+    {
+        $phoneNumber = $request->get('phone_number');
+
+        // Mengonversi nomor telepon ke format E.164 Indonesia
+        $formattedPhone = PhoneHelper::formatToE164Indonesia($phoneNumber);
+
+        return [
+            'phone_number' => $formattedPhone,
+            'password' => $request->get('password'),
+        ];
+    }
 
     /**
      * Where to redirect users after login.

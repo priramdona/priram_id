@@ -41,7 +41,7 @@ class PaymentMethodChannelSeeder extends Seeder
                     'code' => 'PAYLATER',
                     'type' => 'PAYLATER',
                     'reference' => null,
-                    'status' => false,
+                    'status' => true,
                 ],
                 [
                     'name' => 'QRIS',
@@ -103,6 +103,14 @@ class PaymentMethodChannelSeeder extends Seeder
                     PaymentChannel::create($qris);
                 };
             }
+            if ($paymentMethod['code'] == 'PAYLATER') {
+
+                $paylaterDatas = $this->payLater($paymentMethodData->id);
+
+                foreach($paylaterDatas as $paylaterData){
+                    PaymentChannel::create($paylaterData);
+                };
+            }
 
             if ($paymentMethod['code'] == 'CARD') {
 
@@ -112,21 +120,135 @@ class PaymentMethodChannelSeeder extends Seeder
                     PaymentChannel::create($ccData);
                 };
             }
+
+
         }
 }
+public function payLater($idPaymentMethod): array
+    {
+        $dataPayLater = [
+            [
+                'name' => 'Kredivo',
+                'payment_method_id' => $idPaymentMethod,
+                'code' => 'ID_KREDIVO',
+                'type' => 'PAYLATER',
+                'reference' => null,
+                'status' => true,
+                'source' => 'xendit',
+                'image' => 'paylater/kredivo.png',
+                'action' => 'direct',
+                'min' => 1000,
+                'max' => 30000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 4,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
+                'is_ppn' => true,
+                'expired' => 1,
+                'payment_process' => 'instant',
+                'settlement' => 4,
+            ],[
+                'name' => 'Akulaku',
+                'payment_method_id' => $idPaymentMethod,
+                'code' => 'ID_AKULAKU',
+                'type' => 'PAYLATER',
+                'reference' => null,
+                'status' => true,
+                'source' => 'xendit',
+                'image' => 'paylater/akulaku.png',
+                'action' => 'direct',
+                'min' => 1000,
+                'max' => 25000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 3,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
+                'is_ppn' => true,
+                'expired' => 1,
+                'payment_process' => 'instant',
+                'settlement' => 2,
+            ],
+            [
+                'name' => 'INDODANA',
+                'payment_method_id' => $idPaymentMethod,
+                'code' => 'ID_INDODANA',
+                'type' => 'PAYLATER',
+                'reference' => null,
+                'status' => true,
+                'source' => 'xendit',
+                'image' => 'paylater/indodana.png',
+                'action' => 'direct',
+                'min' => 10000,
+                'max' => 25000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 3,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
+                'is_ppn' => true,
+                'expired' => 1,
+                'payment_process' => 'instant',
+                'settlement' => 2,
+            ],[
+                'name' => 'UangMe',
+                'payment_method_id' => $idPaymentMethod,
+                'code' => 'ID_UANGME',
+                'type' => 'PAYLATER',
+                'reference' => null,
+                'status' => true,
+                'source' => 'xendit',
+                'image' => 'paylater/uangme.png',
+                'action' => 'direct',
+                'min' => 20000,
+                'max' => 20000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 3,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
+                'is_ppn' => true,
+                'expired' => 1,
+                'payment_process' => 'instant',
+                'settlement' => 2,
+            ],
+
+            [
+                'name' => 'Atome',
+                'payment_method_id' => $idPaymentMethod,
+                'code' => 'ID_ATOME',
+                'type' => 'PAYLATER',
+                'reference' => null,
+                'status' => true,
+                'source' => 'xendit',
+                'image' => 'paylater/atome.png',
+                'action' => 'direct',
+                'min' => 50000,
+                'max' => 6000000,
+                'fee_type_1' => '%',
+                'fee_value_1' => 7,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
+                'is_ppn' => true,
+                'expired' => 1,
+                'payment_process' => 'instant',
+                'settlement' => 2,
+            ]
+
+    ];
+
+    return $dataPayLater;
+    }
 public function creditCard($idPaymentMethod): array
     {
         $dataCreditCard = [
             [
                 'name' => 'Visa, Mastercard, JCB',
                 'payment_method_id' => $idPaymentMethod,
-                'code' => 'card',
-                'type' => 'card',
+                'code' => 'CARD',
+                'type' => 'CARD',
                 'reference' => null,
                 'status' => true,
                 'source' => 'xendit',
                 'image' => 'cc/cc.png',
-                'action' => 'account',
+                'action' => 'invoice',
                 'min' => 10000,
                 'max' => 200000000,
                 'fee_type_1' => '%',

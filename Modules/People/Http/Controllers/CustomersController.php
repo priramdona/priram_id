@@ -2,6 +2,7 @@
 
 namespace Modules\People\Http\Controllers;
 
+use App\Helpers\PhoneHelper;
 use Exception;
 use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
 use Modules\People\DataTables\CustomersDataTable;
@@ -23,6 +24,14 @@ class CustomersController extends Controller
     }
 
 
+    public function getCustomerId(string $id)
+    {
+        $customers = Customer::find($id);
+
+        return response()->json($customers);
+
+
+    }
     public function create() {
         abort_if(Gate::denies('create_customers'), 403);
 
@@ -39,6 +48,7 @@ class CustomersController extends Controller
             'customer_phone' => 'required|max:255',
             'customer_email' => 'required|email|max:255',
             'city'           => 'required|string|max:255',
+            'province'           => 'required|string|max:255',
             'country'        => 'required|string|max:255',
             'postalCode' => 'required|numeric|digits:5',
             'address'        => 'required|string|max:500',
@@ -48,6 +58,14 @@ class CustomersController extends Controller
 
         try{
 
+            $phoneNumber = $request->customer_phone;
+            $formattedPhone = PhoneHelper::formatToE164Indonesia($phoneNumber);
+
+            if ($formattedPhone) {
+                $phoneNumber = $formattedPhone;
+            } else {
+                throw new \Exception('Error Phone Format');
+            }
             $paymentGateway = new PaymentGatewayController();
             $registCustomer = $paymentGateway->createCustomer(
                 reffId: $custId,
@@ -55,14 +73,16 @@ class CustomersController extends Controller
                 lastName: $request->customer_last_name,
                 dob: $request->dob,
                 email: $request->customer_email,
-                mobileNumber: $request->customer_phone,
+                mobileNumber: $phoneNumber,
                 gender: $request->gender,
                 streetLine1: $request->address,
                 city: $request->city,
+                province: $request->province,
                 postalCode: $request->postalCode,
                 description: $request->postalCode,
             );
 
+            // dd($registCustomer);
             $dataCustomer = [
                 'id' => $custId,
                 'customer_name'=> $request->customer_first_name . ' ' . $request->customer_last_name,
@@ -70,13 +90,14 @@ class CustomersController extends Controller
                 'customer_last_name' => $request->customer_last_name,
                 'dob' => $request->dob,
                 'gender' => $request->gender,
-                'customer_phone' => $request->customer_phone,
+                'customer_phone' => $phoneNumber,
                 'customer_email' => $request->customer_email,
                 'city' => $request->city,
+                'province' => $request->province,
                 'country' => $request->country,
                 'address' => $request->address,
                 'postal_code' => $request->postalCode,
-                'reference_id' => $registCustomer['id'],
+                'cust_id' => $registCustomer['id'],
                 'business_id' => $request->user()->business_id,
             ];
 
@@ -116,18 +137,29 @@ class CustomersController extends Controller
             'customer_phone' => 'required|max:255',
             'customer_email' => 'required|email|max:255',
             'city'           => 'required|string|max:255',
+            'province'           => 'required|string|max:255',
             'country'        => 'required|string|max:255',
             'postalCode' => 'required|numeric|digits:5',
             'address'        => 'required|string|max:500',
         ]);
         try{
+            $phoneNumber = $request->customer_phone;
+            $formattedPhone = PhoneHelper::formatToE164Indonesia($phoneNumber);
+
+            if ($formattedPhone) {
+                $phoneNumber = $formattedPhone;
+            } else {
+                throw new \Exception('Error Phone Format');
+            }
+
         $customer->update([
             'customer_name'  => $request->customer_first_name . ' ' . $request->customer_last_name,
             'customer_first_name'  => $request->customer_first_name,
             'customer_last_name'  => $request->customer_last_name,
-            'customer_phone' => $request->customer_phone,
+            'customer_phone' => $phoneNumber,
             'customer_email' => $request->customer_email,
             'city'           => $request->city,
+            'province'           => $request->province,
             'country'        => $request->country,
             'address'        => $request->address,
             'dob' => $request->dob,
@@ -143,10 +175,11 @@ class CustomersController extends Controller
             lastName: $request->customer_last_name,
             dob: $request->dob,
             email: $request->customer_email,
-            mobileNumber: $request->customer_phone,
+            mobileNumber: $phoneNumber,
             gender: $request->gender,
             streetLine1: $request->address,
             city: $request->city,
+            province: $request->province,
             postalCode: $request->postalCode,
             description: $request->postalCode,
         );

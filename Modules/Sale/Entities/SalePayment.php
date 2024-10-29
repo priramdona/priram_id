@@ -18,9 +18,9 @@ class SalePayment extends Model
         return $this->belongsTo(Sale::class, 'sale_id', 'id');
     }
 
-    public function setAmountAttribute($value) {
-        $this->attributes['amount'] = decryptWithKey($value);
-    }
+    // public function setAmountAttribute($value) {
+    //     $this->attributes['amount'] = decryptWithKey($value);
+    // }
 
     // public function getAmountAttribute($value) {
     //     return $value / 100;

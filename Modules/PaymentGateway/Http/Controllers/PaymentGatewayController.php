@@ -19,12 +19,22 @@ use Xendit\Customer\CustomerRequest;
 use Xendit\PaymentMethod\PaymentMethodApi;
 use Illuminate\Support\Facades\Http;
 use Modules\Income\Entities\Income;
+use Modules\PaymentGateway\Entities\xenditCreatePayment;
+use Modules\PaymentGateway\Entities\XenditPaylaterPlan;
+use Modules\PaymentGateway\Entities\XenditPaylaterRequest;
 use Modules\PaymentMethod\Entities\PaymentChannel;
+use Modules\People\Entities\Customer;
+use Modules\Product\Entities\Product;
 use Modules\Sale\Entities\Sale;
 use Xendit\BalanceAndTransaction\BalanceApi;
 use Xendit\PaymentRequest\PaymentRequestApi;
 use Xendit\PaymentRequest\PaymentRequestParameters;
 use Xendit\Customer\CustomerApi;
+use Xendit\Invoice\CreateInvoiceRequest;
+use Xendit\Invoice\InvoiceApi;
+use Illuminate\Support\Str;
+use Modules\PaymentGateway\Entities\XenditInvoiceRequest;
+use Xendit\Invoice\Invoice;
 class PaymentGatewayController extends Controller
 {
     /**
@@ -179,6 +189,422 @@ class PaymentGatewayController extends Controller
 
         return $result;
     }
+    public function createTransactionInvoiceRequest(
+        Customer $customer,
+        array $orderedroducts,
+        array $paymentMethods,
+        array $fees,
+        int $totalAmount,
+        int $discountAmount,
+        int $saleAmount,
+    ){
+        Configuration::setXenditKey(env('XENDIT_KEY'));
+        $apiInstance = new InvoiceApi();
+        $forUserId = null;
+        $amount = 0;
+        $idTransaction =  str::orderedUuid()->toString();
+        $reffPayment =  $idTransaction . '-' . Carbon::now()->format('Ymdss');
+
+        $createPaymentTransactionalType = XenditInvoiceRequest::class;
+
+        foreach($orderedroducts as $orderedroduct){
+
+            $link = route('product.sale', ['product' => $orderedroduct['product_id']]);
+            $productData = Product::find($orderedroduct['product_id']);
+            $amount += $orderedroduct['sub_total'];
+            $orderedItems[] = [
+                'name' => $orderedroduct['product_name'],
+                'quantity' => (int) $orderedroduct['quantity'],
+                'price' => $orderedroduct['unit_price'],
+                'category' => $productData->category->category_name,
+                'url' => $link,
+            ];
+        }
+
+        $payloadCreateInvoice = [
+            'external_id' => $idTransaction,
+            'description' => 'Invoice for ' . $customer->customer_name . ' Date : ' . Carbon::now()->format('d-M-Y') . ' Total : ' . format_currency($totalAmount),
+            'amount' => $totalAmount,
+            'customer' => [
+                'given_names'=> $customer->customer_first_name,
+                'surname'=> $customer->customer_last_name,
+                'email'=> $customer->customer_email,
+                'mobile_number'=> $customer->customer_phone,
+                'addresses'=> [
+                    [
+                        'city' => $customer->city,
+                        'country' => 'ID',
+                        'postal_code' => $customer->postal_code,
+                        'state' => $customer->province,
+                        'street_line1' => $customer->customer_address,
+                    ]
+                ],
+            ],
+            'customer_notification_preference' => [
+                'invoice_created' => ['whatsapp', 'email'],
+                'invoice_reminder' => ['whatsapp', 'email'],
+                'invoice_paid' => ['whatsapp', 'email']
+            ],
+            'invoice_duration' => 86400,
+            'success_redirect_url' => 'https://redirect.me/success', //webView if Success
+            'failure_redirect_url' => 'https://redirect.me/failure',
+
+            'payment_methods' => $paymentMethods,
+            'currency' => 'IDR',
+            'mid_label' => 'MULIA',
+            'reminder_time' => 1,
+            'reminder_time_unit' => 'hours',
+            'locale' => 'id',
+            'items' => $orderedItems,
+            'fees' => [
+
+                [
+                    'type'  => 'Discount',
+                    'value' => ($discountAmount ?? 0) * -1,
+                ],
+                [
+                    'type'  => 'PaymentFee',
+                    'value' => $fees['paymentFee'],
+                ],
+                [
+                    'type'  => 'PPN',
+                    'value' => $fees['paymentFeePpn'] ?? 0,
+                   ],
+                [
+                    'type'  => 'ApplicationFee',
+                    'value' => $fees['applicationFee'] ?? 0,
+                ]
+            ],
+            'payer_email' => $customer->customer_email,
+            'should_send_email' => true,
+            'should_authenticate_credit_card' => true,
+            ];
+
+
+        try {
+            $createInvoiceRequest = new CreateInvoiceRequest($payloadCreateInvoice);
+            $dataRequest = $apiInstance->createInvoice($createInvoiceRequest, $forUserId);
+
+            $invoiceRequestPayload = [
+                'id' => $dataRequest['external_id'],
+                'xen_invoice_id' => $dataRequest['id'],
+                'customer_id' => $customer->id,
+                'external_id' => $dataRequest['external_id'],
+                'user_id' => $dataRequest['user_id'],
+                'payer_email' => $dataRequest['payer_email'],
+                'description' => $dataRequest['description'],
+                'payment_method' => json_encode($paymentMethods),
+                'status' => $dataRequest['status'],
+                'merchant_name' => $dataRequest['merchant_name'],
+                'merchant_profile_picture_url' => $dataRequest['merchant_profile_picture_url'],
+                'locale' => $dataRequest['locale'] ?? 'id',
+                'amount' => $dataRequest['amount'],
+                'invoice_url' => $dataRequest['invoice_url'],
+                'expiry_date' => $dataRequest['expiry_date'],
+                'available_banks' => json_encode($dataRequest['available_banks']),
+                'available_retail_outlets' => json_encode($dataRequest['available_retail_outlets']),
+                'available_ewallets' => json_encode($dataRequest['available_ewallets']),
+                'available_qr_codes' => json_encode($dataRequest['available_qr_codes']),
+                'available_direct_debits' => json_encode($dataRequest['available_direct_debits']),
+                'available_paylaters' => json_encode($dataRequest['available_paylaters']),
+                'should_exclude_credit_card' => $dataRequest['should_exclude_credit_card'],
+                'should_send_email' => $dataRequest['should_send_email'],
+                'created' => $dataRequest['created'],
+                'updated' => $dataRequest['updated'],
+                'success_redirect_url' => $dataRequest['success_redirect_url'],
+                'failure_redirect_url' => $dataRequest['failure_redirect_url'],
+                'should_authenticate_credit_card' => $dataRequest['should_authenticate_credit_card'],
+                'currency' => $dataRequest['currency'],
+                'items' => json_encode($dataRequest['items']),
+                'fixed_va' => $dataRequest['fixed_va'] ?? false,
+                'reminder_date' => $dataRequest['reminder_date'],
+                'customer' => json_encode($dataRequest['customer']),
+                'customer_notification_preference' => json_encode($dataRequest['customer_notification_preference']),
+                'fees' => json_encode($dataRequest['fees']),
+                'channel_properties' => json_encode($dataRequest['channel_properties']),
+            ];
+
+            $xenditInvoiceRequest = XenditInvoiceRequest::create($invoiceRequestPayload);
+
+            $xenditCreatePayments = xenditCreatePayment::create([
+                'reference_id' => $reffPayment,
+                'transactional_type' => $createPaymentTransactionalType,
+                'transactional_id' => $xenditInvoiceRequest->id,
+                'amount' => $xenditInvoiceRequest->amount,
+                'transaction_amount' => $saleAmount ?? null,
+                'payment_type' => 'INVOICE',
+                'channel_code' => 'CREDIT_CARD',
+                'status' => 'PENDING',
+            ]);
+
+            $result = [
+                'id' => $xenditCreatePayments->id,
+                'reference_id' => $xenditCreatePayments->reference_id,
+                'invoice_requests' => $xenditInvoiceRequest,
+            ];
+
+        } catch (\Xendit\XenditSdkException $e) {
+            throw new \Exception(json_encode($e->getMessage()));
+
+        }
+
+        return $result;
+
+    }
+    public function createInvoiceRequestSample(){
+
+        Configuration::setXenditKey(env('XENDIT_KEY'));
+
+        $apiInstance = new InvoiceApi();
+        $payloadCreateInvoice = [
+            'external_id' =>  str::orderedUuid()->toString(),
+            'description' => 'Test Invoice',
+            'amount' => 10000,
+            'customer' => [
+                'given_names'=> 'Munggi',
+                'surname'=> 'Priramdona',
+                'email'=> 'munggi.priramdona@gmail.com',
+                'mobile_number'=> '+6281314569044',
+                'addresses'=> [
+                    [
+                    'city' => 'Jakarta Selatan',
+                    'country' => 'Indonesia',
+                    'postal_code' => '12345',
+                    'state' => 'Daerah Khusus Ibukota Jakarta',
+                    'street_line1' => 'Jalan Makan',
+                    ]
+                ],
+            ],
+            'customer_notification_preference' => [
+                'invoice_created' => ['whatsapp', 'email'],
+                'invoice_reminder' => ['whatsapp', 'email'],
+                'invoice_paid' => ['whatsapp', 'email']
+            ],
+            'invoice_duration' => 86400,
+            'success_redirect_url' => 'https://redirect.me/success', //webView if Success
+            'failure_redirect_url' => 'https://redirect.me/failure',
+
+            'payment_methods' => [
+                "CREDIT_CARD",
+                // "BCA", "BNI", "BSI", "BRI", "MANDIRI", "PERMATA", "SAHABAT_SAMPOERNA",
+                // "BNC", "ALFAMART", "INDOMARET",
+                // "OVO", "DANA", "SHOPEEPAY", "LINKAJA", "JENIUSPAY", "DD_BRI", "DD_BCA_KLIKPAY", "KREDIVO", "AKULAKU", "UANGME", "ATOME", "QRIS"],
+            ],
+            'currency' => 'IDR',
+            'mid_label' => 'MULIA',
+            // 'callback_virtual_account_id' => '',//will use when VA payment_method included
+
+            'reminder_time' => 1,
+            'reminder_time_unit' => 'hours',
+            'locale' => 'id',
+            'items' => [
+                [
+                    'name' => 'Paramex',
+                    'quantity' => 11,
+                    'price' => 137861,
+                    'category' => 'Obat',
+                    'url' => 'http://127.0.0.1:8881/product-sale/9d5a12e0-597f-4748-935a-5ac17c709dfa'
+                ]
+            ],
+            'fees' => [
+                [
+                 'type'  => 'ADMIN',
+                 'value' => 5000,
+                ]
+            ],
+            'payer_email' => 'munggi.priramdona@gmail.com',
+            'should_send_email' => true,
+            'should_authenticate_credit_card' => true,
+            // 'channel_properties' => [
+            //     'cards' => [
+            //         'allowed_bins' => ['400000','52000000'],
+
+            //         'installment_configuration' => [
+            //             'allow_installment' => true,
+            //             'allow_full_payment' => true,
+            //             'allowed_terms' => [
+            //                 [
+            //                     'issuer' => 'BCA',
+            //                     'terms' => [ 3,6,12]
+            //                 ],[
+            //                     'issuer' => 'BNI',
+            //                     'terms' => [ 3,6,12]
+            //                 ],[
+            //                     'issuer' => 'BRI',
+            //                     'terms' => [ 3,6,12]
+            //                 ],[
+            //                     'issuer' => 'PERMATA',
+            //                     'terms' => [ 3,6,12]
+            //                 ],
+
+            //                 ]
+            //             ]
+            //         ]
+            //     ],
+
+            ];
+
+        $createInvoiceRequest = new CreateInvoiceRequest($payloadCreateInvoice);
+
+        $forUserId = null;
+
+        try {
+            $result = $apiInstance->createInvoice($createInvoiceRequest, $forUserId);
+            dd($result);
+
+        } catch (\Xendit\XenditSdkException $e) {
+            throw new \Exception(json_encode($e->getMessage()));
+
+        }
+    }
+    public function createPaylaterRequest(
+        string $planId,
+        string $refId,
+        string $customerId,
+        string $xenditPaylaterPlanId,
+        int $saleAmount,
+        ){
+
+            $createPaymentTransactionalType = XenditPaylaterRequest::class;
+            $createPaymentTransactionalId = null;
+            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $secret_key = 'Basic ' . $base64;
+            $url = 'https://api.xendit.co/paylater/charges';
+
+        try {
+
+            $payloadRequest = [
+                "plan_id" => $planId,
+                "reference_id" => $refId,
+                "checkout_method" => "ONE_TIME_PAYMENT",
+                'success_redirect_url' => 'https://redirect.me/success', //webView if Success
+                'failure_redirect_url' => 'https://redirect.me/failure', //webView if Failed
+            ];
+
+            $dataRequest = Http::withHeaders([
+                'Authorization' => $secret_key,
+                'for-user-id' => null
+            ])->post($url, $payloadRequest);
+
+            $apiResult = $dataRequest->object();
+            $xenditPaylaterRequestPayload =
+            [
+                'xen_business_id' => $apiResult->business_id,
+                'reference_id' => $apiResult->reference_id,
+                'customer_id' => $customerId,
+                'cust_id' => $apiResult->customer_id,
+                'xendit_paylater_plan_id' => $xenditPaylaterPlanId,
+                'plan_id' => $apiResult->plan_id,
+                'currency' => $apiResult->currency,
+                'amount' => $apiResult->amount,
+                'channel_code' => $apiResult->channel_code,
+                'checkout_method' => $apiResult->checkout_method,
+                'status' => $apiResult->status,
+                'actions' => json_encode($apiResult->actions), //array
+                'expires_at' => Carbon::parse($apiResult->expires_at)->format('Y-m-d H:i:s'),
+                'success_redirect_url' => $apiResult->success_redirect_url,
+                'failure_redirect_url' => $apiResult->failure_redirect_url,
+                'callback_url' => $apiResult->callback_url,
+                'created' => Carbon::parse($apiResult->created)->format('Y-m-d H:i:s'),
+                'updated' => Carbon::parse($apiResult->updated)->format('Y-m-d H:i:s'),
+                'order_items' => json_encode($apiResult->order_items),
+            ];
+
+            $xenditPaylaterRequest = XenditPaylaterRequest::create($xenditPaylaterRequestPayload);
+
+            $xenditCreatePayments = xenditCreatePayment::create([
+                'reference_id' => $refId,
+                'transactional_type' => $createPaymentTransactionalType,
+                'transactional_id' => $xenditPaylaterRequest->id,
+                'amount' => $apiResult->amount,
+                'transaction_amount' => $saleAmount ?? null,
+                'payment_type' => 'PAYLATER',
+                'channel_code' => $apiResult->channel_code,
+                'status' => 'PENDING',
+            ]);
+
+            $result = [
+                'id' => $xenditCreatePayments->id,
+                'reference_id' => $xenditPaylaterRequest->reference_id,
+                'paylater_requests' => $xenditPaylaterRequest,
+            ];
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+
+        return $result;
+    }
+    public function paylaterPlans(
+        string $customerId,
+        array $products,
+        string $channelCode,
+        int $totalAmount,
+        ){
+            $customerData = Customer::find($customerId);
+
+            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $secret_key = 'Basic ' . $base64;
+            $url = 'https://api.xendit.co/paylater/plans';
+            $orderedItems = [];
+
+        try {
+
+            foreach($products as $product){
+
+                $link = route('product.sale', ['product' => $product['product_id']]);
+                $productData = Product::find($product['product_id']);
+
+                $orderedItems[] = [
+                    "type" => "PHYSICAL_PRODUCT",
+                    "reference_id" => $productData->id,
+                    "name" => $product['product_name'],
+                    "net_unit_amount" => $product['sub_total'],
+                    "quantity" => (int) $product['quantity'],
+                    "url" => $link,
+                    "category" => $productData->category->category_name,
+                    "description" => $productData->product_note,
+                ];
+
+            }
+
+            $payloadRequest = [
+                "customer_id" => $customerData->cust_id,
+                "channel_code" => $channelCode,
+                "currency" => "IDR",
+                "amount" => $totalAmount,
+                "order_items" => $orderedItems
+            ];
+            $dataRequest = Http::withHeaders([
+                'Authorization' => $secret_key,
+                'for-user-id' => null
+            ])->post($url, $payloadRequest);
+
+            if ($dataRequest->failed()) {
+                throw new Exception('Error Request Plan');
+            }
+
+            $apiResult = $dataRequest->object();
+
+            $result = XenditPaylaterPlan::create([
+                'plan_id' => $apiResult->id,
+                'customer_id' => $customerId,
+                'cust_id' => $apiResult->customer_id,
+                'channel_code' => $apiResult->channel_code,
+                'currency' => $apiResult->currency,
+                'amount' => $apiResult->amount,
+                'created' => Carbon::parse($apiResult->created)->format('Y-m-d H:i:s'),
+                'order_items' => json_encode($apiResult->order_items),
+                'options' => json_encode($apiResult->options),
+            ]);
+        } catch (Exception $e) {
+            // Tangani exception atau berikan pesan error
+            throw new \Exception("Request failed with status: " . $e->getMessage());
+        }
+
+        return $result;
+    }
+
     public function updateCustomer(
         string $id,
         string $refId,
@@ -190,6 +616,7 @@ class PaymentGatewayController extends Controller
         string $gender,
         string $streetLine1,
         string $city,
+        string $province,
         string $postalCode,
         string $description,
         ){
@@ -244,6 +671,7 @@ class PaymentGatewayController extends Controller
         string $gender,
         string $streetLine1,
         string $city,
+        string $province,
         string $postalCode,
         string $description,
         ){
@@ -287,7 +715,7 @@ class PaymentGatewayController extends Controller
         $customer_request = new CustomerRequest($payloadRequest);
 
         $result = $apiInstance->createCustomer($idempotency_key, $forUserId, $customer_request);
-
+        // dd($result);
         return $result;
 
         } catch (\Xendit\XenditSdkException $e) {
@@ -315,6 +743,10 @@ class PaymentGatewayController extends Controller
         $channelProperties = null;
         $getBusinessData = Business::find(Auth::user()->business_id);
         $payloadType = null;
+
+        $createPaymentTransactionalType = xenditPaymentRequest::class;
+        $createPaymentTransactionalId = null;
+
 
         if ($transactionalType == 'sale'){
             $transactionModel = Sale::class;
@@ -393,7 +825,6 @@ class PaymentGatewayController extends Controller
             $dataResult = $apiInstance->createPaymentRequest($idempotency_key, $forUserId, $withSplitRule, $paymentRequestParameters);
             $resultDetails = null;
             $dataPaymentMethods = json_decode($dataResult['payment_method'],true);
-            // dd($dataPaymentMethods);
 
             $xenditPaymentRequestResponsePayload = [
                 'payment_request_id'=> $dataResult['id'],
@@ -422,6 +853,7 @@ class PaymentGatewayController extends Controller
             ];
 
             $xenditPaymentRequest = xenditPaymentRequest::create($xenditPaymentRequestResponsePayload);
+            $createPaymentTransactionalId= $xenditPaymentRequest->id;
 
             $payloadPaymentMethod =[
                 'pm_id' => $dataPaymentMethods['id'] ?? null,
@@ -479,9 +911,26 @@ class PaymentGatewayController extends Controller
                     ' type : ' . $type . ' Code : ' . $channelCode);
             }
 
-            $result = $xenditPaymentRequest;
+           $xenditCreatePayments = xenditCreatePayment::create([
+                'reference_id' => $refId,
+                'transactional_type' => $createPaymentTransactionalType,
+                'transactional_id' => $createPaymentTransactionalId,
+                'amount' => $amount ?? null,
+                'transaction_amount' => $saleAmount ?? null,
+                'payment_type' => $type,
+                'channel_code' => $channelCode,
+                'status' => 'PENDING',
+            ]);
+
+            $result = [
+                'id' => $xenditCreatePayments->id,
+                'reference_id' => $xenditCreatePayments->reference_id,
+                'payment_requests' => $xenditPaymentRequest,
+            ];
+
+            // $result = $xenditPaymentRequest;
+
         } catch (\Xendit\XenditSdkException $e) {
-            // $result = $e->getMessage();
             throw new \Exception(json_encode($e->getMessage()));
         }
 

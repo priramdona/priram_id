@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('reference_id');
             $table->nullableUuidMorphs('transactional');
             $table->decimal('amount', 14, 2)->default(0);
+            $table->decimal('transaction_amount', 14, 2)->default(0);
             $table->string('payment_type');
+            $table->string('channel_code');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();

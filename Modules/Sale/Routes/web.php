@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Sale\Http\Controllers\PosController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,6 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('sales', 'SaleController');
     Route::resource('pos', 'PosController');
 
+    Route::get('/get-paylater-plans', [PosController::class, 'paylaterPlans']);
     //Payments
     Route::get('/sale-payments/{sale_id}', 'SalePaymentsController@index')->name('sale-payments.index');
     Route::get('/sale-payments/{sale_id}/create', 'SalePaymentsController@create')->name('sale-payments.create');

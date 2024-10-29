@@ -11,7 +11,8 @@
 @section('content')
 
 
-<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+{{-- <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script> --}}
+{{-- https://unpkg.com/html5-qrcode --}}
 <script>
     // Deteksi perangkat (mobile atau desktop)
     function isMobile() {
@@ -28,24 +29,24 @@
         console.warn(`Kode tidak terbaca: ${error}`);
     }
 
-    function startCamera() {
-        // Memulai scanner dengan Html5QrcodeScanner
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader", {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-                // Menyesuaikan dengan perangkat
-                aspectRatio: isMobile() ? undefined : 1,
-            }
-        );
-        // Render scan
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-    }
+    // function startCamera() {
+    //     // Memulai scanner dengan Html5QrcodeScanner
+    //     let html5QrcodeScanner = new Html5QrcodeScanner(
+    //         "reader", {
+    //             fps: 10,
+    //             qrbox: { width: 250, height: 250 },
+    //             // Menyesuaikan dengan perangkat
+    //             aspectRatio: isMobile() ? undefined : 1,
+    //         }
+    //     );
+    //     // Render scan
+    //     html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    // }
 
     // Secara otomatis memulai scanner saat halaman dimuat
-    document.addEventListener('DOMContentLoaded', function() {
-        startCamera();
-    });
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     startCamera();
+    // });
 </script>
     <div class="container-fluid">
         @can('show_total_stats')

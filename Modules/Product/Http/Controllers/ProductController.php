@@ -49,6 +49,11 @@ class ProductController extends Controller
         return redirect()->route('products.index');
     }
 
+    public function showsale(Product $product) {
+
+        return view('product::products.showsale', compact('product'));
+    }
+
 
     public function show(Product $product) {
         abort_if(Gate::denies('show_products'), 403);

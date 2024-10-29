@@ -28,6 +28,22 @@ class PaymentMethodController extends Controller
         }
 
     }
+    public function getPaymentMethod(string $id)
+    {
+        $paymentMethod = PaymentMethod::find($id);
+
+        return response()->json($paymentMethod);
+
+
+    }
+    public function getPaymentChannel(string $id)
+    {
+        $paymentMethod = PaymentChannel::find($id);
+
+        return response()->json($paymentMethod);
+
+
+    }
     public function getPaymentChannels(Request $request)
     {
         $paymentMethodId = $request->payment_method;

@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\People\Http\Controllers\CustomersController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,5 +20,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('customers', 'CustomersController');
     //Suppliers
     Route::resource('suppliers', 'SuppliersController');
-
+    Route::get('/customer-id/{id}', [CustomersController::class, 'getCustomerId']);
 });

@@ -24,7 +24,7 @@ class SuperUserSeeder extends Seeder
         $user = User::create([
             'name' => 'Administrator',
             'email' => 'admin@' . $business->prefix . '.com',
-            // 'phone_number' => '628131456904' . User::count('id') + 1,
+            'phone_number' => '+628131456904' . User::count('id') + 5,
             'password' => Hash::make(12345678),
             'is_active' => 1,
             'business_id' => $business->id

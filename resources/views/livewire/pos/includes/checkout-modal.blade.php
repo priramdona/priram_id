@@ -25,6 +25,8 @@
                         <div>
                             <input type="hidden" value="{{ $customer_id }}" name="customer_id">
                             <input type="hidden" id="payment_id" name="payment_id">
+                            <input type="hidden" id="paylater_plan_id" name="paylater_plan_id">
+                            <input type="hidden" id="payment_method_type" name="payment_method_type">
                             <input type="hidden" value="{{ $global_tax }}" name="tax_percentage">
                             <input type="hidden" value="{{ $global_discount }}" name="discount_percentage">
                             <input type="hidden" value="{{ $shipping }}" name="shipping_amount">
@@ -83,11 +85,11 @@
                                             <th>Discount ({{ $global_discount }}%)</th>
                                             <td>(-) {{ format_currency(Cart::instance($cart_instance)->discount()) }}</td>
                                         </tr>
-                                        <tr>
+                                        {{-- <tr>
                                             <th>Shipping</th>
                                             <input type="hidden" value="{{ $shipping }}" name="shipping_amount">
                                             <td>(+) {{ format_currency($shipping) }}</td>
-                                        </tr>
+                                        </tr> --}}
                                         <tr class="text-primary">
                                             <th>Total</th>
                                             @php
@@ -141,18 +143,21 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="lbl_payment_action"></h5>
+                <span id="lbl_payment_action" name="lbl_payment_action" style="font-size: 18px; color: #ff0000; font-weight: bold;"></span>
+
             </div>
             <div class="modal-body">
                 <div class="form-group align-middle text-center" name="payment_action" id="payment_action" hidden>
-                    <div class="get-barcode" name="action_account_barcode" id="action_account_barcode">
+                    <div class="get-barcodelbl_payment_action id="action_account_barcode">
                         <div id="qr-code-container" style="display: flex; justify-content: center; align-items: center; height: 100%;"></div>
                     </div>
                     <div  name="action_account_account" id="action_account_account" hidden>
-
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Account No</span><br>
                         <label class="text-primary" style="font-weight: bold; font-size: 24px;" name="input_payment_action_account" id="input_payment_action_account">123456789</label>
-                        <p id="name_action_account"></p>
-                        <p id="exp_action_account"></p>
+
+                        <p class="form-group align-middle text-left" >Account : <span id="name_action_account" style="font-size: 18px; color: #007bff; font-weight: bold;"></span></p>
+                        <p class="form-group align-middle text-left" >Expired : <span id="exp_action_account" style="font-size: 18px; color: #007bff; font-weight: bold;"></span></p>
+
                     </div>
                     <div  name="action_account_info" id="action_account_info" hidden>
                         <label class="text-primary" style="font-weight: bold; font-size: 18px;" name="input_payment_action_info" id="input_payment_action_info">123456789</label>
@@ -161,9 +166,22 @@
                         <iframe id="urlIframe" width="100%" height="450px" frameborder="0"></iframe>
                     </div>
 
+                    <div class="card" name="input_payment_detail" id="input_payment_detail" hidden>
+                        <div class="card-header d-flex flex-wrap align-items-center">
+                            <span id="input_payment_detail_label" style="font-size: 16px; color: #b84a01; font-weight: bold;"></span>
+
+                        </div>
+                        <div class="card-body">
+                            <p class="form-group align-middle text-left bi bi-envelope text-success"> EMAIL : <span id="input_payment_detail_email" style="font-size: 18px; color: #007bff; font-weight: bold;"></span></p>
+                            <p class="form-group align-middle text-left bi bi-whatsapp text-success"> WHATSAPP : <span id="input_payment_detail_wa" style="font-size: 18px; color: #007bff; font-weight: bold;"></span></p>
+                        </div>
+                    </div>
+
                     <label  name="lbl_payment_by" id="lbl_payment_by" for="payment_by">Payment by : </span></label>
                     <img  name="payment_by" id="payment_by" src="" style="width: 100px; height: 50px;"/>
-                    <div><label class="text-success" style="font-weight: bold; font-size: 24px;" name="nominal_information" id="nominal_information">123456789</label>
+                    <br>
+                    <div>
+                        <label class="text-success" style="font-weight: bold; font-size: 24px;" name="nominal_information" id="nominal_information">123456789</label>
                         </div>
 
                 </div>
@@ -219,6 +237,7 @@
         var selectedOptionText = $('#payment_channel option:selected').text();
         var amount =  document.getElementById('grand_total').value; //$('#paid_amount').maskMoney('unmasked')[0];
         var sale_amount = document.getElementById('amount_sale').value;// $('#amount_sale').maskMoney('unmasked')[0];;
+        var customer_id = document.getElementById('customer_id').value;
 
         if (selectedOptionText == 'OVO'){
 
@@ -244,6 +263,7 @@
         $('#action_account_barcode').attr('hidden', true);
         $('#payment_by').attr('hidden', true);
         $('#lbl_payment_by').attr('hidden', true);
+        $('#input_payment_detail').attr('hidden', true);
 
         Swal.fire({
                 title: 'Payment Confirmation',
@@ -292,6 +312,7 @@
                                                 'sale_amount': sale_amount,
                                                 'number_phone': numberPhone,
                                                 'transaction_type': 'sale',
+                                                'customer_id': customer_id,
                                                 // 'action': data.action,
                                                 // 'source': data.source
                                             },
@@ -341,8 +362,8 @@
                                                                     $('#lbl_payment_action').text('Please Transfer to ' + data.name + ' Virtual Account :');
                                                                     $('#input_payment_action_account').text(response.value_response);
 
-                                                                    $('#name_action_account').text("Name of account : " + response.name_response);
-                                                                    $('#exp_action_account').text("Valid until : " + response.expired_response);
+                                                                    $('#name_action_account').text(response.name_response);
+                                                                    $('#exp_action_account').text(response.expired_response);
                                                                     $('#action_account_account').attr('hidden', false);
                                                                     $('#action_account_url').attr('hidden', true);
                                                                     $('#action_account_barcode').attr('hidden', true);
@@ -373,6 +394,45 @@
                                                                     $('#action_account_info').attr('hidden', true);
                                                                     document.getElementById('urlIframe').src = response.value_response;
                                                                     $('#checkout-form').submit();
+                                                                }else if(response.response_type == 'direct'){
+                                                                    let str = response.name_response;
+                                                                    let parts = str.split("|");
+
+                                                                    let namaLengkap = parts[0]; // "Nama Lengkap"
+                                                                    let nomorTelepon = parts[1];
+                                                                    $('#lbl_payment_action').text('Please complete to ' + namaLengkap + ' Account');
+                                                                    $('#input_payment_action_account').text(nomorTelepon);
+
+                                                                    $('#name_action_account').text(namaLengkap);
+                                                                    $('#exp_action_account').text(response.expired_response);
+                                                                    $('#action_account_url').attr('hidden', false);
+                                                                    $('#action_account_account').attr('hidden', false);
+                                                                    $('#action_account_barcode').attr('hidden', true);
+                                                                    $('#action_account_info').attr('hidden', true);
+                                                                    document.getElementById('urlIframe').src = response.value_response;
+                                                                    $('#checkout-form').submit();
+                                                                }else if(response.response_type == 'links'){
+                                                                    let str = response.name_response;
+                                                                    let parts = str.split("|");
+
+                                                                    let namaLengkap = parts[0]; // "Nama Lengkap"
+                                                                    let nomorTelepon = parts[1];
+                                                                    let email = parts[2];
+                                                                    $('#lbl_payment_action').text('Please complete to ' + namaLengkap + ' Account');
+                                                                    $('#input_payment_action_account').text('Invoice has been Sent...!');
+                                                                    $('#input_payment_detail').attr('hidden', false);
+                                                                    $('#input_payment_detail_label').text('Please check Customer Email or Whatsapp..');
+                                                                    $('#input_payment_detail_email').text(email);
+                                                                    $('#input_payment_detail_wa').text(nomorTelepon);
+
+                                                                    $('#name_action_account').text(namaLengkap);
+                                                                    $('#exp_action_account').text(response.expired_response);
+                                                                    $('#action_account_url').attr('hidden', true);
+                                                                    $('#action_account_account').attr('hidden', false);
+                                                                    $('#action_account_barcode').attr('hidden', true);
+                                                                    $('#action_account_info').attr('hidden', true);
+                                                                    // document.getElementById('urlIframe').src = response.value_response;
+                                                                    $('#checkout-form').submit();
                                                                 }else{
                                                                     Swal.fire({
                                                                     title: 'Payment Error',
@@ -395,7 +455,6 @@
                                                                                         },
                                                                         }).then((result) => {
                                                                     if (result.isConfirmed) {
-                                                                        console.log("Tombol OK ditekan");
                                                                         newtransaction();
                                                                     }
                                                                 });
@@ -459,8 +518,110 @@
 
     });
 
+
     $(document).on('change', '#payment_method', function() {
-        fetchPaymentChannels();
+        var paymentMethodId = document.getElementById('payment_method').value;
+        var customer_id = document.getElementById('customer_id').value;
+
+        // $('#submitBtn').attr('hidden', false);
+        $('#lbl_payment_channel').attr('hidden', true);
+        $('#payment_channel').attr('hidden', true);
+        $('#continuePayment').attr('hidden', true);
+        $("#payment_channel").empty();
+        $.ajax({
+                url: '/get-payment-method-id/' + paymentMethodId, // Menggunakan URL dari route
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+
+                    $('input[name=payment_method_type]').val(response.type);
+
+                    if (response.type == 'PAYLATER' || response.type == 'INVOICE'){
+                        if (customer_id == ''){
+                            Swal.fire({
+                                title: 'Payment Method Error',
+                                text: 'Must assign Customer for this Method..',
+                                icon: 'error',
+                                didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                },
+                                });
+                                return;
+                        }else{
+                            $.ajax({
+                                url: '/customer-id/' + customer_id, // Menggunakan URL dari route
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(response) {
+                                    Swal.fire({
+                                        title: "Confirmation Customer Information : ",
+                                        icon: 'info',
+                                        html: `
+                                            <p class="form-group align-middle text-left bi bi-people text-success"> Name  : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_name + `</span></class=>
+                                            <p class="form-group align-middle text-left bi bi-phone text-success"> Phone : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_phone + `</span></p>
+                                            <p class="form-group align-middle text-left bi bi-envelope text-success"> Email : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_email + `</span></p>
+                                            <p style="font-size: 16px;">Please Check the Customer Information....</p>
+                                        `,showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Yes, Confirm!',
+                                        cancelButtonText: 'No, cancel!',
+                                        didOpen: () => {
+                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                        },
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        fetchPaymentChannels();
+                                                    }
+                                                    else if (result.dismiss === Swal.DismissReason.cancel) {
+
+                                                        Swal.fire({
+                                                            title: 'Cancelled',
+                                                            text: 'Your action has been cancelled.',
+                                                            icon: 'error',
+                                                            didOpen: () => {
+                                                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                            },
+                                                        });
+                                                        return;
+                                                    }
+                                                });
+                                },
+                                error: function(error) {
+
+                                                let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+                                                Swal.fire({
+                                                    title: 'Process Failed!',
+                                                    text: errorMessage,
+                                                    icon: 'error',
+                                                    didOpen: () => {
+                                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                                    },
+                                                });
+
+                                                return;
+                                            }
+                            });
+                        }
+                    }else{
+                        fetchPaymentChannels();
+                    }
+                },
+                error: function(error) {
+                    let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+                    Swal.fire({
+                        title: 'Process Failed!',
+                        text: errorMessage,
+                        icon: 'error',
+                        didOpen: () => {
+                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                        },
+                    });
+
+                    return;
+                }
+            });
+
     });
 
     $('#actionModal').on('hidden.bs.modal', function () {
@@ -491,6 +652,7 @@
             var paymentMethodName =  $('#payment_method option:selected').text();
             var paymentChannelSelect = document.getElementById('payment_channel');
             var sale_amount = document.getElementById('amount_sale').value;
+
             $('#payment_fee_info').text('Rp. 0.00');
             $('input[name=payment_fee]').val('0');
             $('#payment_ppn_info').text('Rp. 0.00');
@@ -539,24 +701,71 @@
         function fetchdetailchannel() {
             var paymentChannel = document.getElementById('payment_channel').value;
             var selectedOptionText = $('#payment_channel option:selected').text();
-            var total_amount_pay = document.getElementById('amount_sale').value;//$('#amount_sale').maskMoney('unmasked')[0];
-            // $('input[name=payment_fee]').val(paidAmount + 10000);
+            var payment_method_type = document.getElementById('payment_method_type').value;
+            var total_amount_pay = document.getElementById('amount_sale').value;
+
+            var paymentMethodId = document.getElementById('payment_method').value;
+            //proses Plan dipindah ketika Go ahead
+            var customer_id = document.getElementById('customer_id').value;
+
+            $.ajax({
+                url: '/get-payment-channel-id/' + paymentChannel,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    // if (payment_method_type == 'PAYLATER'){
+                    //         $.ajax({
+                    //             url: "{{ url('/get-paylater-plans') }}/", // Menggunakan URL dari route
+                    //             type: 'GET',
+                    //             data: {
+                    //                 'customer_id': customer_id,
+                    //                 'channel_code': response.code,
+                    //                 'total_amount': total_amount_pay,
+                    //             },
+                    //             dataType: 'json',
+                    //             success: function(response) {
+                    //                 $('input[name=paylater_plan_id]').val(response.id);
+                    //             },
+                    //             error: function(error) {
+                    //                 let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+                    //                 Swal.fire({
+                    //                     title: 'Process Failed!',
+                    //                     text: errorMessage,
+                    //                     icon: 'error',
+                    //                     didOpen: () =>
+                    //                         {$('.swal2-container, .swal2-popup').css('pointer-events', 'auto');},
+                    //                 });
+                    //                 return;
+                    //             }
+                    //         });
+                    // }
+
+                    if (response.code == 'OVO') {
+                        $('#lbl_number_phone').attr('hidden', false);
+                        $('#group_number_phone').attr('hidden', false);
+                        $('#number_phone').attr('required', true);
+                    } else {
+                        $('#lbl_number_phone').attr('hidden', true);
+                        $('#group_number_phone').attr('hidden', true);
+                        $('#number_phone').removeAttr('required');
+                    }
+                },
+                error: function(error) {
+                    let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+                    Swal.fire({
+                        title: 'Process Failed!',
+                        text: errorMessage,
+                        icon: 'error',
+                        didOpen: () => {
+                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                        },
+                    });
+                    return;
+                }
+            });
 
             if(paymentChannel != ''){
-
-                $('#continuePayment').attr('hidden', false);
-                if (selectedOptionText == 'OVO') {
-                    $('#lbl_number_phone').attr('hidden', false);
-                    $('#group_number_phone').attr('hidden', false);
-                    $('#number_phone').attr('required', true);
-                } else {
-
-                    $('#lbl_number_phone').attr('hidden', true);
-                    $('#group_number_phone').attr('hidden', true);
-                    $('#number_phone').removeAttr('required');
-                }
-
-
+                    $('#continuePayment').attr('hidden', false);
                     $.ajax({
                     url: "{{ url('/get-channel-attribute') }}/",
                     method: "GET",
