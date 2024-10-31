@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class xenditPaymentRequest extends Model
+class XenditPaymentRequest extends Model
 {
     use HasFactory;
     use HasUuids;
@@ -18,4 +18,8 @@ class xenditPaymentRequest extends Model
     protected $guarded = [];
 
 
+    public function xenditCreatePayment()
+    {
+        return $this->morphOne(xenditCreatePayment::class, 'transactional');
+    }
 }

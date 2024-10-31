@@ -2,6 +2,9 @@
 
 return [
     'home' => 'Beranda',
+    'whatsapp' => 'Whatsapp',
+    'wallet' => 'Manajemen Keuangan',
+    'wallet_information' => 'Informasi Keuangan',
     'products' => 'Produk',
     'categories' => 'Kategori',
     'create_product' => 'Buat Produk',

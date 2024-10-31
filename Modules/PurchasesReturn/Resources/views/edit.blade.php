@@ -38,7 +38,7 @@
                                         <div class="form-group">
                                             <label for="supplier_id">Supplier <span class="text-danger">*</span></label>
                                             <select class="form-control" name="supplier_id" id="supplier_id" required>
-                                                @foreach(\Modules\People\Entities\Supplier::where('business_id',auth::user()->business_id)->get() as $supplier)
+                                                @foreach(\Modules\People\Entities\Supplier::where('business_id',Auth::user()->business_id)->get() as $supplier)
                                                     <option {{ $purchase_return->supplier_id == $supplier->id ? 'selected' : '' }} value="{{ $supplier->id }}">{{ $supplier->supplier_name }}</option>
                                                 @endforeach
                                             </select>
@@ -68,7 +68,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-4" hidden>
                                     <div class="from-group">
                                         <div class="form-group">
                                             <label for="payment_method">Payment Method <span class="text-danger">*</span></label>

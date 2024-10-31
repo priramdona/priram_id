@@ -57,8 +57,8 @@
     @endcan
 
 
-    {{-- @can('show_notifications') --}}
-    {{-- <li class="c-header-nav-item dropdown">
+    @can('show_notifications')
+  <li class="c-header-nav-item dropdown">
 
         <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="bi bi-envelope" style="font-size: 20px;"></i>
@@ -91,8 +91,8 @@
                 </a>
             @endforelse
         </div>
-    </li> --}}
-    {{-- @endcan --}}
+    </li>
+    @endcan
 
     <li class="c-header-nav-item dropdown">
 

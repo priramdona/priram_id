@@ -65,11 +65,7 @@
                                         <div class="form-group">
                                             <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
                                             <select class="form-control" name="payment_method" id="payment_method" required>
-                                                <option value="Cash">Cash</option>
-                                                <option value="Credit Card">Credit Card</option>
-                                                <option value="Bank Transfer">Bank Transfer</option>
-                                                <option value="Cheque">Cheque</option>
-                                                <option value="Other">Other</option>
+
                                             </select>
                                         </div>
                                     </div>
@@ -94,6 +90,31 @@
     <script src="{{ asset('js/jquery-mask-money.js') }}"></script>
     <script>
         $(document).ready(function () {
+            $.ajax({
+            url: "{{ url('/get-payment-method') }}/",
+            method: "GET",
+            data: {
+                'source': 'purchase_return',
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.length > 0) {
+                    $("#payment_method").empty();
+                    op = '<option value="" disabled="true" selected="true">-Select-</option>'
+                    for (var i = 0; i < data.length; i++) {
+                        op += '<option value="' + data[i].id + '">' + data[i]
+                            .name + '</option>';
+                    }
+                    $("#payment_method").append(op);
+                    $('#payment_method').attr('hidden', false);
+                    $('#payment_method').attr('hidden', false);
+
+                } else {
+                    $("#payment_method").empty();
+                }
+            }
+        });
+
             $('#amount').maskMoney({
                 prefix:'{{ settings()->currency->symbol }}',
                 thousands:'{{ settings()->currency->thousand_separator }}',

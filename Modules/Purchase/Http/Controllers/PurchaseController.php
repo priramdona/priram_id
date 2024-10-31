@@ -2,11 +2,14 @@
 
 namespace Modules\Purchase\Http\Controllers;
 
+use Modules\PaymentGateway\Entities\XenditPaymentRequest;
+use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\Purchase\DataTables\PurchaseDataTable;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\People\Entities\Supplier;
 use Modules\Product\Entities\Product;
 use Modules\Purchase\Entities\Purchase;
@@ -91,12 +94,16 @@ class PurchaseController extends Controller
             Cart::instance('purchase')->destroy();
 
             if ($purchase->paid_amount > 0) {
+                $paymentMethodData = PaymentMethod::find($request->payment_method);
+
                 PurchasePayment::create([
                     'date' => $request->date,
                     'reference' => 'INV/'.$purchase->reference,
                     'amount' => $purchase->paid_amount,
                     'purchase_id' => $purchase->id,
-                    'payment_method' => $request->payment_method,
+                    'payment_method_id' => $paymentMethodData->id ?? null,
+                    'payment_method' => $paymentMethodData->name ?? null,
+                    'payment_method_name' => $paymentMethodData->name ?? null,
                     'business_id' => $request->user()->business_id,
                 ]);
             }

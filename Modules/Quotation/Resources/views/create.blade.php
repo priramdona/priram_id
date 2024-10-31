@@ -38,7 +38,7 @@
                                         <div class="form-group">
                                             <label for="customer_id">Customer <span class="text-danger">*</span></label>
                                             <select class="form-control" name="customer_id" id="customer_id" required>
-                                                @foreach(\Modules\People\Entities\Customer::where('business_id',auth::user()->business_id)->get() as $customer)
+                                                @foreach(\Modules\People\Entities\Customer::where('business_id',Auth::user()->business_id)->get() as $customer)
                                                     <option value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                                                 @endforeach
                                             </select>
@@ -63,12 +63,25 @@
                                         <label for="status">Status <span class="text-danger">*</span></label>
                                         <select class="form-control" name="status" id="status" required>
                                             <option value="Pending">Pending</option>
-                                            <option value="Sent">Sent</option>
+                                            <option value="Sent">Send to Email</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <input
+                                        type="checkbox"
+                                        name="send_invoice_link"
+                                        id="send_invoice_link"
+                                        value=""> Send with Invoice Payment to Email
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
 
+                            </div>
                             <div class="form-group">
                                 <label for="note">Note (If Needed)</label>
                                 <textarea name="note" id="note" rows="5" class="form-control"></textarea>

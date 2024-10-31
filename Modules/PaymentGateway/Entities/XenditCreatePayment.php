@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Modules\PaymentGateway\Database\factories\XenditCreatePaymentFactory;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class xenditCreatePayment extends Model
+class XenditCreatePayment extends Model
 {
     use HasFactory;
     use HasUuids;
@@ -17,6 +17,14 @@ class xenditCreatePayment extends Model
      * The attributes that are mass assignable.
      */
     protected $guarded = [];
+    public function transactional(): MorphTo
+    {
+        return $this->morphTo();
+    }
 
+    public function source(): MorphTo
+    {
+        return $this->morphTo();
+    }
 
 }

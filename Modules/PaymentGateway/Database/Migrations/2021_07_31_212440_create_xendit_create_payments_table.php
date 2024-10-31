@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('xendit_create_payments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('reference_id');
+            $table->nullableUuidMorphs('source');
             $table->nullableUuidMorphs('transactional');
             $table->decimal('amount', 14, 2)->default(0);
             $table->decimal('transaction_amount', 14, 2)->default(0);

@@ -17,9 +17,43 @@ use Str;
 class PaymentMethodController extends Controller
 {
 
-    public function getAllPaymentMethod()
+    public function getAllPaymentMethod(Request $request)
     {
-        $paymentMethod = PaymentMethod::where('status',true)->get();
+        $sourceInfo = $request->source;
+        if ($sourceInfo == 'income'){
+            $paymentMethod = PaymentMethod::where('status',true)
+            ->where('is_income',true)->get();
+        }
+        if ($sourceInfo == 'sale'){
+            $paymentMethod = PaymentMethod::where('status',true)
+            ->where('is_sale',true)->get();
+        }
+
+        if ($sourceInfo == 'pos'){
+            $paymentMethod = PaymentMethod::where('status',true)
+            ->where('is_pos',true)->get();
+        }
+
+        if ($sourceInfo == 'purchase'){
+            $paymentMethod = PaymentMethod::where('status',true)
+            ->where('is_purchase',true)->get();
+        }
+
+
+        if ($sourceInfo == 'purchase_return'){
+            $paymentMethod = PaymentMethod::where('status',true)
+            ->where('is_purchase_return',true)->get();
+        }
+
+        if ($sourceInfo == 'sale_return'){
+            $paymentMethod = PaymentMethod::where('status',true)
+            ->where('is_sale_return',true)->get();
+        }
+
+        if ($sourceInfo == 'quotation'){
+            $paymentMethod = PaymentMethod::where('status',true)
+            ->where('is_quotation',true)->get();
+        }
 
         if ($paymentMethod->count() > 0) {
             return response()->json($paymentMethod);

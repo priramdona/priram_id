@@ -17,14 +17,6 @@ class PurchasePayment extends Model
         return $this->belongsTo(Purchase::class, 'purchase_id', 'id');
     }
 
-    public function setAmountAttribute($value) {
-        $this->attributes['amount'] = $value * 100;
-    }
-
-    // public function getAmountAttribute($value) {
-    //     return $value / 100;
-    // }
-
     public function getDateAttribute($value) {
         return Carbon::parse($value)->format('d M, Y');
     }

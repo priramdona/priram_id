@@ -108,22 +108,38 @@
                         <div class="col-xs-4 col-xs-offset-8">
                             <table class="table">
                                 <tbody>
-                                <tr>
-                                    <td class="left"><strong>Discount ({{ $sale->discount_percentage }}%)</strong></td>
-                                    <td class="right">{{ format_currency($sale->discount_amount) }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="left"><strong>Tax ({{ $sale->tax_percentage }}%)</strong></td>
-                                    <td class="right">{{ format_currency($sale->tax_amount) }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="left"><strong>Shipping</strong></td>
-                                    <td class="right">{{ format_currency($sale->shipping_amount) }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="left"><strong>Grand Total</strong></td>
-                                    <td class="right"><strong>{{ format_currency($sale->total_amount) }}</strong></td>
-                                </tr>
+                                    @if ($sale->discount_amount > 0)
+                                    <tr>
+                                        <td class="left"><strong>Discount ({{ $sale->discount_percentage }}%)</strong></td>
+                                        <td class="right">{{ format_currency($sale->discount_amount) }}</td>
+                                    </tr>
+                                    @endif
+                                    @if ($sale->discount_amount > 0)
+                                    <tr>
+                                        <td class="left"><strong>Tax ({{ $sale->tax_percentage }}%)</strong></td>
+                                        <td class="right">{{ format_currency($sale->tax_amount) }}</td>
+                                    </tr>
+                                    @endif
+                                    @if ($sale->discount_amount > 0)
+                                    <tr>
+                                        <td class="left"><strong>Shipping</strong></td>
+                                        <td class="right">{{ format_currency($sale->shipping_amount) }}</td>
+                                    </tr>
+                                    @endif
+                                    <tr>
+                                        <td class="left"><strong>Total</strong></td>
+                                        <td class="right"><strong>{{ format_currency($sale->total_amount) }}</strong></td>
+                                    </tr>
+                                    {{-- @if ($sale->additional_paid_amount > 0) --}}
+                                    <tr>
+                                        <td class="left">Additional Amount</></td>
+                                        <td class="right">{{ format_currency($sale->additional_paid_amount) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left"><strong>Grand Total</strong></td>
+                                        <td class="right"><strong>{{ format_currency($sale->total_paid_amount) }}</strong></td>
+                                    </tr>
+                                    {{-- @endif --}}
                                 </tbody>
                             </table>
                         </div>

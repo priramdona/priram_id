@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\PurchasesReturn\Entities\PurchaseReturn;
 use Modules\PurchasesReturn\Entities\PurchaseReturnPayment;
 
@@ -44,13 +45,18 @@ class PurchaseReturnPaymentsController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
+
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
+
             PurchaseReturnPayment::create([
                 'date' => $request->date,
                 'reference' => $request->reference,
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'purchase_return_id' => $request->purchase_return_id,
-                'payment_method' => $request->payment_method,
+                'payment_method_id' => $paymentMethodData->id ?? null,
+                'payment_method' => $paymentMethodData->name ?? null,
+                'payment_method_name' => $paymentMethodData->name ?? null,
                 'business_id' => $request->user()->business_id,
             ]);
 
@@ -67,8 +73,8 @@ class PurchaseReturnPaymentsController extends Controller
             }
 
             $purchase_return->update([
-                'paid_amount' => ($purchase_return->paid_amount + $request->amount) * 100,
-                'due_amount' => $due_amount * 100,
+                'paid_amount' => ($purchase_return->paid_amount + $request->amount),
+                'due_amount' => $due_amount,
                 'payment_status' => $payment_status
             ]);
         });
@@ -114,10 +120,13 @@ class PurchaseReturnPaymentsController extends Controller
             }
 
             $purchase_return->update([
-                'paid_amount' => (($purchase_return->paid_amount - $purchaseReturnPayment->amount) + $request->amount) * 100,
-                'due_amount' => $due_amount * 100,
-                'payment_status' => $payment_status
+                'paid_amount' => (($purchase_return->paid_amount - $purchaseReturnPayment->amount) + $request->amount),
+                'due_amount' => $due_amount,
+                'payment_status' => $payment_status,
+
             ]);
+
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
 
             $purchaseReturnPayment->update([
                 'date' => $request->date,
@@ -125,7 +134,9 @@ class PurchaseReturnPaymentsController extends Controller
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'purchase_return_id' => $request->purchase_return_id,
-                'payment_method' => $request->payment_method
+                'payment_method_id' => $paymentMethodData->id ?? null,
+                'payment_method' => $paymentMethodData->name ?? null,
+                'payment_method_name' => $paymentMethodData->name ?? null,
             ]);
         });
 

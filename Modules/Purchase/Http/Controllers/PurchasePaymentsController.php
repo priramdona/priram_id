@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\Purchase\Entities\Purchase;
 use Modules\Purchase\Entities\PurchasePayment;
 
@@ -44,13 +45,18 @@ class PurchasePaymentsController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
+
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
+
             PurchasePayment::create([
                 'date' => $request->date,
                 'reference' => $request->reference,
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'purchase_id' => $request->purchase_id,
-                'payment_method' => $request->payment_method,
+                'payment_method_id' => $paymentMethodData->id ?? null,
+                'payment_method' => $paymentMethodData->name ?? null,
+                'payment_method_name' => $paymentMethodData->name ?? null,
                 'business_id' => $request->user()->business_id,
             ]);
 
@@ -119,13 +125,16 @@ class PurchasePaymentsController extends Controller
                 'payment_status' => $payment_status
             ]);
 
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
             $purchasePayment->update([
                 'date' => $request->date,
                 'reference' => $request->reference,
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'purchase_id' => $request->purchase_id,
-                'payment_method' => $request->payment_method
+                'payment_method_id' => $paymentMethodData->id ?? null,
+                'payment_method' => $paymentMethodData->name ?? null,
+                'payment_method_name' => $paymentMethodData->name ?? null,
             ]);
         });
 

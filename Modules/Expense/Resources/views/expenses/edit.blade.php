@@ -45,7 +45,7 @@
                                     <div class="form-group">
                                         <label for="category_id">Category <span class="text-danger">*</span></label>
                                         <select name="category_id" id="category_id" class="form-control" required>
-                                            @foreach(\Modules\Expense\Entities\ExpenseCategory::where('business_id',auth::user()->business_id)->get() as $category)
+                                            @foreach(\Modules\Expense\Entities\ExpenseCategory::where('business_id',Auth::user()->business_id)->get() as $category)
                                                 <option {{ $category->id == $expense->category_id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->category_name }}</option>
                                             @endforeach
                                         </select>

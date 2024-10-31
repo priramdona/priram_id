@@ -7,6 +7,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+
         * {
             font-size: 12px;
             line-height: 18px;
@@ -24,7 +25,10 @@
         tr {border-bottom: 1px dashed #ddd;}
         td,th {padding: 7px 0;width: 50%;}
 
-        table {width: 100%;}
+        table {
+            width: 100%;
+            max-width: 100%;
+        }
         tfoot tr th:first-child {text-align: left;}
 
         .centered {
@@ -54,7 +58,7 @@
 </head>
 <body>
 
-<div style="max-width:400px;margin:0 auto">
+<div style="max-width:226.77px;margin:0 auto">
     <div id="receipt-data">
         <div class="centered">
             <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
@@ -81,19 +85,19 @@
                 </tr>
             @endforeach
 
-            @if($sale->tax_percentage)
-                <tr>
+            @if($sale->tax_percentage > 0)
+                {{-- <tr>
                     <th colspan="2" style="text-align:left">Tax ({{ $sale->tax_percentage }}%)</th>
                     <th style="text-align:right">{{ format_currency($sale->tax_amount) }}</th>
-                </tr>
+                </tr> --}}
             @endif
-            @if($sale->discount_percentage)
+            @if($sale->discount_percentage > 0)
                 <tr>
                     <th colspan="2" style="text-align:left">Discount ({{ $sale->discount_percentage }}%)</th>
                     <th style="text-align:right">{{ format_currency($sale->discount_amount) }}</th>
                 </tr>
             @endif
-            @if($sale->shipping_amount)
+            @if($sale->shipping_amount > 0)
                 <tr>
                     <th colspan="2" style="text-align:left">Shipping</th>
                     <th style="text-align:right">{{ format_currency($sale->shipping_amount) }}</th>
@@ -103,6 +107,12 @@
                 <th colspan="2" style="text-align:left">Grand Total</th>
                 <th style="text-align:right">{{ format_currency($sale->total_amount) }}</th>
             </tr>
+            @if($sale->additional_paid_amount > 0)
+            <tr>
+                <th colspan="2" style="text-align:left">Additional Amount</th>
+                <th style="text-align:right">{{ format_currency($sale->additional_paid_amount) }}</th>
+            </tr>
+            @endif
             </tbody>
         </table>
         <table>
@@ -112,14 +122,19 @@
                         Paid By: {{ $sale->payment_method }}
                     </td>
                     <td class="centered" style="padding: 5px;">
-                        Amount: {{ format_currency($sale->paid_amount) }}
+                        Amount: {{ format_currency($sale->total_paid_amount) }}
                     </td>
                 </tr>
                 <tr style="border-bottom: 0;">
                     <td class="centered" colspan="3">
-                        <div style="margin-top: 10px;">
-                            {!! \Milon\Barcode\Facades\DNS1DFacade::getBarcodeSVG($sale->reference, 'C128', 1, 25, 'black', false) !!}
-                        </div>
+                        Scan me to get details
+                    </td>
+                </tr>
+                <tr style="border-bottom: 0;">
+                    <td class="centered" colspan="3">
+
+                            <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" />
+
                     </td>
                 </tr>
             </tbody>

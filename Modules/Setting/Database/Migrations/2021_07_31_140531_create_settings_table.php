@@ -22,6 +22,7 @@ class CreateSettingsTable extends Migration
             // $table->integer('default_currency_id');
             $table->foreignUuid('default_currency_id')->references('id')->on('currencies');
 
+            $table->string('locale')->default('id');
             $table->string('default_currency_position');
             $table->string('notification_email');
             $table->text('footer_text');

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Modules\PaymentGateway\Entities\XenditCreatePayment;
 
 class Sale extends Model
 {
@@ -22,6 +23,10 @@ class Sale extends Model
         return $this->hasMany(SalePayment::class, 'sale_id', 'id');
     }
 
+    public function xenditCreatePayment()
+    {
+        return $this->morphOne(XenditCreatePayment::class, 'source');
+    }
     public static function boot() {
         parent::boot();
 

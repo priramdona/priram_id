@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Modules\PaymentGateway\Entities\xenditDisbursement;
+use Modules\PaymentGateway\Entities\XenditDisbursementMethod;
 use Modules\PaymentGateway\Entities\xenditPaymentMethod;
 use Modules\PaymentGateway\Entities\xenditPaymentRequest;
 use Modules\Whatsapp\Http\Controllers\WhatsappController;
@@ -33,8 +35,12 @@ use Xendit\Customer\CustomerApi;
 use Xendit\Invoice\CreateInvoiceRequest;
 use Xendit\Invoice\InvoiceApi;
 use Illuminate\Support\Str;
+use Modules\PaymentGateway\Entities\XenditDisbursementChannel;
 use Modules\PaymentGateway\Entities\XenditInvoiceRequest;
 use Xendit\Invoice\Invoice;
+use Xendit\Payout\CreatePayoutRequest;
+use Xendit\Payout\PayoutApi;
+
 class PaymentGatewayController extends Controller
 {
     /**
@@ -52,6 +58,80 @@ class PaymentGatewayController extends Controller
         }
 
         return view('paymentgateway::index',compact('result'));
+    }
+    public function getDisbursementChannels(Request $request)
+    {
+        $xdmId = $request->get('xdm_id');
+        $channels = XenditDisbursementChannel::where('xdm_id', $xdmId)
+        ->orderBy('name')
+        ->get(['id', 'name']);
+
+        return response()->json($channels); // Kembalikan data dalam format JSON
+    }
+    public function createDisbursement(
+        string $disMethod,
+        string $disChannel,
+        string $accountName,
+        string $accountNo,
+        float $amount,
+        string $notes)
+    {
+        Configuration::setXenditKey(env('XENDIT_KEY'));
+        $idTransaction = str::orderedUuid()->toString();
+        $businessData = Business::find(Auth::user()->business_id);
+        $disbursementMethodData = XenditDisbursementMethod::find($disMethod);
+        $disbursementChannelData = XenditDisbursementChannel::find($disChannel);
+
+        $apiInstance = new PayoutApi();
+        $idempotencyKey = 'dist-'.rand(1,10000) . Carbon::now()->format('Ymmddss');
+        $forUserId = null;
+        $createPayoutRequestPayload = [
+            'reference_id' => $idTransaction,
+            'currency' => 'IDR',
+            'channel_code' => $disbursementChannelData->code,
+            'receipt_notification' => [
+              'email_to' => [
+                  $businessData->email
+              ],
+              'email_bcc' => json_decode( $disbursementMethodData->email_owner),
+            ],
+            'channel_properties' => [
+              'account_holder_name' => $accountName,
+              'account_number' => $accountNo,
+            //   'account_type' => $disbursementMethodData->type
+            ],
+            'amount' => $amount,
+            'description' => $notes,
+            'type' => 'DIRECT_DISBURSEMENT'
+          ];
+
+        $createPayoutRequest = new CreatePayoutRequest($createPayoutRequestPayload);
+
+        try {
+            $apiResultCreate = $apiInstance->createPayout($idempotencyKey, $forUserId, $createPayoutRequest);
+            xenditDisbursement::create([
+                'id' => $idTransaction,
+                'disbursement_id' =>  $apiResultCreate['id'],
+                'reference_id' => $idTransaction,
+                'channel_code' => $apiResultCreate['channel_code'],
+                'channel_properties' => json_encode($apiResultCreate['channel_properties']),
+                'amount' => $apiResultCreate['amount'],
+                'description' => $apiResultCreate['description'],
+                'currency' => $apiResultCreate['currency'],
+                'receipt_notification' => json_encode($apiResultCreate['receipt_notification']),
+                'metadata' => json_encode($apiResultCreate['metadata']),
+                'created' => Carbon::parse($apiResultCreate['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
+                'updated' => Carbon::parse($apiResultCreate['updated'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
+                'xen_business_id' => $apiResultCreate['business_id'],
+                'business_id' => $businessData->id,
+                'status' => $apiResultCreate['status'],
+                'failure_code' => $apiResultCreate['failure_code'],
+                'estimated_arrival_time' => Carbon::parse($apiResultCreate['estimated_arrival_time'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
+            ]);
+        } catch (\Xendit\XenditSdkException $e) {
+            throw new \Exception(json_encode($e->getMessage()));
+        }
+        return $apiResultCreate;
     }
     public function setting()
     {
@@ -202,7 +282,7 @@ class PaymentGatewayController extends Controller
         $apiInstance = new InvoiceApi();
         $forUserId = null;
         $amount = 0;
-        $idTransaction =  str::orderedUuid()->toString();
+        $idTransaction = str::orderedUuid()->toString();
         $reffPayment =  $idTransaction . '-' . Carbon::now()->format('Ymdss');
 
         $createPaymentTransactionalType = XenditInvoiceRequest::class;
@@ -300,7 +380,7 @@ class PaymentGatewayController extends Controller
                 'locale' => $dataRequest['locale'] ?? 'id',
                 'amount' => $dataRequest['amount'],
                 'invoice_url' => $dataRequest['invoice_url'],
-                'expiry_date' => $dataRequest['expiry_date'],
+                'expiry_date' => Carbon::parse($dataRequest['expiry_date'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
                 'available_banks' => json_encode($dataRequest['available_banks']),
                 'available_retail_outlets' => json_encode($dataRequest['available_retail_outlets']),
                 'available_ewallets' => json_encode($dataRequest['available_ewallets']),
@@ -309,8 +389,8 @@ class PaymentGatewayController extends Controller
                 'available_paylaters' => json_encode($dataRequest['available_paylaters']),
                 'should_exclude_credit_card' => $dataRequest['should_exclude_credit_card'],
                 'should_send_email' => $dataRequest['should_send_email'],
-                'created' => $dataRequest['created'],
-                'updated' => $dataRequest['updated'],
+                'created' => Carbon::parse($dataRequest['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
+                'updated' => Carbon::parse($dataRequest['updated'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
                 'success_redirect_url' => $dataRequest['success_redirect_url'],
                 'failure_redirect_url' => $dataRequest['failure_redirect_url'],
                 'should_authenticate_credit_card' => $dataRequest['should_authenticate_credit_card'],
@@ -501,12 +581,12 @@ class PaymentGatewayController extends Controller
                 'checkout_method' => $apiResult->checkout_method,
                 'status' => $apiResult->status,
                 'actions' => json_encode($apiResult->actions), //array
-                'expires_at' => Carbon::parse($apiResult->expires_at)->format('Y-m-d H:i:s'),
+                'expires_at' => Carbon::parse($apiResult->expires_at)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
                 'success_redirect_url' => $apiResult->success_redirect_url,
                 'failure_redirect_url' => $apiResult->failure_redirect_url,
                 'callback_url' => $apiResult->callback_url,
-                'created' => Carbon::parse($apiResult->created)->format('Y-m-d H:i:s'),
-                'updated' => Carbon::parse($apiResult->updated)->format('Y-m-d H:i:s'),
+                'created' => Carbon::parse($apiResult->created)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
+                'updated' => Carbon::parse($apiResult->updated)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
                 'order_items' => json_encode($apiResult->order_items),
             ];
 
@@ -828,8 +908,8 @@ class PaymentGatewayController extends Controller
 
             $xenditPaymentRequestResponsePayload = [
                 'payment_request_id'=> $dataResult['id'],
-                'created'=> Carbon::parse($dataResult['created'])->format('Y-m-d H:i:s'),  // Konversi ke format MySQL
-                'updated'=> Carbon::parse($dataResult['updated'])->format('Y-m-d H:i:s'),
+                'created'=> Carbon::parse($dataResult['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),  // Konversi ke format MySQL
+                'updated'=> Carbon::parse($dataResult['updated'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
                 'reference_id'=> $dataResult['reference_id'],
                 'business_id'=> $dataResult['business_id'],
                 'customer_id'=> $dataResult['customer_id'],
@@ -865,8 +945,8 @@ class PaymentGatewayController extends Controller
                 'amount' => $amount ?? null,
                 'transaction_amount' => $saleAmount ?? null,
                 'transactional_type' => $transactionModel,
-                'created' => Carbon::parse($dataPaymentMethods['created'])->format('Y-m-d H:i:s') ?? null,
-                'updated' => Carbon::parse($dataPaymentMethods['updated'])->format('Y-m-d H:i:s') ?? null,
+                'created' => Carbon::parse($dataPaymentMethods['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? null,
+                'updated' => Carbon::parse($dataPaymentMethods['updated'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? null,
                 'description' => $dataPaymentMethods['description'] ?? null,
                 'reference_id' => $dataPaymentMethods['reference_id'] ?? null,
                 'failure_code' => $dataPaymentMethods['failure_code'] ?? null,

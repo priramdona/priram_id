@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('merchant_name');
             $table->string('merchant_profile_picture_url');
             $table->string('locale');
-            $table->string('amount');
+            $table->decimal('amount',14,2);
             $table->dateTime('expiry_date')->nullable();
             $table->text('invoice_url');
             $table->json('available_banks')->nullable();

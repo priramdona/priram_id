@@ -110,6 +110,12 @@ class SaleController extends Controller
         return redirect()->route('sales.index');
     }
 
+    public function showsale(Sale $sale) {
+
+        $customer = Customer::find($sale->customer_id) ?? null;
+
+        return view('sale::showsale', compact('sale', 'customer'));
+    }
 
     public function show(Sale $sale) {
         abort_if(Gate::denies('show_sales'), 403);

@@ -7,6 +7,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\People\Entities\Supplier;
 use Modules\Product\Entities\Product;
 use Modules\PurchasesReturn\Entities\PurchaseReturn;
@@ -52,16 +53,16 @@ class PurchasesReturnController extends Controller
                 'supplier_name' => Supplier::findOrFail($request->supplier_id)->supplier_name,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
-                'shipping_amount' => $request->shipping_amount * 100,
-                'paid_amount' => $request->paid_amount * 100,
-                'total_amount' => $request->total_amount * 100,
-                'due_amount' => $due_amount * 100,
+                'shipping_amount' => $request->shipping_amount,
+                'paid_amount' => $request->paid_amount,
+                'total_amount' => $request->total_amount,
+                'due_amount' => $due_amount,
                 'status' => $request->status,
                 'payment_status' => $payment_status,
                 'payment_method' => $request->payment_method,
                 'note' => $request->note,
-                'tax_amount' => Cart::instance('purchase_return')->tax() * 100,
-                'discount_amount' => Cart::instance('purchase_return')->discount() * 100,
+                'tax_amount' => Cart::instance('purchase_return')->tax(),
+                'discount_amount' => Cart::instance('purchase_return')->discount(),
                 'business_id' => $request->user()->business_id,
             ]);
 
@@ -72,12 +73,12 @@ class PurchasesReturnController extends Controller
                     'product_name' => $cart_item->name,
                     'product_code' => $cart_item->options->code,
                     'quantity' => $cart_item->qty,
-                    'price' => $cart_item->price * 100,
-                    'unit_price' => $cart_item->options->unit_price * 100,
-                    'sub_total' => $cart_item->options->sub_total * 100,
-                    'product_discount_amount' => $cart_item->options->product_discount * 100,
+                    'price' => $cart_item->price,
+                    'unit_price' => $cart_item->options->unit_price,
+                    'sub_total' => $cart_item->options->sub_total,
+                    'product_discount_amount' => $cart_item->options->product_discount,
                     'product_discount_type' => $cart_item->options->product_discount_type,
-                    'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'product_tax_amount' => $cart_item->options->product_tax,
                     'business_id' => $request->user()->business_id,
                 ]);
 
@@ -92,12 +93,16 @@ class PurchasesReturnController extends Controller
             Cart::instance('purchase_return')->destroy();
 
             if ($purchase_return->paid_amount > 0) {
+                $paymentMethodData = PaymentMethod::find($request->payment_method);
+
                 PurchaseReturnPayment::create([
                     'date'               => $request->date,
                     'reference'          => 'INV/' . $purchase_return->reference,
                     'amount'             => $purchase_return->paid_amount,
                     'purchase_return_id' => $purchase_return->id,
-                    'payment_method'     => $request->payment_method,
+                    'payment_method_id' => $paymentMethodData->id ?? null,
+                    'payment_method' => $paymentMethodData->name ?? null,
+                    'payment_method_name' => $paymentMethodData->name ?? null,
                     'business_id' => $request->user()->business_id,
                 ]);
             }
@@ -179,16 +184,16 @@ class PurchasesReturnController extends Controller
                 'supplier_name' => Supplier::findOrFail($request->supplier_id)->supplier_name,
                 'tax_percentage' => $request->tax_percentage,
                 'discount_percentage' => $request->discount_percentage,
-                'shipping_amount' => $request->shipping_amount * 100,
-                'paid_amount' => $request->paid_amount * 100,
-                'total_amount' => $request->total_amount * 100,
-                'due_amount' => $due_amount * 100,
+                'shipping_amount' => $request->shipping_amount,
+                'paid_amount' => $request->paid_amount,
+                'total_amount' => $request->total_amount,
+                'due_amount' => $due_amount,
                 'status' => $request->status,
                 'payment_status' => $payment_status,
                 'payment_method' => $request->payment_method,
                 'note' => $request->note,
-                'tax_amount' => Cart::instance('purchase_return')->tax() * 100,
-                'discount_amount' => Cart::instance('purchase_return')->discount() * 100,
+                'tax_amount' => Cart::instance('purchase_return')->tax(),
+                'discount_amount' => Cart::instance('purchase_return')->discount(),
             ]);
 
             foreach (Cart::instance('purchase_return')->content() as $cart_item) {
@@ -198,12 +203,12 @@ class PurchasesReturnController extends Controller
                     'product_name' => $cart_item->name,
                     'product_code' => $cart_item->options->code,
                     'quantity' => $cart_item->qty,
-                    'price' => $cart_item->price * 100,
-                    'unit_price' => $cart_item->options->unit_price * 100,
-                    'sub_total' => $cart_item->options->sub_total * 100,
-                    'product_discount_amount' => $cart_item->options->product_discount * 100,
+                    'price' => $cart_item->price,
+                    'unit_price' => $cart_item->options->unit_price,
+                    'sub_total' => $cart_item->options->sub_total,
+                    'product_discount_amount' => $cart_item->options->product_discount,
                     'product_discount_type' => $cart_item->options->product_discount_type,
-                    'product_tax_amount' => $cart_item->options->product_tax * 100,
+                    'product_tax_amount' => $cart_item->options->product_tax,
                     'business_id' => $request->user()->business_id,
                 ]);
 

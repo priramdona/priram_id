@@ -38,7 +38,7 @@
                                         <div class="form-group">
                                             <label for="supplier_id">Supplier <span class="text-danger">*</span></label>
                                             <select class="form-control" name="supplier_id" id="supplier_id" required>
-                                                @foreach(\Modules\People\Entities\Supplier::where('business_id',auth::user()->business_id)->get() as $supplier)
+                                                @foreach(\Modules\People\Entities\Supplier::where('business_id',Auth::user()->business_id)->get() as $supplier)
                                                     <option value="{{ $supplier->id }}">{{ $supplier->supplier_name }}</option>
                                                 @endforeach
                                             </select>
@@ -72,12 +72,8 @@
                                     <div class="from-group">
                                         <div class="form-group">
                                             <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
-                                            <select class="form-control" name="payment_method" id="payment_method" required>
-                                                <option value="Cash">Cash</option>
-                                                <option value="Credit Card">Credit Card</option>
-                                                <option value="Bank Transfer">Bank Transfer</option>
-                                                <option value="Cheque">Cheque</option>
-                                                <option value="Other">Other</option>
+                                            <select class="form-control paymentmethod" name="payment_method" id="payment_method" required>
+
                                             </select>
                                         </div>
                                     </div>
@@ -135,5 +131,32 @@
                 $('#paid_amount').val(paid_amount);
             });
         });
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "{{ url('/get-payment-method') }}/",
+            method: "GET",
+            data: {
+                'source': 'purchase',
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.length > 0) {
+                    $("#payment_method").empty();
+                    op = '<option value="" disabled="true" selected="true">-Select-</option>'
+                    for (var i = 0; i < data.length; i++) {
+                        op += '<option value="' + data[i].id + '">' + data[i]
+                            .name + '</option>';
+                    }
+                    $("#payment_method").append(op);
+                    $('#payment_method').attr('hidden', false);
+                    $('#payment_method').attr('hidden', false);
+
+                } else {
+                    $("#payment_method").empty();
+                }
+            }
+        });
+    });
     </script>
 @endpush

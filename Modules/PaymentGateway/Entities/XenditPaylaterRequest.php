@@ -20,7 +20,12 @@ class XenditPaylaterRequest extends Model
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
-    public function XenditPaylaterPlan() {
+    public function xenditPaylaterPlan() {
         return $this->belongsTo(XenditPaylaterPlan::class, 'xendit_paylater_plan_id', 'id');
+    }
+
+    public function xenditCreatePayment()
+    {
+        return $this->morphOne(xenditCreatePayment::class, 'transactional');
     }
 }

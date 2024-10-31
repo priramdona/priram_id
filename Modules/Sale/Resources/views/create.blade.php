@@ -74,11 +74,15 @@
                                         <div class="form-group">
                                             <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
                                             <select class="form-control" name="payment_method" id="payment_method" required>
-                                                <option value="Cash">Cash</option>
+                                                <option value="" disabled="true" selected="true">select</option>
+                                                @foreach(\Modules\PaymentMethod\Entities\PaymentMethod::where('is_sale', true)->where('status', true)->get() as $paymentMethod)
+                                                    <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @endforeach
+                                                {{-- <option value="Cash">Cash</option>
                                                 <option value="Credit Card">Credit Card</option>
                                                 <option value="Bank Transfer">Bank Transfer</option>
                                                 <option value="Cheque">Cheque</option>
-                                                <option value="Other">Other</option>
+                                                <option value="Other">Other</option> --}}
                                             </select>
                                         </div>
                                     </div>

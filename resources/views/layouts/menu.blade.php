@@ -293,7 +293,7 @@
     </li> --}}
 
 @can('access_payment_gateways')
-    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
+    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('payment-gateways.*') || request()->routeIs('payment-gateways.*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
             <i class="c-sidebar-nav-icon bi bi-credit-card-2-front" style="line-height: 1;"></i> {{ __('menu.paymentgateway') }}
         </a>
@@ -353,14 +353,14 @@
     </li>
 @endcan
 {{-- @can('access_customers|access_suppliers') --}}
-<li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('customers.*') || request()->routeIs('suppliers.*') ? 'c-show' : '' }}">
+<li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('financial-management.*') ? 'c-show' : '' }}">
     <a class="c-sidebar-nav-dropdown-toggle">
         <i class="c-sidebar-nav-icon bi bi-wallet" style="line-height: 1;"></i> {{ __('menu.wallet') }}
     </a>
     <ul class="c-sidebar-nav-dropdown-items">
         {{-- @can('access_customers') --}}
             <li class="c-sidebar-nav-item">
-                <a class="c-sidebar-nav-link {{ request()->routeIs('customers.*') ? 'c-active' : '' }}" href="{{ route('customers.index') }}">
+                <a class="c-sidebar-nav-link {{ request()->routeIs('financial-management') ? 'c-active' : '' }}" href="{{ route('financial.management') }}">
                     <i class="c-sidebar-nav-icon bi bi-wallet-fill" style="line-height: 1;"></i> {{ __('menu.wallet_information') }}
                 </a>
             </li>

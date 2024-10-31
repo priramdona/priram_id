@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Income\Database\factories\IncomeFactory;
+use Modules\PaymentGateway\Entities\XenditCreatePayment;
 
 class Income extends Model
 {
@@ -17,6 +18,11 @@ class Income extends Model
 
     public function category() {
         return $this->belongsTo(IncomeCategory::class, 'category_id', 'id');
+    }
+
+    public function xenditCreatePayment()
+    {
+        return $this->morphOne(XenditCreatePayment::class, 'source');
     }
 
     public static function boot() {
@@ -29,7 +35,7 @@ class Income extends Model
     }
 
     public function getDateAttribute($value) {
-        return Carbon::parse($value)->format('d M, Y');
+        return Carbon::parse($value)->setTimezone(config('app.timezone'))->format('d M, Y');
     }
 
     public function incomePayments() {

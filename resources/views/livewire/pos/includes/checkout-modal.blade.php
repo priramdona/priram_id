@@ -148,7 +148,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-group align-middle text-center" name="payment_action" id="payment_action" hidden>
-                    <div class="get-barcodelbl_payment_action id="action_account_barcode">
+                    <div class="get-barcodelbl_payment_action" id="action_account_barcode">
                         <div id="qr-code-container" style="display: flex; justify-content: center; align-items: center; height: 100%;"></div>
                     </div>
                     <div  name="action_account_account" id="action_account_account" hidden>
@@ -531,6 +531,9 @@
         $.ajax({
                 url: '/get-payment-method-id/' + paymentMethodId, // Menggunakan URL dari route
                 type: 'GET',
+                data: {
+                    'source': 'pos',
+                },
                 dataType: 'json',
                 success: function(response) {
 

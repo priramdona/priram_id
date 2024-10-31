@@ -1,0 +1,154 @@
+@extends('layouts.app')
+
+@section('title', __('home.title'))
+
+@section('breadcrumb')
+    <ol class="breadcrumb border-0 m-0">
+        <li class="breadcrumb-item active">{{ __('home.breadcrumb') }}</li>
+    </ol>
+@endsection
+
+@section('content')
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0">
+                    <div class="card-body p-0 d-flex align-items-center shadow-sm">
+                        <div class="bg-gradient-primary p-4 mfe-3 rounded-left">
+                            <i class="bi bi-cash font-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-value text-primary" style="font-weight: bold; font-size: 30px;">Rp. 100.000.000</div>
+                            <div class="text-muted text-uppercase font-weight-bold large">{{ __('home.balance') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+        <div class="col-lg-12">
+            @include('utils.alerts')
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Withdraw Balance</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('financial.management.withdraw') }}" method="POST">
+                        @csrf
+                        <div class="form-row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="disbursement_method">Method<span class="text-danger">*</span></label>
+                                    <select name="disbursement_method" id="disbursement_method" class="form-control" required>
+                                        <option value="" selected disabled>Select</option>
+                                        @foreach(\Modules\PaymentGateway\Entities\XenditDisbursementMethod::where('status',true)->get() as $disbursement_method)
+                                            <option value="{{ $disbursement_method->id }}">{{ $disbursement_method->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label name="label_disbursement_channel" id="label_disbursement_channel"  for="disbursement_channel">Bank<span class="text-danger">*</span></label>
+                                    <select name="disbursement_channel" id="disbursement_channel" class="form-control" required>
+                                        <option value="" selected disabled>Select Channel</option>
+                                        <!-- Options akan diisi berdasarkan pilihan disbursement_method -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="account_name">Account Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="account_name"id="account_name"  value="" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label name="label_account_number" id="label_account_number" for="account_number">Account Number <span class="text-danger">*</span></label>
+                                    <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
+                                    type="number" class="form-control" name="account_number"id="account_number"  value="" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label name="label_amount" id="label_amount" for="amount">Amount<span class="text-danger">*</span></label>
+                                    <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
+                                    type="number" class="form-control" name="amount"id="amount"  value="" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <label for="company_address">Notes <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="notes"id="notes" value="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> Withdraw</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+@endsection
+
+@section('third_party_scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js"
+            integrity="sha512-asxKqQghC1oBShyhiBwA+YgotaSYKxGP1rcSYTDrB0U6DxwlJjU59B67U8+5/++uFjcuVM8Hh5cokLjZlhm3Vg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@endsection
+
+@push('page_scripts')
+
+    <script>
+        // $(document).ready(function () {
+            $('#disbursement_method').on('change', function () {
+
+                var xdmId = document.getElementById('disbursement_method').value;
+
+                var xdmName = $('#disbursement_method option:selected').text();
+                // let xdmName = $(this).find(':selected').data('xdm-id'); // Ambil xdm_id dari option yang dipilih
+                $('#label_disbursement_channel').text(xdmName);
+
+                // Hapus semua opsi sebelumnya dari dropdown disbursement_channel
+                $('#disbursement_channel').empty().append('<option value="" selected disabled>Select Channel</option>');
+
+                if (xdmId) {
+                    // Kirim permintaan AJAX ke server untuk mendapatkan channel berdasarkan xdm_id
+                    $.ajax({
+                        url: '/get-disbursement-channels', // Endpoint untuk mengambil channel berdasarkan xdm_id
+                        type: 'GET',
+                        data: { xdm_id: xdmId },
+                        success: function (channels) {
+                            // Loop melalui hasil dan tambahkan ke dropdown disbursement_channel
+                            $.each(channels, function (index, channel) {
+                                $('#disbursement_channel').append(`<option value="${channel.id}">${channel.name}</option>`);
+                            });
+                        },
+                        error: function () {
+                            alert('Error.. Please try again..');
+                        }
+                    });
+                }
+            });
+        // });
+    </script>
+@endpush

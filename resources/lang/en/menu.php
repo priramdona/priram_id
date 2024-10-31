@@ -3,7 +3,8 @@
 return [
     'home' => 'Home',
     'whatsapp' => 'Whatsapp',
-    'wallet' => 'Wallet',
+    'wallet' => 'Financial Management',
+    'wallet_information' => 'Financial Info',
     'products' => 'Products',
     'categories' => 'Categories',
     'create_product' => 'Create Product',

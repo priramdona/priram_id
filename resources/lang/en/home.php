@@ -10,4 +10,5 @@ return [
     'sales_purchases_last_7_days' => 'Sales & Purchases of Last 7 Days',
     'overview_of' => 'Overview of :month',
     'monthly_cashflow' => 'Monthly Cash Flow (Payment Sent & Received)',
+    'balance' => 'Balance Amount',
 ];

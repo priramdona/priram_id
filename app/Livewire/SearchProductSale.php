@@ -25,9 +25,12 @@ class SearchProductSale extends Component
 
     public function updatedQuery() {
         $this->search_results = Product::where('business_id',Auth::user()->business_id)
-            ->where('product_name', 'like', '%' . $this->query . '%')
-            ->orWhere('product_code', 'like', '%' . $this->query . '%')
-            ->take($this->how_many)->get();
+        ->where(
+                fn ($query) => $query
+                ->where('product_name', 'like', '%' . $this->query . '%')
+                ->orWhere('product_code', 'like', '%' . $this->query . '%')
+            )->take($this->how_many)->get();
+
     }
 
     public function loadMore() {

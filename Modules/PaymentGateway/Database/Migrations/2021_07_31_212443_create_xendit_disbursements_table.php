@@ -13,15 +13,21 @@ return new class extends Migration
     {
         Schema::create('xendit_disbursements', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('reference_id')->nullable();
             $table->string('disbursement_id')->nullable();
-            $table->string('external_id')->nullable();
-            $table->decimal('amount',14,4)->nullable();
-            $table->string('bank_code')->nullable();
-            $table->string('account_holder_name')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('disbursement_description')->nullable();
-            $table->boolean('is_instant')->default(true);
-            $table->boolean('status')->default(false);
+            $table->string('channel_code')->nullable();
+            $table->json('channel_properties')->nullable();
+            $table->decimal('amount', 14, 2)->default(0);
+            $table->string('description')->nullable();
+            $table->string('currency')->nullable();
+            $table->json('receipt_notification')->nullable();
+            $table->json('metadata')->nullable();
+            $table->dateTime('created')->nullable();
+            $table->dateTime('updated')->nullable();
+            $table->string('xen_business_id')->nullable();
+            $table->string('status')->nullable();
+            $table->string('failure_code')->nullable();
+            $table->dateTime('estimated_arrival_time')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

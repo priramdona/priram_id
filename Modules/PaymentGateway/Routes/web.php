@@ -37,4 +37,7 @@ Route::resource('payment-gateways', PaymentGatewayController::class);
     // Route::get('', [PaymentGatewayController::class, 'setting']);
     // Route::get('/payment-gateways-settings', [PaymentGatewayController::class,'setting']);
         // ->name('setting-payment-gateways');
+
+Route::get('/get-disbursement-channels', [PaymentGatewayController::class, 'getDisbursementChannels']);
+
 });

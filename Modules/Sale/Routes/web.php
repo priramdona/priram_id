@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Sale\Http\Controllers\PosController;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Modules\Sale\Http\Controllers\SaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,8 @@ use Modules\Sale\Http\Controllers\PosController;
 |
 */
 
+Route::get('/sales-show/{sale}', [SaleController::class, 'showsale'])->name('sales.showdata');
+// Route::get('/product-sale/{product}', [ProductController::class, 'showsale'])->name('product.sale');
 Route::group(['middleware' => 'auth'], function () {
 
     //POS
@@ -25,7 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
         $sale = \Modules\Sale\Entities\Sale::findOrFail($id);
         $customer = \Modules\People\Entities\Customer::find($sale->customer_id) ?? null;
 
-        $pdf = \PDF::loadView('sale::print', [
+        $pdf = PDF::loadView('sale::print', [
             'sale' => $sale,
             'customer' => $customer,
         ])->setPaper('a4');
@@ -33,19 +37,24 @@ Route::group(['middleware' => 'auth'], function () {
         return $pdf->stream('sale-'. $sale->reference .'.pdf');
     })->name('sales.pdf');
 
-    Route::get('/sales/pos/pdf/{id}', function ($id) {
-        $sale = \Modules\Sale\Entities\Sale::findOrFail($id);
+    Route::get('/sales/pos/pdf/{id}', [PosController::class, 'printPos'])->name('sales.pos.pdf');
 
-        $pdf = \PDF::loadView('sale::print-pos', [
-            'sale' => $sale,
-        ])->setPaper('a7')
-            ->setOption('margin-top', 8)
-            ->setOption('margin-bottom', 8)
-            ->setOption('margin-left', 5)
-            ->setOption('margin-right', 5);
+    // Route::get('/sales/pos/pdf/{id}', function ($id) {
+    //     $sale = \Modules\Sale\Entities\Sale::findOrFail($id);
 
-        return $pdf->stream('sale-'. $sale->reference .'.pdf');
-    })->name('sales.pos.pdf');
+    //     $pdf = \PDF::loadView('sale::print-pos', [
+    //         'sale' => $sale,
+    //     ])
+    //     // ->setPaper('a7')
+    //     ->setOption('page-width', '80mm')  // Set lebar kertas 80mm
+    //     ->setOption('page-height', '1000mm')  // Set tinggi kertas sesuai panjang struk
+    //     ->setOption('margin-top', 8)
+    //     ->setOption('margin-bottom', 8)
+    //     ->setOption('margin-left', 5)
+    //     ->setOption('margin-right', 5);
+
+    //     return $pdf->stream('sale-'. $sale->reference .'.pdf');
+    // })->name('sales.pos.pdf');
 
     //Sales
     Route::resource('sales', 'SaleController');

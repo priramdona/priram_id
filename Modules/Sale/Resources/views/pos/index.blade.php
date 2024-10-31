@@ -41,6 +41,9 @@
                 $.ajax({
                 url: "{{ url('/get-payment-method') }}/",
                 method: "GET",
+                data: {
+                    'source': 'pos',
+                },
                 dataType: 'json',
                 success: function(data) {
                     if (data.length > 0) {

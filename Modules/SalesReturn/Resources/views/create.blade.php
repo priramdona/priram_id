@@ -39,7 +39,7 @@
                                             <label for="customer_id">Customer</span></label>
                                             <select class="form-control" name="customer_id" id="customer_id">
                                                 <option value="">Not Registered</option>
-                                                @foreach(\Modules\People\Entities\Customer::where('business_id',auth::user()->business_id)->get() as $customer)
+                                                @foreach(\Modules\People\Entities\Customer::where('business_id',Auth::user()->business_id)->get() as $customer)
                                                     <option value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                                                 @endforeach
                                             </select>
@@ -74,11 +74,7 @@
                                         <div class="form-group">
                                             <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
                                             <select class="form-control" name="payment_method" id="payment_method" required>
-                                                <option value="Cash">Cash</option>
-                                                <option value="Credit Card">Credit Card</option>
-                                                <option value="Bank Transfer">Bank Transfer</option>
-                                                <option value="Cheque">Cheque</option>
-                                                <option value="Other">Other</option>
+
                                             </select>
                                         </div>
                                     </div>
@@ -135,6 +131,31 @@
                 var paid_amount = $('#paid_amount').maskMoney('unmasked')[0];
                 $('#paid_amount').val(paid_amount);
             });
+        });
+
+        $.ajax({
+            url: "{{ url('/get-payment-method') }}/",
+            method: "GET",
+            data: {
+                'source': 'sale_return',
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.length > 0) {
+                    $("#payment_method").empty();
+                    op = '<option value="" disabled="true" selected="true">-Select-</option>'
+                    for (var i = 0; i < data.length; i++) {
+                        op += '<option value="' + data[i].id + '">' + data[i]
+                            .name + '</option>';
+                    }
+                    $("#payment_method").append(op);
+                    $('#payment_method').attr('hidden', false);
+                    $('#payment_method').attr('hidden', false);
+
+                } else {
+                    $("#payment_method").empty();
+                }
+            }
         });
     </script>
 @endpush

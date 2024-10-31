@@ -33,9 +33,53 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Milon\Barcode\Facades\DNS1DFacade;
 use Milon\Barcode\Facades\DNS2DFacade;
 use Modules\PaymentGateway\Entities\XenditPaylaterPlan;
-
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 class PosController extends Controller
 {
+    public function printPos($id)
+    {
+        $sale = Sale::find($id);
+        $url = route('sales.showdata', ['sale' => $sale]);
+        $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
+
+        $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
+        $lineHeight = 41;
+        $numberOfItems = count($sale->saleDetails);
+        $estimatedHeight = ($numberOfItems * $lineHeight) + 500;
+
+        $heightMM =  ($estimatedHeight / 96) * 25.4;
+        $pdf = PDF::loadHTML($viewContent)
+        ->setOption('page-width', '80mm')
+        ->setOption('page-height', $heightMM . 'mm')
+        ->setOption('margin-top', 8)
+        ->setOption('margin-bottom', 8)
+        ->setOption('margin-left', 5)
+        ->setOption('margin-right', 5);
+
+        // Render PDF untuk mendapatkan output
+        $output = $pdf->output();
+
+        // Simpan PDF ke file atau kembalikan response untuk preview PDF
+        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '.pdf');
+        // Pastikan direktori ada
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        file_put_contents($filePath, $output);
+
+        // Kembalikan response untuk preview PDF
+        return response()->stream(
+            function () use ($output) {
+                echo $output;
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="invoice.pdf"',
+            ]
+        );
+    }
 
     public function index() {
         Cart::instance('sale')->destroy();
@@ -251,7 +295,8 @@ class PosController extends Controller
 
                 $nameResponse = $customerData->customer_name.'|'.$customerData->customer_phone.'|'.$customerData->customer_email ;
                 $valueResponse = $invoiceRequests['invoice_url'];
-                $expireResponse = $invoiceRequests['expiry_date'];
+                $expResponseDate = $invoiceRequests['expiry_date'];
+                $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
                 $responseType = 'links';
 
             }
@@ -322,7 +367,8 @@ class PosController extends Controller
                 $nameResponse = $customerData->customer_name.'|'.$customerData->customer_phone ;
                 $paylaterRequestAction = json_decode($paylaterRequest['actions']);
                 $valueResponse = $paylaterRequestAction->mobile_web_checkout_url;
-                $expireResponse = $paylaterRequest['expires_at'];
+                $expResponseDate = $paylaterRequest['expires_at'];
+                $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
                 $responseType = 'direct';
             }else{
                 //start refer to xendit_payment_request
@@ -400,7 +446,8 @@ class PosController extends Controller
                         if($paymentChannelData->type =='VIRTUAL_ACCOUNT'){
                             $nameResponse = $responseActions['virtual_account']['channel_properties']['customer_name'];
                             $valueResponse = $responseActions['virtual_account']['channel_properties']['virtual_account_number'];
-                            $expireResponse = $responseActions['virtual_account']['channel_properties']['expires_at'];
+                            $expResponseDate = $responseActions['virtual_account']['channel_properties']['expires_at'];
+                            $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
                             $responseType = 'account';
                         }elseif(($paymentChannelData->type =='EWALLET') && ($paymentChannelData->code =='OVO')){
                             $valueResponse = $responseActions['ewallet']['channel_properties']['mobile_number'];
@@ -423,7 +470,7 @@ class PosController extends Controller
             'reference_id' => $paymentReferenceId ?? null,
             'name_response' => $nameResponse ?? null,
             'value_response' => $valueResponse,
-            'expired_response' => carbon::parse($expireResponse)->format('d-m-Y H:m') ?? null,
+            'expired_response' => $expireResponse,
             'response_type' => $responseType,
             'nominal_information' => format_currency($request->amount),
         ]);
@@ -452,6 +499,18 @@ class PosController extends Controller
                     }
                 }
 
+                $paymentMethodData = PaymentMethod::find($request->payment_method);
+                $paymentChannelData = PaymentChannel::find($request->payment_channel);
+                $paymentChannelName = $paymentMethodData->name;
+                if ($paymentChannelData){
+                    $paymentRequestData = xenditCreatePayment::find($request->payment_id);
+                    if ($paymentChannelData->type == 'VIRTUAL_ACCOUNT'){
+                        $paymentChannelName = 'VA-'.$paymentChannelData->name;
+                    }else{
+                        $paymentChannelName =$paymentChannelData->name;
+                    }
+                }
+
                 $sale = Sale::create([
                     'date' => now()->format('Y-m-d'),
                     'reference' => 'PSL',
@@ -467,7 +526,7 @@ class PosController extends Controller
                     'due_amount' => $due_amount,
                     'status' => 'Completed',
                     'payment_status' => $payment_status,
-                    'payment_method' => $request->payment_method,
+                    'payment_method' => $paymentChannelName,
                     'note' => $request->note,
                     'tax_amount' => Cart::instance('sale')->tax(),
                     'discount_amount' => Cart::instance('sale')->discount(),
@@ -499,26 +558,21 @@ class PosController extends Controller
                 Cart::instance('sale')->destroy();
 
                 if ($sale->paid_amount > 0) {
-                    $paymentMethodData = PaymentMethod::find($request->payment_method);
-                    $paymentChannelData = PaymentChannel::find($request->payment_channel);
 
-                    if ($paymentChannelData){
-                        $paymentRequestData = xenditCreatePayment::find($request->payment_id);
-                    }
 
                     $refIdData = $paymentRequestData['reference_id'] ?? null;
 
                     SalePayment::create([
                         'date' => now()->format('Y-m-d'),
-                        'reference' => 'asd/'.$sale->reference,
+                        'reference' => 'sale/'.$sale->reference,
                         'reference_id' => $refIdData,
                         'amount' => $sale->total_amount,
                         'sale_id' => $sale->id,
-                        'payment_method' => $paymentMethodData->id,
+                        'payment_method' => $paymentMethodData->name,
                         'payment_method_id' => $paymentMethodData->id,
                         'payment_method_name' => $paymentMethodData->name,
                         'payment_channel_id' => $paymentChannelData->id ?? null,
-                        'payment_channel_name' => $paymentChannelData->name ?? null,
+                        'payment_channel_name' => $paymentChannelName ?? null,
                         'business_id' => $request->user()->business_id,
                         'xendit_create_payment_id' => $paymentRequestData['id'] ?? null,
                     ]);
@@ -530,6 +584,12 @@ class PosController extends Controller
                     if ($paymentMethod) {
                         $paymentMethod->transactional_id = $sale->id;
                         $paymentMethod->save();
+                    }
+
+                    if ($paymentRequestData) {
+                        $paymentRequestData->source_type = Sale::class;
+                        $paymentRequestData->source_id = $sale->id;
+                        $paymentRequestData->save();
                     }
                 }
             });

@@ -20,4 +20,8 @@ class XenditInvoiceRequest extends Model
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
+    public function xenditCreatePayment()
+    {
+        return $this->morphOne(xenditCreatePayment::class, 'transactional');
+    }
 }

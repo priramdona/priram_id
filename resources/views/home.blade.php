@@ -19,16 +19,6 @@
         return /Mobi|Android/i.test(navigator.userAgent);
     }
 
-    function onScanSuccess(decodedText, decodedResult) {
-        // Menampilkan hasil barcode ke input field
-        document.getElementById("barcode-result").value = decodedText;
-    }
-
-    function onScanFailure(error) {
-        // Menangani kegagalan scan, Anda bisa log atau abaikan error
-        console.warn(`Kode tidak terbaca: ${error}`);
-    }
-
     // function startCamera() {
     //     // Memulai scanner dengan Html5QrcodeScanner
     //     let html5QrcodeScanner = new Html5QrcodeScanner(
@@ -64,19 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card border-0">
-                    <div class="card-body p-0 d-flex align-items-center shadow-sm">
-                        <div class="bg-gradient-primary p-4 mfe-3 rounded-left">
-                            <i class="bi bi-credit-card font-2xl"></i>
-                        </div>
-                        <div>
-                            <div class="text-value text-primary">{{ format_currency($balance) }}</div>
-                            <div class="text-muted text-uppercase font-weight-bold small">{{ __('home.credit') }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             {{-- <div class="col-md-6 col-lg-3">
                 <div class="card border-0">
                     <div class="card-body p-0 d-flex align-items-center shadow-sm">
