@@ -11,14 +11,22 @@ class CustomRole extends SpatieRole
 {
     protected $fillable = ['name', 'guard_name', 'business_id']; // Tambahkan atribut yang diperlukan
 
-    public function setAttribute($key, $value)
-    {
-        // Cek dan tambahkan logika khusus untuk business_id atau team_id
-        if ($key === 'business_id' && !array_key_exists('business_id', $this->attributes)) {
-            $this->attributes['business_id'] = $value;
-        }
-        return parent::setAttribute($key, $value);
+    public function setAttribute($key, $value = null)
+{
+    // Cek jika hanya satu argumen yang diberikan, langsung lempar ke parent method
+    if (func_num_args() === 1) {
+        return parent::setAttribute($key);
     }
+
+    // Logika khusus untuk atribut 'business_id'
+    if ($key === 'business_id') {
+        $this->attributes['business_id'] = $value;
+        return $this;
+    }
+
+    // Jika bukan 'business_id', gunakan parent method
+    return parent::setAttribute($key, $value);
+}
 
     public function scopeForBusiness($query, $businessId)
     {
