@@ -72,4 +72,12 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsTo(Business::class);
     }
+    protected $primaryKey = 'id'; // Jika menggunakan UUID
+    protected $keyType = 'string'; // Untuk UUID
+
+    // Pastikan konfigurasi relasi Spatie merujuk ke `model_id`
+    public function getMorphClass()
+    {
+        return 'App\Models\User'; // atau sesuai namespace model User
+    }
 }

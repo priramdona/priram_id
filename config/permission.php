@@ -2,7 +2,6 @@
 
 return [
     // 'teams' => true, // Aktifkan fitur 'teams'
-    'team_foreign_key' => 'business_id', // Ubah ini menjadi 'business_id'
     'teams' => true,
     'team_model' => App\Models\Business::class,
 
@@ -85,6 +84,7 @@ return [
          * For example, this would be nice if your primary keys are all UUIDs. In
          * that case, name this `model_uuid`.
          */
+        'team_foreign_key' => 'business_id', // Ubah ini menjadi 'business_id'
 
         'model_morph_key' => 'model_id',
     ],
