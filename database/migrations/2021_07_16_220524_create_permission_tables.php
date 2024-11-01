@@ -55,7 +55,7 @@ class CreatePermissionTables extends Migration
         });
 
         Schema::create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames) {
-            $table->unsignedBigInteger('role_id');
+            $table->uuid('role_id');
 
             $table->string('model_type');
             $table->foreignUuid($columnNames['model_morph_key']);
