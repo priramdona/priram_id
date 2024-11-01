@@ -2,12 +2,14 @@
 
 namespace Modules\User\Http\Controllers;
 
+use App\Models\CustomRole;
 use Modules\User\DataTables\RolesDataTable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class RolesController extends Controller
 {
@@ -34,7 +36,8 @@ class RolesController extends Controller
         ]);
 
         $user = $request->user();
-        $role = Role::create([
+        $role = CustomRole::create([
+            'id' => str::orderedUuid()->toString(),
             'name' => $request->name,
             'business_id' => $user->business_id
         ]);

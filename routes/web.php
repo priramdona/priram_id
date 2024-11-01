@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Route;
 | Web Routes
 |--------------------------------------------------------------------------
 */
+Route::get('/clear-permission-cache', function() {
+    app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+    return 'Permission cache cleared';
+});
 
 Route::get('/', function () {
     return view('auth.login');

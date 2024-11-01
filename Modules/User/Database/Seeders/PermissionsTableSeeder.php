@@ -3,10 +3,12 @@
 namespace Modules\User\Database\Seeders;
 
 use App\Models\Business;
+use App\Models\CustomRole;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class PermissionsTableSeeder extends Seeder
 {
@@ -135,7 +137,8 @@ class PermissionsTableSeeder extends Seeder
         }
         foreach (Business::get() as $business){
 
-            $role = Role::create([
+            $role = CustomRole::create([
+                'id' => str::orderedUuid()->toString(),
                 'name' => 'Admin',
                 'business_id' => $business->id
             ]);

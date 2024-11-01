@@ -11,6 +11,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\File;
 use Spatie\MediaLibrary\MediaCollections\Models\Concerns\HasUuid;
+use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -63,21 +64,19 @@ class User extends Authenticatable implements HasMedia
         return $builder->where('is_active', 1);
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(CustomRole::class, 'model_has_roles');
-    }
-
     public function business()
     {
         return $this->belongsTo(Business::class);
     }
-    protected $primaryKey = 'id'; // Jika menggunakan UUID
-    protected $keyType = 'string'; // Untuk UUID
-
-    // Pastikan konfigurasi relasi Spatie merujuk ke `model_id`
-    public function getMorphClass()
+    public function assignRoleWithBusiness($role)
     {
-        return 'App\Models\User'; // atau sesuai namespace model User
+        // Atur business_id sebagai team aktif
+        app(PermissionRegistrar::class)->setPermissionsTeamId($this->business_id);
+
+        // Assign role seperti biasa
+        $this->assignRole($role);
+
+        // Reset team ID setelah assign role (opsional)
+        app(PermissionRegistrar::class)->setPermissionsTeamId(null);
     }
 }

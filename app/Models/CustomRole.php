@@ -13,6 +13,7 @@ class CustomRole extends SpatieRole
     use HasFactory;
     use HasUuids;
     protected $fillable = ['name', 'guard_name', 'business_id']; // Tambahkan atribut yang diperlukan
+    public $incrementing = false; // Non-aktifkan incrementing karena menggunakan UUID
 
 
     // Scope untuk mengambil role berdasarkan business_id

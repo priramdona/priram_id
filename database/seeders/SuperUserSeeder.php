@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class SuperUserSeeder extends Seeder
 {
@@ -37,13 +38,15 @@ class SuperUserSeeder extends Seeder
         // ]);
 
         $superAdmin = new CustomRole();
+
         $superAdmin->fill([
+            'id' => str::orderedUuid()->toString(),
             'name' => 'Super Admin',
             'business_id' => $business->id
         ]);
         $superAdmin->save();
 
-        $user->assignRole($superAdmin);
+        $user->assignRoleWithBusiness($superAdmin);
 
         }
 
