@@ -15,19 +15,21 @@ use Modules\Quotation\Entities\Quotation;
 class SendQuotationEmailController extends Controller
 {
     public function __invoke(Quotation $quotation) {
-        // try {
-            $businessEmail = BusinessEmail::where('business_id', Auth::user()->business_id)->firstOrFail();
-            config([
-                'mail.mailers.smtp.username' => $businessEmail->mail_username,
-                'mail.mailers.smtp.password' => ($businessEmail->mail_password),
-                'mail.mailers.smtp.host' => $businessEmail->mail_host,
-                'mail.mailers.smtp.port' => $businessEmail->mail_port,
-                'mail.mailers.smtp.encryption' => $businessEmail->mail_encryption,
-                'mail.from.address' => $businessEmail->mail_from_address,
-                'mail.from.name' =>  $businessEmail->mail_from_name
 
-            ]);
-            Mail::to($quotation->customer->customer_email)->send(new QuotationMail($quotation));
+        // try {
+            // $businessEmail = BusinessEmail::where('business_id', Auth::user()->business_id)->firstOrFail();
+            // config([
+            //     'mail.mailers.smtp.username' => $businessEmail->mail_username,
+            //     'mail.mailers.smtp.password' => ($businessEmail->mail_password),
+            //     'mail.mailers.smtp.host' => $businessEmail->mail_host,
+            //     'mail.mailers.smtp.port' => $businessEmail->mail_port,
+            //     'mail.mailers.smtp.encryption' => $businessEmail->mail_encryption,
+            //     'mail.from.address' => $businessEmail->mail_from_address,
+            //     'mail.from.name' =>  $businessEmail->mail_from_name
+
+            // ]);
+            // dd($quotation);
+            $result = Mail::to($quotation->customer->customer_email)->send(new QuotationMail($quotation));
             // Mail::to($quotation->customer->customer_email)->send(new QuotationMail($quotation));
 
             $quotation->update([

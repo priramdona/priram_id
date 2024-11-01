@@ -62,4 +62,10 @@ class User extends Authenticatable implements HasMedia
     public function scopeIsActive(Builder $builder) {
         return $builder->where('is_active', 1);
     }
+
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }
