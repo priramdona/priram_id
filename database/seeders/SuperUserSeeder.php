@@ -31,10 +31,17 @@ class SuperUserSeeder extends Seeder
             'business_id' => $business->id
         ]);
 
-        $superAdmin = CustomRole::create([
+        // $superAdmin = CustomRole::create([
+        //     'name' => 'Super Admin',
+        //     'business_id' => $business->id
+        // ]);
+
+        $superAdmin = new CustomRole();
+        $superAdmin->fill([
             'name' => 'Super Admin',
             'business_id' => $business->id
         ]);
+        $superAdmin->save();
 
         $user->assignRole($superAdmin);
 
