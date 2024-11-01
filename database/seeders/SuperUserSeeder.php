@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Business;
+use App\Models\CustomRole;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -30,11 +31,12 @@ class SuperUserSeeder extends Seeder
             'business_id' => $business->id
         ]);
 
-        $superAdmin = Role::create([
+        $superAdmin = CustomRole::create([
             'name' => 'Super Admin',
             'business_id' => $business->id
         ]);
-        $superAdmin->assignRole('admin', $user->business_id);
+
+        $superAdmin->assignRole('admin');
         // $user->assignRole($superAdmin);
 
         }

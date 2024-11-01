@@ -63,6 +63,10 @@ class User extends Authenticatable implements HasMedia
         return $builder->where('is_active', 1);
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(CustomRole::class, 'model_has_roles');
+    }
 
     public function business()
     {
