@@ -54,20 +54,33 @@ class CreatePermissionTables extends Migration
                     'model_has_permissions_permission_model_type_primary');
         });
 
-        Schema::create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames) {
-            $table->uuid('role_id');
+        // Schema::create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames) {
+        //     $table->uuid('role_id');
 
+        //     $table->string('model_type');
+        //     $table->foreignUuid($columnNames['model_morph_key']);
+        //     $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_roles_model_id_model_type_index');
+
+        //     $table->foreign('role_id')
+        //         ->references('id')
+        //         ->on($tableNames['roles'])
+        //         ->onDelete('cascade');
+
+        //     $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type'],
+        //             'model_has_roles_role_model_type_primary');
+        // });
+        Schema::create('model_has_roles', function (Blueprint $table) use ($tableNames, $columnNames) {
+            $table->unsignedBigInteger('role_id');
             $table->string('model_type');
-            $table->foreignUuid($columnNames['model_morph_key']);
+            $table->uuid($columnNames['model_morph_key']); // Gunakan UUID jika model menggunakan UUID
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_roles_model_id_model_type_index');
 
             $table->foreign('role_id')
-                ->references('id')
-                ->on($tableNames['roles'])
-                ->onDelete('cascade');
+                  ->references('id')
+                  ->on($tableNames['roles'])
+                  ->onDelete('cascade');
 
-            $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type'],
-                    'model_has_roles_role_model_type_primary');
+            $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type'], 'model_has_roles_role_model_type_primary');
         });
 
         Schema::create($tableNames['role_has_permissions'], function (Blueprint $table) use ($tableNames) {
