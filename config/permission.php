@@ -2,7 +2,7 @@
 
 return [
     // 'teams' => true, // Aktifkan fitur 'teams'
-    // 'team_foreign_key' => 'business_id', // Ubah ini menjadi 'business_id'
+    'team_foreign_key' => 'business_id', // Ubah ini menjadi 'business_id'
     'teams' => true,
     'team_model' => App\Models\Business::class,
 
