@@ -70,7 +70,7 @@ class CreatePermissionTables extends Migration
         //             'model_has_roles_role_model_type_primary');
         // });
         Schema::create('model_has_roles', function (Blueprint $table) use ($tableNames, $columnNames) {
-            $table->unsignedBigInteger('role_id');
+            $table->uuid('role_id');
             $table->string('model_type');
             $table->uuid($columnNames['model_morph_key']); // Gunakan UUID jika model menggunakan UUID
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_roles_model_id_model_type_index');
