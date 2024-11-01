@@ -11,11 +11,6 @@ class CustomRole extends SpatieRole
 {
     protected $fillable = ['name', 'guard_name', 'business_id']; // Tambahkan atribut yang diperlukan
 
-    // Mutator untuk mengatur business_id
-    public function setBusinessIdAttribute($value)
-    {
-        $this->attributes['business_id'] = $value;
-    }
 
     // Scope untuk mengambil role berdasarkan business_id
     public function scopeForBusiness($query, $businessId)
