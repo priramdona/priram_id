@@ -19,14 +19,9 @@ class CustomRole extends SpatieRole
         }
         return parent::setAttribute($key, $value);
     }
-    // Mutator untuk business_id
-    public function setBusinessIdAttribute($value)
-    {
-        $this->attributes['business_id'] = $value;
-    }
 
     public function scopeForBusiness($query, $businessId)
-    {
-        return $query->where('business_id', $businessId);
-    }
+{
+    return $query->where('business_id', $businessId);
+}
 }
