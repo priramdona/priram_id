@@ -36,8 +36,7 @@ class SuperUserSeeder extends Seeder
             'business_id' => $business->id
         ]);
 
-        $superAdmin->assignRole('admin');
-        // $user->assignRole($superAdmin);
+        $user->assignRole($superAdmin);
 
         }
 
