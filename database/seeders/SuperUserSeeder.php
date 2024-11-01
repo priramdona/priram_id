@@ -3,12 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Business;
-use App\Models\CustomRole;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Str;
 
 class SuperUserSeeder extends Seeder
 {
@@ -32,21 +30,12 @@ class SuperUserSeeder extends Seeder
             'business_id' => $business->id
         ]);
 
-        // $superAdmin = CustomRole::create([
-        //     'name' => 'Super Admin',
-        //     'business_id' => $business->id
-        // ]);
-
-        $superAdmin = new CustomRole();
-
-        $superAdmin->fill([
-            'id' => str::orderedUuid()->toString(),
+        $superAdmin = Role::create([
             'name' => 'Super Admin',
             'business_id' => $business->id
         ]);
-        $superAdmin->save();
 
-        $user->assignRoleWithBusiness($superAdmin);
+        $user->assignRole($superAdmin);
 
         }
 

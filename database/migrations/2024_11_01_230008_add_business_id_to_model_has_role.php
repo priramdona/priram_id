@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('model_has_roles', function (Blueprint $table) {
-            $table->foreignUuid('business_id')->references('id')->on('businesses')->after('id');
-
+            //
         });
     }
 
@@ -23,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('model_has_roles', function (Blueprint $table) {
-            $table->dropColumn('business_id');
+            //
         });
     }
 };
