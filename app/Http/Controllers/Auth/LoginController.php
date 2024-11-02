@@ -32,7 +32,7 @@ class LoginController extends Controller
         dd($formattedPhone,  $request->get('password'));
         return [
             'phone_number' => $formattedPhone,
-            'password' =>,
+            'password' => $request->get('password'),
         ];
     }
 
