@@ -29,8 +29,8 @@ class XenditWebhookController extends Controller
     {
         $data = $request->all();
         try {
-
             $status =  $data['data']['status'] ?? 'Erorr';
+
             $resultCallback = XenditCallbackPaymentRequest::create([
                 'id' => Str::orderedUuid()->toString(),
                 'callback_id' => $data['id'],
@@ -42,11 +42,7 @@ class XenditWebhookController extends Controller
                 'xen_business_id' =>  $data['business_id'] ?? null,
             ]);
 
-            $paymentTransaction = XenditCallbackPaymentRequest::query()
-                ->where('reference_id', $data['data']['reference_id'])
-                ->first();
-
-                $paymentTransaction = XenditCreatePayment::query()
+            $paymentTransaction = XenditCreatePayment::query()
                 ->where('reference_id', $data['data']['reference_id'])
                 ->first();
 
@@ -60,8 +56,10 @@ class XenditWebhookController extends Controller
             //     return response()->json([], 200);
 
             // } elseif ($data['event'] == 'payment_method.activated') {
+            if ($paymentTransaction){
                 $paymentTransaction->status = $status;
                 $paymentTransaction->save();
+            }
 
                 return response()->json([], 200);
             // }
