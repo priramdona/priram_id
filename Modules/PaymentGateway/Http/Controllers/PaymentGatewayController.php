@@ -406,7 +406,7 @@ class PaymentGatewayController extends Controller
 
             $xenditInvoiceRequest = XenditInvoiceRequest::create($invoiceRequestPayload);
 
-            $xenditCreatePayments = xenditCreatePayment::create([
+            $xenditCreatePayments = XenditCreatePayment::create([
                 'reference_id' => $reffPayment,
                 'transactional_type' => $createPaymentTransactionalType,
                 'transactional_id' => $xenditInvoiceRequest->id,
@@ -592,7 +592,7 @@ class PaymentGatewayController extends Controller
 
             $xenditPaylaterRequest = XenditPaylaterRequest::create($xenditPaylaterRequestPayload);
 
-            $xenditCreatePayments = xenditCreatePayment::create([
+            $xenditCreatePayments = XenditCreatePayment::create([
                 'reference_id' => $refId,
                 'transactional_type' => $createPaymentTransactionalType,
                 'transactional_id' => $xenditPaylaterRequest->id,
@@ -981,17 +981,17 @@ class PaymentGatewayController extends Controller
             businessAmount::create($payloadBusinessAmount);
             $waController = New WhatsappController();
 
-            $cekStatusDevice = $waController->waCekDevice();
+            // $cekStatusDevice = $waController->waCekDevice();
 
-            if ($cekStatusDevice){
-                $waController->sendMessageWa('Submit Request : ' .
-                    'Amount : '. format_currency($amount) .
-                    ' Sale : '. format_currency($saleAmount) .
-                    ' Fee : '. format_currency($amount - $saleAmount) .
-                    ' type : ' . $type . ' Code : ' . $channelCode);
-            }
+            // if ($cekStatusDevice){
+            //     $waController->sendMessageWa('Submit Request : ' .
+            //         'Amount : '. format_currency($amount) .
+            //         ' Sale : '. format_currency($saleAmount) .
+            //         ' Fee : '. format_currency($amount - $saleAmount) .
+            //         ' type : ' . $type . ' Code : ' . $channelCode);
+            // }
 
-           $xenditCreatePayments = xenditCreatePayment::create([
+           $xenditCreatePayments = XenditCreatePayment::create([
                 'reference_id' => $refId,
                 'transactional_type' => $createPaymentTransactionalType,
                 'transactional_id' => $createPaymentTransactionalId,
