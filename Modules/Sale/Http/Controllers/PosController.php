@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\PaymentGateway\Entities\xenditPaymentMethod;
+use Modules\PaymentGateway\Entities\XenditPaymentMethod;
 use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\People\Entities\Customer;
@@ -581,7 +581,7 @@ class PosController extends Controller
                         'xendit_create_payment_id' => $paymentRequestData['id'] ?? null,
                     ]);
 
-                    $paymentMethod = xenditPaymentMethod::query()
+                    $paymentMethod = XenditPaymentMethod::query()
                     ->where('reference_id', $refIdData)
                     ->first();
 
