@@ -26,7 +26,7 @@ use Modules\Sale\Http\Requests\StorePosSaleRequest;
 use Illuminate\Support\Str;
 use Milon\Barcode\DNS1D;
 use Milon\Barcode\DNS2D;
-use Modules\PaymentGateway\Entities\xenditCreatePayment;
+use Modules\PaymentGateway\Entities\XenditCreatePayment;
 use Modules\PaymentGateway\Entities\XenditPaymentRequest;
 use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
