@@ -106,7 +106,7 @@
 
         spinner.style.display = 'block';
 
-        login.submit();
+        // login.submit();
     });
 
     setTimeout(() => {
