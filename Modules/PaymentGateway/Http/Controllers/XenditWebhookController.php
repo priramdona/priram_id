@@ -127,7 +127,7 @@ class XenditWebhookController extends Controller
             // return response()->json([], 200);
         } catch (\Exception $exception) {
             // Log::driver('sentry');
-            return response()->json([], 422);
+            return response()->json([$exception->getMessage()], 422);
         }
     }
 }
