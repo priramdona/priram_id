@@ -15,5 +15,6 @@ class VerifyCsrfToken extends Middleware
         '/redirects/*',
         '/callbacks/*',
         '/payment-gateways/callback/*',
+        'payment-gateways/callback',
     ];
 }
