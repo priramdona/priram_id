@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Modules\PaymentGateway\Entities\xenditDisbursement;
 use Modules\PaymentGateway\Entities\XenditDisbursementMethod;
-use Modules\PaymentGateway\Entities\xenditPaymentMethod;
+use Modules\PaymentGateway\Entities\XenditPaymentMethod;
 use Modules\PaymentGateway\Entities\XenditPaymentRequest;
 use Modules\Whatsapp\Http\Controllers\WhatsappController;
 use Xendit\Configuration;
@@ -21,7 +21,7 @@ use Xendit\Customer\CustomerRequest;
 use Xendit\PaymentMethod\PaymentMethodApi;
 use Illuminate\Support\Facades\Http;
 use Modules\Income\Entities\Income;
-use Modules\PaymentGateway\Entities\xenditCreatePayment;
+use Modules\PaymentGateway\Entities\XenditCreatePayment;
 use Modules\PaymentGateway\Entities\XenditPaylaterPlan;
 use Modules\PaymentGateway\Entities\XenditPaylaterRequest;
 use Modules\PaymentMethod\Entities\PaymentChannel;
@@ -964,11 +964,11 @@ class PaymentGatewayController extends Controller
                 'metadata' => json_encode($dataPaymentMethods['metadata'] ?? null) ?? null,
             ];
 
-            $xenditPaymentMethodData = xenditPaymentMethod::create($payloadPaymentMethod);
+            $xenditPaymentMethodData = XenditPaymentMethod::create($payloadPaymentMethod);
             $payloadBusinessAmount = [
                 'business_id' => Auth::user()->business_id ?? null,
                 'status_credit' => 1,
-                'transactional_type' => xenditPaymentMethod::class ?? null,
+                'transactional_type' => XenditPaymentMethod::class ?? null,
                 'transactional_id' => $xenditPaymentMethodData['id'] ?? null,
                 'reference_id' => $dataPaymentMethods['reference_id'] ?? null,
                 'amount' => $amount ?? null,
