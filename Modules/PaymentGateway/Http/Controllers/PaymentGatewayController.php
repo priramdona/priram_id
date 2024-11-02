@@ -35,8 +35,10 @@ use Xendit\Customer\CustomerApi;
 use Xendit\Invoice\CreateInvoiceRequest;
 use Xendit\Invoice\InvoiceApi;
 use Illuminate\Support\Str;
+use Modules\PaymentGateway\Entities\XenditCreateVirtualAccount;
 use Modules\PaymentGateway\Entities\XenditDisbursementChannel;
 use Modules\PaymentGateway\Entities\XenditInvoiceRequest;
+use Modules\PaymentGateway\Entities\XenditVirtualAccountRequest;
 use Xendit\Invoice\Invoice;
 use Xendit\Payout\CreatePayoutRequest;
 use Xendit\Payout\PayoutApi;
@@ -802,6 +804,103 @@ class PaymentGatewayController extends Controller
             throw new \Exception(json_encode($e->getMessage()));
         }
     }
+
+    public function createVirtualAccount(
+        string $refId,
+        string $channelCode,
+        float $totalAmount,
+        float $saleAmount,
+        ){
+
+            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $secret_key = 'Basic ' . $base64;
+            $url = 'https://api.xendit.co/callback_virtual_accounts';
+
+        try {
+            $timestamp = Carbon::now(config('app.timezone'))->addDay()->toIso8601String();
+
+            $getBusinessData = Business::find(Auth::user()->business_id);
+
+            $payloadRequest = [
+                "external_id" => $refId,
+                "bank_code" => $channelCode,
+                "name" => preg_replace('/[^a-zA-Z\s]/','', $getBusinessData->name),
+                "is_closed" => true,
+                "is_single_use" => true,
+                "expected_amount" => $totalAmount,
+                "expiration_date" => $timestamp
+            ];
+
+            $dataRequest = Http::withHeaders([
+                'Authorization' => $secret_key,
+                'for-user-id' => null
+            ])->post($url, $payloadRequest);
+
+            if ($dataRequest->failed()) {
+                throw new Exception('Error Request Create Virtual Account');
+            }
+
+            $apiResult = $dataRequest->object();
+
+            $xenditCreateVirtualAccount = XenditVirtualAccountRequest::create([
+                'xen_virtual_account_id' => $apiResult->id,
+                'external_id' => $apiResult->external_id,
+                'owner_id' => $apiResult->owner_id,
+                'bank_code' => $apiResult->bank_code,
+                'merchant_code' => $apiResult->merchant_code,
+                'account_number' => $apiResult->account_number,
+                'name' => $apiResult->name,
+                'expected_amount' => 0,
+                'is_single_use' => $apiResult->is_single_use,
+                'is_closed' => $apiResult->is_closed,
+                'expiration_date' => Carbon::parse($apiResult->expiration_date)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
+                'status' => $apiResult->status,
+                'currency' => $apiResult->currency,
+                'country' => $apiResult->country,
+                'created' => null,
+                'updated' => null,
+            ]);
+
+            $payloadBusinessAmount = [
+                'business_id' => Auth::user()->business_id ?? null,
+                'status_credit' => 1,
+                'transactional_type' => XenditVirtualAccountRequest::class ?? null,
+                'transactional_id' => $xenditCreateVirtualAccount->id ?? null,
+                'reference_id' => $apiResult->external_id,
+                'amount' => $totalAmount ?? null,
+                'sale_amount' =>  $saleAmount ?? null,
+                'received_amount' => 0,
+                'deduction_amount' => 0,
+                'status' => 'PENDING_PAYMENT',
+            ];
+
+            businessAmount::create($payloadBusinessAmount);
+
+            $xenditCreatePayments = XenditCreatePayment::create([
+                'reference_id' => $apiResult->external_id,
+                'transactional_type' => XenditVirtualAccountRequest::class,
+                'transactional_id' => $xenditCreateVirtualAccount->id,
+                'amount' => $totalAmount ?? null,
+                'transaction_amount' => $saleAmount ?? null,
+                'payment_type' => 'VIRTUAL_ACCOUNT',
+                'channel_code' => $channelCode,
+                'status' => 'PENDING',
+            ]);
+
+
+            $result = [
+                'id' => $xenditCreatePayments->id,
+                'reference_id' => $xenditCreatePayments->reference_id,
+                'virtual_account' => $xenditCreateVirtualAccount,
+            ];
+
+        } catch (Exception $e) {
+            // Tangani exception atau berikan pesan error
+            throw new \Exception("Request failed with status: " . $e->getMessage());
+        }
+
+        return $result;
+    }
     public function createPaymentRequest(string $refId,
                                         ?string $forUserId = null,
                                         ?string $withSplitRule = null,
@@ -903,14 +1002,15 @@ class PaymentGatewayController extends Controller
 
         try {
             $dataResult = $apiInstance->createPaymentRequest($idempotency_key, $forUserId, $withSplitRule, $paymentRequestParameters);
+            // dd($dataResult);
             $resultDetails = null;
             $dataPaymentMethods = json_decode($dataResult['payment_method'],true);
-
+            $referenceId = $dataPaymentMethods['reference_id'] ?? null;
             $xenditPaymentRequestResponsePayload = [
                 'payment_request_id'=> $dataResult['id'],
                 'created'=> Carbon::parse($dataResult['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),  // Konversi ke format MySQL
                 'updated'=> Carbon::parse($dataResult['updated'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
-                'reference_id'=> $dataResult['reference_id'],
+                'reference_id'=> $referenceId,
                 'business_id'=> $dataResult['business_id'],
                 'customer_id'=> $dataResult['customer_id'],
                 'customer'=> ($dataResult['customer']),
@@ -948,7 +1048,7 @@ class PaymentGatewayController extends Controller
                 'created' => Carbon::parse($dataPaymentMethods['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? null,
                 'updated' => Carbon::parse($dataPaymentMethods['updated'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? null,
                 'description' => $dataPaymentMethods['description'] ?? null,
-                'reference_id' => $dataPaymentMethods['reference_id'] ?? null,
+                'reference_id' => $referenceId,
                 'failure_code' => $dataPaymentMethods['failure_code'] ?? null,
                 'actions' => json_encode($dataPaymentMethods['actions'] ?? null) ?? null,
                 'card' => json_encode($dataPaymentMethods['card'] ?? null) ?? null,
@@ -970,7 +1070,7 @@ class PaymentGatewayController extends Controller
                 'status_credit' => 1,
                 'transactional_type' => XenditPaymentMethod::class ?? null,
                 'transactional_id' => $xenditPaymentMethodData['id'] ?? null,
-                'reference_id' => $dataPaymentMethods['reference_id'] ?? null,
+                'reference_id' => $referenceId,
                 'amount' => $amount ?? null,
                 'sale_amount' =>  $saleAmount ?? null,
                 'received_amount' => 0,
@@ -979,6 +1079,18 @@ class PaymentGatewayController extends Controller
             ];
 
             businessAmount::create($payloadBusinessAmount);
+
+           $xenditCreatePayments = XenditCreatePayment::create([
+                'reference_id' => $referenceId,
+                'transactional_type' => $createPaymentTransactionalType,
+                'transactional_id' => $createPaymentTransactionalId,
+                'amount' => $amount ?? null,
+                'transaction_amount' => $saleAmount ?? null,
+                'payment_type' => $type,
+                'channel_code' => $channelCode,
+                'status' => 'PENDING',
+            ]);
+
             $waController = New WhatsappController();
 
             // $cekStatusDevice = $waController->waCekDevice();
@@ -991,16 +1103,6 @@ class PaymentGatewayController extends Controller
             //         ' type : ' . $type . ' Code : ' . $channelCode);
             // }
 
-           $xenditCreatePayments = XenditCreatePayment::create([
-                'reference_id' => $refId,
-                'transactional_type' => $createPaymentTransactionalType,
-                'transactional_id' => $createPaymentTransactionalId,
-                'amount' => $amount ?? null,
-                'transaction_amount' => $saleAmount ?? null,
-                'payment_type' => $type,
-                'channel_code' => $channelCode,
-                'status' => 'PENDING',
-            ]);
 
             $result = [
                 'id' => $xenditCreatePayments->id,

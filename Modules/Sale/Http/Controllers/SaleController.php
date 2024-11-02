@@ -7,6 +7,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\People\Entities\Customer;
 use Modules\Product\Entities\Product;
 use Modules\Sale\Entities\Sale;
@@ -125,8 +126,8 @@ class SaleController extends Controller
         return view('sale::show', compact('sale', 'customer'));
     }
 
-
     public function edit(Sale $sale) {
+
         abort_if(Gate::denies('edit_sales'), 403);
 
         $sale_details = $sale->saleDetails;

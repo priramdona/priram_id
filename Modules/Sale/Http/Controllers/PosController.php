@@ -242,7 +242,27 @@ class PosController extends Controller
 
         if ($paymentChannelData){
 
-            if($paymentChannelData->type == 'INVOICE'){
+            if($paymentChannelData->type == 'VIRTUAL_ACCOUNT'){
+                $createVirtualAccount = new PaymentGatewayController();
+
+                $virtualAccountInfo = $createVirtualAccount->createVirtualAccount(
+                    $reffPayment,
+                    $paymentChannelData->code,
+                    $request->amount,
+                    $request->sale_amount
+                );
+
+                $paymentRequestId = $virtualAccountInfo['id'];
+                $paymentReferenceId = $virtualAccountInfo['reference_id'];
+                $virtualAccountInfo = $virtualAccountInfo['virtual_account'];
+                $nameResponse = $virtualAccountInfo['name'];
+                $valueResponse = $virtualAccountInfo['account_number'];
+                $expResponseDate = $virtualAccountInfo['expiration_date'];
+                $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
+                $responseType = 'account';
+
+            }
+            elseif($paymentChannelData->type == 'INVOICE'){
                 $invoiceRequest = new PaymentGatewayController();
                 $customerData = Customer::find($request->customer_id);
 

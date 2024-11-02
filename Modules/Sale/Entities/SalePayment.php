@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\PaymentMethod\Entities\PaymentChannel;
 class SalePayment extends Model
 {
 
@@ -32,5 +33,9 @@ class SalePayment extends Model
 
     public function scopeBySale($query) {
         return $query->where('sale_id', request()->route('sale_id'));
+    }
+
+    public function paymentChannels() {
+        return $this->belongsTo(PaymentChannel::class, 'payment_channel_id', 'id');
     }
 }

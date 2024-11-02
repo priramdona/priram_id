@@ -27,6 +27,7 @@ class CreateSalePaymentsTable extends Migration
             $table->string('reference');
             $table->string('reference_id')->nullable();
             $table->text('note')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

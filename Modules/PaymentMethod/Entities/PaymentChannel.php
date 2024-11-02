@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\PaymentMethod\Database\factories\PaymentChannelFactory;
+use Modules\Sale\Entities\SalePayment;
 
 class PaymentChannel extends Model
 {
@@ -24,5 +25,9 @@ class PaymentChannel extends Model
 
         // Jika tidak ada gambar, kembalikan URL gambar default
         return asset('images/default.png');
+    }
+
+    public function salePayments() {
+        return $this->hasMany(SalePayment::class, 'payment_channel_id', 'id');
     }
 }
