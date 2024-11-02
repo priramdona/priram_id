@@ -18,7 +18,7 @@ use Modules\PaymentGateway\Http\Controllers\XenditWebhookController;
 Route::group([
     'prefix' => 'payment-gateways',
 ], function () {
-    Route::any('/callback', [XenditWebhookController::class, 'callback']);
+    Route::any('/payment-methods-callback', [XenditWebhookController::class, 'callbackPaymentMethod']);
 });
 
 

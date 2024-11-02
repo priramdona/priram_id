@@ -25,21 +25,48 @@ use Modules\PaymentGateway\Entities\xenditCreatePayment;
 class XenditWebhookController extends Controller
 {
 
-    public function callback(Request $request)
+    public function callbackPaymentMethod(Request $request)
     {
         $data = $request->all();
         try {
 
-            XenditCallbackPaymentRequest::create([
+            $status =  $data['data']['status'];
+            $resultCallback = XenditCallbackPaymentRequest::create([
                 'id' => Str::orderedUuid()->toString(),
                 'callback_id' => $data['id'],
                 'reference_id' => $data['data']['reference_id'],
-                'data' => json_encode($data['data']['data']),
+                'data' => json_encode($data['data']),
                 'event' => $data['event'],
                 'status' => $data['data']['status'],
                 'failure_code' => $data['data']['failure_code'],
                 'xen_business_id' =>  $data['business_id'] ?? null,
             ]);
+
+            $paymentTransaction = XenditCallbackPaymentRequest::query()
+                ->where('reference_id', $data['data']['reference_id'])
+                ->first();
+
+                $paymentTransaction = xenditCreatePayment::query()
+                ->where('reference_id', $data['data']['reference_id'])
+                ->first();
+
+            // if ($data['event'] == 'payment_method.expired') {
+
+            //     if ($paymentTransaction->status != 'SUCCESS') {
+            //         $paymentTransaction->status = $status;
+            //         $paymentTransaction->save();
+            //     }
+
+            //     return response()->json([], 200);
+
+            // } elseif ($data['event'] == 'payment_method.activated') {
+                $paymentTransaction->status = $status;
+                $paymentTransaction->save();
+
+                return response()->json([], 200);
+            // }
+
+
 
             // if ($data['event'] == 'payment_method.expired') {
             //     $paymentTransaction = XenditCallbackPaymentRequest::query()
@@ -97,7 +124,7 @@ class XenditWebhookController extends Controller
             // }
 
             // \DB::commit();
-            return response()->json([], 200);
+            // return response()->json([], 200);
         } catch (\Exception $exception) {
             // Log::driver('sentry');
             return response()->json([], 422);
