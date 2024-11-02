@@ -30,14 +30,14 @@ class XenditWebhookController extends Controller
         $data = $request->all();
         try {
 
-            $status =  $data['data']['status'];
+            $status =  $data['data']['status'] ?? 'Erorr';
             $resultCallback = XenditCallbackPaymentRequest::create([
                 'id' => Str::orderedUuid()->toString(),
                 'callback_id' => $data['id'],
                 'reference_id' => $data['data']['reference_id'],
                 'data' => json_encode($data['data']),
                 'event' => $data['event'],
-                'status' => $data['data']['status'],
+                'status' => $status ,
                 'failure_code' => $data['data']['failure_code'],
                 'xen_business_id' =>  $data['business_id'] ?? null,
             ]);
