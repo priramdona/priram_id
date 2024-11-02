@@ -27,7 +27,7 @@ use Illuminate\Support\Str;
 use Milon\Barcode\DNS1D;
 use Milon\Barcode\DNS2D;
 use Modules\PaymentGateway\Entities\xenditCreatePayment;
-use Modules\PaymentGateway\Entities\xenditPaymentRequest;
+use Modules\PaymentGateway\Entities\XenditPaymentRequest;
 use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Milon\Barcode\Facades\DNS1DFacade;
@@ -477,8 +477,12 @@ class PosController extends Controller
     }
 
     public function store(StorePosSaleRequest $request) {
+
+
         try{
             DB::transaction(function () use ($request) {
+                $paymentRequestData = null;
+
                 $due_amount = 0;//$request->total_amount - $request->paid_amount;
 
                 if ($request->payment_channel){
@@ -503,7 +507,7 @@ class PosController extends Controller
                 $paymentChannelData = PaymentChannel::find($request->payment_channel);
                 $paymentChannelName = $paymentMethodData->name;
                 if ($paymentChannelData){
-                    $paymentRequestData = xenditCreatePayment::find($request->payment_id);
+                    $paymentRequestData = XenditCreatePayment::find($request->payment_id);
                     if ($paymentChannelData->type == 'VIRTUAL_ACCOUNT'){
                         $paymentChannelName = 'VA-'.$paymentChannelData->name;
                     }else{

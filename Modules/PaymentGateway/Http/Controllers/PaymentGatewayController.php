@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Modules\PaymentGateway\Entities\xenditDisbursement;
 use Modules\PaymentGateway\Entities\XenditDisbursementMethod;
 use Modules\PaymentGateway\Entities\xenditPaymentMethod;
-use Modules\PaymentGateway\Entities\xenditPaymentRequest;
+use Modules\PaymentGateway\Entities\XenditPaymentRequest;
 use Modules\Whatsapp\Http\Controllers\WhatsappController;
 use Xendit\Configuration;
 use Xendit\Customer\CustomerRequest;
@@ -824,7 +824,7 @@ class PaymentGatewayController extends Controller
         $getBusinessData = Business::find(Auth::user()->business_id);
         $payloadType = null;
 
-        $createPaymentTransactionalType = xenditPaymentRequest::class;
+        $createPaymentTransactionalType = XenditPaymentRequest::class;
         $createPaymentTransactionalId = null;
 
 
@@ -932,7 +932,7 @@ class PaymentGatewayController extends Controller
                 'items'=> json_encode($dataResult['items']),
             ];
 
-            $xenditPaymentRequest = xenditPaymentRequest::create($xenditPaymentRequestResponsePayload);
+            $xenditPaymentRequest = XenditPaymentRequest::create($xenditPaymentRequestResponsePayload);
             $createPaymentTransactionalId= $xenditPaymentRequest->id;
 
             $payloadPaymentMethod =[
