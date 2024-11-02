@@ -38,6 +38,7 @@ class XenditWebhookController extends Controller
                 'event' => $data['event'],
                 'status' => $data['data']['status'],
                 'failure_code' => $data['data']['failure_code'],
+                'xen_business_id' =>  $data['business_id'] ?? null,
             ]);
 
             // if ($data['event'] == 'payment_method.expired') {

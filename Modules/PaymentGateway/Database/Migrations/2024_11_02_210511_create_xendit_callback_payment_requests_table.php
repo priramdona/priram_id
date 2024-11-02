@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('event');
             $table->string('status');
             $table->string('failure_code')->nullable();
+            $table->string('xen_business_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

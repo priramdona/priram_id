@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\PaymentGateway\Database\factories\XenditBalanceFactory;
 
-class xenditBalance extends Model
+class XenditBalance extends Model
 {
     use HasFactory;
     use HasUuids;

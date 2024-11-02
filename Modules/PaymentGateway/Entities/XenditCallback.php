@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\PaymentGateway\Database\factories\XenditCallbackFactory;
 
-class xenditCallback extends Model
+class XenditCallback extends Model
 {
     use HasFactory;
 
@@ -14,9 +14,5 @@ class xenditCallback extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [];
-    
-    protected static function newFactory(): XenditCallbackFactory
-    {
-        //return XenditCallbackFactory::new();
-    }
+
 }
