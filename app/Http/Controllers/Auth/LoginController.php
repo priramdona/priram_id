@@ -29,10 +29,10 @@ class LoginController extends Controller
 
         // Mengonversi nomor telepon ke format E.164 Indonesia
         $formattedPhone = PhoneHelper::formatToE164Indonesia($phoneNumber);
-
+        dd($formattedPhone,  $request->get('password'));
         return [
             'phone_number' => $formattedPhone,
-            'password' => $request->get('password'),
+            'password' =>,
         ];
     }
 
