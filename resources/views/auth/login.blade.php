@@ -105,7 +105,7 @@
         password.readonly = true;
 
         spinner.style.display = 'block';
-        alert('asd');
+
         // login.submit();
     });
 
