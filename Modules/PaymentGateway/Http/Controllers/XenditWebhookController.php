@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Modules\PaymentGateway\Entities\xenditCallback;
 use Modules\PaymentGateway\Entities\XenditCallbackPaymentRequest;
-use Modules\PaymentGateway\Entities\xenditCreatePayment;
+use Modules\PaymentGateway\Entities\XenditCreatePayment;
 
 class XenditWebhookController extends Controller
 {
@@ -46,7 +46,7 @@ class XenditWebhookController extends Controller
                 ->where('reference_id', $data['data']['reference_id'])
                 ->first();
 
-                $paymentTransaction = xenditCreatePayment::query()
+                $paymentTransaction = XenditCreatePayment::query()
                 ->where('reference_id', $data['data']['reference_id'])
                 ->first();
 
