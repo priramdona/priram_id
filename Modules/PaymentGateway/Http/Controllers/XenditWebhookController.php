@@ -19,6 +19,7 @@ use App\Services\Subscribes\SubscribeService\SubscribeService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Modules\PaymentGateway\Entities\xenditCallback;
+use Modules\PaymentGateway\Entities\XenditCallbackPaymentRequest;
 use Modules\PaymentGateway\Entities\xenditCreatePayment;
 
 class XenditWebhookController extends Controller
@@ -29,68 +30,70 @@ class XenditWebhookController extends Controller
         $data = $request->all();
         try {
 
-            xenditCallback::create([
+            XenditCallbackPaymentRequest::create([
                 'id' => Str::orderedUuid()->toString(),
-                'payment_transaction_id' => $data['data']['reference_id'],
+                'callback_id' => $data['id'],
+                'reference_id' => $data['data']['reference_id'],
+                'data' => json_encode($data['data']['data']),
                 'event' => $data['event'],
                 'status' => $data['data']['status'],
                 'failure_code' => $data['data']['failure_code'],
             ]);
 
-            if ($data['event'] == 'payment_method.expired') {
-                $paymentTransaction = xenditCreatePayment::query()
-                    ->where('reference_id', $data['data']['reference_id'])
-                    ->first();
+            // if ($data['event'] == 'payment_method.expired') {
+            //     $paymentTransaction = XenditCallbackPaymentRequest::query()
+            //         ->where('reference_id', $data['data']['reference_id'])
+            //         ->first();
 
-                if ($paymentTransaction->status != 'SUCCESS') {
-                    $paymentTransaction->status = 'EXPIRED';
-                    $paymentTransaction->save();
-                }
+            //     if ($paymentTransaction->status != 'SUCCESS') {
+            //         $paymentTransaction->status = 'EXPIRED';
+            //         $paymentTransaction->save();
+            //     }
 
-                return response()->json([], 200);
+            //     return response()->json([], 200);
 
-            } elseif ($data['event'] == 'payment_method.activated') {
+            // } elseif ($data['event'] == 'payment_method.activated') {
 
-                return response()->json([], 200);
-            }
+            //     return response()->json([], 200);
+            // }
 
-            if ($data['event'] == 'payment.succeeded') {
-                if ($data['data']['status'] == 'SUCCEEDED') {
-                    // event(new ProcessPaymentXenditSuccessEvent($data));
+            // if ($data['event'] == 'payment.succeeded') {
+            //     if ($data['data']['status'] == 'SUCCEEDED') {
+            //         // event(new ProcessPaymentXenditSuccessEvent($data));
 
-                    return response()->json([], 200);
-                }
-            } elseif ($data['event'] =='payment.failed') {
-                $paymentTransaction = xenditCreatePayment::query()
-                    ->where('reference_id', $data['data']['reference_id'])
-                    ->first();
+            //         return response()->json([], 200);
+            //     }
+            // } elseif ($data['event'] =='payment.failed') {
+            //     $paymentTransaction = xenditCreatePayment::query()
+            //         ->where('reference_id', $data['data']['reference_id'])
+            //         ->first();
 
-                if ($data['data']['status'] == 'FAILED') {
-                    $paymentTransaction->status = 'FAILED';
-                    $paymentTransaction->save();
-                }
+            //     if ($data['data']['status'] == 'FAILED') {
+            //         $paymentTransaction->status = 'FAILED';
+            //         $paymentTransaction->save();
+            //     }
 
-                // \DB::commit();
-                return response()->json([], 200);
-            }
+            //     // \DB::commit();
+            //     return response()->json([], 200);
+            // }
 
-            if ($data['event'] == 'payment.succeeded') {
-                if ($data['data']['status'] == 'SUCCEEDED') {
+            // if ($data['event'] == 'payment.succeeded') {
+            //     if ($data['data']['status'] == 'SUCCEEDED') {
 
-                    // event(new ProcessPaymentXenditSuccessEvent($data));
+            //         // event(new ProcessPaymentXenditSuccessEvent($data));
 
-                    return response()->json([], 200);
-                }
-            } elseif ($data['event'] == 'payment.failed') {
-                $paymentTransaction = xenditCreatePayment::query()
-                    ->where('id', $data['data']['reference_id'])
-                    ->first();
+            //         return response()->json([], 200);
+            //     }
+            // } elseif ($data['event'] == 'payment.failed') {
+            //     $paymentTransaction = xenditCreatePayment::query()
+            //         ->where('id', $data['data']['reference_id'])
+            //         ->first();
 
-                if ($data['data']['status'] == 'FAILED') {
-                    $paymentTransaction->status = 'FAILED';
-                    $paymentTransaction->save();
-                }
-            }
+            //     if ($data['data']['status'] == 'FAILED') {
+            //         $paymentTransaction->status = 'FAILED';
+            //         $paymentTransaction->save();
+            //     }
+            // }
 
             // \DB::commit();
             return response()->json([], 200);
