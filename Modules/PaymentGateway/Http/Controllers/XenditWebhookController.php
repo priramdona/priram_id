@@ -63,23 +63,23 @@ class XenditWebhookController extends Controller
                         $xenditCreatePayments->status = $status;
                     }
 
-                    $sourceTransaction = null;
-                    //update Source Transactions
-                    if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
-                        $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
-                    }
+                    // $sourceTransaction = null;
+                    // //update Source Transactions
+                    // if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
+                    //     $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
+                    // }
 
-                    if ($sourceTransaction){
-                        if ($data['event'] == 'payment_method.expired') {
-                            if ($sourceTransaction->payment_status != 'Paid') {
-                                $sourceTransaction->payment_status = $status;
-                            }
-                        }else{
-                            $sourceTransaction->payment_status = $status;
-                        }
-                    }else{
-                        return response()->json("No Source Found....", 422);
-                    }
+                    // if ($sourceTransaction){
+                    //     if ($data['event'] == 'payment_method.expired') {
+                    //         if ($sourceTransaction->payment_status != 'Paid') {
+                    //             $sourceTransaction->payment_status = $status;
+                    //         }
+                    //     }else{
+                    //         $sourceTransaction->payment_status = $status;
+                    //     }
+                    // }else{
+                    //     return response()->json("No Source Found....", 422);
+                    // }
                     //end of Update Source Transactions
 
                      //update business_amount
@@ -146,7 +146,7 @@ class XenditWebhookController extends Controller
                 }
 
                 $xenditCreatePayments->save();
-                $sourceTransaction->save();
+                // $sourceTransaction->save();
                 $businessAmount->save();
                 $paymentRequest->save();
                 $paymentMethod->save();
