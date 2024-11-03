@@ -121,7 +121,7 @@ class QuotationController extends Controller
                 ->first();
 
                 $paymentFee  = $this->paymentFees(
-                    $request->sale_amount,
+                    $request->total_amount,
                     $paymentChannelData->fee_type_1,
                     $paymentChannelData->fee_type_2,
                     $paymentChannelData->fee_value_1 ?? 0,
