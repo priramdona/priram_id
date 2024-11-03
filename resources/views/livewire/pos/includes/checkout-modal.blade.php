@@ -743,6 +743,15 @@
                                 newtransaction();
                             }
                         });
+                    }else{
+                        Swal.fire({
+                                title: 'Awaiting Payment',
+                                text: 'Payment Not Received',
+                                icon: 'info',
+                                didOpen: () => {
+                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                },
+                                })
                     }
                 }
             });
