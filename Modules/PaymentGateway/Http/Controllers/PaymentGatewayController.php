@@ -279,6 +279,9 @@ class PaymentGatewayController extends Controller
         int $totalAmount,
         int $discountAmount,
         int $saleAmount,
+        ?int $expryDuration = 86400,
+        ?bool $sendNotification = true,
+
     ){
         Configuration::setXenditKey(env('XENDIT_KEY'));
         $apiInstance = new InvoiceApi();
@@ -303,6 +306,15 @@ class PaymentGatewayController extends Controller
             ];
         }
 
+        $notificationPreference = null;
+        if ($sendNotification){
+            $notificationPreference = [
+                'invoice_created' => ['whatsapp', 'email'],
+                'invoice_reminder' => ['whatsapp', 'email'],
+                'invoice_paid' => ['whatsapp', 'email']
+            ];
+        }
+
         $payloadCreateInvoice = [
             'external_id' => $idTransaction,
             'description' => 'Invoice for ' . $customer->customer_name . ' Date : ' . Carbon::now()->format('d-M-Y') . ' Total : ' . format_currency($totalAmount),
@@ -322,12 +334,8 @@ class PaymentGatewayController extends Controller
                     ]
                 ],
             ],
-            'customer_notification_preference' => [
-                'invoice_created' => ['whatsapp', 'email'],
-                'invoice_reminder' => ['whatsapp', 'email'],
-                'invoice_paid' => ['whatsapp', 'email']
-            ],
-            'invoice_duration' => 86400,
+            'customer_notification_preference' => $notificationPreference,
+            'invoice_duration' => $expryDuration,
             'success_redirect_url' => 'https://redirect.me/success', //webView if Success
             'failure_redirect_url' => 'https://redirect.me/failure',
 
@@ -358,11 +366,11 @@ class PaymentGatewayController extends Controller
                 ]
             ],
             'payer_email' => $customer->customer_email,
-            'should_send_email' => true,
+            'should_send_email' => $sendNotification,
             'should_authenticate_credit_card' => true,
             ];
 
-
+// dd($payloadCreateInvoice);
         try {
             $createInvoiceRequest = new CreateInvoiceRequest($payloadCreateInvoice);
             $dataRequest = $apiInstance->createInvoice($createInvoiceRequest, $forUserId);
@@ -415,7 +423,7 @@ class PaymentGatewayController extends Controller
                 'amount' => $xenditInvoiceRequest->amount,
                 'transaction_amount' => $saleAmount ?? null,
                 'payment_type' => 'INVOICE',
-                'channel_code' => 'CREDIT_CARD',
+                'channel_code' => 'INVOICE_LINK',
                 'status' => 'PENDING',
             ]);
 

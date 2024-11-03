@@ -26,6 +26,11 @@ class CreateQuotationsTable extends Migration
             $table->decimal('shipping_amount',14,2)->default(0);
             $table->decimal('total_amount',14,2)->default(0);
             $table->string('status');
+            $table->boolean('with_invoice')->default(false);
+            $table->foreignUuid('xendit_invoice_request_id')->references('id')->on('xendit_invoice_requests')->nullable();
+            $table->string('invoice_status')->nullable();
+            $table->text('invoice_url')->nullable();
+            $table->date('invoice_expiry_date')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
             $table->softDeletes();

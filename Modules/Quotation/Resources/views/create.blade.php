@@ -68,14 +68,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <input
-                                        type="checkbox"
-                                        name="send_invoice_link"
-                                        id="send_invoice_link"
-                                        value=""> Send with Invoice Payment to Email
+                              <!-- Checkbox untuk Send Invoice -->
+                              <div class="card">
+                                <div class="card-body">
+                                    <div>
+                                        <label for="with_invoice">
+                                            <input type="checkbox" id="with_invoice" name="with_invoice" value="1" onchange="toggleExpiryDate()"
+                                                {{ old('with_invoice') ? 'checked' : '' }}>
+                                            Send Invoice
+                                        </label>
+                                    </div>
+
+                                    <!-- Input untuk Invoice Expiry Date yang muncul jika Send Invoice dicentang -->
+                                    <div id="expiry_date_field" style="display: none;">
+                                        <label for="invoice_expiry_date">Invoice Expiry Date:</label>
+                                        <input type="date" id="invoice_expiry_date" name="invoice_expiry_date" value="{{ old('invoice_expiry_date') }}">
                                     </div>
                                 </div>
                             </div>
@@ -107,6 +114,17 @@
         if (event.key === 'Enter') {
             event.preventDefault();  // Mencegah submit
         }
+    });
+
+    function toggleExpiryDate() {
+        const sendInvoice = document.getElementById('with_invoice');
+        const expiryDateField = document.getElementById('expiry_date_field');
+        expiryDateField.style.display = sendInvoice.checked ? 'block' : 'none';
+    }
+
+    // Cek status pada load page agar tampil sesuai kondisi lama
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleExpiryDate();
     });
 </script>
 @endpush

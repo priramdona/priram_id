@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
    //Send Quotation Mail
-Route::get('/quotation/mail/{quotation}', 'SendQuotationEmailController')->name('quotation.email');
 
 Route::group(['middleware' => 'auth'], function () {
     //Generate PDF
@@ -30,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Send Quotation Mail
     Route::get('/quotation/mail/{quotation}', 'SendQuotationEmailController')->name('quotation.email');
+    // Route::get('/quotation/mail/{quotation}', 'SendQuotationEmailController')->name('quotation.email');
 
     //Sales Form Quotation
     Route::get('/quotation-sales/{quotation}', 'QuotationSalesController')->name('quotation-sales.create');

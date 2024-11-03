@@ -1,120 +1,303 @@
-{{-- <!doctype html>
-<html lang="en">
-<head>
+<!DOCTYPE html>
+<html>
+<head lang="en">
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Quotation Details</title>
-    <link rel="stylesheet" href="{{ asset('b3/bootstrap.min.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Quottion Email</title>
+    <link href="../../modules/core/common/img/favicon.ico" rel="shortcut icon">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700,700i" rel="stylesheet">
+
+    <!-- v2.0.0 -->
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/bootstrap/css/bootstrap.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/perfect-scrollbar/css/perfect-scrollbar.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/ladda//dist/ladda-themeless.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/bootstrap-select//dist/css/bootstrap-select.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/select2//dist/css/select2.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/fullcalendar//dist/fullcalendar.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/bootstrap-sweetalert//dist/sweetalert.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/summernote//dist/summernote.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/owl.carousel//dist/assets/owl.carousel.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/ionrangeslider/css/ion.rangeSlider.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/datatables/media/css/dataTables.bootstrap4.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/c3/c3.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/chartist//dist/chartist.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/nprogress/nprogress.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/jquery-steps/demo/css/jquery.steps.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/dropify//dist/css/dropify.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/font-linearicons/style.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/font-icomoon/style.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/font-awesome/css/font-awesome.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/cleanhtmlaudioplayer/src/player.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/vendors/cleanhtmlvideoplayer/src/player.css') !!}">
+
+    <script src="{!! asset('/dist/vendors/jquery//dist/jquery.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/popper.js//dist/umd/popper.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/bootstrap/js/bootstrap.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/jquery-mousewheel/jquery.mousewheel.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/perfect-scrollbar/js/perfect-scrollbar.jquery.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/spin.js/spin.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/ladda//dist/ladda.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/bootstrap-select//dist/js/bootstrap-select.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/select2//dist/js/select2.full.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/html5-form-validation//dist/jquery.validation.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/jquery-typeahead//dist/jquery.typeahead.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/jquery-mask-plugin//dist/jquery.mask.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/autosize//dist/autosize.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/bootstrap-show-password/bootstrap-show-password.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/moment/min/moment.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/fullcalendar//dist/fullcalendar.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/bootstrap-sweetalert//dist/sweetalert.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/remarkable-bootstrap-notify//dist/bootstrap-notify.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/summernote//dist/summernote.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/owl.carousel//dist/owl.carousel.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/ionrangeslider/js/ion.rangeSlider.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/nestable/jquery.nestable.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/datatables/media/js/jquery.dataTables.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/datatables/media/js/dataTables.bootstrap4.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/datatables-fixedcolumns/js/dataTables.fixedColumns.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/datatables-responsive/js/dataTables.responsive.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/editable-table/mindmup-editabletable.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/d3/d3.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/c3/c3.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/chartist//dist/chartist.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/peity/jquery.peity.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/chartist-plugin-tooltip//dist/chartist-plugin-tooltip.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/jquery-countTo/jquery.countTo.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/nprogress/nprogress.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/jquery-steps/build/jquery.steps.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/chart.js//dist/Chart.bundle.min.js') !!}"></script>
+    <script src="{!! asset('/dist/vendors/dropify//dist/js/dropify.min.js') !!}"></script>
+
+    <!-- CLEAN UI ADMIN TEMPLATE MODULES-->
+    <!-- v2.0.0 -->
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/core/common/core.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/vendors/common/vendors.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/layouts/common/layouts-pack.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/themes/common/themes.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/menu-left/common/menu-left.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/menu-right/common/menu-right.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/top-bar/common/top-bar.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/footer/common/footer.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/pages/common/pages.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/ecommerce/common/ecommerce.cleanui.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('/dist/modules/apps/common/apps.cleanui.css') !!}">
+    <script src="{!! asset('/dist/modules/menu-left/common/menu-left.cleanui.js') !!}"></script>
+    <script src="{!! asset('/dist/modules/menu-right/common/menu-right.cleanui.js') !!}"></script>
+    @yield('css')
+    <!-- End-CSS -->
 </head>
 <body>
-<div class="container-fluid" style="margin: 20px 0;">
-    <div class="row">
-        <div class="col-md-12">
-            <div style="text-align: center;margin-bottom: 25px;">
-                <img width="180" src="{{ asset('images/logo-dark.png') }}" alt="Logo">
-                <h4 style="margin-bottom: 20px;">
-                    <span>Reference::</span> <strong>{{ $quotation->reference }}</strong>
-                </h4>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Company Info:</h4>
-                            <div><strong>{{ settings()->company_name }}</strong></div>
-                            <div>{{ settings()->company_address }}</div>
-                            <div>Email: {{ settings()->company_email }}</div>
-                            <div>Phone: {{ settings()->company_phone }}</div>
-                        </div>
 
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Customer Info:</h4>
-                            <div><strong>{{ $customer->customer_name }}</strong></div>
-                            <div>{{ $customer->address }}</div>
-                            <div>Email: {{ $customer->customer_email }}</div>
-                            <div>Phone: {{ $customer->customer_phone }}</div>
-                        </div>
-                    </div>
-
-                    <div class="table-responsive" style="margin-top: 30px;">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th class="align-middle">Product</th>
-                                <th class="align-middle">Net Unit Price</th>
-                                <th class="align-middle">Quantity</th>
-                                <th class="align-middle">Discount</th>
-                                <th class="align-middle">Tax</th>
-                                <th class="align-middle">Sub Total</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($quotation->quotationDetails as $item)
+<!-- START: components/mail-templates -->
+<section class="card">
+    <div class="card-header">
+        <span class="cat__core__title">
+            <strong>Quotation</strong>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-6 col-lg-12">
+                <h5 class="text-black"><strong>{{ $business->name }}</strong></h5>
+                {{-- <p class="text-muted">business_name | business_phone | business_email</p> --}}
+                <div>{{ $business->address }}</div>
+                <div>Email: {{ $business->email }}</div>
+                <div>Phone: {{ $business->phone }}</div>
+                <di v class="mb-5">
+                    <!-- Start Letter -->
+                    <div width="100%" style="background: #eceff4; padding: 50px 20px; color: #514d6a;">
+                        <div style="max-width: 700px; margin: 0px auto; font-size: 14px">
+                            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-bottom: 20px">
                                 <tr>
-                                    <td class="align-middle">
-                                        {{ $item->product_name }} <br>
-                                        <span class="badge badge-success">
-                                            {{ $item->product_code }}
+                                    <td style="vertical-align: top;">
+                                        <img src="{{ asset('images/logo-dark.png') }}" alt="Kasir Mulia" style="height: 40px" />
+                                    </td>
+                                    <td style="text-align: right; vertical-align: middle;">
+                                        <span style="color: #a09bb9;">
+                                            Generated by Kasir Mulia
                                         </span>
                                     </td>
-
-                                    <td class="align-middle">{{ format_currency($item->unit_price) }}</td>
-
-                                    <td class="align-middle">
-                                        {{ $item->quantity }}
-                                    </td>
-
-                                    <td class="align-middle">
-                                        {{ format_currency($item->product_discount_amount) }}
-                                    </td>
-
-                                    <td class="align-middle">
-                                        {{ format_currency($item->product_tax_amount) }}
-                                    </td>
-
-                                    <td class="align-middle">
-                                        {{ format_currency($item->sub_total) }}
-                                    </td>
                                 </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 col-md-offset-8">
-                            <table class="table">
-                                <tbody>
-                                <tr>
-                                    <td class="left"><strong>Discount ({{ $quotation->discount_percentage }}%)</strong></td>
-                                    <td class="right">{{ format_currency($quotation->discount_amount) }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="left"><strong>Tax ({{ $quotation->tax_percentage }}%)</strong></td>
-                                    <td class="right">{{ format_currency($quotation->tax_amount) }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="left"><strong>Shipping)</strong></td>
-                                    <td class="right">{{ format_currency($quotation->shipping_amount) }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="left"><strong>Grand Total</strong></td>
-                                    <td class="right"><strong>{{ format_currency($quotation->total_amount) }}</strong></td>
-                                </tr>
-                                </tbody>
                             </table>
+                            <div style="padding: 40px 40px 20px 40px; background: #fff;">
+                                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                                    <tbody><tr>
+                                        <td>
+                                            <h2 style="margin-bottom: 20px; color: #24222f; font-weight: 600">Thanks for Being Partner!</h2>
+                                            <p>
+                                                <span style="color: #a09bb9">{{ \Carbon\Carbon::parse( $quotation->date )->format('D, d M Y') }}</span>
+                                            </p>
+                                            <br />
+                                            <h5 style="margin-bottom: 20px; color: #24222f; font-weight: 600">Our Quotation #{{ $quotation->reference }}</h5>
+                                            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 25%; text-align: center;">Product</th>
+                                                        <th style="width: 15%; text-align: center;">Price</th>
+                                                        <th style="width: 5%; text-align: center;">Qty</th>
+                                                        <th style="width: 15%; text-align: center;">Discount</th>
+                                                        <th style="width: 15%; text-align: center;">Tax</th>
+                                                        <th style="width: 25%; text-align: center;">Sub Total</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($quotation->quotationDetails as $item)
+                                                            <tr>
+                                                                <td style="width: 25%; text-align: center; padding: 10px 10px 10px 0px; border-top: 3px solid #514d6a;">
+                                                                    {{ $item->product_name }} <br>
+                                                                    <span class="badge badge-success">
+                                                                        {{ $item->product_code }}
+                                                                    </span>
+                                                                </td>
+
+                                                                <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a;">
+                                                                    {{ format_currency($item->unit_price) }}
+                                                                </td>
+
+                                                                <td style="width: 5%; text-align: center; border-top: 3px solid #514d6a;">
+                                                                    {{ $item->quantity }}
+                                                                </td>
+
+                                                                <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a;">
+                                                                    {{ format_currency($item->product_discount_amount) }}
+                                                                </td>
+
+                                                                <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a;">
+                                                                    {{ format_currency($item->product_tax_amount) }}
+                                                                </td>
+
+                                                                <td style="width: 25%; text-align: center; border-top: 3px solid #514d6a;font-weight: bold;">
+                                                                    {{ format_currency($item->sub_total) }}
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+
+                                                    </tbody>
+                                                </table>
+                                                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+
+                                                <tr style="color: #a09bb9;">
+
+                                                    <tr style="color: #a09bb9;">
+                                                        <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 0px solid #d9d7e0;">
+                                                            Discount
+                                                        </td>
+                                                        <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 0px solid #d9d7e0;">
+                                                            {{ $quotation->discount_percentage }}%
+                                                        </td>
+                                                        <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 0px solid #d9d7e0;">
+                                                            {{ format_currency($quotation->discount_amount) }}
+                                                        </td>
+                                                    </tr>
+                                                    <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 0px solid #d9d7e0;">
+                                                        Tax
+                                                    </td>
+                                                    <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 0px solid #d9d7e0;">
+                                                        {{ $quotation->tax_percentage }}%
+                                                    </td>
+                                                    <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 0px solid #d9d7e0;">
+                                                        {{ format_currency($quotation->tax_amount) }}
+                                                    </td>
+                                                </tr>
+
+                                                <tr style="color: #a09bb9;">
+                                                    <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 0px solid #d9d7e0;">
+                                                        Shipping
+                                                    </td>
+                                                    <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 0px solid #d9d7e0;">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 0px solid #d9d7e0;">
+                                                        {{ format_currency($quotation->shipping_amount) }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align: left; padding: 10px 10px 10px 0px; border-top: 3px solid #514d6a;">
+                                                        <span style="font-size: 18px; font-weight: bold">Total</span>
+                                                    </td>
+                                                    <td style="width: 10%; text-align: center; padding: 10px 10px; border-top: 3px solid #514d6a;">
+
+                                                    </td>
+                                                    <td style="width: 20%; text-align: right; padding: 10px 0px 10px 10px; white-space: nowrap; border-top: 3px solid #514d6a;">
+                                                        <span style="font-size: 18px; font-weight: bold">{{ format_currency($quotation->total_amount) }}</span>
+                                                    </td>
+                                                </tr>
+
+                                            </table>
+                                            <br/>
+                                            <br/>
+                                            <h5 style="margin-bottom: 20px; color: #24222f; font-weight: 600">Your Details</h5>
+                                            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                                                <tr>   <div class="col-md-6 mb-3 mb-md-0">
+
+                                                    <td style="text-align: left; padding: 10px 10px 10px 0px; border-top: 1px solid #d9d7e0; white-space: nowrap; vertical-align: top">
+                                                        Customer Information
+                                                    </td>
+                                                    <td style="width: 50%;padding: 10px 0px 10px 10px; border-top: 1px solid #d9d7e0;">
+                                                    <div style="font-weight: bold">{{ $customer->customer_name }}</div>
+                                                    <div>{{ $customer->address }}, {{ $customer->city }}</div>
+                                                    <div>{{ $customer->province }},  {{ $customer->postal_code }}.</div>
+                                                    <div>Email: {{ $customer->customer_email }}</div>
+                                                    <div>Phone: {{ $customer->customer_phone }}</div>
+                                                    </td>
+                                                </tr>
+
+                                            </table>
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                            <div style="padding: 40px 40px 20px 40px; background: #fff;">
+                                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                                    <tbody><tr>
+                                        <td>
+
+                                            <p style="font-size: 18px; font-weight: bold">Dear {{ $customer->customer_name }},</p>
+                                            <p style="text-align: left; padding: 10px 10px 10px 0px;">We hope you are interested in our products. If you want to order our products, For further information, please contact Our Phone Number <span style="font-weight: bold">{{ $customer->customer_phone }}</span> or Our Email : <span style="font-weight: bold">{{ $customer->customer_email }}</span>.</p>
+                                            <p font-weight: bold>Additional Note :
+                                                <span style="color: #a09bb9">{{ $quotation->note}}</span>
+                                            </p>
+                                            @if($quotation->with_invoice)
+                                            <div style="text-align: center">
+
+                                                <a href="{{ $quotation->invoice_url}}" style="display: inline-block; padding: 11px 30px 6px; margin: 20px 0px 20px; font-size: 15px; color: #fff; background: #01a8fe; border-radius: 5px">
+                                                    Invoice
+                                                </a>
+
+                                                <p style="font-size: 18px; font-weight: bold">Invoice Expire Date : {{ \Carbon\Carbon::parse( $quotation->invoice_expiry_date )->format('D, d M Y H:m') }}</p>
+
+                                            </div>
+                                            @endif
+                                            <p>Thanks for being great customer. Let it be!</p>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <br />
+                                            <br />
+                                            <p style="text-align: center">Notice something wrong? <a href="javascript: void(0);" style="color: #01a8fe; text-decoration: underline;">Contact our support team</a> and we'll e happy to help.</p>
+                            </div>
+                            <div style="text-align: center; font-size: 12px; color: #a09bb9; margin-top: 20px">
+                                <p>
+                                    Powered by Kasir Mulia
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 25px;">
-                        <div class="col-md-12">
-                            <p style="font-style: italic;text-align: center">{{ settings()->company_name }} &copy; {{ date('Y') }}</p>
-                        </div>
-                    </div>
-                </div>
+                    <!-- End Start Letter -->
+                </di>
             </div>
         </div>
     </div>
-</div>
+</section>
+<!-- END: components/mail-templates -->
+
 </body>
-</html> --}}
+</html>
