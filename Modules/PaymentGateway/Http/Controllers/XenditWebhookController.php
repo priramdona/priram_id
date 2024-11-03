@@ -262,7 +262,12 @@ class XenditWebhookController extends Controller
         try {
 
             if ($data['event'] == 'payment.succeeded') {
-                $referenceId = $data['data']['payment_method']['reference_id'];
+                $referenceId = $data['data']['payment_method']['reference_id'] ?? null;
+
+                if (!$referenceId){
+                    return response()->json("Invalid reference_id....", 422);
+                }
+
                 $xenditCreatePaymentRequest = XenditPaymentRequest::query()
                 ->where('reference_id', $referenceId)
                 ->first();
