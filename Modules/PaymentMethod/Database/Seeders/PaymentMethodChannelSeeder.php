@@ -233,9 +233,48 @@ class PaymentMethodChannelSeeder extends Seeder
                 };
             }
 
+            if ($paymentMethod['code'] == 'INVOICE') {
+
+                $invoiceDatas = $this->invoiceData($paymentMethodData->id);
+
+                foreach($invoiceDatas as $invoiceData){
+                    PaymentChannel::create($invoiceData);
+                };
+            }
+
 
         }
 }
+
+public function invoiceData($idPaymentMethod): array
+    {
+        $dataCreditCard = [
+            [
+                'name' => 'Invoice Link',
+                'payment_method_id' => $idPaymentMethod,
+                'code' => 'INVOICE',
+                'type' => 'INVOICE',
+                'reference' => null,
+                'status' => true,
+                'source' => 'xendit',
+                'image' => null,
+                'action' => 'invoice_link',
+                'min' => 10000,
+                'max' => 200000000,
+                'fee_type_1' => 'amount',
+                'fee_value_1' => 10000,
+                'fee_type_2' => null,
+                'fee_value_2' => null,
+                'is_ppn' => true,
+                'expired' => 15,
+                'payment_process' => 'instant',
+                'settlement' => 2,
+            ]
+
+    ];
+
+    return $dataCreditCard;
+    }
 public function payLater($idPaymentMethod): array
     {
         $dataPayLater = [
