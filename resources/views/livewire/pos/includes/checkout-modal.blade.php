@@ -466,12 +466,11 @@
                                                                                     didOpen: () => {
                                                                                             $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                                                                                     },
-                                                                                    })
-                                                                                    // .then((result) => {
-                                                                                // if (result.isConfirmed) {
+                                                                                    }).then((result) => {
+                                                                                if (result.isConfirmed) {
                                                                                     newtransaction();
-                                                                                // }
-                                                                            // });
+                                                                                }
+                                                                            });
                                                                         }
                                                                     }
                                                                 });
