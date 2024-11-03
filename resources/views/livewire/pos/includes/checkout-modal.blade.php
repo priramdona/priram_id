@@ -186,10 +186,12 @@
 
                 </div>
 
-                <p id="lbl_payment_information">If <b>Succeed</b> the amount will automatically add to your <i class="bi bi-cash text-primary"></i><span style="background-color: yellow;"><b>"[Balance]"</b></span>.<br> after settlement process. Please makesure the payment process is successfull.</p>
+                {{-- <p id="lbl_payment_information">If <b>Succeed</b> the amount will automatically add to your <i class="bi bi-cash text-primary"></i><span style="background-color: yellow;"><b>"[Balance]"</b></span>.<br> after settlement process. Please makesure the payment process is successfull.</p> --}}
 
             </div>
             <div class="modal-footer">
+
+                <button type="button" class="btn btn-success" name="checkPayment" id="checkPayment" onclick="fetchpaymentstatus()">Check Payment</button>
                 <button type="button" class="btn btn-primary" name="manualConfirmation" id="manualConfirmation" onclick="window.location='{{ route('app.pos.index') }}'" >New Transaction</button>
                 {{-- <button type="button" class="btn btn-warning" name="setToWaiting" id="setToWaiting" hidden>Set to Waiting status</button> --}}
              </div>
@@ -716,7 +718,35 @@
                 });
         }
 
+        function fetchpaymentstatus() {
+            var payment_id = document.getElementById('payment_id').value;
+            $.ajax({
+                url: "{{ url('/check-payment') }}/",
+                method: "GET",
+                data: {
+                    'payment_request_id': payment_id,
+                },
+                dataType: 'json',
+                success: function(paymentinfo) {
 
+                    if(paymentinfo.status == "Paid"){
+                        clearInterval(startautosave);
+                        Swal.fire({
+                                title: 'Payment Success',
+                                text: 'Your Payment has been Successful..!!',
+                                icon: 'success',
+                                didOpen: () => {
+                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                },
+                                }).then((result) => {
+                            if (result.isConfirmed) {
+                                newtransaction();
+                            }
+                        });
+                    }
+                }
+            });
+        }
         function fetchdetailchannel() {
             var paymentChannel = document.getElementById('payment_channel').value;
             var selectedOptionText = $('#payment_channel option:selected').text();
