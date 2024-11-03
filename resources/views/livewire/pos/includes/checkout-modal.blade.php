@@ -459,7 +459,7 @@
 
                                                                     console.log('1'.paymentinfo);
                                                                     console.log('2'.paymentinfo.response_type);
-                                                                        if(paymentinfo.response_type == "Paid"){
+                                                                        if(paymentinfo.status == "Paid"){
                                                                             Swal.fire({
                                                                                     title: 'Payment Success',
                                                                                     text: 'Your Payment has been Successful..!!',
