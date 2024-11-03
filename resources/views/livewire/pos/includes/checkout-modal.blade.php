@@ -325,8 +325,9 @@
                                                     didOpen: () => {
                                                             $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                                                     },
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
+                                                    })
+                                                    // .then((result) => {
+                                                        // if (result.isConfirmed) {
                                                             $('#nominal_information').text(response.nominal_information);
                                                             $('#actionModal').modal('show');
                                                             $('#checkoutModal').modal('hide');
@@ -476,8 +477,8 @@
                                                             }, 1000);
                                                             }
                                                         });
-                                                        }
-                                                    });;
+                                                        // }
+                                                    // });
 
                                                 // }
                                             }
