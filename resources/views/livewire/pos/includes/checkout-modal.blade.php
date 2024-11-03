@@ -446,6 +446,8 @@
                                                                 }
 
                                                                 startautosave = setInterval(function() {
+
+                                                                    console.log("Tombol OK ditekan");
                                                                     $.ajax({
                                                                     url: "{{ url('/check-payment') }}/",
                                                                     method: "GET",
@@ -454,7 +456,7 @@
                                                                     },
                                                                     dataType: 'json',
                                                                     success: function(paymentinfo) {
-                                                                        if(paymentinfo.response_type == "PAID"){
+                                                                        if(paymentinfo.response_type == "Paid"){
                                                                             Swal.fire({
                                                                                     title: 'Payment Success',
                                                                                     text: 'Your Payment has been Successful..!!',

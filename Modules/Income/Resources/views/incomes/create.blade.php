@@ -459,7 +459,6 @@
                                                                                         },
                                                                         }).then((result) => {
                                                                     if (result.isConfirmed) {
-                                                                        console.log("Tombol OK ditekan");
                                                                         newtransaction();
                                                                     }
                                                                 });
