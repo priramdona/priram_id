@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\PaymentGateway\Entities\XenditCreatePayment;
 use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
 use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\PaymentMethod\Entities\PaymentMethod;
@@ -62,6 +63,14 @@ class PaymentMethodController extends Controller
         }
 
     }
+    public function checkPayment(request $request)
+    {
+        $createPayment = XenditCreatePayment::find($request->payment_request_id);
+
+        return response()->json($createPayment);
+
+    }
+
     public function getPaymentMethod(string $id)
     {
         $paymentMethod = PaymentMethod::find($id);

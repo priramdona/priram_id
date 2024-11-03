@@ -22,6 +22,7 @@ Route::group([], function () {
     Route::get('/get-payment-channel-details', [PaymentMethodController::class, 'getPaymentChannelDetail']);
     Route::get('/get-payment-method', [PaymentMethodController::class, 'getAllPaymentMethod']);
     Route::get('/get-payment-method-id/{id}', [PaymentMethodController::class, 'getPaymentMethod']);
+    Route::get('/check-payment', [PaymentMethodController::class, 'checkPayment']);
     Route::get('/get-payment-channel-id/{id}', [PaymentMethodController::class, 'getPaymentChannel']);
     Route::get('/get-payment', [PosController::class, 'createPaymentGatewayRequest']);
     Route::get('/get-barcode', [PosController::class, 'getBarcodePayment']);

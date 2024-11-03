@@ -446,19 +446,31 @@
                                                                 }
 
                                                                 startautosave = setInterval(function() {
-                                                                Swal.fire({
-                                                                        title: 'Payment Success',
-                                                                        text: 'Your Payment has been Successful..!!',
-                                                                        icon: 'success',
-                                                                        didOpen: () => {
-                                                                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                                                                        },
-                                                                        }).then((result) => {
-                                                                    if (result.isConfirmed) {
-                                                                        newtransaction();
+                                                                    $.ajax({
+                                                                    url: "{{ url('/check-payment') }}/",
+                                                                    method: "GET",
+                                                                    data: {
+                                                                        'payment_request_id': response.payment_request_id,
+                                                                    },
+                                                                    dataType: 'json',
+                                                                    success: function(paymentinfo) {
+                                                                        if(paymentinfo.response_type == "PAID"){
+                                                                            Swal.fire({
+                                                                                    title: 'Payment Success',
+                                                                                    text: 'Your Payment has been Successful..!!',
+                                                                                    icon: 'success',
+                                                                                    didOpen: () => {
+                                                                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                                                                    },
+                                                                                    }).then((result) => {
+                                                                                if (result.isConfirmed) {
+                                                                                    newtransaction();
+                                                                                }
+                                                                            });
+                                                                        }
                                                                     }
                                                                 });
-                                                            }, 10000);
+                                                            }, 1000);
                                                             }
                                                         });
                                                         }
