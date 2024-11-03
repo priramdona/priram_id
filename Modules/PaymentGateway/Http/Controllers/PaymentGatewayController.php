@@ -805,6 +805,82 @@ class PaymentGatewayController extends Controller
         }
     }
 
+    public function createQRCode(
+        string $refId,
+        string $channelCode,
+        float $totalAmount,
+        float $saleAmount,
+        ){
+
+            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $secret_key = 'Basic ' . $base64;
+            $url = 'https://api.xendit.co/qr_codes';
+
+        try {
+            $timestamp = Carbon::now(config('app.timezone'))->addDay()->toIso8601String();
+
+            $payloadRequest = [
+                "reference_id" => $refId,
+                "type" => 'DYNAMIC',
+                "currency" => 'IDR',
+                "amount" => $totalAmount,
+                "expires_at" => $timestamp,
+            ];
+
+            $dataRequest = Http::withHeaders([
+                'Authorization' => $secret_key,
+                'for-user-id' => null
+            ])->post($url, $payloadRequest);
+
+
+            dd($dataRequest);
+            if ($dataRequest->failed()) {
+                throw new Exception('Error Request Create QR Code');
+            }
+
+            $apiResult = $dataRequest->object();
+
+            // $payloadBusinessAmount = [
+            //     'business_id' => Auth::user()->business_id ?? null,
+            //     'status_credit' => 1,
+            //     'transactional_type' => XenditVirtualAccountRequest::class ?? null,
+            //     'transactional_id' => $xenditCreateVirtualAccount->id ?? null,
+            //     'reference_id' => $apiResult->external_id,
+            //     'amount' => $totalAmount ?? null,
+            //     'sale_amount' =>  $saleAmount ?? null,
+            //     'received_amount' => 0,
+            //     'deduction_amount' => 0,
+            //     'status' => 'PENDING_PAYMENT',
+            // ];
+
+            // businessAmount::create($payloadBusinessAmount);
+
+            // $xenditCreatePayments = XenditCreatePayment::create([
+            //     'reference_id' => $apiResult->external_id,
+            //     'transactional_type' => XenditVirtualAccountRequest::class,
+            //     'transactional_id' => $xenditCreateVirtualAccount->id,
+            //     'amount' => $totalAmount ?? null,
+            //     'transaction_amount' => $saleAmount ?? null,
+            //     'payment_type' => 'VIRTUAL_ACCOUNT',
+            //     'channel_code' => $channelCode,
+            //     'status' => 'PENDING',
+            // ]);
+
+
+            // $result = [
+            //     'id' => $xenditCreatePayments->id,
+            //     'reference_id' => $xenditCreatePayments->reference_id,
+            //     // 'virtual_account' => $xenditCreateVirtualAccount,
+            // ];
+
+        } catch (Exception $e) {
+            // Tangani exception atau berikan pesan error
+            throw new \Exception("Request failed with status: " . $e->getMessage());
+        }
+
+        return $result;
+    }
+
     public function createVirtualAccount(
         string $refId,
         string $channelCode,

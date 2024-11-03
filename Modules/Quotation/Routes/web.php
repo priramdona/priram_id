@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+   //Send Quotation Mail
+Route::get('/quotation/mail/{quotation}', 'SendQuotationEmailController')->name('quotation.email');
 
 Route::group(['middleware' => 'auth'], function () {
     //Generate PDF
