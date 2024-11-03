@@ -16,7 +16,7 @@ class VerifyCsrfToken extends Middleware
         '/callbacks/*',
         '/payment-gateways/callback/*',
         'payment-gateways/payment-methods-callback',
-        'payment-gateways/payment-method-succeeded',
+        'payment-gateways/payment-methods-succeeded',
         'payment-gateways/create-va-callback',
         'payment-gateways/va-paid',
     ];

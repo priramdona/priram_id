@@ -19,7 +19,7 @@ Route::group([
     'prefix' => 'payment-gateways',
 ], function () {
     Route::any('/payment-methods-callback', [XenditWebhookController::class, 'callbackPaymentMethod']);
-    Route::any('/payment-method-succeeded', [XenditWebhookController::class, 'callbackPaymentSucceeded']);
+    Route::any('/payment-methods-succeeded', [XenditWebhookController::class, 'callbackPaymentSucceeded']);
     Route::any('/create-va-callback', [XenditWebhookController::class, 'callbackCreateVirtualAccount']);
     Route::any('/va-paid', [XenditWebhookController::class, 'callbackPaidVirtualAccount']);
 });

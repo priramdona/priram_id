@@ -447,7 +447,6 @@
 
                                                                 startautosave = setInterval(function() {
 
-                                                                    console.log(response.payment_request_id);
                                                                     $.ajax({
                                                                     url: "{{ url('/check-payment') }}/",
                                                                     method: "GET",
@@ -457,9 +456,8 @@
                                                                     dataType: 'json',
                                                                     success: function(paymentinfo) {
 
-                                                                    console.log(paymentinfo);
-                                                                    console.log(paymentinfo.status);
                                                                         if(paymentinfo.status == "Paid"){
+                                                                            clearInterval(startautosave);
                                                                             Swal.fire({
                                                                                     title: 'Payment Success',
                                                                                     text: 'Your Payment has been Successful..!!',

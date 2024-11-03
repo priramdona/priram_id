@@ -36,6 +36,8 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->json('shipping_information')->nullable();
             $table->json('items')->nullable();
+            $table->json('paid_information')->nullable();
+            $table->dateTime('transaction_timestamp')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

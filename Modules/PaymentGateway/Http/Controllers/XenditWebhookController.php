@@ -56,13 +56,11 @@ class XenditWebhookController extends Controller
 
                 if ($xenditCreatePayments){
                     if ($data['event'] == 'payment_method.expired') {
-                        if ($xenditCreatePayments->status != 'SUCCEEDED') {
+                        if ($xenditCreatePayments->status != 'Paid') {
                             $xenditCreatePayments->status = $status;
-                            $xenditCreatePayments->save();
                         }
                     }else{
                         $xenditCreatePayments->status = $status;
-                        $xenditCreatePayments->save();
                     }
 
                     $sourceTransaction = null;
@@ -72,8 +70,15 @@ class XenditWebhookController extends Controller
                     }
 
                     if ($sourceTransaction){
-                        $sourceTransaction->payment_status = $status;
-                        $sourceTransaction->save();
+                        if ($data['event'] == 'payment_method.expired') {
+                            if ($sourceTransaction->payment_status != 'Paid') {
+                                $sourceTransaction->payment_status = $status;
+                            }
+                        }else{
+                            $sourceTransaction->payment_status = $status;
+                        }
+                    }else{
+                        return response()->json("No Source Found....", 422);
                     }
                     //end of Update Source Transactions
 
@@ -84,8 +89,16 @@ class XenditWebhookController extends Controller
                     ->first();
 
                     if ($businessAmount){
-                        $businessAmount->status = $status;
-                        $businessAmount->save();
+                        if ($data['event'] == 'payment_method.expired') {
+                            if ($businessAmount->status != 'Paid') {
+                                $businessAmount->status = $status;
+                            }
+                        }else{
+                            $businessAmount->status = $status;
+                        }
+
+                    }else{
+                        return response()->json("No Business Found....", 422);
                     }
                     //end of update business_amount
 
@@ -96,8 +109,15 @@ class XenditWebhookController extends Controller
                     ->first();
 
                     if ($paymentRequest){
-                        $paymentRequest->status = $status;
-                        $paymentRequest->save();
+                        if ($data['event'] == 'payment_method.expired') {
+                            if ($paymentRequest->status != 'Paid') {
+                                $paymentRequest->status = $status;
+                            }
+                        }else{
+                            $paymentRequest->status = $status;
+                        }
+                    }else{
+                        return response()->json("No Payment Request Found....", 422);
                     }
                     //end of update xendit_Payment_requests
 
@@ -109,14 +129,27 @@ class XenditWebhookController extends Controller
                     ->first();
 
                     if ($paymentMethod){
-                        $paymentMethod->status = $status;
-                        $paymentMethod->save();
+                        if ($data['event'] == 'payment_method.expired') {
+                            if ($paymentMethod->status != 'Paid') {
+                                $paymentMethod->status = $status;
+                            }
+                        }else{
+                            $paymentMethod->status = $status;
+                        }
+                    }else{
+                        return response()->json("No Payment Method Found....", 422);
                     }
                     //end of Update xendit_Payment_method
                 }
                 else{
                     return response()->json("No Record Found....", 422);
                 }
+
+                $xenditCreatePayments->save();
+                $sourceTransaction->save();
+                $businessAmount->save();
+                $paymentRequest->save();
+                $paymentMethod->save();
 
             return response()->json([], 200);
 
@@ -140,8 +173,6 @@ class XenditWebhookController extends Controller
                     $xenditVirtualAccountRequest->status = "Paid";
                     $xenditVirtualAccountRequest->paid_information = json_encode($data);
                     $xenditVirtualAccountRequest->transaction_timestamp = Carbon::parse($data['transaction_timestamp'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
-                    $xenditVirtualAccountRequest->save();
-
 
                     $xenditCreatePayments = XenditCreatePayment::query()
                     ->where('reference_id', $data['external_id'])
@@ -184,7 +215,7 @@ class XenditWebhookController extends Controller
                     return response()->json("No Virtual Record Found....", 422);
                 }
 
-
+                $xenditVirtualAccountRequest->save();
                 $xenditCreatePayments->save();
                 $businessAmount->save();
                 $sourceTransaction->save();
@@ -226,49 +257,89 @@ class XenditWebhookController extends Controller
     }
     public function callbackPaymentSucceeded(Request $request)
     {
+        $data = [];
         $data = $request->all();
         try {
-            $status =  $data['data']['status'] ?? 'Erorr';
 
-            XenditCallbackPaymentRequest::create([
-                'id' => Str::orderedUuid()->toString(),
-                'callback_id' => $data['id'],
-                'reference_id' => $data['data']['reference_id'],
-                'data' => json_encode($data['data']),
-                'event' => $data['event'],
-                'status' => $status ,
-                'failure_code' => $data['data']['failure_code'],
-                'xen_business_id' =>  $data['business_id'] ?? null,
-            ]);
-
-            $xenditCreatePayments = XenditCreatePayment::query()
-                ->where('reference_id', $data['data']['reference_id'])
+            if ($data['event'] == 'payment.succeeded') {
+                $referenceId = $data['data']['payment_method']['reference_id'];
+                $xenditCreatePaymentRequest = XenditPaymentRequest::query()
+                ->where('reference_id', $referenceId)
                 ->first();
 
-            if ($xenditCreatePayments){
+                if ($xenditCreatePaymentRequest){
+                    $xenditCreatePaymentRequest->status = "Paid";
+                    $xenditCreatePaymentRequest->paid_information = json_encode($data);
+                    $xenditCreatePaymentRequest->transaction_timestamp = Carbon::parse($data['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
 
-                if ($data['event'] == 'payment_method.expired') {
-                    if ($xenditCreatePayments->status != 'SUCCEEDED') {
-                        $xenditCreatePayments->status = $status;
-                        $xenditCreatePayments->save();
-                    }
+                        $xenditCallbackPaymentRequest = XenditCallbackPaymentRequest::query()
+                        ->where('reference_id', $referenceId)
+                        ->first();
+
+                        if ($xenditCallbackPaymentRequest){
+                            $xenditCallbackPaymentRequest->status = "Paid";
+                        }else{
+                            return response()->json("Callback Payment Request Record not Found....", 422);
+                        }
+
+                        $xenditPaymentMethod = XenditPaymentMethod::query()
+                            ->where('reference_id', $referenceId)
+                            ->first();
+
+                        if ($xenditPaymentMethod){
+                            $xenditPaymentMethod->status = "Paid";
+                        }else{
+                            return response()->json("Payment Method Record not Found....", 422);
+                        }
+
+                        $xenditCreatePayments = XenditCreatePayment::query()
+                            ->where('reference_id', $referenceId)
+                            ->first();
+
+                        if ($xenditCreatePayments){
+                            $xenditCreatePayments->status = "Paid";
+                        }else{
+                            return response()->json("Create Payment Record not Found....", 422);
+                        }
+
+                         //update business_amount
+                            $businessAmount = null;
+                            $businessAmount = businessAmount::query()
+                            ->where('reference_id', $referenceId)
+                            ->first();
+
+                            if ($businessAmount){
+                                $businessAmount->status = 'Paid';
+                            }else{
+                                return response()->json("No Business Found....", 422);
+                            }
+                        //end of update business_amount
+
+                        if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
+                            $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
+                        }
+
+                        if ($sourceTransaction){
+                            $sourceTransaction->payment_status = "Paid";
+                        }else{
+                            return response()->json("Source Record not Found....", 422);
+                        }
+
                 }else{
-                    $xenditCreatePayments->status = $status;
-                    $xenditCreatePayments->save();
+                    return response()->json("Payment Request Record not Found....", 422);
                 }
-
-                if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
-                    $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
-                }
-
-                if ($sourceTransaction){
-                    $sourceTransaction->payment_status = $status;
-                    $sourceTransaction->save();
-                }
-
+            }else{
+                return response()->json("Event status invalid....", 422);
             }
 
-                return response()->json([], 200);
+            $xenditCreatePaymentRequest->save();
+            $xenditCallbackPaymentRequest->save();
+            $xenditPaymentMethod->save();
+            $xenditCreatePayments->save();
+            $businessAmount->save();
+            $sourceTransaction->save();
+
+            return response()->json([], 200);
 
 
 
