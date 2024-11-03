@@ -447,7 +447,7 @@
 
                                                                 startautosave = setInterval(function() {
 
-                                                                    console.log("Tombol OK ditekan");
+                                                                    console.log(paymentinfo.response_type);
                                                                     $.ajax({
                                                                     url: "{{ url('/check-payment') }}/",
                                                                     method: "GET",
