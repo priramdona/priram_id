@@ -192,7 +192,7 @@
             <div class="modal-footer">
 
                 <button type="button" class="btn btn-success" name="checkPayment" id="checkPayment" onclick="fetchpaymentstatus()">Check Payment</button>
-                <button type="button" class="btn btn-primary" name="manualConfirmation" id="manualConfirmation" onclick="window.location='{{ route('app.pos.index') }}'" >New Transaction</button>
+                <button type="button" class="btn btn-primary" name="manualConfirmation" id="manualConfirmation" onclick="manualnewtransacation()" >New Transaction</button>
                 {{-- <button type="button" class="btn btn-warning" name="setToWaiting" id="setToWaiting" hidden>Set to Waiting status</button> --}}
              </div>
         </div>
@@ -440,6 +440,8 @@
                                                                     Swal.fire({
                                                                     title: 'Payment Error',
                                                                     text: response.response_type,
+                                                                    allowOutsideClick: false,
+                                                                    allowEscapeKey: false,
                                                                     icon: 'error',
                                                                     didOpen: () => {
                                                                         $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
@@ -465,6 +467,8 @@
                                                                                     title: 'Payment Success',
                                                                                     text: 'Your Payment has been Successful..!!',
                                                                                     icon: 'success',
+                                                                                    allowOutsideClick: false,
+                                                                                    allowEscapeKey: false,
                                                                                     didOpen: () => {
                                                                                             $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                                                                                     },
@@ -716,6 +720,58 @@
                         }
                     }
                 });
+        }
+
+        function manualnewtransacation() {
+            var payment_id = document.getElementById('payment_id').value;
+            $.ajax({
+                url: "{{ url('/check-payment') }}/",
+                method: "GET",
+                data: {
+                    'payment_request_id': payment_id,
+                },
+                dataType: 'json',
+                success: function(paymentinfo) {
+
+                    if(paymentinfo.status == "Paid"){
+                        clearInterval(startautosave);
+                        Swal.fire({
+                                title: 'Payment Success',
+                                text: 'Your Payment has been Successful..!!',
+                                icon: 'success',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                didOpen: () => {
+                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                },
+                                }).then((result) => {
+                            if (result.isConfirmed) {
+                                newtransaction();
+                            }
+                        });
+                    }else{
+                        Swal.fire({
+                                title: 'Do you want to proceed this payment?',
+                                text: 'Payment Not Received, You can check Payment status on Sales transaction Lists..',
+                                icon: 'question',  // Tipe ikon question
+                                showCancelButton: true,  // Menampilkan tombol cancel
+                                confirmButtonColor: '#3085d6',  // Warna tombol confirm
+                                cancelButtonColor: '#d33',  // Warna tombol cancel
+                                confirmButtonText: 'Confirm',
+                                cancelButtonText: 'Wait',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                didOpen: () => {
+                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                },
+                                }).then((result) => {
+                            if (result.isConfirmed) {
+                                newtransaction();
+                            }
+                        });
+                    }
+                }
+            });
         }
 
         function fetchpaymentstatus() {
