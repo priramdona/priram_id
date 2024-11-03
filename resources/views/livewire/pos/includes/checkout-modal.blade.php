@@ -458,7 +458,7 @@
                                                                     success: function(paymentinfo) {
 
                                                                     console.log('1'.paymentinfo);
-                                                                    console.log('2'.paymentinfo.response_type);
+                                                                    console.log('2'.paymentinfo.status);
                                                                         if(paymentinfo.status == "Paid"){
                                                                             Swal.fire({
                                                                                     title: 'Payment Success',
