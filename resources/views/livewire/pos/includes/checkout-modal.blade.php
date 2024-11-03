@@ -248,6 +248,8 @@
                     title: 'Error Phone Number',
                     text: 'Please Check Phone Number first!',
                     icon: 'error',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
                     didOpen: () => {
                             $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                     },
@@ -276,6 +278,8 @@
                 cancelButtonColor: '#d33',  // Warna tombol cancel
                 confirmButtonText: 'Confirm',
                 cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
                 didOpen: () => {
                         $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                 },
@@ -286,6 +290,8 @@
                 // text: "balance.. .",
                 icon: 'info',  // Tipe ikon question
                 html: 'This payment cannot be Cancel and will add to your subaccount..',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
                 showCancelButton: true,  // Menampilkan tombol cancel
                 confirmButtonColor: '#3085d6',  // Warna tombol confirm
                 cancelButtonColor: '#d33',  // Warna tombol cancel
@@ -323,6 +329,8 @@
                                                 Swal.fire({
                                                     title: 'Payment Process',
                                                     text: 'Your Payment has been generated..',
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
                                                     icon: 'success',
                                                     didOpen: () => {
                                                             $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
@@ -496,6 +504,8 @@
                                                 // Jika terjadi kesalahan, tampilkan pesan gagal
                                                 Swal.fire({
                                                     title: 'Process Failed!',
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
                                                     text: errorMessage,
                                                     icon: 'error',
                                                     didOpen: () => {
@@ -512,6 +522,8 @@
                                 Swal.fire({
                                     title: 'Cancelled',
                                     text: 'Your action has been cancelled.',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
                                     icon: 'error',
                                     didOpen: () => {
                                         // Enable pointer events for SweetAlert elements
@@ -529,6 +541,8 @@
                 Swal.fire({
                     title: 'Cancelled',
                     text: 'Your action has been cancelled.',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
                     icon: 'error',
                     didOpen: () => {
                                         $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
@@ -566,6 +580,8 @@
                             Swal.fire({
                                 title: 'Payment Method Error',
                                 text: 'Must assign Customer for this Method..',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
                                 icon: 'error',
                                 didOpen: () => {
                                     $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
@@ -591,6 +607,8 @@
                                         cancelButtonColor: '#d33',
                                         confirmButtonText: 'Yes, Confirm!',
                                         cancelButtonText: 'No, cancel!',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
                                         didOpen: () => {
                                             $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                         },
@@ -604,6 +622,8 @@
                                                             title: 'Cancelled',
                                                             text: 'Your action has been cancelled.',
                                                             icon: 'error',
+                                                            allowOutsideClick: false,
+                                                            allowEscapeKey: false,
                                                             didOpen: () => {
                                                                 $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                                             },
@@ -619,6 +639,8 @@
                                                     title: 'Process Failed!',
                                                     text: errorMessage,
                                                     icon: 'error',
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
                                                     didOpen: () => {
                                                             $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                                                     },
@@ -638,6 +660,8 @@
                         title: 'Process Failed!',
                         text: errorMessage,
                         icon: 'error',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
                         didOpen: () => {
                                 $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                         },
@@ -751,7 +775,7 @@
                         });
                     }else{
                         Swal.fire({
-                                title: 'Do you want to proceed this payment?',
+                                title: 'Proceed New Transaction?',
                                 text: 'Payment Not Received, You can check Payment status on Sales transaction Lists..',
                                 icon: 'question',  // Tipe ikon question
                                 showCancelButton: true,  // Menampilkan tombol cancel
@@ -791,6 +815,8 @@
                                 title: 'Payment Success',
                                 text: 'Your Payment has been Successful..!!',
                                 icon: 'success',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
                                 didOpen: () => {
                                         $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                                 },
@@ -804,6 +830,8 @@
                                 title: 'Awaiting Payment',
                                 text: 'Payment Not Received',
                                 icon: 'info',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
                                 didOpen: () => {
                                         $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                                 },
@@ -870,6 +898,8 @@
                         title: 'Process Failed!',
                         text: errorMessage,
                         icon: 'error',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
                         didOpen: () => {
                                 $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                         },
