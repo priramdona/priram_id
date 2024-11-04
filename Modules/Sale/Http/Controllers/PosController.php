@@ -282,7 +282,7 @@ class PosController extends Controller
             //     $responseType = 'account';
 
             // }
-            elseif($paymentChannelData->type == 'INVOICE'){
+            elseif($paymentChannelData->type == 'CARD'){
                 $invoiceRequest = new PaymentGatewayController();
                 $customerData = Customer::find($request->customer_id);
 
