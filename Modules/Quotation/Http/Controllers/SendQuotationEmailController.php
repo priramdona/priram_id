@@ -19,6 +19,12 @@ class SendQuotationEmailController extends Controller
 
         try {
 
+            // return view('quotation::emails.quotation', [
+            //     'settings' => settings(),
+            //     'customer' => $quotation->customer,
+            //     'quotation' => $quotation,
+            //     'business' => Business::find($quotation->business_id)
+            // ]);
             Mail::to($quotation->customer->customer_email)->send(new QuotationMail($quotation));
 
             $quotation->update([

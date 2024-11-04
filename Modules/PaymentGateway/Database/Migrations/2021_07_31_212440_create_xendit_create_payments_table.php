@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('payment_type');
             $table->string('channel_code');
             $table->string('status');
+            $table->json('paid_information')->nullable();
+            $table->dateTime('transaction_timestamp')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

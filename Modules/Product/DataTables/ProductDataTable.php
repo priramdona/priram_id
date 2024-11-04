@@ -91,19 +91,23 @@ class ProductDataTable extends DataTable
     {
         return [
             Column::computed('product_image')
-            ->title(__('products.image')),
+            ->title(__('products.image'))
+            ->className('text-center align-middle'),
                 // ->className('text-center align-middle'),
 
-                Column::make('product_name')
-                ->title(__('products.product_name')),
+            Column::make('product_name')
+            ->title(__('products.product_name'))
+            ->className('text-center align-middle'),
                     // ->className('text-center align-middle'),
 
             Column::computed('product_quantity')
-            ->title(__('products.quantity')),
+            ->title(__('products.quantity'))
+            ->className('text-center align-middle'),
                 // ->className('text-center align-middle'),
 
-                Column::make('category.category_name')
-                ->title(__('products.category')),
+            Column::make('category.category_name')
+            ->title(__('products.category'))
+            ->className('text-center align-middle'),
                     // ->className('text-center align-middle'),
 
             // Column::make('product_unit')
@@ -111,15 +115,18 @@ class ProductDataTable extends DataTable
             //     ->title(__('product::products.unit')),
 
             Column::make('product_code')
+            ->title(__('products.code'))
             ->className('text-center align-middle'),
                 // ->className('text-center align-middle'),
 
             Column::computed('product_cost')
-            ->title(__('products.cost')),
+            ->title(__('products.cost'))
+            ->className('text-center align-middle'),
                 // ->className('text-center align-middle'),
 
             Column::computed('product_price')
-            ->title(__('products.price')),
+            ->title(__('products.price'))
+            ->className('text-center align-middle'),
                 // ->className('text-center align-middle'),
 
 

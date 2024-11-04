@@ -89,6 +89,8 @@ class QuotationController extends Controller
             $withInvoice = $request->has('with_invoice') ? true : false;
 
             $discountAmount = Cart::instance('quotation')->discount();
+            $taxAmount = Cart::instance('quotation')->tax();
+            $shippingAmount = $request->shipping_amount;
 
             if ($withInvoice){
 
@@ -155,6 +157,8 @@ class QuotationController extends Controller
                     $paymentFee,
                     $request->total_amount + $paymentFee['totalFee'],
                     $discountAmount,
+                    $taxAmount,
+                    $shippingAmount,
                     $request->total_amount,
                     $diffInSeconds,
                     false

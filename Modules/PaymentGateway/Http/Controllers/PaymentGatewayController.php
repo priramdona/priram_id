@@ -278,6 +278,8 @@ class PaymentGatewayController extends Controller
         array $fees,
         int $totalAmount,
         int $discountAmount,
+        int $taxAmount,
+        int $shippingAmount,
         int $saleAmount,
         ?int $expryDuration = 86400,
         ?bool $sendNotification = true,
@@ -316,7 +318,7 @@ class PaymentGatewayController extends Controller
         }
 
         $payloadCreateInvoice = [
-            'external_id' => $idTransaction,
+            'external_id' => $reffPayment,
             'description' => 'Invoice for ' . $customer->customer_name . ' Date : ' . Carbon::now()->format('d-M-Y') . ' Total : ' . format_currency($totalAmount),
             'amount' => $totalAmount,
             'customer' => [
@@ -353,15 +355,23 @@ class PaymentGatewayController extends Controller
                     'value' => ($discountAmount ?? 0) * -1,
                 ],
                 [
-                    'type'  => 'PaymentFee',
+                    'type'  => 'Tax',
+                    'value' => ($taxAmount ?? 0),
+                ],
+                [
+                    'type'  => 'Shipping',
+                    'value' => ($shippingAmount ?? 0),
+                ],
+                [
+                    'type'  => 'Payment Fee',
                     'value' => $fees['paymentFee'],
                 ],
                 [
-                    'type'  => 'PPN',
+                    'type'  => 'Payment Fee PPN',
                     'value' => $fees['paymentFeePpn'] ?? 0,
                    ],
                 [
-                    'type'  => 'ApplicationFee',
+                    'type'  => 'Application Fee',
                     'value' => $fees['applicationFee'] ?? 0,
                 ]
             ],
@@ -376,7 +386,7 @@ class PaymentGatewayController extends Controller
             $dataRequest = $apiInstance->createInvoice($createInvoiceRequest, $forUserId);
 
             $invoiceRequestPayload = [
-                'id' => $dataRequest['external_id'],
+                'id' => $idTransaction,
                 'xen_invoice_id' => $dataRequest['id'],
                 'customer_id' => $customer->id,
                 'external_id' => $dataRequest['external_id'],
@@ -426,6 +436,22 @@ class PaymentGatewayController extends Controller
                 'channel_code' => 'INVOICE_LINK',
                 'status' => 'PENDING',
             ]);
+
+            $payloadBusinessAmount = [
+                'business_id' => Auth::user()->business_id ?? null,
+                'status_credit' => 1,
+                'transactional_type' => XenditInvoiceRequest::class ?? null,
+                'transactional_id' => $xenditInvoiceRequest->id ?? null,
+                'reference_id' => $reffPayment,
+                'amount' => $xenditInvoiceRequest->amount ?? null,
+                'sale_amount' =>  $saleAmount ?? null,
+                'received_amount' => 0,
+                'deduction_amount' => 0,
+                'status' => 'PENDING',
+            ];
+
+
+            businessAmount::create($payloadBusinessAmount);
 
             $result = [
                 'id' => $xenditCreatePayments->id,
@@ -601,6 +627,22 @@ class PaymentGatewayController extends Controller
             ];
 
             $xenditPaylaterRequest = XenditPaylaterRequest::create($xenditPaylaterRequestPayload);
+
+
+            $payloadBusinessAmount = [
+                'business_id' => Auth::user()->business_id ?? null,
+                'status_credit' => 1,
+                'transactional_type' => XenditPaylaterRequest::class ?? null,
+                'transactional_id' => $xenditPaylaterRequest->id ?? null,
+                'reference_id' => $apiResult->reference_id,
+                'amount' => $apiResult->amount ?? null,
+                'sale_amount' =>  $saleAmount ?? null,
+                'received_amount' => 0,
+                'deduction_amount' => 0,
+                'status' => 'PENDING',
+            ];
+
+            businessAmount::create($payloadBusinessAmount);
 
             $xenditCreatePayments = XenditCreatePayment::create([
                 'reference_id' => $refId,

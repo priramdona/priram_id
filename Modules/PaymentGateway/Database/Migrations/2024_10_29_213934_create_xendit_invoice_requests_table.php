@@ -48,6 +48,8 @@ return new class extends Migration
             $table->json('customer_notification_preference')->nullable();
             $table->json('fees')->nullable();
             $table->json('channel_properties')->nullable();
+            $table->json('paid_information')->nullable();
+            $table->dateTime('transaction_timestamp')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

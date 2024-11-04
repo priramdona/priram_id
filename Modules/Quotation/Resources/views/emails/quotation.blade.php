@@ -122,7 +122,7 @@
                                     </td>
                                 </tr>
                             </table>
-                            <div style="padding: 40px 40px 20px 40px; background: #fff;">
+                            <div style="padding: 20px 20px 20px 20px; background: #fff;">
                                 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
                                     <tbody><tr>
                                         <td>
@@ -132,97 +132,91 @@
                                             </p>
                                             <br />
                                             <h5 style="margin-bottom: 20px; color: #24222f; font-weight: 600">Our Quotation #{{ $quotation->reference }}</h5>
-                                            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                                            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
                                                 <thead>
                                                     <tr>
-                                                        <th style="width: 25%; text-align: center;">Product</th>
-                                                        <th style="width: 15%; text-align: center;">Price</th>
-                                                        <th style="width: 5%; text-align: center;">Qty</th>
-                                                        <th style="width: 15%; text-align: center;">Discount</th>
-                                                        <th style="width: 15%; text-align: center;">Tax</th>
-                                                        <th style="width: 25%; text-align: center;">Sub Total</th>
+                                                        <th style="width: 25%; text-align: left; font-size: 10px; padding: 8px; background-color: #f2f2f2; border-bottom: 2px solid #514d6a;">Product</th>
+                                                        <th style="width: 15%; text-align: center; font-size: 10px; padding: 8px; background-color: #f2f2f2; border-bottom: 2px solid #514d6a;">Price</th>
+                                                        <th style="width: 10%; text-align: center; font-size: 10px; padding: 8px; background-color: #f2f2f2; border-bottom: 2px solid #514d6a;">Qty</th>
+                                                        <th style="width: 15%; text-align: center; font-size: 10px; padding: 8px; background-color: #f2f2f2; border-bottom: 2px solid #514d6a;">Discount</th>
+                                                        <th style="width: 15%; text-align: center; font-size: 10px; padding: 8px; background-color: #f2f2f2; border-bottom: 2px solid #514d6a;">Tax</th>
+                                                        <th style="width: 20%; text-align: right; font-size: 10px; padding: 8px; background-color: #f2f2f2; border-bottom: 2px solid #514d6a;">Sub Total</th>
                                                     </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach($quotation->quotationDetails as $item)
-                                                            <tr>
-                                                                <td style="width: 25%; text-align: center; padding: 10px 10px 10px 0px; border-top: 3px solid #514d6a;">
-                                                                    {{ $item->product_name }} <br>
-                                                                    <span class="badge badge-success">
-                                                                        {{ $item->product_code }}
-                                                                    </span>
-                                                                </td>
-
-                                                                <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a;">
-                                                                    {{ format_currency($item->unit_price) }}
-                                                                </td>
-
-                                                                <td style="width: 5%; text-align: center; border-top: 3px solid #514d6a;">
-                                                                    {{ $item->quantity }}
-                                                                </td>
-
-                                                                <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a;">
-                                                                    {{ format_currency($item->product_discount_amount) }}
-                                                                </td>
-
-                                                                <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a;">
-                                                                    {{ format_currency($item->product_tax_amount) }}
-                                                                </td>
-
-                                                                <td style="width: 25%; text-align: center; border-top: 3px solid #514d6a;font-weight: bold;">
-                                                                    {{ format_currency($item->sub_total) }}
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-
-                                                    </tbody>
-                                                </table>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($quotation->quotationDetails as $item)
+                                                        <tr>
+                                                            <td style="width: 25%; text-align: left; padding: 10px 8px; border-top: 3px solid #514d6a; font-size: 8px;">
+                                                                {{ $item->product_name }}<br>
+                                                                <span style="background-color: #28a745; color: #fff; padding: 1px 1px; font-size: 8px; border-radius: 3px;">
+                                                                    {{ $item->product_code }}
+                                                                </span>
+                                                            </td>
+                                                            <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a; font-size: 8px;">
+                                                                {{ str_replace('Rp', '',format_currency($item->unit_price)) }}
+                                                            </td>
+                                                            <td style="width: 10%; text-align: center; border-top: 3px solid #514d6a; font-size: 8px;">
+                                                                {{ $item->quantity }}
+                                                            </td>
+                                                            <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a; font-size: 8px;">
+                                                                {{ str_replace('Rp', '',format_currency($item->product_discount_amount)) }}
+                                                            </td>
+                                                            <td style="width: 15%; text-align: center; border-top: 3px solid #514d6a; font-size: 8px;">
+                                                                {{ str_replace('Rp', '',format_currency($item->product_tax_amount)) }}
+                                                            </td>
+                                                            <td style="width: 20%; text-align: right; border-top: 3px solid #514d6a; font-size: 8px; font-weight: bold;">
+                                                                {{ str_replace('Rp', '',format_currency($item->sub_total)) }}
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                                 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 
                                                 <tr style="color: #a09bb9;">
 
                                                     <tr style="color: #a09bb9;">
-                                                        <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 0px solid #d9d7e0;">
+                                                        <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 1px solid #d9d7e0; font-size: 8px;">
                                                             Discount
                                                         </td>
-                                                        <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 0px solid #d9d7e0;">
+                                                        <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 1px solid #d9d7e0; font-size: 8px;">
                                                             {{ $quotation->discount_percentage }}%
                                                         </td>
-                                                        <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 0px solid #d9d7e0;">
+                                                        <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 1px solid #d9d7e0; font-size: 8px;">
                                                             {{ format_currency($quotation->discount_amount) }}
                                                         </td>
                                                     </tr>
-                                                    <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 0px solid #d9d7e0;">
+                                                    <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 0px solid #d9d7e0; font-size: 8px;">
                                                         Tax
                                                     </td>
-                                                    <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 0px solid #d9d7e0;">
+                                                    <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 0px solid #d9d7e0; font-size: 8px;">
                                                         {{ $quotation->tax_percentage }}%
                                                     </td>
-                                                    <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 0px solid #d9d7e0;">
+                                                    <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 0px solid #d9d7e0; font-size: 8px;">
                                                         {{ format_currency($quotation->tax_amount) }}
                                                     </td>
                                                 </tr>
 
                                                 <tr style="color: #a09bb9;">
-                                                    <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 0px solid #d9d7e0;">
+                                                    <td style="text-align: left; padding: 0px 10px 10px 0px; border-top: 0px solid #d9d7e0; font-size: 8px;">
                                                         Shipping
                                                     </td>
-                                                    <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 0px solid #d9d7e0;">
+                                                    <td style="width: 10%; text-align: center; padding: 0px 10px; border-top: 0px solid #d9d7e0; font-size: 8px;">
                                                         &nbsp;
                                                     </td>
-                                                    <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 0px solid #d9d7e0;">
+                                                    <td style="width: 20%; text-align: right; padding: 0px 0px 10px 10px; white-space: nowrap; border-top: 0px solid #d9d7e0; font-size: 8px;">
                                                         {{ format_currency($quotation->shipping_amount) }}
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="text-align: left; padding: 10px 10px 10px 0px; border-top: 3px solid #514d6a;">
-                                                        <span style="font-size: 18px; font-weight: bold">Total</span>
+                                                    <td style="text-align: left; padding: 10px 10px 10px 0px; border-top: 3px solid #514d6a; font-size: 12px;">
+                                                        <span style="font-size: 12px; font-weight: bold">Total</span>
                                                     </td>
-                                                    <td style="width: 10%; text-align: center; padding: 10px 10px; border-top: 3px solid #514d6a;">
+                                                    <td style="width: 10%; text-align: center; padding: 10px 10px; border-top: 3px solid #514d6a; font-size: 12px;">
 
                                                     </td>
-                                                    <td style="width: 20%; text-align: right; padding: 10px 0px 10px 10px; white-space: nowrap; border-top: 3px solid #514d6a;">
-                                                        <span style="font-size: 18px; font-weight: bold">{{ format_currency($quotation->total_amount) }}</span>
+                                                    <td style="width: 20%; text-align: right; padding: 10px 0px 10px 10px; white-space: nowrap; border-top: 3px solid #514d6a; font-size: 10px;">
+                                                        <span style="font-size: 12px; font-weight: bold">{{ format_currency($quotation->total_amount) }}</span>
                                                     </td>
                                                 </tr>
 
@@ -233,10 +227,10 @@
                                             <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
                                                 <tr>   <div class="col-md-6 mb-3 mb-md-0">
 
-                                                    <td style="text-align: left; padding: 10px 10px 10px 0px; border-top: 1px solid #d9d7e0; white-space: nowrap; vertical-align: top">
+                                                    <td style="text-align: left; padding: 10px 10px 10px 0px; border-top: 1px solid #d9d7e0; white-space: nowrap; vertical-align: top; font-size: 10px;">
                                                         Customer Information
                                                     </td>
-                                                    <td style="width: 50%;padding: 10px 0px 10px 10px; border-top: 1px solid #d9d7e0;">
+                                                    <td style="width: 50%;padding: 10px 0px 10px 10px; border-top: 1px solid #d9d7e0; font-size: 10px;">
                                                     <div style="font-weight: bold">{{ $customer->customer_name }}</div>
                                                     <div>{{ $customer->address }}, {{ $customer->city }}</div>
                                                     <div>{{ $customer->province }},  {{ $customer->postal_code }}.</div>
@@ -259,10 +253,10 @@
                                     <tbody><tr>
                                         <td>
 
-                                            <p style="font-size: 18px; font-weight: bold">Dear {{ $customer->customer_name }},</p>
-                                            <p style="text-align: left; padding: 10px 10px 10px 0px;">We hope you are interested in our products. If you want to order our products, For further information, please contact Our Phone Number <span style="font-weight: bold">{{ $customer->customer_phone }}</span> or Our Email : <span style="font-weight: bold">{{ $customer->customer_email }}</span>.</p>
-                                            <p font-weight: bold>Additional Note :
-                                                <span style="color: #a09bb9">{{ $quotation->note}}</span>
+                                            <p style="font-size: 12px; font-weight: bold">Dear {{ $customer->customer_name }},</p>
+                                            <p style="text-align: left; padding: 10px 10px 10px 0px; font-size: 12px;">We hope you are interested in our products. If you want to order our products, For further information, please contact Our Phone Number <span style="font-weight: bold">{{ $customer->customer_phone }}</span> or Our Email : <span style="font-weight: bold">{{ $customer->customer_email }}</span>.</p>
+                                            <p style="font-size: 12px; ">Additional Note :
+                                                <span style="font-size: 12px; color: #5a5963;">{{ $quotation->note}}</span>
                                             </p>
                                             @if($quotation->with_invoice)
                                             <div style="text-align: center">
@@ -271,18 +265,18 @@
                                                     Invoice
                                                 </a>
 
-                                                <p style="font-size: 18px; font-weight: bold">Invoice Expire Date : {{ \Carbon\Carbon::parse( $quotation->invoice_expiry_date )->format('D, d M Y H:m') }}</p>
+                                                <p style="font-size: 12px; font-weight: bold">Invoice Expire Date : {{ \Carbon\Carbon::parse( $quotation->invoice_expiry_date )->format('D, d M Y H:m') }}</p>
 
                                             </div>
                                             @endif
-                                            <p>Thanks for being great customer. Let it be!</p>
+                                            <p style="font-size: 12px;">Thanks for being great customer. Let it be!</p>
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                                 <br />
                                             <br />
-                                            <p style="text-align: center">Notice something wrong? <a href="javascript: void(0);" style="color: #01a8fe; text-decoration: underline;">Contact our support team</a> and we'll e happy to help.</p>
+                                            <p style="font-size: 8px; text-align: center">Notice something wrong? <a href="javascript: void(0);" style="color: #01a8fe; text-decoration: underline;">Contact our support team</a> and we'll e happy to help.</p>
                             </div>
                             <div style="text-align: center; font-size: 12px; color: #a09bb9; margin-top: 20px">
                                 <p>
