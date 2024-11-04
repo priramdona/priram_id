@@ -327,9 +327,9 @@ class PosController extends Controller
                     $paymentMethodsData,
                     $paymentFee,
                     $request->amount,
-                    $discountAmount,
-                    $taxAmount,
-                    $shippingAmount,
+                    $discountAmount ?? 0,
+                    $taxAmount ?? 0,
+                    $shippingAmount ?? 0,
                     $request->sale_amount);
 
                 $paymentRequestId = $dataResult['id'];
