@@ -401,18 +401,14 @@ class PosController extends Controller
 
                 $paymentGatewayController = new PaymentGatewayController();
 
-                if ($paylaterPlan){
-                        $dataResult = $paymentGatewayController->createPaylaterRequest(
-                            planId: $paylaterPlan->plan_id,
-                            refId: $reffPayment,
-                            customerId: $request->customer_id,
-                            xenditPaylaterPlanId: $paylaterPlanResult['id'],
-                            saleAmount:$request->sale_amount
-                        );
-                    }
-                else{
-                    throw new \Exception("Payment failed, Plan does not exist " . "Check again ". $paymentChannelData->code );
-                }
+                $dataResult = $paymentGatewayController->createPaylaterRequest(
+                    planId: $paylaterPlan->plan_id,
+                    refId: $reffPayment,
+                    customerId: $request->customer_id,
+                    xenditPaylaterPlanId: $paylaterPlanResult['id'],
+                    saleAmount:$request->sale_amount
+                );
+
 
                 $paymentRequestId = $dataResult['id'];
                 $paymentReferenceId = $dataResult['reference_id'];

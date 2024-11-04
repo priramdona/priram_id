@@ -778,7 +778,7 @@ class PaymentGatewayController extends Controller
                 "amount" => $totalAmount,
                 "order_items" => $orderedItems
             ];
-            // dd($payloadRequest, $paymentFees, $totalAmount);
+
             $dataRequest = Http::withHeaders([
                 'Authorization' => $secret_key,
                 'for-user-id' => null
