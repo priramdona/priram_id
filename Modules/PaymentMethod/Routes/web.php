@@ -16,6 +16,8 @@ use Modules\Sale\Http\Controllers\PosController;
 |
 */
 
+Route::get('/show-payment-products/{channel}', [PaymentMethodController::class, 'showChannel'])->name('channel.product');
+
 Route::group([], function () {
     Route::resource('paymentmethod', PaymentMethodController::class)->names('paymentmethod');
     Route::get('/get-payment-channels', [PaymentMethodController::class, 'getPaymentChannels']);

@@ -5,6 +5,7 @@ namespace Modules\PaymentGateway\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Business;
 use App\Models\businessAmount;
+use App\Models\DataConfig;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,6 +40,7 @@ use Modules\PaymentGateway\Entities\XenditCreateVirtualAccount;
 use Modules\PaymentGateway\Entities\XenditDisbursementChannel;
 use Modules\PaymentGateway\Entities\XenditInvoiceRequest;
 use Modules\PaymentGateway\Entities\XenditVirtualAccountRequest;
+use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 use Xendit\Invoice\Invoice;
 use Xendit\Payout\CreatePayoutRequest;
 use Xendit\Payout\PayoutApi;
@@ -669,12 +671,18 @@ class PaymentGatewayController extends Controller
     }
     public function paylaterPlans(
         string $customerId,
+        array $paymentFees,
+        int $taxAmount,
+        int $discountAmount,
+        int $shippingAmount,
         array $products,
-        string $channelCode,
+        mixed $paymentChannel,
         int $totalAmount,
+        int $saleAmount,
         ){
             $customerData = Customer::find($customerId);
 
+            $idTransaction = str::orderedUuid()->toString();
             $base64 = base64_encode(env('XENDIT_KEY').':');
             $secret_key = 'Basic ' . $base64;
             $url = 'https://api.xendit.co/paylater/plans';
@@ -700,13 +708,77 @@ class PaymentGatewayController extends Controller
 
             }
 
+            // foreach($paymentFees as $paymentFee){
+            $totalFee = format_currency(round($paymentFees['totalFee']));
+            $paymentFee = format_currency(round($paymentFees['paymentFee']));
+            $paymentFeePpn = format_currency(round($paymentFees['paymentFeePpn']));
+            $applicationFee = format_currency(round($paymentFees['applicationFee']));
+
+            $paymentFee1 = "free";
+            $paymentFee2 = "free";
+            $paymentFeeAmount1 = 0;
+            $paymentFeeAmount2 = 0;
+
+            if(!blank($paymentChannel['fee_type_1'])){
+                if ($paymentChannel['fee_type_1'] == '%'){
+                    $paymentFee1 = round($paymentChannel['fee_value_1'],2).'% From Amount';
+                    $paymentFeeAmount1 = format_currency(round(($saleAmount * $paymentChannel['fee_value_1']) / 100));
+                }else{
+                    $paymentFee1 = str_replace('Rp. ',"", format_currency($paymentChannel['fee_value_1']));
+                    $paymentFeeAmount1 = format_currency($paymentChannel['fee_value_1']);
+                }
+            }
+
+            if(!blank($paymentChannel['fee_type_2'])){
+                if ($paymentChannel['fee_type_2'] == '%'){
+                    $paymentFee2 = round($paymentChannel['fee_value_2'],2).'%';
+                    $paymentFeeAmount2 = format_currency(round(($saleAmount * $paymentChannel['fee_value_2']) / 100));
+                }else{
+                    $paymentFee2 = str_replace('Rp. ',"", format_currency($paymentChannel['fee_value_2']));
+                    $paymentFeeAmount2 = format_currency($paymentChannel['fee_value_2']);
+                }
+            }
+
+                $dataConfig = DataConfig::first();
+                $linkPayment = route('channel.product', ['channel' => $paymentChannel['id']]);
+                // $productData = Product::find($product['product_id']);
+                $isPPnFee = $paymentChannel['is_ppn']==1 ? "True" : "False" ;
+                $orderedItems[] = [
+                    "type" => "FEE",
+                    "reference_id" => $paymentChannel['id'],
+                    "name" => $paymentChannel['name'],
+                    "net_unit_amount" => round($paymentFees['totalFee']),
+                    "quantity" => 1,
+                    "url" => $linkPayment,
+                    "category" => $paymentChannel['type'],
+                    "description" => "TotalFee : " . $totalFee  .
+                    " Froms (Fee1 [" . $paymentFee1 ."] is " . $paymentFeeAmount1 .
+                    ") + (Fee2 [" . $paymentFee2 ."] is " . $paymentFeeAmount2 . ") " .
+                    "+ (PPNFee ". $isPPnFee . " [" . round($dataConfig->ppn_value,2) . '% From (Fee1+Fee2)] ' .
+                    ' is '.$paymentFeePpn .")"
+                ];
+
+                if ($discountAmount > 0 ){
+                    $orderedItems[] = [
+                        "type" => "DISCOUNT",
+                        "reference_id" => $idTransaction,
+                        "name" => 'Discount Sub Total',
+                        "net_unit_amount" => round($discountAmount * -1),
+                        "quantity" => 1,
+                        "url" => $linkPayment,
+                        "category" => 'DISCOUNT',
+                        "description" => "Global Discount from Sub Total"
+                    ];
+                }
+            // }
             $payloadRequest = [
                 "customer_id" => $customerData->cust_id,
-                "channel_code" => $channelCode,
+                "channel_code" => $paymentChannel['code'],
                 "currency" => "IDR",
                 "amount" => $totalAmount,
                 "order_items" => $orderedItems
             ];
+            // dd($payloadRequest, $paymentFees, $totalAmount);
             $dataRequest = Http::withHeaders([
                 'Authorization' => $secret_key,
                 'for-user-id' => null
@@ -719,6 +791,7 @@ class PaymentGatewayController extends Controller
             $apiResult = $dataRequest->object();
 
             $result = XenditPaylaterPlan::create([
+                'id' => $idTransaction,
                 'plan_id' => $apiResult->id,
                 'customer_id' => $customerId,
                 'cust_id' => $apiResult->customer_id,
@@ -997,7 +1070,7 @@ class PaymentGatewayController extends Controller
                 'sale_amount' =>  $saleAmount ?? null,
                 'received_amount' => 0,
                 'deduction_amount' => 0,
-                'status' => 'PENDING_PAYMENT',
+                'status' => 'PENDING',
             ];
 
             businessAmount::create($payloadBusinessAmount);
@@ -1201,7 +1274,7 @@ class PaymentGatewayController extends Controller
                 'sale_amount' =>  $saleAmount ?? null,
                 'received_amount' => 0,
                 'deduction_amount' => 0,
-                'status' => 'PENDING_PAYMENT',
+                'status' => 'PENDING',
             ];
 
             businessAmount::create($payloadBusinessAmount);

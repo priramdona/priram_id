@@ -25,6 +25,7 @@ use Modules\PaymentGateway\Entities\XenditCallbackPaymentRequest;
 use Modules\PaymentGateway\Entities\XenditCreatePayment;
 use Modules\PaymentGateway\Entities\XenditCreateVirtualAccount;
 use Modules\PaymentGateway\Entities\XenditInvoiceRequest;
+use Modules\PaymentGateway\Entities\XenditPaylaterRequest;
 use Modules\PaymentGateway\Entities\XenditPaymentMethod;
 use Modules\PaymentGateway\Entities\XenditPaymentRequest;
 use Modules\Sale\Entities\Sale;
@@ -154,6 +155,91 @@ class XenditWebhookController extends Controller
                 $paymentMethod->save();
 
             return response()->json([], 200);
+
+        } catch (\Exception $exception) {
+            // Log::driver('sentry');
+            return response()->json([$exception->getMessage()], 422);
+        }
+    }
+    public function callbackPaidPaylater(Request $request)
+    {
+        $data=[];
+        $data = $request->all();
+
+        try {
+            if ($data['event'] != "paylater.payment"){
+                return response()->json("No Invoice Record Found....", 422);
+            }
+
+            $refId = $data['data']['reference_id'];
+            $xenditPaylaterRequest = XenditPaylaterRequest::query()
+            ->where('reference_id', $refId)
+            ->first();
+
+                if ($xenditPaylaterRequest){
+                    $xenditPaylaterRequest->status = "Paid";
+                    $xenditPaylaterRequest->paid_information = json_encode($data);
+                    $xenditPaylaterRequest->transaction_timestamp = Carbon::parse($data['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
+
+                    $xenditCreatePayments = XenditCreatePayment::query()
+                    ->where('reference_id', $refId)
+                    ->first();
+
+                    if ($xenditCreatePayments){
+                        $xenditCreatePayments->status = "Paid";
+                        $xenditCreatePayments->paid_information = $data;
+                        $xenditCreatePayments->transaction_timestamp = Carbon::parse($data['created'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
+
+                            //update business_amount
+                            $businessAmount = null;
+                            $businessAmount = businessAmount::query()
+                            ->where('reference_id', $refId)
+                            ->first();
+
+                            if ($businessAmount){
+                                $businessAmount->status = 'Paid';
+                            }else{
+                                return response()->json("No Business Found....", 422);
+                            }
+                            //end of update business_amount
+
+
+                    //update Source Transactions
+                            $sourceTransaction = null;
+                            if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
+                                $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
+                                if ($sourceTransaction){
+                                    $sourceTransaction->payment_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
+
+                            if ($xenditCreatePayments->source_type == 'Modules\Quotation\Entities\Quotation'){
+                                $sourceTransaction = Quotation::find($xenditCreatePayments->source_id);
+                                if ($sourceTransaction){
+                                    $sourceTransaction->invoice_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
+
+
+                    }
+                    else{
+                        return response()->json("No Record Found....", 422);
+                    }
+
+                }else{
+                    return response()->json("No Invoice Record Found....", 422);
+                }
+
+                $xenditPaylaterRequest->save();
+                $xenditCreatePayments->save();
+                $businessAmount->save();
+                $sourceTransaction->save();
+
+                return response()->json([], 200);
 
         } catch (\Exception $exception) {
             // Log::driver('sentry');

@@ -3,6 +3,8 @@
 namespace Modules\PaymentMethod\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\DataConfig;
+use App\Models\MasterConfig;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
@@ -17,6 +19,10 @@ use Str;
 
 class PaymentMethodController extends Controller
 {
+    public function showChannel(PaymentChannel $channel) {
+    $configs = DataConfig::first();
+        return view('paymentmethod::index', compact(['channel', 'configs']));
+    }
 
     public function getAllPaymentMethod(Request $request)
     {

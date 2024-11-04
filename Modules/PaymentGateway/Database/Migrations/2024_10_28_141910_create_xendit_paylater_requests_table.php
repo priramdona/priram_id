@@ -32,6 +32,8 @@ return new class extends Migration
             $table->dateTime('created')->nullable();
             $table->dateTime('updated')->nullable();
             $table->json('order_items')->nullable();
+            $table->json('paid_information')->nullable();
+            $table->dateTime('transaction_timestamp')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

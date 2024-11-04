@@ -144,37 +144,37 @@ class PosController extends Controller
 
         ]);
     }
-    public function paylaterPlans(
-        request $request){
-            $orderedProducts = [];
-            $paymentGateway = new PaymentGatewayController();
-            foreach (Cart::instance('sale')->content() as $cart_item) {
-                $orderedProducts[] = [
-                    'product_id' => $cart_item->id,
-                    'product_name' => $cart_item->name,
-                    'product_code' => $cart_item->options->code,
-                    'quantity' => $cart_item->qty,
-                    'price' => $cart_item->price,
-                    'unit_price' => $cart_item->options->unit_price,
-                    'sub_total' => $cart_item->options->sub_total,
-                    'product_discount_amount' => $cart_item->options->product_discount,
-                    'product_discount_type' => $cart_item->options->product_discount_type,
-                    'product_tax_amount' => $cart_item->options->product_tax,
-                    'business_id' => $request->user()->business_id,
-                ];
-            }
+    // public function paylaterPlans(
+    //     request $request){
+    //         $orderedProducts = [];
+    //         $paymentGateway = new PaymentGatewayController();
+    //         foreach (Cart::instance('sale')->content() as $cart_item) {
+    //             $orderedProducts[] = [
+    //                 'product_id' => $cart_item->id,
+    //                 'product_name' => $cart_item->name,
+    //                 'product_code' => $cart_item->options->code,
+    //                 'quantity' => $cart_item->qty,
+    //                 'price' => $cart_item->price,
+    //                 'unit_price' => $cart_item->options->unit_price,
+    //                 'sub_total' => $cart_item->options->sub_total,
+    //                 'product_discount_amount' => $cart_item->options->product_discount,
+    //                 'product_discount_type' => $cart_item->options->product_discount_type,
+    //                 'product_tax_amount' => $cart_item->options->product_tax,
+    //                 'business_id' => $request->user()->business_id,
+    //             ];
+    //         }
 
-            $paylaterPlanResult = $paymentGateway->paylaterPlans(
-                $request->customer_id,
-                $orderedProducts,
-                $request->channel_code,
-                $request->total_amount);
+    //         $paylaterPlanResult = $paymentGateway->paylaterPlans(
+    //             $request->customer_id,
+    //             $orderedProducts,
+    //             $request->channel_code,
+    //             $request->total_amount);
 
-            return response()->json(data: [
-                'id' => $paylaterPlanResult->id ?? null,
-                'plan_id' => $paylaterPlanResult->plan_id ?? null,
-            ]);
-    }
+    //         return response()->json(data: [
+    //             'id' => $paylaterPlanResult->id ?? null,
+    //             'plan_id' => $paylaterPlanResult->plan_id ?? null,
+    //         ]);
+    // }
 
     public function paymentFees(
     ?int $amount = 0,
@@ -289,7 +289,8 @@ class PosController extends Controller
                 $orderedProducts = [];
                 $totalOrderedAmounts = 0;
                 $discountAmount = Cart::instance('sale')->discount();
-
+                $taxAmount = Cart::instance('sale')->tax();
+                $shippingAmount = $request->shipping_amount;
                 foreach (Cart::instance('sale')->content() as $cart_item) {
 
                     $unitPrice = $cart_item->options->unit_price;
@@ -327,6 +328,8 @@ class PosController extends Controller
                     $paymentFee,
                     $request->amount,
                     $discountAmount,
+                    $taxAmount,
+                    $shippingAmount,
                     $request->sale_amount);
 
                 $paymentRequestId = $dataResult['id'];
@@ -347,18 +350,13 @@ class PosController extends Controller
 
                 $orderedProducts = [];
                 $totalOrderedAmounts = 0;
+                $discountAmount = Cart::instance('sale')->discount();
+                $taxAmount = Cart::instance('sale')->tax();
+                $shippingAmount = $request->shipping_amount;
 
                 foreach (Cart::instance('sale')->content() as $cart_item) {
 
                     $unitPrice = $cart_item->options->unit_price;
-                    $paymentFee  = $this->paymentFees(
-                        $unitPrice,
-                        $paymentChannelData->fee_type_1,
-                        $paymentChannelData->fee_type_2,
-                        $paymentChannelData->fee_value_1 ?? 0,
-                        $paymentChannelData->fee_value_2 ?? 0,
-                        $paymentChannelData->is_ppn ?? false,
-                    );
 
                     $orderedProducts[] = [
                         'product_id' => $cart_item->id,
@@ -367,20 +365,37 @@ class PosController extends Controller
                         'quantity' => $cart_item->qty,
                         'price' => $cart_item->price,
                         'unit_price' => $cart_item->options->unit_price,
-                        'sub_total' => round($unitPrice + $paymentFee['totalFee']),
+                        'sub_total' => round($unitPrice),
                         'product_discount_amount' => $cart_item->options->product_discount,
                         'product_discount_type' => $cart_item->options->product_discount_type,
                         'product_tax_amount' => $cart_item->options->product_tax,
                         'business_id' => $request->user()->business_id,
                     ];
-                    $totalOrderedAmounts +=  round($unitPrice + $paymentFee['totalFee']) * $cart_item->qty;
+                    $totalOrderedAmounts +=  round($unitPrice ) * $cart_item->qty;
                 }
+
+                $paymentFee  = $this->paymentFees(
+                    $request->sale_amount,
+                    $paymentChannelData->fee_type_1,
+                    $paymentChannelData->fee_type_2,
+                    $paymentChannelData->fee_value_1 ?? 0,
+                    $paymentChannelData->fee_value_2 ?? 0,
+                    $paymentChannelData->is_ppn ?? false,
+                );
+
+
+                // $paymentChannelData = PaymentChannel::find($request->payment_channel);
 
                 $paylaterPlanResult = $paylaterPlan->paylaterPlans(
                 $request->customer_id,
+                $paymentFee,
+                $taxAmount  ?? 0,
+                $discountAmount ?? 0,
+                $shippingAmount ?? 0,
                 $orderedProducts,
-                $paymentChannelData->code,
-                $totalOrderedAmounts);
+                $paymentChannelData,
+                $request->amount,
+                $request->sale_amount);
 
                 $paylaterPlan = XenditPaylaterPlan::find($paylaterPlanResult['id']);
 
