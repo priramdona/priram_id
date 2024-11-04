@@ -408,7 +408,7 @@ class PosController extends Controller
                     xenditPaylaterPlanId: $paylaterPlanResult['id'],
                     saleAmount:$request->sale_amount
                 );
-
+                dd($dataResult);
 
                 $paymentRequestId = $dataResult['id'];
                 $paymentReferenceId = $dataResult['reference_id'];
