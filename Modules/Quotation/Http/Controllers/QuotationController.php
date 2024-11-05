@@ -146,7 +146,7 @@ class QuotationController extends Controller
                     "BCA", "BNI", "BSI", "BRI", "MANDIRI", "PERMATA", "SAHABAT_SAMPOERNA", "BNC",
                     "ALFAMART", "INDOMARET",
                     "OVO", "DANA", "SHOPEEPAY", "LINKAJA", "JENIUSPAY",
-                    "KREDIVO", "AKULAKU", "UANGME", "ATOME",
+                    "KREDIVO", "AKULAKU", "UANGME",
                     "QRIS"
                 ];
 
@@ -245,6 +245,14 @@ class QuotationController extends Controller
 
 
     public function edit(Quotation $quotation) {
+
+        if(!blank($quotation->xendit_invoice_request_id)){
+
+            toast('Unable Edit Payment Online.. Quotation Update Error!', 'error');
+
+            return redirect()->route('quotations.index');
+        }
+
         abort_if(Gate::denies('edit_quotations'), 403);
 
         $quotation_details = $quotation->quotationDetails;
@@ -277,6 +285,13 @@ class QuotationController extends Controller
 
 
     public function update(UpdateQuotationRequest $request, Quotation $quotation) {
+
+        if(!blank($quotation->xendit_invoice_request_id)){
+
+            toast('Unable Edit Payment Online.. Quotation Update Error!', 'error');
+
+            return redirect()->route('quotations.index');
+        }
         DB::transaction(function () use ($request, $quotation) {
             foreach ($quotation->quotationDetails as $quotation_detail) {
                 $quotation_detail->delete();
@@ -324,6 +339,13 @@ class QuotationController extends Controller
 
 
     public function destroy(Quotation $quotation) {
+
+        if(!blank($quotation->xendit_invoice_request_id)){
+
+            toast('Unable Delete Payment Online.. Quotation Delete Error!', 'error');
+
+            return redirect()->route('quotations.index');
+        }
         abort_if(Gate::denies('delete_quotations'), 403);
 
         $quotation->delete();

@@ -37,8 +37,8 @@
                                     <div class="from-group">
                                         <div class="form-group">
                                             <label for="customer_id">Customer <span class="text-danger">*</span></label>
-                                            <select class="form-control" name="customer_id" id="customer_id" required>
-                                                @foreach(\Modules\People\Entities\Customer::all() as $customer)
+                                            <select class="form-control" name="customer_id" id="customer_id" {{ $sale->with_invoice ? 'readonly' : 'required' }}>
+                                                @foreach(\Modules\People\Entities\Customer::where('business_id', Auth::user()->business_id)->get() as $customer)
                                                     <option {{ $sale->customer_id == $customer->id ? 'selected' : '' }} value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                                                 @endforeach
                                             </select>
@@ -71,8 +71,13 @@
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
+                                            @php
+                                                $invoiceInfo = \Modules\PaymentMethod\Entities\PaymentMethod::where('code','INVOICE')->first();
+                                            @endphp
                                             <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
-                                            <select class="form-control" name="payment_method" id="payment_method" required>
+                                            <select class="form-control" name="payment_method" id="payment_method"  {{ $sale->with_invoice ? 'readonly' : 'required' }}>
+                                                <option {{ $sale->with_invoice ? 'selected' : '' }} value="{{ $invoiceInfo->id ?? '' }}">{{ $invoiceInfo->name ?? '' }}</option>
+
                                                 <option value="Cash">Cash</option>
                                                 <option value="Credit Card">Credit Card</option>
                                                 <option value="Bank Transfer">Bank Transfer</option>
@@ -85,7 +90,7 @@
                                     <div class="form-group">
                                         <label for="paid_amount">Amount Received <span class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input id="paid_amount" type="text" class="form-control" name="paid_amount" required>
+                                            <input id="paid_amount" type="text" class="form-control" name="paid_amount" value= {{ $sale->with_invoice ? "$sale->total_amount" : "0" }} {{ $sale->with_invoice ? 'readonly' : 'required' }}>
                                             <div class="input-group-append">
                                                 <button id="getTotalAmount" class="btn btn-primary" type="button">
                                                     <i class="bi bi-check-square"></i>

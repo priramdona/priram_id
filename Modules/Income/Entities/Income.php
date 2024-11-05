@@ -39,6 +39,6 @@ class Income extends Model
     }
 
     public function incomePayments() {
-        return $this->hasMany(IncomePayment::class, 'income_id', 'id');
+        return $this->hasOne(IncomePayment::class, 'income_id', 'id');
     }
 }

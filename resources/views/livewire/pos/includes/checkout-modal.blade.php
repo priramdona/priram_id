@@ -232,7 +232,8 @@
     //     $('#checkout-form').submit();
     // });
 
-    $(document).on('click', '#continuePayment', function() {
+    $(document).on('click', '#continuePayment', function()
+    {
         var paymentChannel = document.getElementById('payment_channel').value;
         var numberPhone = document.getElementById('number_phone').value;
 
@@ -855,32 +856,6 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    // if (payment_method_type == 'PAYLATER'){
-                    //         $.ajax({
-                    //             url: "{{ url('/get-paylater-plans') }}/", // Menggunakan URL dari route
-                    //             type: 'GET',
-                    //             data: {
-                    //                 'customer_id': customer_id,
-                    //                 'channel_code': response.code,
-                    //                 'total_amount': total_amount_pay,
-                    //             },
-                    //             dataType: 'json',
-                    //             success: function(response) {
-                    //                 $('input[name=paylater_plan_id]').val(response.id);
-                    //             },
-                    //             error: function(error) {
-                    //                 let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
-                    //                 Swal.fire({
-                    //                     title: 'Process Failed!',
-                    //                     text: errorMessage,
-                    //                     icon: 'error',
-                    //                     didOpen: () =>
-                    //                         {$('.swal2-container, .swal2-popup').css('pointer-events', 'auto');},
-                    //                 });
-                    //                 return;
-                    //             }
-                    //         });
-                    // }
 
                     if (response.code == 'OVO') {
                         $('#lbl_number_phone').attr('hidden', false);

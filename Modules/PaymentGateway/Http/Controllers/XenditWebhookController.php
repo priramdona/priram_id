@@ -20,6 +20,7 @@ use App\Services\Subscribes\SubscribeService\SubscribeService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Modules\Income\Entities\Income;
 use Modules\PaymentGateway\Entities\xenditCallback;
 use Modules\PaymentGateway\Entities\XenditCallbackPaymentRequest;
 use Modules\PaymentGateway\Entities\XenditCreatePayment;
@@ -65,25 +66,6 @@ class XenditWebhookController extends Controller
                     }else{
                         $xenditCreatePayments->status = $status;
                     }
-
-                    // $sourceTransaction = null;
-                    // //update Source Transactions
-                    // if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
-                    //     $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
-                    // }
-
-                    // if ($sourceTransaction){
-                    //     if ($data['event'] == 'payment_method.expired') {
-                    //         if ($sourceTransaction->payment_status != 'Paid') {
-                    //             $sourceTransaction->payment_status = $status;
-                    //         }
-                    //     }else{
-                    //         $sourceTransaction->payment_status = $status;
-                    //     }
-                    // }else{
-                    //     return response()->json("No Source Found....", 422);
-                    // }
-                    //end of Update Source Transactions
 
                      //update business_amount
                     $businessAmount = null;
@@ -149,7 +131,6 @@ class XenditWebhookController extends Controller
                 }
 
                 $xenditCreatePayments->save();
-                // $sourceTransaction->save();
                 $businessAmount->save();
                 $paymentRequest->save();
                 $paymentMethod->save();
@@ -305,6 +286,15 @@ class XenditWebhookController extends Controller
                                 }
                             }
 
+                            if ($xenditCreatePayments->source_type == 'Modules\Income\Entities\Income'){
+                                $sourceTransaction = Income::find($xenditCreatePayments->source_id);
+                                if ($sourceTransaction){
+                                    $sourceTransaction->paymet_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
+
 
                     }
                     else{
@@ -368,12 +358,22 @@ class XenditWebhookController extends Controller
                             $sourceTransaction = null;
                             if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
                                 $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
+
+                                if ($sourceTransaction){
+                                    $sourceTransaction->payment_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
                             }
 
-                            if ($sourceTransaction){
-                                $sourceTransaction->payment_status = "Paid";
-                            }else{
-                                return response()->json("No Source Found....", 422);
+                            if ($xenditCreatePayments->source_type == 'Modules\Income\Entities\Income'){
+                                $sourceTransaction = Income::find($xenditCreatePayments->source_id);
+
+                                if ($sourceTransaction){
+                                    $sourceTransaction->paymet_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
                             }
                     }
                     else{
@@ -489,15 +489,26 @@ class XenditWebhookController extends Controller
                             }
                         //end of update business_amount
 
-                        if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
-                            $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
-                        }
+                            $sourceTransaction = null;
+                            if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
+                                $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
 
-                        if ($sourceTransaction){
-                            $sourceTransaction->payment_status = "Paid";
-                        }else{
-                            return response()->json("Source Record not Found....", 422);
-                        }
+                                if ($sourceTransaction){
+                                    $sourceTransaction->payment_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
+
+                            if ($xenditCreatePayments->source_type == 'Modules\Income\Entities\Income'){
+                                $sourceTransaction = Income::find($xenditCreatePayments->source_id);
+
+                                if ($sourceTransaction){
+                                    $sourceTransaction->paymet_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
 
                 }else{
                     return response()->json("Payment Request Record not Found....", 422);

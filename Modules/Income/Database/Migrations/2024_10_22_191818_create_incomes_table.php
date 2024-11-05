@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('incomes', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('category_id')->references('id')->on('income_categories');
+            $table->foreignUuid('customer_id')->references('id')->on('customers')->nullable();
             $table->date('date');
             $table->string('reference');
             $table->text('details')->nullable();

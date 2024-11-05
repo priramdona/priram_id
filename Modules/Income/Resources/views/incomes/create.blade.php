@@ -50,10 +50,28 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
+                                        <label for="customer_id">Customer</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <a href="{{ route('customers.create') }}" class="btn btn-primary">
+                                                    <i class="bi bi-person-plus"></i>
+                                                </a>
+                                            </div>
+                                            <select wire:model.live="customer_id" id="customer_id" class="form-control">
+                                                <option value="" selected>Not Registered</option>
+                                                @foreach($customers as $customer)
+                                                    <option value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
                                         <label for="amount">Amount <span class="text-danger">*</span></label>
 
                                         <label class="text-primary font-weight-bold col-lg-6" id="lbl_amount" name="lbl_amount">Rp. 0.00</label>
-                                        <input id="amount" type="amount" class="form-control" name="amount" value="0" required>
+                                        <input id="amount" type="amount" class="form-control" name="amount" value="0" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" required>
 
                                     </div>
                                 </div>
@@ -63,6 +81,7 @@
                                         <textarea class="form-control" rows="6" name="details"></textarea>
                                     </div>
                                 </div>
+
                                 <div class="col-lg-6">
                                     <div class="table-responsive">
                                         <table class="table table-striped">
@@ -231,7 +250,7 @@
             var income_amount = document.getElementById('amount').value;
 
             $('#lbl_amount').text(formatRupiah(income_amount,'Rp. '));
-            fetchPaymentChannels();
+            // fetchPaymentChannels();
         });
 
 
@@ -256,27 +275,484 @@
         $(document).on('change', '#payment_method', function() {
 
             var income_amount = document.getElementById('amount').value;
+            var paymentMethodId = document.getElementById('payment_method').value;
+            var customer_id = document.getElementById('customer_id').value;
+
+            // $('#submitBtn').attr('hidden', false);
+            $('#lbl_payment_channel').attr('hidden', true);
+            $('#payment_channel').attr('hidden', true);
+            $('#continuePayment').attr('hidden', true);
+            $("#payment_channel").empty();
 
             // var amount = $('#amount').maskMoney('unmasked')[0];
             if (income_amount > 0){
+                $.ajax({
+                url: '/get-payment-method-id/' + paymentMethodId, // Menggunakan URL dari route
+                type: 'GET',
+                data: {
+                    'source': 'pos',
+                },
+                dataType: 'json',
+                success: function(response) {
 
-                fetchPaymentChannels();
+                    $('input[name=payment_method_type]').val(response.type);
+
+                    if (response.type == 'PAYLATER' || response.type == 'INVOICE' || response.type == 'CARD'){
+                        if (customer_id == ''){
+                            Swal.fire({
+                                title: 'Payment Method Error',
+                                text: 'Must assign Customer for this Method..',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                icon: 'error',
+                                didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                },
+                                });
+                                return;
+                        }else{
+                            $.ajax({
+                                url: '/customer-id/' + customer_id, // Menggunakan URL dari route
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(response) {
+                                    Swal.fire({
+                                        title: "Confirmation Customer Information : ",
+                                        icon: 'info',
+                                        html: `
+                                            <p class="form-group align-middle text-left bi bi-people text-success"> Name  : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_name + `</span></class=>
+                                            <p class="form-group align-middle text-left bi bi-phone text-success"> Phone : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_phone + `</span></p>
+                                            <p class="form-group align-middle text-left bi bi-envelope text-success"> Email : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_email + `</span></p>
+                                            <p style="font-size: 16px;">Please Check the Customer Information....</p>
+                                        `,showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Yes, Confirm!',
+                                        cancelButtonText: 'No, cancel!',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        didOpen: () => {
+                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                        },
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        fetchPaymentChannels();
+                                                    }
+                                                    else if (result.dismiss === Swal.DismissReason.cancel) {
+
+                                                        Swal.fire({
+                                                            title: 'Cancelled',
+                                                            text: 'Your action has been cancelled.',
+                                                            icon: 'error',
+                                                            allowOutsideClick: false,
+                                                            allowEscapeKey: false,
+                                                            didOpen: () => {
+                                                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                            },
+                                                        });
+                                                        return;
+                                                    }
+                                                });
+                                },
+                                error: function(error) {
+
+                                                let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+                                                Swal.fire({
+                                                    title: 'Process Failed!',
+                                                    text: errorMessage,
+                                                    icon: 'error',
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
+                                                    didOpen: () => {
+                                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                                    },
+                                                });
+
+                                                return;
+                                            }
+                            });
+                        }
+                    }else{
+                        fetchPaymentChannels();
+                    }
+                },
+                error: function(error) {
+
+                    let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+                    Swal.fire({
+                        title: 'Process Failed!',
+                        text: errorMessage,
+                        icon: 'error',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                        },
+                    });
+
+                    return;
+                }
+            });
+
             }else{
                 Swal.fire({
                     title: 'Error Payment Method',
                     text: 'Please put Amount first!',
                     icon: 'error',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
                     didOpen: () => {
                             $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
                                     },
                 });
 
+                return;
             }
+
+
         });
 
 
+        $(document).on('click', '#continuePayment', function()
+        {
+        var category_id = document.getElementById('category_id').value;
 
-        $(document).on('click', '#continuePayment', function() {
+        var paymentChannel = document.getElementById('payment_channel').value;
+        var numberPhone = document.getElementById('number_phone').value;
+
+        var selectedOptionText = $('#payment_channel option:selected').text();
+        var amount =  document.getElementById('grand_total').value; //$('#paid_amount').maskMoney('unmasked')[0];
+        var income_amount = document.getElementById('amount').value;// $('#amount_sale').maskMoney('unmasked')[0];;
+        var customer_id = document.getElementById('customer_id').value;
+        var paymentChannel = document.getElementById('payment_channel').value;
+        var numberPhone = document.getElementById('number_phone').value;
+
+        if (category_id == ''){
+            Swal.fire({
+                    title: 'Error Category',
+                    text: 'Please select category first..',
+                    icon: 'error',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                    },
+                });
+                return;
+        }
+        if (selectedOptionText == 'OVO'){
+
+            if (numberPhone.length < 8) {
+                Swal.fire({
+                    title: 'Error Phone Number',
+                    text: 'Please Check Phone Number first!',
+                    icon: 'error',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                    },
+                });
+
+                $('#number_phone').focus();
+                return;
+            }
+        }
+
+        $('#input_payment_action_barcode').attr('hidden', true);
+        $('#action_account_account').attr('hidden', true);
+        $('#action_account_barcode').attr('hidden', true);
+        $('#payment_by').attr('hidden', true);
+        $('#lbl_payment_by').attr('hidden', true);
+        $('#input_payment_detail').attr('hidden', true);
+
+        Swal.fire({
+                title: 'Payment Confirmation',
+                text: "Do you want to proceed this payment?",
+                icon: 'question',  // Tipe ikon question
+                showCancelButton: true,  // Menampilkan tombol cancel
+                confirmButtonColor: '#3085d6',  // Warna tombol confirm
+                cancelButtonColor: '#d33',  // Warna tombol cancel
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                },
+                }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                title: 'Disclaimer Payment Information',
+                // text: "balance.. .",
+                icon: 'info',  // Tipe ikon question
+                html: 'This payment cannot be Cancel and will add to your subaccount..',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showCancelButton: true,  // Menampilkan tombol cancel
+                confirmButtonColor: '#3085d6',  // Warna tombol confirm
+                cancelButtonColor: '#d33',  // Warna tombol cancel
+                confirmButtonText: 'Yes, go ahead!',
+                cancelButtonText: 'No, cancel!',
+                didOpen: () => {
+                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                },
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                    Swal.fire({
+                                    title: 'Processing...',
+                                    text: 'Please wait while your request is being processed.',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                    });
+                                        $.ajax({
+                                            url: "{{ url('/get-payment') }}/",
+                                            method: "GET",
+                                            data: {
+                                                'payment_channel_id': paymentChannel,
+                                                'amount': amount,
+                                                'sale_amount': income_amount,
+                                                'number_phone': numberPhone,
+                                                'transaction_type': 'income',
+                                                'customer_id': customer_id,
+                                                // 'action': data.action,
+                                                // 'source': data.source
+                                            },
+                                            dataType: 'json',
+                                            success: function(response) {
+                                                Swal.fire({
+                                                    title: 'Payment Process',
+                                                    text: 'Your Payment has been generated..',
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
+                                                    icon: 'success',
+                                                    didOpen: () => {
+                                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                                    },
+                                                    })
+                                                    // .then((result) => {
+                                                        // if (result.isConfirmed) {
+                                                            $('#nominal_information').text(response.nominal_information);
+                                                            $('#actionModal').modal('show');
+                                                            $('#checkoutModal').modal('hide');
+                                                            // $('#manualConfirmation').attr('hidden', false);
+                                                            // $('#setToWaiting').attr('hidden', false);
+                                                            $('#payment_action').attr('hidden', false);
+                                                            $('#payment_by').attr('hidden', false);
+                                                            $('#lbl_payment_by').attr('hidden', false);
+
+                                                            $.ajax({
+                                                            url: "{{ url('/get-payment-channel-details') }}/",
+                                                            method: "GET",
+                                                            data: {
+                                                                'id': paymentChannel,
+                                                            },
+                                                            dataType: 'json',
+                                                            success: function(data) {
+
+                                                                $('#payment_by').attr('src', data.image_url);
+                                                                $('input[name=payment_id]').val(response.payment_request_id);
+
+                                                                if (response.response_type == 'qrcode') {
+                                                                    $('#lbl_payment_action').text('Please Scan Barcode to Process payment');
+                                                                    $('#qr-code-container').html(response.value_response);
+                                                                    $('#input_payment_action_account').text("");
+                                                                    $('#action_account_barcode').attr('hidden', false);
+                                                                    $('#action_account_account').attr('hidden', true);
+                                                                    $('#action_account_url').attr('hidden', true);
+                                                                    $('#action_account_info').attr('hidden', true);
+                                                                    document.getElementById('urlIframe').src = '';
+                                                                    $('#income-form').submit();
+                                                                }else if(response.response_type == 'account'){
+                                                                    $('#lbl_payment_action').text('Please Transfer to ' + data.name + ' Virtual Account :');
+                                                                    $('#input_payment_action_account').text(response.value_response);
+
+                                                                    $('#name_action_account').text(response.name_response);
+                                                                    $('#exp_action_account').text(response.expired_response);
+                                                                    $('#action_account_account').attr('hidden', false);
+                                                                    $('#action_account_url').attr('hidden', true);
+                                                                    $('#action_account_barcode').attr('hidden', true);
+                                                                    $('#action_account_info').attr('hidden', true);
+                                                                    document.getElementById('urlIframe').src = '';
+                                                                    $('#income-form').submit();
+                                                                }else if(response.response_type == 'info'){
+                                                                    $('#lbl_payment_action').text('Please Check to Customers ' + data.name + "'s Account");
+                                                                    $('#input_payment_action_account').text("");
+                                                                    $('#input_payment_action_info').text(response.value_response);
+                                                                    $('#name_action_account').text("");
+                                                                    $('#exp_action_account').text("");
+                                                                    $('#action_account_account').attr('hidden', true);
+                                                                    $('#action_account_url').attr('hidden', true);
+                                                                    $('#action_account_barcode').attr('hidden', true);
+                                                                    $('#action_account_info').attr('hidden', false);
+                                                                    document.getElementById('urlIframe').src = '';
+                                                                    $('#income-form').submit();
+                                                                }else if(response.response_type == 'url'){
+                                                                    $('#lbl_payment_action').text("Please complete requirement below");
+                                                                    $('#input_payment_action_account').text("");
+                                                                    $('#input_payment_action_info').text("");
+                                                                    $('#name_action_account').text("");
+                                                                    $('#exp_action_account').text("");
+                                                                    $('#action_account_url').attr('hidden', false);
+                                                                    $('#action_account_account').attr('hidden', true);
+                                                                    $('#action_account_barcode').attr('hidden', true);
+                                                                    $('#action_account_info').attr('hidden', true);
+                                                                    document.getElementById('urlIframe').src = response.value_response;
+                                                                    $('#income-form').submit();
+                                                                }else if(response.response_type == 'direct'){
+                                                                    let str = response.name_response;
+                                                                    let parts = str.split("|");
+
+                                                                    let namaLengkap = parts[0]; // "Nama Lengkap"
+                                                                    let nomorTelepon = parts[1];
+                                                                    $('#lbl_payment_action').text('Please complete to ' + namaLengkap + ' Account');
+                                                                    $('#input_payment_action_account').text(nomorTelepon);
+
+                                                                    $('#name_action_account').text(namaLengkap);
+                                                                    $('#exp_action_account').text(response.expired_response);
+                                                                    $('#action_account_url').attr('hidden', false);
+                                                                    $('#action_account_account').attr('hidden', false);
+                                                                    $('#action_account_barcode').attr('hidden', true);
+                                                                    $('#action_account_info').attr('hidden', true);
+                                                                    document.getElementById('urlIframe').src = response.value_response;
+                                                                    $('#income-form').submit();
+                                                                }else if(response.response_type == 'links'){
+                                                                    let str = response.name_response;
+                                                                    let parts = str.split("|");
+
+                                                                    let namaLengkap = parts[0]; // "Nama Lengkap"
+                                                                    let nomorTelepon = parts[1];
+                                                                    let email = parts[2];
+                                                                    $('#lbl_payment_action').text('Please complete to ' + namaLengkap + ' Account');
+                                                                    $('#input_payment_action_account').text('Invoice has been Sent...!');
+                                                                    $('#input_payment_detail').attr('hidden', false);
+                                                                    $('#input_payment_detail_label').text('Please check Customer Email or Whatsapp..');
+                                                                    $('#input_payment_detail_email').text(email);
+                                                                    $('#input_payment_detail_wa').text(nomorTelepon);
+
+                                                                    $('#name_action_account').text(namaLengkap);
+                                                                    $('#exp_action_account').text(response.expired_response);
+                                                                    $('#action_account_url').attr('hidden', true);
+                                                                    $('#action_account_account').attr('hidden', false);
+                                                                    $('#action_account_barcode').attr('hidden', true);
+                                                                    $('#action_account_info').attr('hidden', true);
+                                                                    // document.getElementById('urlIframe').src = response.value_response;
+                                                                    $('#income-form').submit();
+                                                                }else{
+                                                                    Swal.fire({
+                                                                    title: 'Payment Error',
+                                                                    text: response.response_type,
+                                                                    allowOutsideClick: false,
+                                                                    allowEscapeKey: false,
+                                                                    icon: 'error',
+                                                                    didOpen: () => {
+                                                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                                    },
+                                                                    });
+                                                                    return;
+                                                                }
+
+                                                                startautosave = setInterval(function() {
+
+                                                                    $.ajax({
+                                                                    url: "{{ url('/check-payment') }}/",
+                                                                    method: "GET",
+                                                                    data: {
+                                                                        'payment_request_id': response.payment_request_id,
+                                                                    },
+                                                                    dataType: 'json',
+                                                                    success: function(paymentinfo) {
+
+                                                                        if(paymentinfo.status == "Paid"){
+                                                                            clearInterval(startautosave);
+                                                                            Swal.fire({
+                                                                                    title: 'Payment Success',
+                                                                                    text: 'Your Payment has been Successful..!!',
+                                                                                    icon: 'success',
+                                                                                    allowOutsideClick: false,
+                                                                                    allowEscapeKey: false,
+                                                                                    didOpen: () => {
+                                                                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                                                                    },
+                                                                                    }).then((result) => {
+                                                                                if (result.isConfirmed) {
+                                                                                    newtransaction();
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }, 1000);
+                                                            }
+                                                        });
+                                                        // }
+                                                    // });
+
+                                                // }
+                                            }
+                                            ,
+                                            error: function(error) {
+
+                                                let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+
+                                                // Jika terjadi kesalahan, tampilkan pesan gagal
+                                                Swal.fire({
+                                                    title: 'Process Failed!',
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
+                                                    text: errorMessage,
+                                                    icon: 'error',
+                                                    didOpen: () => {
+                                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                                                    },
+                                                });
+                                            }
+                                        });
+
+
+                            // });
+                            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                // Aksi jika pengguna mengklik "No, cancel!"
+                                Swal.fire({
+                                    title: 'Cancelled',
+                                    text: 'Your action has been cancelled.',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    icon: 'error',
+                                    didOpen: () => {
+                                        // Enable pointer events for SweetAlert elements
+                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                    },
+                                });
+                            }
+                        });
+                                // });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                // Aksi jika pengguna mengklik "No, cancel!"
+                $('#checkoutModal').modal('show');
+                $('#actionModal').modal('hide');
+                fetchPaymentChannels();
+                Swal.fire({
+                    title: 'Cancelled',
+                    text: 'Your action has been cancelled.',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    icon: 'error',
+                    didOpen: () => {
+                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                    },
+            });
+            }
+                });
+
+
+    });
+
+    $(document).on('click', '#BackupcontinuePayment', function()
+        {
         var paymentChannel = document.getElementById('payment_channel').value;
         var numberPhone = document.getElementById('number_phone').value;
 
@@ -518,9 +994,8 @@
             });
             }
                 });
-
-
         });
+        //end of continue payment
 
         function newtransaction() {
             clearInterval(startautosave);

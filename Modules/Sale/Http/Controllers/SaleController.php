@@ -7,7 +7,9 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Modules\PaymentGateway\Entities\XenditCreatePayment;
 use Modules\PaymentMethod\Entities\PaymentChannel;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\People\Entities\Customer;
 use Modules\Product\Entities\Product;
 use Modules\Sale\Entities\Sale;
@@ -36,6 +38,7 @@ class SaleController extends Controller
 
 
     public function store(StoreSaleRequest $request) {
+
         DB::transaction(function () use ($request) {
             $due_amount = $request->total_amount - $request->paid_amount;
 
@@ -46,6 +49,15 @@ class SaleController extends Controller
             } else {
                 $payment_status = 'Paid';
             }
+
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
+            if( $paymentMethodData->code == 'INVOICE'){
+                $paymentChannelData = PaymentChannel::query()->where('code','INVOICE')->first();
+            }
+            else{
+                $paymentChannelData = PaymentChannel::find($request->payment_channel);
+            }
+            $paymentChannelName = $paymentMethodData->name;
 
             $sale = Sale::create([
                 'date' => $request->date,
@@ -61,7 +73,7 @@ class SaleController extends Controller
                 'due_amount' => $due_amount,
                 'status' => $request->status,
                 'payment_status' => $payment_status,
-                'payment_method' => $request->payment_method,
+                'payment_method' => $paymentChannelName,
                 'note' => $request->note,
                 'tax_amount' => Cart::instance('sale')->tax(),
                 'discount_amount' => Cart::instance('sale')->discount(),
@@ -100,8 +112,12 @@ class SaleController extends Controller
                     'reference' => 'INV/'.$sale->reference,
                     'amount' => $sale->paid_amount,
                     'sale_id' => $sale->id,
-                    'payment_method' => $request->payment_method,
                     'business_id' => $request->user()->business_id,
+                    'payment_method' => $paymentMethodData->name,
+                    'payment_method_id' => $paymentMethodData->id,
+                    'payment_method_name' => $paymentMethodData->name,
+                    'payment_channel_id' => $paymentChannelData->id ?? null,
+                    'payment_channel_name' => $paymentChannelName ?? null,
                 ]);
             }
         });
@@ -127,7 +143,15 @@ class SaleController extends Controller
     }
 
     public function edit(Sale $sale) {
+        $paymentChannels = $sale->salePayments;
+        foreach($paymentChannels as $paymentChannel){
+            if (!blank($paymentChannel->payment_channel_id)){
 
+            toast('Sale Update Payment Online Error', 'error');
+
+            return redirect()->route('sales.index');
+            }
+        }
         abort_if(Gate::denies('edit_sales'), 403);
 
         $sale_details = $sale->saleDetails;
@@ -160,7 +184,17 @@ class SaleController extends Controller
 
 
     public function update(UpdateSaleRequest $request, Sale $sale) {
+        $paymentChannels = $sale->salePayments;
+        foreach($paymentChannels as $paymentChannel){
+            if (!blank($paymentChannel->payment_channel_id)){
+
+            toast('Sale Update Error', 'Error');
+
+            return redirect()->route('sales.index');
+            }
+        }
         DB::transaction(function () use ($request, $sale) {
+
 
             $due_amount = $request->total_amount - $request->paid_amount;
 
@@ -182,6 +216,9 @@ class SaleController extends Controller
                 $sale_detail->delete();
             }
 
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
+            $paymentChannelName = $paymentMethodData->name;
+
             $sale->update([
                 'date' => $request->date,
                 'reference' => $request->reference,
@@ -195,7 +232,7 @@ class SaleController extends Controller
                 'due_amount' => $due_amount,
                 'status' => $request->status,
                 'payment_status' => $payment_status,
-                'payment_method' => $request->payment_method,
+                'payment_method' => $paymentChannelName,
                 'note' => $request->note,
                 'tax_amount' => Cart::instance('sale')->tax(),
                 'discount_amount' => Cart::instance('sale')->discount(),
@@ -235,6 +272,15 @@ class SaleController extends Controller
 
 
     public function destroy(Sale $sale) {
+        $paymentChannels = $sale->salePayments;
+        foreach($paymentChannels as $paymentChannel){
+            if (!blank($paymentChannel->payment_channel_id)){
+
+            toast('Sale Delete Payment Online Error', 'error');
+
+            return redirect()->route('sales.index');
+            }
+        }
         abort_if(Gate::denies('delete_sales'), 403);
 
         $sale->delete();

@@ -14,6 +14,7 @@ class SalesDataTable extends DataTable
 {
 
     public function dataTable($query) {
+
         return datatables()
             ->eloquent($query)
             ->addColumn('total_amount', function ($data) {
@@ -37,6 +38,7 @@ class SalesDataTable extends DataTable
     }
 
     public function query(Sale $model) {
+
         return $model->where('business_id',Auth::user()->business_id)->newQuery();
     }
 

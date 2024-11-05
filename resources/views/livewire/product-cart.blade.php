@@ -98,7 +98,7 @@
                 <label for="tax_percentage">Tax (%)</label>
                 <input wire:change="globalTaxChange($event.target.value)"
                 onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
-                type="text" class="form-control" name="tax_percentage" min="0" max="100" value="{{ $global_tax }}" required>
+                type="text" class="form-control" name="tax_percentage" min="0" max="100" value="{{ $global_tax }}" {{ $data->with_invoice ?? false ? 'readonly' : 'required' }}>
             </div>
         </div>
         <div class="col-lg-4">
@@ -106,7 +106,7 @@
                 <label for="discount_percentage">Discount (%)</label>
                 <input wire:change="globalDiscountChange($event.target.value)"
                 onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
-                type="text" class="form-control" name="discount_percentage" min="0" max="100" value="{{ $global_discount }}" required>
+                type="text" class="form-control" name="discount_percentage" min="0" max="100" value="{{ $global_discount }}" {{ $data->with_invoice ?? false ? 'readonly' : 'required' }}>
             </div>
         </div>
         <div class="col-lg-4">
@@ -114,7 +114,7 @@
                 <label for="shipping_amount">Shipping</label>
                 <input wire:change="shippingChange($event.target.value)"
                 onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
-                type="number" class="form-control" name="shipping_amount" min="0" value="0" required step="0.01">
+                type="number" class="form-control" name="shipping_amount" min="0" value="{{ $data->shipping_amount ?? 0  }}" {{ $data->with_invoice ?? false ? 'readonly' : 'required' }} step="0.01">
             </div>
         </div>
     </div>

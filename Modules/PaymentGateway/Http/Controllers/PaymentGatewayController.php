@@ -296,18 +296,20 @@ class PaymentGatewayController extends Controller
 
         $createPaymentTransactionalType = XenditInvoiceRequest::class;
 
-        foreach($orderedroducts as $orderedroduct){
+        if (!blank($orderedroducts)){
+            foreach($orderedroducts as $orderedroduct){
 
-            $link = route('product.sale', ['product' => $orderedroduct['product_id']]);
-            $productData = Product::find($orderedroduct['product_id']);
-            $amount += $orderedroduct['sub_total'];
-            $orderedItems[] = [
-                'name' => $orderedroduct['product_name'],
-                'quantity' => (int) $orderedroduct['quantity'],
-                'price' => $orderedroduct['unit_price'],
-                'category' => $productData->category->category_name,
-                'url' => $link,
-            ];
+                $link = route('product.sale', ['product' => $orderedroduct['product_id']]);
+                $productData = Product::find($orderedroduct['product_id']);
+                $amount += $orderedroduct['sub_total'];
+                $orderedItems[] = [
+                    'name' => $orderedroduct['product_name'],
+                    'quantity' => (int) $orderedroduct['quantity'],
+                    'price' => $orderedroduct['unit_price'],
+                    'category' => $productData->category->category_name,
+                    'url' => $link,
+                ];
+            }
         }
 
         $notificationPreference = null;
@@ -319,6 +321,41 @@ class PaymentGatewayController extends Controller
             ];
         }
 
+            $feesData = [];
+            $feesData=[
+                    [
+                        'type'  => 'Payment Fee',
+                        'value' => $fees['paymentFee'],
+                    ],
+                    [
+                        'type'  => 'Payment Fee PPN',
+                        'value' => $fees['paymentFeePpn'] ?? 0,
+                    ],
+                    [
+                        'type'  => 'Application Fee',
+                        'value' => $fees['applicationFee'] ?? 0,
+                    ]
+                ];
+            if ($discountAmount > 0){
+                $feesData[] =
+                    [
+                    'type'  => 'Discount',
+                    'value' => ($discountAmount ?? 0) * -1
+                    ];
+            }
+            if ($taxAmount > 0){
+                $feesData[] =
+                    [
+                    'type'  => 'Tax',
+                    'value' => ($taxAmount ?? 0),
+                    ];
+            }
+            if ($shippingAmount > 0){
+                $feesData[] = [
+                    'type'  => 'Shipping',
+                    'value' => ($shippingAmount ?? 0),
+                    ];
+            }
         $payloadCreateInvoice = [
             'external_id' => $reffPayment,
             'description' => 'Invoice for ' . $customer->customer_name . ' Date : ' . Carbon::now()->format('d-M-Y') . ' Total : ' . format_currency($totalAmount),
@@ -349,44 +386,15 @@ class PaymentGatewayController extends Controller
             'reminder_time' => 1,
             'reminder_time_unit' => 'hours',
             'locale' => 'id',
-            'items' => $orderedItems,
-            'fees' => [
-
-                [
-                    'type'  => 'Discount',
-                    'value' => ($discountAmount ?? 0) * -1,
-                ],
-                [
-                    'type'  => 'Tax',
-                    'value' => ($taxAmount ?? 0),
-                ],
-                [
-                    'type'  => 'Shipping',
-                    'value' => ($shippingAmount ?? 0),
-                ],
-                [
-                    'type'  => 'Payment Fee',
-                    'value' => $fees['paymentFee'],
-                ],
-                [
-                    'type'  => 'Payment Fee PPN',
-                    'value' => $fees['paymentFeePpn'] ?? 0,
-                   ],
-                [
-                    'type'  => 'Application Fee',
-                    'value' => $fees['applicationFee'] ?? 0,
-                ]
-            ],
+            'items' => $orderedItems ?? null,
+            'fees' => $feesData,
             'payer_email' => $customer->customer_email,
             'should_send_email' => $sendNotification,
             'should_authenticate_credit_card' => true,
             ];
-
-// dd($payloadCreateInvoice);
         try {
             $createInvoiceRequest = new CreateInvoiceRequest($payloadCreateInvoice);
             $dataRequest = $apiInstance->createInvoice($createInvoiceRequest, $forUserId);
-
             $invoiceRequestPayload = [
                 'id' => $idTransaction,
                 'xen_invoice_id' => $dataRequest['id'],
@@ -446,7 +454,7 @@ class PaymentGatewayController extends Controller
                 'transactional_id' => $xenditInvoiceRequest->id ?? null,
                 'reference_id' => $reffPayment,
                 'amount' => $xenditInvoiceRequest->amount ?? null,
-                'sale_amount' =>  $saleAmount ?? null,
+                'transaction_amount' =>  $saleAmount ?? null,
                 'received_amount' => 0,
                 'deduction_amount' => 0,
                 'status' => 'PENDING',
@@ -638,7 +646,7 @@ class PaymentGatewayController extends Controller
                 'transactional_id' => $xenditPaylaterRequest->id ?? null,
                 'reference_id' => $apiResult->reference_id,
                 'amount' => $apiResult->amount ?? null,
-                'sale_amount' =>  $saleAmount ?? null,
+                'transaction_amount' =>  $saleAmount ?? null,
                 'received_amount' => 0,
                 'deduction_amount' => 0,
                 'status' => 'PENDING',
@@ -970,7 +978,7 @@ class PaymentGatewayController extends Controller
             //     'transactional_id' => $xenditCreateVirtualAccount->id ?? null,
             //     'reference_id' => $apiResult->external_id,
             //     'amount' => $totalAmount ?? null,
-            //     'sale_amount' =>  $saleAmount ?? null,
+            //     'transaction_amount' =>  $saleAmount ?? null,
             //     'received_amount' => 0,
             //     'deduction_amount' => 0,
             //     'status' => 'PENDING_PAYMENT',
@@ -1008,7 +1016,7 @@ class PaymentGatewayController extends Controller
         string $refId,
         string $channelCode,
         float $totalAmount,
-        float $saleAmount,
+        float $transactionAmount,
         ){
 
             $base64 = base64_encode(env('XENDIT_KEY').':');
@@ -1067,7 +1075,7 @@ class PaymentGatewayController extends Controller
                 'transactional_id' => $xenditCreateVirtualAccount->id ?? null,
                 'reference_id' => $apiResult->external_id,
                 'amount' => $totalAmount ?? null,
-                'sale_amount' =>  $saleAmount ?? null,
+                'transaction_amount' =>  $transactionAmount ?? null,
                 'received_amount' => 0,
                 'deduction_amount' => 0,
                 'status' => 'PENDING',
@@ -1080,7 +1088,7 @@ class PaymentGatewayController extends Controller
                 'transactional_type' => XenditVirtualAccountRequest::class,
                 'transactional_id' => $xenditCreateVirtualAccount->id,
                 'amount' => $totalAmount ?? null,
-                'transaction_amount' => $saleAmount ?? null,
+                'transaction_amount' => $transactionAmount ?? null,
                 'payment_type' => 'VIRTUAL_ACCOUNT',
                 'channel_code' => $channelCode,
                 'status' => 'PENDING',
@@ -1271,7 +1279,7 @@ class PaymentGatewayController extends Controller
                 'transactional_id' => $xenditPaymentMethodData['id'] ?? null,
                 'reference_id' => $referenceId,
                 'amount' => $amount ?? null,
-                'sale_amount' =>  $saleAmount ?? null,
+                'transaction_amount' =>  $saleAmount ?? null,
                 'received_amount' => 0,
                 'deduction_amount' => 0,
                 'status' => 'PENDING',

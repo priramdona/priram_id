@@ -25,7 +25,7 @@ class IncomesDataTable extends DataTable
     }
 
     public function query(Income $model) {
-        return $model->where('business_id',Auth::user()->business_id)->newQuery()->with('category');
+        return $model->where('business_id',Auth::user()->business_id)->newQuery()->with('category')->with('incomePayments');
     }
 
     public function html() {

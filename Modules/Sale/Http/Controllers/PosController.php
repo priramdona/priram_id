@@ -282,6 +282,77 @@ class PosController extends Controller
             //     $responseType = 'account';
 
             // }
+            elseif($paymentChannelData->type == 'INVOICE'){
+                $totalOrderedAmounts = 0;
+
+                $orderedProducts=[];
+
+                $invoiceRequest = new PaymentGatewayController();
+                $customerData = Customer::find($request->customer_id);
+
+                $paymentChannelData = PaymentChannel::query()
+                ->where('action','invoice_link')
+                ->first();
+
+                $paymentFee  = $this->paymentFees(
+                    $request->sale_amount,
+                    $paymentChannelData->fee_type_1,
+                    $paymentChannelData->fee_type_2,
+                    $paymentChannelData->fee_value_1 ?? 0,
+                    $paymentChannelData->fee_value_2 ?? 0,
+                    $paymentChannelData->is_ppn ?? false,
+                );
+
+                $expiryDate = Carbon::parse($request->invoice_expiry_date)->endOfDay();
+                $now = Carbon::now();
+
+                // Jika invoice_expiry_date adalah hari ini, set ke 1 hari (86,400 detik)
+                if ($expiryDate->isToday()) {
+                    $diffInSeconds = 86400; // 1 hari dalam detik
+                } else {
+                    // Jika lebih dari 1 hari, hitung selisih detik dari now() ke invoice_expiry_date
+                    $diffInSeconds = $now->diffInSeconds($expiryDate, false) - 1;
+                }
+
+                $paymentMethodsData = ["CREDIT_CARD",
+                    "BCA", "BNI", "BSI", "BRI", "MANDIRI", "PERMATA", "SAHABAT_SAMPOERNA", "BNC",
+                    "ALFAMART", "INDOMARET",
+                    "OVO", "DANA", "SHOPEEPAY", "LINKAJA", "JENIUSPAY",
+                    "KREDIVO", "AKULAKU", "UANGME", "ATOME",
+                    "QRIS"
+                ];
+
+                $dataResult = $invoiceRequest->createTransactionInvoiceRequest(
+                    $customerData,
+                    $orderedProducts,
+                    $paymentMethodsData,
+                    $paymentFee,
+                    $request->amount + $paymentFee['totalFee'],
+                    0,
+                    0,
+                    0,
+                    $request->sale_amount,
+                    $diffInSeconds,
+                    true
+                );
+
+                $paymentRequestData = XenditCreatePayment::find($dataResult['id']);
+                $invoiceRequestId = $dataResult['invoice_requests']['id'];
+                $invoiceStatus = 'Pending';
+                $invoiceUrl = $dataResult['invoice_requests']['invoice_url'];
+                $expResponseDate = $dataResult['invoice_requests']['expiry_date'];
+                $invoiceExpiryDate = Carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? null;;
+
+                $paymentRequestId = $dataResult['id'];
+                $paymentReferenceId = $dataResult['reference_id'];
+                $invoiceRequests = $dataResult['invoice_requests'];
+
+                $nameResponse = $customerData->customer_name.'|'.$customerData->customer_phone.'|'.$customerData->customer_email ;
+                $valueResponse = $invoiceRequests['invoice_url'];
+                $expResponseDate = $invoiceRequests['expiry_date'];
+                $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
+                $responseType = 'links';
+            }
             elseif($paymentChannelData->type == 'CARD'){
                 $invoiceRequest = new PaymentGatewayController();
                 $customerData = Customer::find($request->customer_id);
