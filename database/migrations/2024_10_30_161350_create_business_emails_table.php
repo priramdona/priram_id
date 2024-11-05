@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('business_emails', function (Blueprint $table) {
-            $table->uuid('id')->primary();;
+            $table->uuid('id')->primary();
             $table->foreignUuid('business_id')->references('id')->on('businesses');
             $table->string('mail_driver');
             $table->string('mail_host');

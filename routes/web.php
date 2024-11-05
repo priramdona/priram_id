@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BarcodeScannerController;
 use App\Http\Controllers\FinacialController;
+use App\Http\Controllers\UtilityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,5 +39,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/financial-management-withdraw', [FinacialController::class, 'withdraw'])
     ->name('financial.management.withdraw');
     Route::get('/financial-management', [FinacialController::class, 'index'])->name('financial.management');
+
+    Route::get('notifications/{data}', [UtilityController::class, 'showNotification'])
+    ->name('notifications.show');
+
 });
 

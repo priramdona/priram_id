@@ -3,6 +3,7 @@
 namespace Modules\PaymentGateway\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\UtilityController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Callbacks\Payments\Enum\EventPaymentEnum;
 use App\Http\Controllers\Callbacks\Payments\Enum\EventPaymentMethodEnum;
 use App\Http\Controllers\Callbacks\Payments\Enum\PaymentStatusEnum;
 use App\Models\businessAmount;
+use App\Models\MessageNotification;
 use App\Models\PaymentTransaction;
 use App\Models\XenCallback;
 use App\Services\PaymentSubscribes\PaymentSubscribeService;
@@ -146,6 +148,8 @@ class XenditWebhookController extends Controller
     {
         $data=[];
         $data = $request->all();
+        $sourceType = null;
+        $sourceId = null;
 
         try {
             if ($data['event'] != "paylater.payment"){
@@ -190,6 +194,8 @@ class XenditWebhookController extends Controller
                             if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
                                 $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
                                 if ($sourceTransaction){
+                                    $sourceType = "sales";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->payment_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -199,6 +205,8 @@ class XenditWebhookController extends Controller
                             if ($xenditCreatePayments->source_type == 'Modules\Quotation\Entities\Quotation'){
                                 $sourceTransaction = Quotation::find($xenditCreatePayments->source_id);
                                 if ($sourceTransaction){
+                                    $sourceType = "quotations";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->invoice_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -220,6 +228,13 @@ class XenditWebhookController extends Controller
                 $businessAmount->save();
                 $sourceTransaction->save();
 
+                $messageNotifications = new UtilityController;
+                $messageNotifications->insertMessageNotifications(
+                    'Paylater',
+                    $sourceTransaction->reference . ' Success Paid',
+                    $sourceType,$sourceId
+                );
+
                 return response()->json([], 200);
 
         } catch (\Exception $exception) {
@@ -231,6 +246,9 @@ class XenditWebhookController extends Controller
     {
         $data=[];
         $data = $request->all();
+
+        $sourceType = null;
+        $sourceId = null;
 
         try {
             $refId = $data['external_id'];
@@ -271,6 +289,9 @@ class XenditWebhookController extends Controller
                             if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\Sale'){
                                 $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
                                 if ($sourceTransaction){
+
+                                    $sourceType = "sales";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->payment_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -280,6 +301,8 @@ class XenditWebhookController extends Controller
                             if ($xenditCreatePayments->source_type == 'Modules\Quotation\Entities\Quotation'){
                                 $sourceTransaction = Quotation::find($xenditCreatePayments->source_id);
                                 if ($sourceTransaction){
+                                    $sourceType = "quotations";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->invoice_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -289,6 +312,8 @@ class XenditWebhookController extends Controller
                             if ($xenditCreatePayments->source_type == 'Modules\Income\Entities\Income'){
                                 $sourceTransaction = Income::find($xenditCreatePayments->source_id);
                                 if ($sourceTransaction){
+                                    $sourceType = "incomes";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->paymet_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -310,6 +335,13 @@ class XenditWebhookController extends Controller
                 $businessAmount->save();
                 $sourceTransaction->save();
 
+                $messageNotifications = new UtilityController;
+                $messageNotifications->insertMessageNotifications(
+                    'Paylater',
+                    $sourceTransaction->reference . ' Success Paid',
+                    $sourceType,$sourceId
+                );
+
                 return response()->json([], 200);
 
         } catch (\Exception $exception) {
@@ -321,6 +353,8 @@ class XenditWebhookController extends Controller
     {
         $data=[];
         $data = $request->all();
+        $sourceType = null;
+        $sourceId = null;
 
         try {
 
@@ -360,6 +394,8 @@ class XenditWebhookController extends Controller
                                 $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
 
                                 if ($sourceTransaction){
+                                    $sourceType = "sales";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->payment_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -370,6 +406,8 @@ class XenditWebhookController extends Controller
                                 $sourceTransaction = Income::find($xenditCreatePayments->source_id);
 
                                 if ($sourceTransaction){
+                                    $sourceType = "incomes";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->paymet_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -388,6 +426,13 @@ class XenditWebhookController extends Controller
                 $xenditCreatePayments->save();
                 $businessAmount->save();
                 $sourceTransaction->save();
+
+                $messageNotifications = new UtilityController;
+                $messageNotifications->insertMessageNotifications(
+                    'Paylater',
+                    $sourceTransaction->reference . ' Success Paid',
+                    $sourceType,$sourceId
+                );
 
                 return response()->json([], 200);
 
@@ -428,6 +473,9 @@ class XenditWebhookController extends Controller
     {
         $data = [];
         $data = $request->all();
+        $sourceType = null;
+        $sourceId = null;
+
         try {
 
             if ($data['event'] == 'payment.succeeded') {
@@ -494,6 +542,8 @@ class XenditWebhookController extends Controller
                                 $sourceTransaction = Sale::find($xenditCreatePayments->source_id);
 
                                 if ($sourceTransaction){
+                                    $sourceType = "sales";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->payment_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -504,6 +554,8 @@ class XenditWebhookController extends Controller
                                 $sourceTransaction = Income::find($xenditCreatePayments->source_id);
 
                                 if ($sourceTransaction){
+                                    $sourceType = "incomes";
+                                    $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->paymet_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
@@ -524,73 +576,16 @@ class XenditWebhookController extends Controller
             $businessAmount->save();
             $sourceTransaction->save();
 
+            $messageNotifications = new UtilityController;
+                $messageNotifications->insertMessageNotifications(
+                    'Paylater',
+                    $sourceTransaction->reference . ' Success Paid',
+                    $sourceType,$sourceId
+                );
+
             return response()->json([], 200);
 
 
-
-
-
-            // }
-
-
-
-            // if ($data['event'] == 'payment_method.expired') {
-            //     $paymentTransaction = XenditCallbackPaymentRequest::query()
-            //         ->where('reference_id', $data['data']['reference_id'])
-            //         ->first();
-
-            //     if ($paymentTransaction->status != 'SUCCESS') {
-            //         $paymentTransaction->status = 'EXPIRED';
-            //         $paymentTransaction->save();
-            //     }
-
-            //     return response()->json([], 200);
-
-            // } elseif ($data['event'] == 'payment_method.activated') {
-
-            //     return response()->json([], 200);
-            // }
-
-            // if ($data['event'] == 'payment.succeeded') {
-            //     if ($data['data']['status'] == 'SUCCEEDED') {
-            //         // event(new ProcessPaymentXenditSuccessEvent($data));
-
-            //         return response()->json([], 200);
-            //     }
-            // } elseif ($data['event'] =='payment.failed') {
-            //     $paymentTransaction = xenditCreatePayment::query()
-            //         ->where('reference_id', $data['data']['reference_id'])
-            //         ->first();
-
-            //     if ($data['data']['status'] == 'FAILED') {
-            //         $paymentTransaction->status = 'FAILED';
-            //         $paymentTransaction->save();
-            //     }
-
-            //     // \DB::commit();
-            //     return response()->json([], 200);
-            // }
-
-            // if ($data['event'] == 'payment.succeeded') {
-            //     if ($data['data']['status'] == 'SUCCEEDED') {
-
-            //         // event(new ProcessPaymentXenditSuccessEvent($data));
-
-            //         return response()->json([], 200);
-            //     }
-            // } elseif ($data['event'] == 'payment.failed') {
-            //     $paymentTransaction = xenditCreatePayment::query()
-            //         ->where('id', $data['data']['reference_id'])
-            //         ->first();
-
-            //     if ($data['data']['status'] == 'FAILED') {
-            //         $paymentTransaction->status = 'FAILED';
-            //         $paymentTransaction->save();
-            //     }
-            // }
-
-            // \DB::commit();
-            // return response()->json([], 200);
         } catch (\Exception $exception) {
             // Log::driver('sentry');
             return response()->json([$exception->getMessage()], 422);

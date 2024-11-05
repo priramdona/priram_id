@@ -8,44 +8,6 @@
 
 <ul class="c-header-nav ml-auto">
 
-    @can('show_notifications')
-    <li class="c-header-nav-item dropdown">
-        <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="bi bi-bell" style="font-size: 20px;"></i>
-
-            @php
-                $low_quantity_products = \Modules\Product\Entities\Product::select('id', 'product_quantity', 'product_stock_alert', 'product_code', 'product_name')->whereColumn('product_quantity', '<=', 'product_stock_alert')->get();
-
-            @endphp
-            @if($low_quantity_products->isNotEmpty())
-               <span class="badge badge-pill badge-danger">
-            @else
-            <span class="badge badge-pill">
-            @endif
-
-            @php
-                     echo $low_quantity_products->count();
-            @endphp
-            </span>
-            {{-- $low_quantity_products->isNotEmpty() ? 'A' : 'B'; --}}
-        </a>
-        {{-- <div class="dropdown-menu dropdown-menu-center pt-0"> --}}
-        <div class="dropdown-menu dropdown-menu-left dropdown-menu-lg pt-0">
-            <div class="dropdown-header bg-light">
-                <strong>{{ $low_quantity_products->count() }} Notifications</strong>
-            </div>
-            @forelse($low_quantity_products as $product)
-                <a class="dropdown-item" href="{{ route('products.show', $product->id) }}">
-                    <i class="bi bi-hash mr-1 text-primary"></i> Product: "{{ $product->product_code }}" | "{{ $product->product_name }}" is low in quantity!
-                </a>
-            @empty
-                <a class="dropdown-item" href="#">
-                    <i class="bi bi-app-indicator mr-2"></i> No notifications available.
-                </a>
-            @endforelse
-        </div>
-    </li>
-    @endcan
 </ul>
 <ul class="c-header-nav ml-auto mr-4">
     @can('create_pos_sales')
@@ -59,21 +21,20 @@
 
     @can('show_notifications')
   <li class="c-header-nav-item dropdown">
-
         <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="bi bi-envelope" style="font-size: 20px;"></i>
             @php
-                $low_quantity_products = \Modules\Product\Entities\Product::select('id', 'product_quantity', 'product_stock_alert', 'product_code')->whereColumn('product_quantity', '<=', 'product_stock_alert')->get();
-
+                $low_quantity_products = \Modules\Product\Entities\Product::select('id', 'product_quantity', 'product_stock_alert', 'product_code', 'product_name')->whereColumn('product_quantity', '<=', 'product_stock_alert')->get();
+                $message_notifications = \App\Models\MessageNotification::where('is_read', false)->get();
             @endphp
-            @if($low_quantity_products->isNotEmpty())
+            @if($low_quantity_products->isNotEmpty() || $message_notifications->isNotEmpty())
                <span class="badge badge-pill badge-danger">
             @else
-            <span class="badge badge-pill">
+                <span class="badge badge-pill">
             @endif
 
             @php
-                     echo $low_quantity_products->count();
+                echo $low_quantity_products->count() + $message_notifications->count();
             @endphp
             </span>
         </a>
@@ -81,15 +42,26 @@
             <div class="dropdown-header bg-light">
                 <strong>{{ $low_quantity_products->count() }} Inbox</strong>
             </div>
-            @forelse($low_quantity_products as $product)
+
+            @if($low_quantity_products->isNotEmpty() || $message_notifications->isNotEmpty())
+                @foreach($low_quantity_products as $product)
                 <a class="dropdown-item" href="{{ route('products.show', $product->id) }}">
-                    <i class="bi bi-hash mr-1 text-primary"></i> Product: "{{ $product->product_code }}" is low in quantity!
+                    <i class="bi bi-hash mr-1 text-primary"></i>
+                    <span class="font-weight-bold">{{ $product->product_name }}</span> is low in quantity!
                 </a>
-            @empty
+                @endforeach
+                @foreach($message_notifications as $messages)
+                    <a class="dropdown-item" href="{{ route('notifications.show', $messages->id) }}">
+                        <i class="bi bi-hash mr-1 text-primary"></i>
+                        <span class="font-weight-bold">{{ $messages->subject }}</span> {{ $messages->message }}
+                    </a>
+                @endforeach
+            @else
                 <a class="dropdown-item" href="#">
                     <i class="bi bi-app-indicator mr-2"></i> No inboxes available.
                 </a>
-            @endforelse
+            @endif
+
         </div>
     </li>
     @endcan

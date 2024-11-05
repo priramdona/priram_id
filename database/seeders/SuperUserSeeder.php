@@ -47,14 +47,16 @@ class SuperUserSeeder extends Seeder
             [
             'name' => 'PT. Prima Raharja Mulia',
             'address' => 'Jl KH Ahmad Sanusi',
-            'phone' => '6281314569045',
-            'prefix' => $this->generatePrefix('PT. Prima Raharja Mulia')
+            'phone' => '+6281314569045',
+            'prefix' => $this->generatePrefix('PT. Prima Raharja Mulia'),
+            'email' => 'emailbusiness@'.$this->generatePrefix('PT. Prima Raharja Mulia').'.com'
         ]
         , [
             'name' => 'PT. Merdeka Santosa',
             'address' => 'Jl KH Ahmad Sanusi',
-            'phone' => '6281314569045',
-            'prefix' => $this->generatePrefix('PT Merdeka Santosa Abadi')
+            'phone' => '+6281314569045',
+            'prefix' => $this->generatePrefix('PT Merdeka Santosa Abadi'),
+            'email' => 'emailbusiness@'.$this->generatePrefix('PT Merdeka Santosa Abadi').'.com'
         ]
     ];
     }

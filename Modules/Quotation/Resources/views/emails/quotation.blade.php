@@ -254,7 +254,7 @@
                                         <td>
 
                                             <p style="font-size: 12px; font-weight: bold">Dear {{ $customer->customer_name }},</p>
-                                            <p style="text-align: left; padding: 10px 10px 10px 0px; font-size: 12px;">We hope you are interested in our products. If you want to order our products, For further information, please contact Our Phone Number <span style="font-weight: bold">{{ $customer->customer_phone }}</span> or Our Email : <span style="font-weight: bold">{{ $customer->customer_email }}</span>.</p>
+                                            <p style="text-align: left; padding: 10px 10px 10px 0px; font-size: 12px;">We hope you are interested in our products. If you want to order our products, For further information, please contact Our Phone Number <span style="font-weight: bold">{{ $business->phone }}</span> or Our Email : <span style="font-weight: bold">{{ $business->email }}</span>.</p>
                                             <p style="font-size: 12px; ">Additional Note :
                                                 <span style="font-size: 12px; color: #5a5963;">{{ $quotation->note}}</span>
                                             </p>
@@ -274,9 +274,9 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <br />
+                                {{-- <br />
                                             <br />
-                                            <p style="font-size: 8px; text-align: center">Notice something wrong? <a href="javascript: void(0);" style="color: #01a8fe; text-decoration: underline;">Contact our support team</a> and we'll e happy to help.</p>
+                                            <p style="font-size: 8px; text-align: center">Notice something wrong? <a href="javascript: void(0);" style="color: #01a8fe; text-decoration: underline;">Contact our support team</a> and we'll e happy to help.</p> --}}
                             </div>
                             <div style="text-align: center; font-size: 12px; color: #a09bb9; margin-top: 20px">
                                 <p>

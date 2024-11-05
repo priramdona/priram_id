@@ -31,11 +31,22 @@ class QuotationMail extends Mailable
      */
     public function build()
     {
+        $business = Business::find($this->quotation->business_id);
+
+            $businessName = $business->name ?? null;
+            $businessEmail = $business->email ?? null;
+            $isEmailValid = filter_var($businessEmail, FILTER_VALIDATE_EMAIL) !== false;
+
+            $fromEmail = $isEmailValid ? $businessEmail : config('mail.from.address');
+            $fromName = $businessName ?: config('mail.from.name');
+
+            // dd($fromEmail, $fromName);
         return $this->subject('Quotation - ' . settings()->company_name . ' Date ' . Carbon::parse(now())->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'))
+            ->from($fromEmail, $fromName)
             ->view('quotation::emails.quotation', [
                 'settings' => settings(),
                 'customer' => $this->quotation->customer,
-                'business' => Business::find($this->quotation->business_id)
+                'business' => $business
             ]);
     }
 }
