@@ -26,6 +26,13 @@ class FinacialController extends Controller
             toast('Input Amount first...', 'error');
             return redirect()->route('financial.management.withdraw');
         }
+        $paymentGateway =  new PaymentGatewayController();
+        $balance = $paymentGateway->showBalance();
+
+        if ($request->amount > $balance ){
+            toast('insufficient balance', 'error');
+            return redirect()->route('financial.management.withdraw');
+        }
 
         $apiPaymentGateway = new PaymentGatewayController();
 
