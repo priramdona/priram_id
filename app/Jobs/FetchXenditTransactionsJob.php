@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\UtilityController;
 use App\Models\businessAmount;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -12,6 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Modules\PaymentGateway\Entities\XenditCreatePayment;
+use Modules\PaymentGateway\Entities\XenditDisbursement;
 use Modules\PaymentGateway\Entities\XenditTransactions;
 
 class FetchXenditTransactionsJob implements ShouldQueue
@@ -22,7 +24,7 @@ class FetchXenditTransactionsJob implements ShouldQueue
 
     public function __construct()
     {
-        $allTransactions = [];
+    $allTransactions = [];
     $hasMore = true;
     $afterId = null;
     $retryAttempts = 0;
@@ -30,7 +32,7 @@ class FetchXenditTransactionsJob implements ShouldQueue
 
     $apiKey = env('XENDIT_KEY');
     while ($hasMore) {
-        $url = "{$this->baseUrl}/transactions?types=PAYMENT&limit=50";
+        $url = "{$this->baseUrl}/transactions?limit=50";
 
         if ($afterId) {
             $url .= "&after_id={$afterId}";
@@ -78,8 +80,11 @@ class FetchXenditTransactionsJob implements ShouldQueue
             //* * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
             //php artisan queue:work
 
+    $sourceType = null;
+
     foreach ($allTransactions as $transaction) {
-        XenditCreatePayment::where('reference_id', $transaction['reference_id'])->update([
+        $paymentStatus = 'Paid';
+        $xenditCreatePayments = XenditCreatePayment::where('reference_id', $transaction['reference_id'])->update([
             'status' => 'Paid',
             'settlement_status' => $transaction['settlement_status'],
             'estimated_settlement_time' => Carbon::parse($transaction['estimated_settlement_time'])->setTimezone(config('app.timezone')),
@@ -90,10 +95,20 @@ class FetchXenditTransactionsJob implements ShouldQueue
             'fee_status' => $transaction['fee']['status'],
             'net_amount' => $transaction['net_amount'],
         ]);
+
+        if ( $transaction['settlement_status'] == 'SETTLED'){
+            $paymentStatus = "Completed";
+        }else{
+            $paymentStatus = $transaction['settlement_status'];
+        }
+
         businessAmount::where('reference_id', $transaction['reference_id'])->update([
-            'status' => 'Paid',
+            'status' => $paymentStatus,
             'received_amount' => $transaction['net_amount'],
             'deduction_amount' => $transaction['fee']['xendit_fee'] + $transaction['fee']['value_added_tax'] + $transaction['fee']['xendit_withholding_tax'] + $transaction['fee']['third_party_withholding_tax'] ,
+        ]);
+        XenditDisbursement::where('reference_id', $transaction['reference_id'])->update([
+            'status' => $paymentStatus,
         ]);
 
         XenditTransactions::updateOrCreate(

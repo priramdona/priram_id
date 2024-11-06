@@ -18,7 +18,7 @@
                             <i class="bi bi-cash font-2xl"></i>
                         </div>
                         <div>
-                            <div class="text-value text-primary" style="font-weight: bold; font-size: 30px;">Rp. 100.000.000</div>
+                            <div class="text-value text-primary" style="font-weight: bold; font-size: 20px;">{{ format_currency($balance) }}</div>
                             <div class="text-muted text-uppercase font-weight-bold large">{{ __('home.balance') }}</div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                     <h5 class="mb-0">Withdraw Balance</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('financial.management.withdraw') }}" method="POST">
+                    <form action="{{ route('financial.management.withdraw.process') }}" method="POST">
                         @csrf
                         <div class="form-row">
                             <div class="col-lg-4">
@@ -83,9 +83,20 @@
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label name="label_amount" id="label_amount" for="amount">Amount<span class="text-danger">*</span></label>
-                                    <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
-                                    type="number" class="form-control" name="amount"id="amount"  value="" required>
+                                    <label name="label_transaction_amount" id="label_transaction_amount" for="transaction_amount">Amount<span class="text-danger"> Minimum Rp. 10.000,-</span><span class="text-info"> (Admin fee Rp. 3.000)</span></label>
+
+                                     <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
+                                    type="number" class="form-control" name="transaction_amount"id="transaction_amount"  value="" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label name="label_amount" id="label_amount" for="amount">Transfer Amount : </label>
+                                    <label class="text-primary font-weight-bold col-lg-6" id="amount_info" name="amount_info"  style="font-weight: bold; font-size: 20px;">Rp. 0.00</label>
+
+                                    <input type="hidden" class="form-control" name="amount"id="amount"  value="" readonly >
                                 </div>
                             </div>
                         </div>
@@ -123,9 +134,20 @@
             $('#disbursement_method').on('change', function () {
 
                 var xdmId = document.getElementById('disbursement_method').value;
-
                 var xdmName = $('#disbursement_method option:selected').text();
-                // let xdmName = $(this).find(':selected').data('xdm-id'); // Ambil xdm_id dari option yang dipilih
+                var income_amount = document.getElementById('transaction_amount').value;
+                var net_amount = income_amount - 3000;
+                if (income_amount >= 10000){
+                    $('input[name=amount]').val(net_amount);
+                    var infoamount = document.getElementById('amount').value;
+                    $('#amount_info').text(formatRupiah(infoamount,'Rp. '));
+                }else{
+                    $('input[name=amount]').val(0);
+                    var infoamount = document.getElementById('amount').value;
+                    $('#amount_info').text(formatRupiah(infoamount,'Rp. '));
+                }
+
+                    // let xdmName = $(this).find(':selected').data('xdm-id'); // Ambil xdm_id dari option yang dipilih
                 $('#label_disbursement_channel').text(xdmName);
 
                 // Hapus semua opsi sebelumnya dari dropdown disbursement_channel
@@ -148,7 +170,40 @@
                         }
                     });
                 }
+
+
             });
         // });
+        $(document).on('input', '#transaction_amount', function() {
+            var income_amount = document.getElementById('transaction_amount').value;
+            var net_amount = income_amount - 3000;
+            if (income_amount >= 10000){
+                $('input[name=amount]').val(net_amount);
+                var infoamount = document.getElementById('amount').value;
+                $('#amount_info').text(formatRupiah(infoamount,'Rp. '));
+            }else{
+                $('input[name=amount]').val(0);
+                var infoamount = document.getElementById('amount').value;
+                $('#amount_info').text(formatRupiah(infoamount,'Rp. '));
+            }
+        });
+
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            //tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if (ribuan) {
+                separator = sisa ? ',' : '';
+                rupiah += separator + ribuan.join(',');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            rupiahDecial = rupiah + '.00'
+            return prefix == undefined ? rupiahDecial : (rupiahDecial ? 'Rp. ' + rupiahDecial : '');
+        }
     </script>
 @endpush

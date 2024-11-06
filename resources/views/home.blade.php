@@ -48,8 +48,8 @@
                             <i class="bi bi-cash font-2xl"></i>
                         </div>
                         <div>
-                            <div class="text-value text-primary">{{ format_currency($balance) }}</div>
-                            <div class="text-muted text-uppercase font-weight-bold small">{{ __('home.balance') }}</div>
+                            <div class="text-value text-primary" style="font-weight: bold; font-size: 20px;">{{ format_currency($balance) }}</div>
+                            <div class="text-muted text-uppercase font-weight-bold large">{{ __('home.balance') }}</div>
                         </div>
                     </div>
                 </div>

@@ -3,8 +3,10 @@
 return [
     'home' => 'Beranda',
     'whatsapp' => 'Whatsapp',
-    'wallet' => 'Manajemen Keuangan',
-    'wallet_information' => 'Informasi Keuangan',
+    'wallet' => 'Manajemen Saldo',
+    'wallet_information' => 'Informasi Saldo',
+    'wallet_withdraw' => 'Penarikan Saldo',
+    'wallet_topup' => 'Topup Saldo',
     'products' => 'Produk',
     'categories' => 'Kategori',
     'create_product' => 'Buat Produk',

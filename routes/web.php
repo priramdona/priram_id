@@ -36,9 +36,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/scan-barcode', [BarcodeScannerController::class, 'index'])->name('scan.barcode');
 
-    Route::post('/financial-management-withdraw', [FinacialController::class, 'withdraw'])
-    ->name('financial.management.withdraw');
-    Route::get('/financial-management', [FinacialController::class, 'index'])->name('financial.management');
+    Route::post('/financial-management-withdraw-process', [FinacialController::class, 'withdraw'])
+    ->name('financial.management.withdraw.process');
+
+    Route::get('/financial-management-withdraw', [FinacialController::class, 'index'])->name('financial.management.withdraw');
+    Route::get('/financial-management-topup', [FinacialController::class, 'index'])->name('financial.management.topup');
 
     Route::get('notifications/{data}', [UtilityController::class, 'showNotification'])
     ->name('notifications.show');

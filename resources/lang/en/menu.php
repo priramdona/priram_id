@@ -3,8 +3,10 @@
 return [
     'home' => 'Home',
     'whatsapp' => 'Whatsapp',
-    'wallet' => 'Financial Management',
-    'wallet_information' => 'Financial Info',
+    'wallet' => 'Saldo Management',
+    'wallet_information' => 'Saldo Info',
+    'wallet_withdraw' => 'Saldo Withdraw',
+    'wallet_topup' => 'Saldo Topup',
     'products' => 'Products',
     'categories' => 'Categories',
     'create_product' => 'Create Product',

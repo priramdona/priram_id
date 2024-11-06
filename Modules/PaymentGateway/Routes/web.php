@@ -24,6 +24,8 @@ Route::group([
     Route::any('/va-paid', [XenditWebhookController::class, 'callbackPaidVirtualAccount']);
     Route::any('/invoice-paid', [XenditWebhookController::class, 'callbackPaidInvoice']);
     Route::any('/paylater-paid', [XenditWebhookController::class, 'callbackPaidPaylater']);
+    Route::any('/disbursements', [XenditWebhookController::class, 'disbursments']);
+
 });
 
 

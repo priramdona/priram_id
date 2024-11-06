@@ -34,6 +34,7 @@ use Modules\PaymentGateway\Entities\XenditPaymentRequest;
 use Modules\Sale\Entities\Sale;
 use Modules\Sale\Entities\SalePayment;
 use Illuminate\Support\Facades\Http;
+use Modules\PaymentGateway\Entities\XenditDisbursement;
 use Modules\PaymentGateway\Entities\XenditVirtualAccountRequest;
 use Modules\Quotation\Entities\Quotation;
 
@@ -433,6 +434,61 @@ class XenditWebhookController extends Controller
                     $sourceTransaction->reference . ' Success Paid',
                     $sourceType,$sourceId
                 );
+
+                return response()->json([], 200);
+
+        } catch (\Exception $exception) {
+            // Log::driver('sentry');
+            return response()->json([$exception->getMessage()], 422);
+        }
+    }
+    public function disbursments(Request $request)
+    {
+        $data = $request->all();
+        $status = null;
+        $statusMsg = null;
+        // $failureCode = null;
+        try {
+            if ($data['event'] == 'payout.succeeded') {
+                $status = "Success";
+                $statusMsg = "Diajukan";
+            }else{
+                $status = $data['data']['status'];
+                $statusMsg = $data['data']['status'];
+            }
+
+            $xenditDisbursement = XenditDisbursement::query()
+                ->where('reference_id', $data['data']['reference_id'])
+                ->first();
+
+                if ($xenditDisbursement){
+                    $xenditDisbursement->status = $status;
+                    $xenditDisbursement->estimated_arrival_time = Carbon::parse($data['data']['estimated_arrival_time'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
+
+                    $businessAmount = businessAmount::query()
+                    ->where('reference_id', $data['data']['reference_id'])
+                    ->first();
+
+                    if ($businessAmount){
+                        $businessAmount->status = $status;
+                        $businessAmount->save();
+
+                    $messageNotifications = new UtilityController;
+                    $messageNotifications->insertMessageNotifications(
+                    'Penarikan ' . format_currency($businessAmount->transaction_amount),
+                    $statusMsg,
+                    'disbursements',$xenditDisbursement->id
+                );
+                    }
+                    $xenditDisbursement->save();
+
+
+
+                }else{
+                    return response()->json("No Disbursement Record Found....", 422);
+                }
+
+
 
                 return response()->json([], 200);
 

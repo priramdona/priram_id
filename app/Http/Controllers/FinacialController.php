@@ -10,12 +10,22 @@ class FinacialController extends Controller
     public function index() {
 
 
+        $paymentGateway =  new PaymentGatewayController();
+        $balance = $paymentGateway->showBalance();
+
         // $businessAmount = Setting::firstOrFail();
 
-        return view('layouts.financial.index');
+        return view('layouts.financial.index', [
+            'balance' => $balance,
+        ]);
     }
 
     public function withdraw(Request $request) {
+
+        if ($request->amount < 0 ){
+            toast('Input Amount first...', 'error');
+            return redirect()->route('financial.management.withdraw');
+        }
 
         $apiPaymentGateway = new PaymentGatewayController();
 
@@ -25,13 +35,12 @@ class FinacialController extends Controller
             $request->account_name,
             $request->account_number,
             $request->amount,
+            $request->transaction_amount,
             $request->notes,
         );
-
-
-        dd($createDisbursement);
         // $businessAmount = Setting::firstOrFail();
 
-        return redirect()->route('settings.index');
+        toast('Withdrawal Requested....!', 'success');
+        return redirect()->route('financial.management.withdraw');
     }
 }

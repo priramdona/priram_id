@@ -78,10 +78,13 @@ class PaymentGatewayController extends Controller
         string $accountName,
         string $accountNo,
         float $amount,
+        float $transactionAmount,
         string $notes)
     {
         Configuration::setXenditKey(env('XENDIT_KEY'));
         $idTransaction = str::orderedUuid()->toString();
+        $reffPayment =  $idTransaction . '-' . Carbon::now()->format('Ymdss');
+
         $businessData = Business::find(Auth::user()->business_id);
         $disbursementMethodData = XenditDisbursementMethod::find($disMethod);
         $disbursementChannelData = XenditDisbursementChannel::find($disChannel);
@@ -90,7 +93,7 @@ class PaymentGatewayController extends Controller
         $idempotencyKey = 'dist-'.rand(1,10000) . Carbon::now()->format('Ymmddss');
         $forUserId = null;
         $createPayoutRequestPayload = [
-            'reference_id' => $idTransaction,
+            'reference_id' => $reffPayment,
             'currency' => 'IDR',
             'channel_code' => $disbursementChannelData->code,
             'receipt_notification' => [
@@ -104,7 +107,7 @@ class PaymentGatewayController extends Controller
               'account_number' => $accountNo,
             //   'account_type' => $disbursementMethodData->type
             ],
-            'amount' => $amount,
+            'amount' => $transactionAmount,
             'description' => $notes,
             'type' => 'DIRECT_DISBURSEMENT'
           ];
@@ -113,10 +116,11 @@ class PaymentGatewayController extends Controller
 
         try {
             $apiResultCreate = $apiInstance->createPayout($idempotencyKey, $forUserId, $createPayoutRequest);
-            xenditDisbursement::create([
+            // dd($apiResultCreate);
+            $xenditDisbursment = xenditDisbursement::create([
                 'id' => $idTransaction,
                 'disbursement_id' =>  $apiResultCreate['id'],
-                'reference_id' => $idTransaction,
+                'reference_id' => $apiResultCreate['reference_id'],
                 'channel_code' => $apiResultCreate['channel_code'],
                 'channel_properties' => json_encode($apiResultCreate['channel_properties']),
                 'amount' => $apiResultCreate['amount'],
@@ -132,6 +136,22 @@ class PaymentGatewayController extends Controller
                 'failure_code' => $apiResultCreate['failure_code'],
                 'estimated_arrival_time' => Carbon::parse($apiResultCreate['estimated_arrival_time'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
             ]);
+
+            $payloadBusinessAmount = [
+                'business_id' => Auth::user()->business_id ?? null,
+                'status_credit' => -1,
+                'transactional_type' => xenditDisbursement::class ?? null,
+                'transactional_id' => $xenditDisbursment->id ?? null,
+                'reference_id' => $apiResultCreate['reference_id'],
+                'amount' => $amount ?? null,
+                'transaction_amount' =>  $transactionAmount ?? null,
+                'received_amount' => 0,
+                'deduction_amount' => 0,
+                'status' => 'PENDING',
+            ];
+
+            businessAmount::create($payloadBusinessAmount);
+
         } catch (\Xendit\XenditSdkException $e) {
             throw new \Exception(json_encode($e->getMessage()));
         }
@@ -1329,8 +1349,19 @@ class PaymentGatewayController extends Controller
         ], 200);
 
      }
+     public function showBalance($forUserId = null){
 
-    public function showBalance($forUserId = null){
+        $businessId = Auth::user()->business_id;
+
+        $balanceTransaction = BusinessAmount::where('business_id', $businessId)
+        ->where('status','Completed')
+        ->sum('calculated_transaction_amount');
+
+        return $balanceTransaction;
+
+    }
+
+    public function showBalanceBackup($forUserId = null){
         $apiInstance = new PaymentMethodApi();
         Configuration::setXenditKey(env('XENDIT_KEY'));
 
