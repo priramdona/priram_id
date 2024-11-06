@@ -21,6 +21,6 @@ class VerifyCsrfToken extends Middleware
         'payment-gateways/va-paid',
         'payment-gateways/invoice-paid',
         'payment-gateways/paylater-paid',
-        'payment-gateways/disbursments',
+        'payment-gateways/disbursements',
     ];
 }
