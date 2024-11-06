@@ -35,7 +35,10 @@ class LoginController extends Controller
             'password' => $request->get('password'),
         ];
     }
-
+    public function username()
+    {
+        return 'phone_number';
+    }
     /**
      * Where to redirect users after login.
      *
