@@ -857,6 +857,34 @@
                 dataType: 'json',
                 success: function(response) {
 
+                    if (total_amount_pay < response.min){
+                            Swal.fire({
+                            title: 'Process Failed!',
+                            text: 'Minimum amount Invalid...',
+                            icon: 'error',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                            },
+                        });
+                        return;
+                    }
+
+                    if (total_amount_pay > response.max){
+                            Swal.fire({
+                            title: 'Process Failed!',
+                            text: 'Maximum amount Invalid...',
+                            icon: 'error',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                            },
+                        });
+                        return;
+                    }
+
                     if (response.code == 'OVO') {
                         $('#lbl_number_phone').attr('hidden', false);
                         $('#group_number_phone').attr('hidden', false);
