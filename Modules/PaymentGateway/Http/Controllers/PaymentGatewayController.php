@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Modules\PaymentGateway\Entities\xenditDisbursement;
+use Modules\PaymentGateway\Entities\XenditDisbursement;
 use Modules\PaymentGateway\Entities\XenditDisbursementMethod;
 use Modules\PaymentGateway\Entities\XenditPaymentMethod;
 use Modules\PaymentGateway\Entities\XenditPaymentRequest;
@@ -117,7 +117,7 @@ class PaymentGatewayController extends Controller
         try {
             $apiResultCreate = $apiInstance->createPayout($idempotencyKey, $forUserId, $createPayoutRequest);
             // dd($apiResultCreate);
-            $xenditDisbursment = xenditDisbursement::create([
+            $xenditDisbursment = XenditDisbursement::create([
                 'id' => $idTransaction,
                 'disbursement_id' =>  $apiResultCreate['id'],
                 'reference_id' => $apiResultCreate['reference_id'],
@@ -140,7 +140,7 @@ class PaymentGatewayController extends Controller
             $payloadBusinessAmount = [
                 'business_id' => Auth::user()->business_id ?? null,
                 'status_credit' => -1,
-                'transactional_type' => xenditDisbursement::class ?? null,
+                'transactional_type' => XenditDisbursement::class ?? null,
                 'transactional_id' => $xenditDisbursment->id ?? null,
                 'reference_id' => $apiResultCreate['reference_id'],
                 'amount' => $amount ?? null,
