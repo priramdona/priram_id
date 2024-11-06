@@ -338,7 +338,7 @@ class XenditWebhookController extends Controller
 
                 $messageNotifications = new UtilityController;
                 $messageNotifications->insertMessageNotifications(
-                    'Paylater',
+                    'Invoice',
                     $sourceTransaction->reference . ' Success Paid',
                     $sourceType,$sourceId
                 );
@@ -430,7 +430,7 @@ class XenditWebhookController extends Controller
 
                 $messageNotifications = new UtilityController;
                 $messageNotifications->insertMessageNotifications(
-                    'Paylater',
+                    'VA Payment',
                     $sourceTransaction->reference . ' Success Paid',
                     $sourceType,$sourceId
                 );
@@ -634,7 +634,7 @@ class XenditWebhookController extends Controller
 
             $messageNotifications = new UtilityController;
                 $messageNotifications->insertMessageNotifications(
-                    'Paylater',
+                    'Payment',
                     $sourceTransaction->reference . ' Success Paid',
                     $sourceType,$sourceId
                 );
