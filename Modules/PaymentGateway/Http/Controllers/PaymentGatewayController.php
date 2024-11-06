@@ -1063,7 +1063,6 @@ class PaymentGatewayController extends Controller
                 'for-user-id' => null
             ])->post($url, $payloadRequest);
 
-dd($dataRequest);
             if ($dataRequest->failed()) {
                 throw new Exception('Error Request Create Virtual Account');
             }
