@@ -257,7 +257,7 @@ public function invoiceData($idPaymentMethod): array
                 'reference' => null,
                 'status' => true,
                 'source' => 'xendit',
-                'image' => null,
+                'image' => 'xendit/xendit_logo.png',
                 'action' => 'invoice_link',
                 'min' => 10000,
                 'max' => 200000000,
