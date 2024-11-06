@@ -1043,7 +1043,7 @@ class PaymentGatewayController extends Controller
             $secret_key = 'Basic ' . $base64;
             $url = 'https://api.xendit.co/callback_virtual_accounts';
 
-        try {
+        // try {
             $timestamp = Carbon::now(config('app.timezone'))->addDay()->toIso8601String();
 
             $getBusinessData = Business::find(Auth::user()->business_id);
@@ -1063,6 +1063,7 @@ class PaymentGatewayController extends Controller
                 'for-user-id' => null
             ])->post($url, $payloadRequest);
 
+dd($dataRequest);
             if ($dataRequest->failed()) {
                 throw new Exception('Error Request Create Virtual Account');
             }
@@ -1087,7 +1088,6 @@ class PaymentGatewayController extends Controller
                 'created' => null,
                 'updated' => null,
             ]);
-
             $payloadBusinessAmount = [
                 'business_id' => Auth::user()->business_id ?? null,
                 'status_credit' => 1,
@@ -1121,10 +1121,10 @@ class PaymentGatewayController extends Controller
                 'virtual_account' => $xenditCreateVirtualAccount,
             ];
 
-        } catch (Exception $e) {
-            // Tangani exception atau berikan pesan error
-            throw new \Exception("Request failed with status: " . $e->getMessage());
-        }
+        // } catch (Exception $e) {
+        //     // Tangani exception atau berikan pesan error
+        //     throw new \Exception("Request failed with status: " . $e->getMessage());
+        // }
 
         return $result;
     }
