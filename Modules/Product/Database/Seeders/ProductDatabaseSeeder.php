@@ -53,31 +53,31 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $defaultPulsa = Category::create([
-                'category_code' => $business->prefix . str_pad($categoryMaxId + 1, 4, '0', STR_PAD_LEFT),
-                'category_name' => 'Pulsa',
-                'business_id' => $business->id,
-                'is_showlist' => false,
-                'is_default' => true,
-            ]);
+            // $defaultPulsa = Category::create([
+            //     'category_code' => $business->prefix . str_pad($categoryMaxId + 1, 4, '0', STR_PAD_LEFT),
+            //     'category_name' => 'Pulsa',
+            //     'business_id' => $business->id,
+            //     'is_showlist' => false,
+            //     'is_default' => true,
+            // ]);
 
-            Product::create([
-                'category_id' => $defaultPulsa->id,
-                'product_name' => 'Simpati 10Rb',
-                'product_code' => str_pad(mt_rand(1,999999999999),12,'0',STR_PAD_LEFT),
-                'product_barcode_symbology' => 'EAN13',
-                'product_quantity' => '99999',
-                'product_cost' => '10500',
-                'product_price' => '12000',
-                'product_unit' => 'Satuan',
-                'product_stock_alert' => '1',
-                'product_note' => 'Data Seeder',
-                'business_id' => $business->id,
-                'is_showlist' => false,
-                'is_default' => true,
-                'is_action' => true,
-                'action' => 'phone_number',
-            ]);
+            // Product::create([
+            //     'category_id' => $defaultPulsa->id,
+            //     'product_name' => 'Simpati 10Rb',
+            //     'product_code' => str_pad(mt_rand(1,999999999999),12,'0',STR_PAD_LEFT),
+            //     'product_barcode_symbology' => 'EAN13',
+            //     'product_quantity' => '99999',
+            //     'product_cost' => '10500',
+            //     'product_price' => '12000',
+            //     'product_unit' => 'Satuan',
+            //     'product_stock_alert' => '1',
+            //     'product_note' => 'Data Seeder',
+            //     'business_id' => $business->id,
+            //     'is_showlist' => false,
+            //     'is_default' => true,
+            //     'is_action' => true,
+            //     'action' => 'phone_number',
+            // ]);
         }
 
     }
