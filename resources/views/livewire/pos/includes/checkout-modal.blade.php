@@ -857,7 +857,7 @@
                 dataType: 'json',
                 success: function(response) {
 
-                    if (total_amount_pay < response.min){
+                    if (parseFloat(total_amount_pay) < parseFloat(response.min)){
                             Swal.fire({
                             title: 'Process Failed!',
                             text: 'Minimum amount Invalid...',
@@ -870,8 +870,7 @@
                         });
                         return;
                     }
-
-                    if (total_amount_pay > response.max){
+                    if (parseFloat(total_amount_pay) > parseFloat(response.max)){
                             Swal.fire({
                             title: 'Process Failed!',
                             text: 'Maximum amount Invalid...',
