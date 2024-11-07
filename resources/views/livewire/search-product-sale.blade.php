@@ -36,8 +36,14 @@
                 <div class="card-body shadow">
                     <ul class="list-group list-group-flush">
                         @foreach($search_results as $result)
+
                             <li class="list-group-item list-group-item-action">
                                 <a wire:click="resetQuery" wire:click.prevent="selectProduct({{ $result }})" href="#">
+                                    @forelse($result->getMedia('images') as $media)
+                                        <img src="{{ $media->getUrl() }}" alt="{{ $result->product_name }}" border="0" width="50" class="img-thumbnail" align="center">
+                                    @empty
+                                        <img src="{{ $result->getFirstMediaUrl('images') }}" alt="Product Image" border="0" width="50" class="img-thumbnail" align="center">
+                                    @endforelse
                                     {{ $result->product_name }} | {{ $result->product_code }}
                                 </a>
                             </li>
@@ -70,25 +76,6 @@
         var beepSound = new Audio("{{ asset('sounds/beep.mp3') }}");
         var klikSound = new Audio("{{ asset('sounds/klik.mp3') }}");
 
-        // Inisialisasi Quagga untuk scan barcode
-        // Quagga.init({
-        //     inputStream : {
-        //         name : "Live",
-        //         type : "LiveStream",
-        //         target: document.querySelector('#interactive'),
-        //         constraints: {
-        //             facingMode: "environment"
-        //         }
-        //     },
-        //     decoder : {
-        //         readers : ["code_128_reader", "ean_reader"]
-        //     }
-        // }, function(err) {
-        //     if (err) {
-        //         return;
-        //     }
-        //     Quagga.start();
-        // });
         Quagga.init({
                 inputStream : {
                     name : "Live",

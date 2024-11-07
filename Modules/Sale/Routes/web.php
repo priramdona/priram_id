@@ -20,6 +20,8 @@ Route::get('/sales-show/{sale}', [SaleController::class, 'showsale'])->name('sal
 // Route::get('/product-sale/{product}', [ProductController::class, 'showsale'])->name('product.sale');
 Route::group(['middleware' => 'auth'], function () {
 
+    //selforder
+    Route::get('/app/mobileorder', 'SelforderController@indexMobileOrder')->name('app.selforder.mobileorder');
     //POS
     Route::get('/app/pos', 'PosController@index')->name('app.pos.index');
     Route::post('/app/pos', 'PosController@store')->name('app.pos.store');
