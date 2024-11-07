@@ -93,7 +93,11 @@
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label name="label_amount" id="label_amount" for="amount">Transfer Amount : </label>
+
+                                    <label name="label_transaction_info" id="label_transaction_info" for="transaction_info">Requested Amount : </label>
+                                    <label class="text-info font-weight-bold col-lg-6" id="transaction_info" name="transaction_info"  style="font-weight: bold; font-size: 20px;">Rp. 0.00</label>
+
+                                    <label name="label_amount" id="label_amount" for="amount">Deduction Amount : </label>
                                     <label class="text-primary font-weight-bold col-lg-6" id="amount_info" name="amount_info"  style="font-weight: bold; font-size: 20px;">Rp. 0.00</label>
 
                                     <input type="hidden" class="form-control" name="amount"id="amount"  value="" readonly >
@@ -135,16 +139,19 @@
 
                 var xdmId = document.getElementById('disbursement_method').value;
                 var xdmName = $('#disbursement_method option:selected').text();
-                var income_amount = document.getElementById('transaction_amount').value;
-                var net_amount = income_amount - 3000;
+                var income_amount = parseFloat(document.getElementById('transaction_amount').value) || 0;
+                var net_amount = income_amount + 3000;
                 if (income_amount >= 10000){
                     $('input[name=amount]').val(net_amount);
                     var infoamount = document.getElementById('amount').value;
+                    var infotransaction = document.getElementById('transaction_amount').value;
                     $('#amount_info').text(formatRupiah(infoamount,'Rp. '));
+                    $('#transaction_info').text(formatRupiah(infotransaction,'Rp. '));
                 }else{
                     $('input[name=amount]').val(0);
                     var infoamount = document.getElementById('amount').value;
                     $('#amount_info').text(formatRupiah(infoamount,'Rp. '));
+                    $('#transaction_info').text(formatRupiah(0,'Rp. '));
                 }
 
                     // let xdmName = $(this).find(':selected').data('xdm-id'); // Ambil xdm_id dari option yang dipilih
@@ -175,12 +182,14 @@
             });
         // });
         $(document).on('input', '#transaction_amount', function() {
-            var income_amount = document.getElementById('transaction_amount').value;
-            var net_amount = income_amount - 3000;
+            var income_amount = parseFloat(document.getElementById('transaction_amount').value) || 0;
+            var net_amount = income_amount + 3000;
             if (income_amount >= 10000){
                 $('input[name=amount]').val(net_amount);
                 var infoamount = document.getElementById('amount').value;
+                var infotransaction = document.getElementById('transaction_amount').value;
                 $('#amount_info').text(formatRupiah(infoamount,'Rp. '));
+                $('#transaction_info').text(formatRupiah(infotransaction,'Rp. '));
             }else{
                 $('input[name=amount]').val(0);
                 var infoamount = document.getElementById('amount').value;
