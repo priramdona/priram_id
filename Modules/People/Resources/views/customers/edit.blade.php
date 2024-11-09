@@ -108,6 +108,12 @@
                                         <input type="text" class="form-control" name="city"  value="{{ $customer->city }}" required>
                                     </div>
                                 </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="province">Province <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="province" required>
+                                    </div>
+                                </div>
                                 <div class="col-lg-2">
                                     <div class="form-group">
                                         <label for="postalCode">Postal Code <span class="text-danger">*</span></label>

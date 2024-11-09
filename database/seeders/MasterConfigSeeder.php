@@ -7,6 +7,7 @@ use App\Models\masterConfig;
 use App\Models\MasterConfig as ModelsMasterConfig;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\Sale\Entities\SelforderType;
 
 class MasterConfigSeeder extends Seeder
 {
@@ -22,5 +23,6 @@ class MasterConfigSeeder extends Seeder
             'app_fee_type' => 0,
 
         ]);
+
     }
 }

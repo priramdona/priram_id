@@ -16,10 +16,10 @@
                 <div class="form-group">
                     <label for="customer_id"><span style="font-size: 12px;  font-weight: bold;">Welcome</span></label>
                     <div class="form-group">
-                        <input type="hidden" value="{{ $customers->id }}" name="customer_id">
-                        <input type="hidden" value="{{ $customers->id }}" name="customer_name">
-                        <input type="hidden" value="{{ $customers->id }}" name="customer_phone">
-                        <input type="hidden" value="{{ $customers->id }}" name="customer_email">
+                        <input type="hidden" value="{{ $customers->id }}" name="customer_id_info">
+                        <input type="hidden" value="{{ $customers->customer_name }}" name="customer_name_info">
+                        <input type="hidden" value="{{ $customers->customer_phone }}" name="customer_phone_info">
+                        <input type="hidden" value="{{ $customers->customer_email }}" name="customer_email_info">
                         <div class="table-responsive">
                         <table border="0" class="table table-hover text-right">
                             <tr>
@@ -29,10 +29,9 @@
                                 </td>
                                 <td style="width: 70%; margin: 10px 0px 10px 10px; border-top: 1px solid #d9d7e0; font-size: 10px;">
                                     <div style="font-weight: bold">{{ $customers->customer_name }}</div>
-                                    <div>{{ $customers->address }}, {{ $customers->city }}</div>
-                                    <div>{{ $customers->province }},  {{ $customers->postal_code }}</div>
                                     <div>Email: {{ $customers->customer_email }}</div>
                                     <div>Phone: {{ $customers->customer_phone }}</div>
+
                                 </td>
                             </tr>
 
@@ -177,7 +176,7 @@
     {{--Checkout Modal--}}
     {{-- @include('livewire.pos.includes.checkout-modal')
      --}}
-     @include('livewire.pos.includes.checkout-modal')
+     @include('livewire.mobile-order.includes.checkout-modal')
      {{-- @include('livewire.pos.includes.checkout-payment') --}}
 
 </div>

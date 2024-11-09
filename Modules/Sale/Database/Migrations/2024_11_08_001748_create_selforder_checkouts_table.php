@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('selforder_checkouts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('selforder_business_id')->references('id')->on('selforder_businesses')->cascadeOnDelete();
-            $table->foreignUuid('business_id')->references('id')->on('business')->cascadeOnDelete();
+            $table->foreignUuid('business_id')->references('id')->on('businesses')->cascadeOnDelete();
             $table->string('business_name')->nullable();
             $table->date('date');
             $table->string('reference');

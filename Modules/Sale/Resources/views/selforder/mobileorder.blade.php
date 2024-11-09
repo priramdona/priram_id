@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title') || {{ config('app.name') }}</title>
-    <meta content="Munggi Priramdona" name="author">
+    <meta content="Self Orders" name="author">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -77,6 +77,7 @@
         <div class="c-body">
             <main class="c-main">
                 <div class="container-fluid">
+
                     <div class="row">
                         <div class="col-12">
                             @include('utils.alerts')
@@ -84,7 +85,6 @@
 
                         <div class="col-lg-7">
                             <livewire:search-product-sale/>
-                            {{-- <livewire:pos.product-list :categories="$product_categories"/> --}}
                         </div>
                         <div class="col-lg-5">
                             <livewire:mobile-order.checkout :cart-instance="'sale'" :customers="$customers"/>
@@ -102,12 +102,12 @@
 </body>
 </html>
 
-@push('page_scripts')
-    <script src="{{ asset('js/jquery-mask-money.js') }}"></script>
-    <script>
+<script src="{{ asset('js/jquery-mask-money.js') }}"></script>
+<script type="text/javascript">
         $(document).ready(function () {
             $("#payment_method").empty();
             window.addEventListener('dispatchBrowserEvent',function(event)  {
+                alert('');
                 $.ajax({
                 url: "{{ url('/get-payment-method') }}/",
                 method: "GET",
@@ -218,6 +218,5 @@
             rupiahDecial = rupiah + '.00'
             return prefix == undefined ? rupiahDecial : (rupiahDecial ? 'Rp. ' + rupiahDecial : '');
         }
-    </script>
 
-@endpush
+</script>

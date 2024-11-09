@@ -6,6 +6,8 @@ use App\Models\Business;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Modules\Sale\Entities\SelforderBusiness;
+use Modules\Sale\Entities\SelforderType;
 use Spatie\Permission\Models\Role;
 
 class SuperUserSeeder extends Seeder
@@ -18,8 +20,61 @@ class SuperUserSeeder extends Seeder
     public function run()
     {
 
+
+        SelforderType::create([
+            'name' => 'Pesan Keliling (Mobile Self Order)',
+            'description' => 'Fitur ini biasanya digunakan di Supermarket atau Toko. Sebelum memulai pelanggan Scan/Memindai QRCode yang sudah disiapkan untuk masuk ke Area Pesan Keliling (Mobile Self Order). Pelanggan melakukan pemesanan barang dengan mencari dan Scan barcode di area etalase produk (Usahakan Barcode jelas karena ini mengandalkan Kamera Pelanggan yang sudah di integrasikan pada Aplikasi Kasir), lalu pelanggan menyelesaikan metode pembayaran yang akan dipilih. tahap akhir Admin Checker akan melakukan pengecekan Barang dan Aplikasi Pelanggan sesuai Pemesanan yang sudah dilakukan pelanggan pada Aplikasi Kasir.',
+            'code' => 'mobileorder',
+            'status' => 1,
+
+        ]);
+
+        SelforderType::create([
+            'name' => 'Pesan Ditempat (Stay Self Order)',
+            'description' => 'Fitur ini biasanya digunakan untuk pelayanan Saji atau antar ke tempat yang Penjual sediakan. Sebelum memulai pelanggan harus Scan/Pindai QRCode yang sudah disiapkan dimana pemesanan diantarkan ke Pos-pos atau tempat yang disediakan Penjual. Pelanggan melakukan pemesanan sendiri ditempat lalu Admin checker memantau aktivitas pelanggan serta meneruskan untuk bisa memenuhi pesanan pelanggan. Dalam proses ini terdapat 4 langkah atau Status, Langkah 1 (Pesan) Yang artinya Pelanggan telah mengajukan Pesanan, Langkah 2 (Sedang Diproses) yang artinya Admin Checker sudah memproses pesanan Pelanggan, Langkah 3 (Selesai) yang artinya pesanan sudah selesai disampaikan. Pada saat proses sudah sampai di Langkah 3, Pelanggan bisa mengajukan (Komplain) di Langkah 4 yang nantinya akan kembali ke Langkah 2 (Proses).',
+            'code' => 'stayorder',
+            'status' => 1,
+        ]);
+
+        SelforderType::create([
+            'name' => 'Pesan Kirim (Delivery Order)',
+            'description' => 'Fitur ini biasanya untuk Pesan Antar dari Penjual ke Pelanggan. Sebelum memulai pelanggan harus mempunyai Link atau QRCode yang sudah disiapkan. Pelanggan melakukan Pesanan serta menyelesaikan Metode pembayaran dimana Pelanggan dapat memesan barang dengan masuk ke Area Pesan Kirim (Delivery Self Order).  Dalam proses ini terdapat 4 langkah atau Status, Langkah 1 (Pesan) Yang artinya Pelanggan telah mengajukan Pesanan, Langkah 2 (Sedang Diproses) yang artinya Admin Checker sudah memproses pesanan Pelanggan, Langkah 3 (Selesai) yang artinya pesanan sudah selesai disampaikan. Pada saat proses sudah sampai di Langkah 3, Pelanggan bisa mengajukan (Komplain) di Langkah 4 yang nantinya akan kembali ke Langkah 2 (Proses).',
+            'code' => 'deliveryorder',
+            'status' => 1,
+        ]);
+
         foreach ($this->getDataBusiness() as $dataBusiness){
         $business = Business::create($dataBusiness);
+
+        SelforderBusiness::create([
+            'selforder_type_id' => SelforderType::query()->where('code','mobileorder')->value('id'),
+            'business_id' => $business->id,
+            'subject' => 'Belanja Keliling dan Atur Mandiri!',
+            'captions' => 'Silahkan Pindai Barcode dan Mulai berbelanja',
+            'need_customers' => true,
+            'need_customers' => true,
+
+        ]);
+
+        SelforderBusiness::create([
+            'selforder_type_id' => SelforderType::query()->where('code','stayorder')->value('id'),
+            'business_id' => $business->id,
+            'subject' => 'Pesan ditempat sesuka anda!',
+            'captions' => 'Anda tidak usah repot dapat langsung pesan ditempat.',
+            'need_customers' => true,
+            'need_customers' => true,
+
+        ]);
+
+        SelforderBusiness::create([
+            'selforder_type_id' => SelforderType::query()->where('code','deliveryorder')->value('id'),
+            'business_id' => $business->id,
+            'subject' => 'Pesan sambil Rebahan? Bisa!!',
+            'captions' => 'Pesan dimana saja.. dan akan kami antar...',
+            'need_customers' => true,
+            'need_customers' => true,
+
+        ]);
 
         $user = User::create([
             'name' => 'Administrator',

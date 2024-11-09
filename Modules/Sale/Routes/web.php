@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Sale\Http\Controllers\PosController;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Modules\Sale\Http\Controllers\SaleController;
+use Modules\Sale\Http\Controllers\SelforderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,12 +17,21 @@ use Modules\Sale\Http\Controllers\SaleController;
 |
 */
 
+Route::get('/mobileorder/{business}/{key}', [SelforderController::class, 'indexMobileOrder'])
+->name('selforder.indexMobileOrder');
+
+Route::post('/selforder-posmobileorder/{id}', [SelforderController::class, 'posMobileOrder'])
+->name('selforder.posmobileorder');
+
+Route::get('/selforder/mobile-order-qr/{id}', [SelforderController::class, 'mobileOrderQrCodeGenerator'])->name('selforder.mobileOrderQrCodeGenerator');
 Route::get('/sales-show/{sale}', [SaleController::class, 'showsale'])->name('sales.showdata');
 // Route::get('/product-sale/{product}', [ProductController::class, 'showsale'])->name('product.sale');
 Route::group(['middleware' => 'auth'], function () {
 
     //selforder
     Route::get('/app/mobileorder', 'SelforderController@indexMobileOrder')->name('app.selforder.mobileorder');
+
+    Route::post('/app/mobileorder', 'SelforderController@storeMobileOrder')->name('app.selforder.mobileorder.store');
     //POS
     Route::get('/app/pos', 'PosController@index')->name('app.pos.index');
     Route::post('/app/pos', 'PosController@store')->name('app.pos.store');
@@ -70,4 +80,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/sale-payments/{sale_id}/edit/{salePayment}', 'SalePaymentsController@edit')->name('sale-payments.edit');
     Route::patch('/sale-payments/update/{salePayment}', 'SalePaymentsController@update')->name('sale-payments.update');
     Route::delete('/sale-payments/destroy/{salePayment}', 'SalePaymentsController@destroy')->name('sale-payments.destroy');
+
+    Route::get('/selforder/mobileorder', 'SelforderController@manageMobileOrder')->name('selforder.mobileorder');
+    Route::patch('/selforder/business/{id}', 'SelforderController@updateSelforderBusinessMobile')->name('selforder..business.update');
+
+
 });

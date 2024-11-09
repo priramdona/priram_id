@@ -122,21 +122,21 @@ class PosController extends Controller
 
         $applicationFee = $dataConfigs->app_fee_value;
 
-        if ($amount > 9999999){
-            $applicationFee = $amount * 0.01;
-        }
+        // if ($amount > 9999999){
+        //     $applicationFee = $amount * 0.01;
+        // }
 
-        if ($amount > 99999999){
-            $applicationFee = $amount * 0.025;
-        }
+        // if ($amount > 99999999){
+        //     $applicationFee = $amount * 0.025;
+        // }
 
         $grandTotal = $amount + $paymentFee + $applicationFee + $paymentFeePPN;
 
         return response()->json([
-            'payment_fee' => $paymentFee,
-            'payment_fee_masked' => format_currency($paymentFee),
-            'payment_ppn_masked' => format_currency($paymentFeePPN),
-            'payment_ppn' => $paymentFeePPN,
+            'payment_fee' => $paymentFee + $paymentFeePPN,
+            'payment_fee_masked' => format_currency($paymentFee + $paymentFeePPN),
+            'payment_ppn_masked' => format_currency(0),
+            'payment_ppn' => 0,
             'grand_total_masked' => format_currency($grandTotal),
             'grand_total' => $grandTotal,
             'application_fee_masked' => format_currency($applicationFee),

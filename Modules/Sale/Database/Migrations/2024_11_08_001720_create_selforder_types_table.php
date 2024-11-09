@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('selforder_types', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('description');
-            $table->integer('code');
+            $table->text('description');
+            $table->string('code');
             $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();

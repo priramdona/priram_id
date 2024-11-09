@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('selforder_businesses', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('selforder_type_id')->references('id')->on('selforder_types')->cascadeOnDelete();
-            $table->foreignUuid('business_id')->references('id')->on('business')->cascadeOnDelete();
+            $table->foreignUuid('selforder_type_id')->references('id')->on('selforder_types')->nullable();
+            $table->foreignUuid('business_id')->references('id')->on('businesses')->nullable();
             $table->string('subject')->nullable();
             $table->string('captions')->nullable();
-            $table->string('subject')->nullable();
             $table->boolean('need_customers')->default(true);
             $table->boolean('status')->default(true);
             $table->timestamps();
