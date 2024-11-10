@@ -114,10 +114,6 @@
                 </div>
             </div>
 
-            <p class="text-center mt-5 lead">
-                Developed By
-                <a href="priram.id" class="font-weight-bold text-primary">Utama Yaksa Mandiri</a>
-            </p>
         </div>
     </div>
 </div>

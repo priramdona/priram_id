@@ -99,7 +99,7 @@
                                     <div class="text-center mt-5">
                                         <h3 class="card-title mb-4">{{ $selforderBusiness->subject }}</h3>
                                         <p class="text-muted">{{ $selforderBusiness->captions }}</p>
-
+                                        <p class="text-muted">{{ $link }}</p>
                                     <!-- QR Code Image -->
                                         <figure>
                                             {{-- <img id="qrCodeImage" src="data:image/png;base64, {{ $qrCode }}" alt="QR Code" class="img-fluid img-thumbnail" style="width: 300px; height: 300px;"> --}}
@@ -174,7 +174,7 @@
                 </div>
             </main>
         </div>
-        @include('layouts.footer')
+        {{-- @include('layouts.footer') --}}
     </div>
 @include('includes.main-js')
 </body>

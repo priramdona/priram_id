@@ -103,7 +103,7 @@ class SelforderController extends Controller
     {
         $date = Carbon::now();
         $formattedDate = $date->format('dmY');
-        $key = decryptWithKey($formattedDate);
+        $key = encryptWithKey($formattedDate);
 
         $selforderType = SelforderType::query()
             ->where('code','mobileorder')
@@ -125,7 +125,7 @@ class SelforderController extends Controller
         $canvas = Image::canvas($canvasWidth, $canvasHeight, '#ffffff');
         $canvas->insert($qrImage, 'center');
         $qrCode = base64_encode($canvas->encode('png'));
-        return view('sale::mobileorder-qrgenerator', compact( ['selforderBusiness','qrCode', 'businessData']));
+        return view('sale::mobileorder-qrgenerator', compact( ['selforderBusiness','qrCode', 'businessData','link']));
     }
     public function manageMobileOrder() {
     // abort_if(Gate::denies('edit_products'), 403);
