@@ -40,6 +40,16 @@
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
+                                    <label name="label_transaction_amount" id="label_transaction_amount" for="transaction_amount">Amount<span class="text-danger"> Minimum Rp. 10.000,-</span><span class="text-info"> (Admin fee Rp. 3.000)</span></label>
+
+                                     <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
+                                    type="number" class="form-control" name="transaction_amount"id="transaction_amount"  value="" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
                                     <label for="disbursement_method">Method<span class="text-danger">*</span></label>
                                     <select name="disbursement_method" id="disbursement_method" class="form-control" required>
                                         <option value="" selected disabled>Select</option>
@@ -80,16 +90,7 @@
                             </div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="col-lg-4">
-                                <div class="form-group">
-                                    <label name="label_transaction_amount" id="label_transaction_amount" for="transaction_amount">Amount<span class="text-danger"> Minimum Rp. 10.000,-</span><span class="text-info"> (Admin fee Rp. 3.000)</span></label>
 
-                                     <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
-                                    type="number" class="form-control" name="transaction_amount"id="transaction_amount"  value="" required>
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
