@@ -21,12 +21,12 @@ class CreateCustomersTable extends Migration
             $table->string('customer_email');
             $table->string('customer_phone');
             $table->string('gender');
-            $table->date('dob')->nullable();
-            $table->string('city');
-            $table->string('province');
-            $table->string('country');
-            $table->text('address');
-            $table->string('postal_code');
+            $table->date('dob')->nullable()->nullable();
+            $table->string('city')->nullable();
+            $table->string('province')->nullable();
+            $table->string('country')->default('Indonesia');
+            $table->text('address')->nullable();
+            $table->string('postal_code')->nullable();
             $table->string('cust_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
