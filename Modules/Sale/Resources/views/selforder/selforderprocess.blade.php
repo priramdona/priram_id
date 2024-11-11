@@ -98,7 +98,7 @@
 
                 // Tunggu beberapa saat sebelum redirect ke halaman yang diinginkan
                 setTimeout(() => {
-                    window.location.href = `{{ url('selfordercheckout') }}/${decodedText}`;
+                    window.location.href = `${decodedText}`;
                 }, 500); // Delay singkat sebelum redirect
             },
             (errorMessage) => {
@@ -108,74 +108,7 @@
         ).catch(err => {
             console.log("Unable to start scanning", err);
         });
-        // Quagga.onProcessed(function(result) {
-        //     if (result) {
-        //         console.log("Processing Frame", result);
-        //     } else {
-        //         console.log("No result");
-        //     }
-        // });
-        // Quagga.init({
-        //         inputStream : {
-        //             name : "Live",
-        //             type : "LiveStream",
-        //             target: document.querySelector('#interactiveqr'), // Elemen video
-        //             constraints: {
-        //                 facingMode: "environment", // Menggunakan kamera belakang
-        //                 advanced: [
-        //                     { focusMode: "manual" }, // Nonaktifkan autofokus
-        //                     { zoom: 4 },  // Perbesar tampilan untuk barcode kecil
-        //                 ]
-        //             }
-        //         },
-        //         locator: {
-        //             patchSize: "small",  // Ukuran deteksi lebih kecil untuk barcode kecil
-        //             halfSample: false,    // Tidak perlu sampling 50% untuk akurasi yang lebih baik
-        //             debug: {
-        //                 showCanvas: true, // Menampilkan canvas untuk debug
-        //                 showPatches: true,
-        //                 showFoundPatches: true,
-        //                 showSkeleton: true,
-        //                 showLabels: true,
-        //                 showPatchLabels: true,
-        //                 showRemainingPatchLabels: true,
-        //             }
-        //         },
-        //         area: { // Fokus pada seluruh area kamera
-        //             top: "0%",
-        //             right: "0%",
-        //             left: "0%",
-        //             bottom: "0%"
-        //         },
-        //         decoder : {
-        //             readers : [ "qrcode_reader"],  // Jenis barcode yang ingin di-scan
-        //         },
-        //         locate: true // Aktifkan mode pelacakan barcode
-        //     }, function(err) {
-        //         if (err) {
-        //             console.log(err);
-        //             return;
-        //         }
-        //         console.log("Quagga initialized successfully");
-        //         Quagga.start();
-        //     });
-        // Event handler ketika barcode terdeteksi
-        // Quagga.onDetected(function(result) {
-        //     var code = result.codeResult.code;
-        //     let inputField = document.getElementById('productcode');
-        //     if(inputField) {
-        //         inputField.value = code;
-        //         inputField.dispatchEvent(new Event('input'));
 
-        //         // Mainkan suara beep setelah barcode terdeteksi
-        //         klikSound.play();
-        //          // Tampilkan hasil scan dan langsung redirect
-        //         document.getElementById('scanned-result').innerText = `Code Scanned: ${code}`;
-        //         setTimeout(() => {
-        //             window.location.href = `{{ url('selfordercheckout') }}/${code}`;
-        //         }, 500); // Delay singkat sebelum redirect
-        //     }
-        // });
 
 
     });
