@@ -32,7 +32,7 @@
 
                             <img src="data:image/png;base64, {{ $qrCode }}" alt="QR Code" class="img-fluid img-thumbnail" style="width: 200px; height: 200px;">
                             <figcaption class="figure-caption text-muted mt-2">
-                                Tunjukan QR Code kepada Konter pada saat proses Kemasan..
+
                             </figcaption>
                         </figure>
                     </div>

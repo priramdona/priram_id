@@ -77,7 +77,10 @@
             <label>Pin Location</label>
             <input type="text" id="location_info" name="location_info" class="form-control" readonly>
         </div>
-
+        <div class="form-group">
+            <label>Jarak dari Lokasi Awal:</label>
+            <input type="text" id="distance" name="distance" class="form-control" readonly>
+        </div>
         <button type="submit" class="btn btn-primary">Simpan Lokasi</button>
     </form>
 </div>
@@ -85,7 +88,10 @@
 <!-- Map Container -->
 <div class="map-container">
     <div id="map"></div>
-    <button class="location-button" onclick="centerOnCurrentLocation()">Lokasi Saat Ini</button>
+    <div style="display: flex; justify-content: center;">
+        <button class="location-button" onclick="centerOnCurrentLocation()">Lokasi Saat Ini</button>
+        <button class="location-button" onclick="openGoogleMaps()">Buka di Google Maps</button>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
@@ -93,6 +99,7 @@
     const defaultLat = -6.200000;
     const defaultLng = 106.816666;
 
+    // Inisialisasi Peta dan Marker
     var map = L.map('map').setView([defaultLat, defaultLng], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -102,6 +109,7 @@
 
     var marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
 
+    // Fungsi untuk memperbarui input lokasi
     function updateLocationInputs(lat, lng) {
         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
             .then(response => response.json())
@@ -111,18 +119,21 @@
                 document.getElementById('province').value = data.address.state || '';
                 document.getElementById('postal_code').value = data.address.postcode || '';
                 document.getElementById('location_info').value = `Lat: ${lat}, Lng: ${lng}`;
+                calculateDistance(lat, lng);
             })
             .catch(error => console.error('Error:', error));
     }
 
+    // Fungsi untuk mendapatkan lokasi pengguna dan memperbarui peta
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 const userLat = position.coords.latitude;
                 const userLng = position.coords.longitude;
-                map.setView([userLat, userLng], 15);
+                map.setView([userLat, userLng], 15); // Level zoom 15 untuk lebih akurat
                 marker.setLatLng([userLat, userLng]);
                 updateLocationInputs(userLat, userLng);
+                calculateRoute();
             }, error => {
                 console.error('Error retrieving location:', error.message);
                 alert('Tidak dapat mendeteksi lokasi Anda. Menampilkan lokasi default.');
@@ -132,12 +143,13 @@
         }
     }
 
+    // Fungsi untuk memusatkan peta pada lokasi saat ini
     function centerOnCurrentLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 const userLat = position.coords.latitude;
                 const userLng = position.coords.longitude;
-                map.setView([userLat, userLng], 15);
+                map.setView([userLat, userLng], 15); // Level zoom 15 untuk lebih akurat
                 marker.setLatLng([userLat, userLng]);
                 updateLocationInputs(userLat, userLng);
             }, error => {
@@ -154,13 +166,91 @@
         }
     }
 
+    // Fungsi untuk membuka Google Maps dengan koordinat yang didapatkan
+    function openGoogleMaps() {
+        const locationInfo = document.getElementById('location_info').value;
+        if (locationInfo) {
+            const [lat, lng] = locationInfo.replace('Lat: ', '').replace('Lng: ', '').split(', ');
+            if (isNaN(lat) || isNaN(lng)) {
+                alert("Koordinat tidak valid. Tidak dapat membuka Google Maps.");
+            } else {
+                const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+                window.open(googleMapsLink, '_blank');
+            }
+        } else {
+            alert("Koordinat tidak tersedia. Silakan deteksi lokasi terlebih dahulu.");
+        }
+    }
+
+    // Memanggil getLocation secara otomatis saat halaman dimuat
     getLocation();
 
+    // Menangani penarikan marker
     marker.on('dragend', function(event) {
         const latLng = event.target.getLatLng();
         updateLocationInputs(latLng.lat, latLng.lng);
     });
 
+    function calculateDistance(lat2, lng2) {
+        // const defaultLat = -6.200000;
+        // const defaultLng = 106.816666;
+        // const [lat1, lng1] = document.getElementById('from_location').value.split(',').map(Number);
+        const lat1 = defaultLat;
+        const lng1 = defaultLng;
+        const R = 6371; // Radius bumi dalam kilometer
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c; // Jarak dalam kilometer
+
+        document.getElementById('distance').value = `${distance.toFixed(2)} km`;
+    }
+
+    async function calculateRoute() {
+        // API key OpenRouteService
+        const apiKey = 'YOUR_API_KEY';
+
+        // Koordinat asal dan tujuan
+        const start = [-6.910535981144117, 106.9228506088257]; // Lokasi asal (lat, lng)
+        const end = [-6.200000, 106.816666]; // Lokasi tujuan (lat, lng)
+
+        // Membuat request body dalam format GeoJSON
+        const geoJson = {
+            type: "FeatureCollection",
+            features: [
+                {
+                    type: "Feature",
+                    geometry: {
+                        type: "LineString",
+                        coordinates: [start, end]
+                    },
+                    properties: {}
+                }
+            ]
+        };
+
+        // Mengirim request POST ke OpenRouteService API
+        const response = await fetch('https://api.openrouteservice.org/v2/directions/driving-car', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': apiKey // Menggunakan API Key yang sudah didapatkan
+            },
+            body: JSON.stringify(geoJson)
+        });
+
+        const data = await response.json();
+
+        // Mengekstrak jarak dari response
+        const distance = data.features[0].properties.segments[0].distance; // dalam meter
+        const distanceKm = distance / 1000; // konversi ke kilometer
+
+        console.log(`Jarak antara dua lokasi: ${distanceKm.toFixed(2)} km`);
+    }
+    // Fungsi pencarian kota
     function searchCity() {
         const city = document.getElementById('city').value;
         const cityError = document.getElementById('city-error');
@@ -173,7 +263,7 @@
                     if (data && data.length > 0) {
                         const lat = data[0].lat;
                         const lon = data[0].lon;
-                        map.setView([lat, lon], 13);
+                        map.setView([lat, lon], 13); // Level zoom 13 untuk pencarian kota
                         marker.setLatLng([lat, lon]);
                         updateLocationInputs(lat, lon);
                     } else {
@@ -186,6 +276,7 @@
         }
     }
 
+    // Mengupdate ukuran peta saat ukuran layar berubah
     window.addEventListener('resize', function() {
         setTimeout(function() {
             map.invalidateSize();

@@ -8,6 +8,9 @@ return [
 
         'info' => 'Please Scan the QR Code Order Result to Continue Process Self Order'
     ],
+    'ordered' => [
+        'result_info' => 'Show QR Code to Counter while Packing and Print Receipt'
+    ],
     'lists' => [
         'reference' => 'Reference',
         'customer' => 'Customer',

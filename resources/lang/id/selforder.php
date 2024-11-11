@@ -7,6 +7,9 @@ return [
         'scan' => 'Pindai Kode QR',
         'info' => 'Silakan Pindai Hasil Pemesanan Kode QR untuk Melanjutkan Proses Pemesanan Mandiri',
     ],
+    'ordered' => [
+        'result_info' => 'Tunjukan QR Code kepada Konter pada saat Mengemas dan Cetak Struk'
+    ],
     'lists' => [
         'reference' => 'Referensi',
         'customer' => 'Pelanggan',
