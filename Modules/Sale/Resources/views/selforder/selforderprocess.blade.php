@@ -14,7 +14,7 @@
 @endsection
 
 @section('content')
-<div class="container-fluid mb-4">
+{{-- <div class="container-fluid mb-4">
 
         <div class="container">
             <div class="col-12">
@@ -40,11 +40,39 @@
                 </div>
             </div>
         </div>
+</div> --}}
+<div class="container-fluid mb-4">
+    <div class="container">
+        <div class="col-12">
+            @include('utils.alerts')
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <figure class="text-center">
+                        <div class="position-relative">
+                            <!-- Elemen untuk menampilkan pemindai QR -->
+                            <div id="interactiveqr" class="viewport">
+                                <!-- `html5-qrcode` akan mengisi area ini -->
+                            </div>
+                        </div>
+                        <figcaption class="figure-caption text-muted mt-2">
+                            {{ __('selforder.process.info') }}
+                        </figcaption>
+                    </figure>
+                    <!-- Menampilkan hasil scanning QR code -->
+                    <div id="scanned-result" class="text-center mt-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 @endsection
 
 @push('page_scripts')
-
+<script src="{{ asset('js/html5-qrcode.min.js') }}"></script>
 <script>
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -52,67 +80,102 @@
         var beepSound = new Audio("{{ asset('sounds/beep.mp3') }}");
         var klikSound = new Audio("{{ asset('sounds/klik.mp3') }}");
 
-        Quagga.init({
-                inputStream : {
-                    name : "Live",
-                    type : "LiveStream",
-                    target: document.querySelector('#interactiveqr'), // Elemen video
-                    constraints: {
-                        facingMode: "environment", // Menggunakan kamera belakang
-                        advanced: [
-                            { focusMode: "manual" }, // Nonaktifkan autofokus
-                            { zoom: 4 },  // Perbesar tampilan untuk barcode kecil
-                        ]
-                    }
-                },
-                locator: {
-                    patchSize: "small",  // Ukuran deteksi lebih kecil untuk barcode kecil
-                    halfSample: false,    // Tidak perlu sampling 50% untuk akurasi yang lebih baik
-                    debug: {
-                        showCanvas: true, // Menampilkan canvas untuk debug
-                        showPatches: true,
-                        showFoundPatches: true,
-                        showSkeleton: true,
-                        showLabels: true,
-                        showPatchLabels: true,
-                        showRemainingPatchLabels: true,
-                    }
-                },
-                area: { // Fokus deteksi hanya pada bagian tengah
-                    top: "30%",    // 30% dari atas
-                    right: "30%",  // 30% dari kanan
-                    left: "30%",   // 30% dari kiri
-                    bottom: "30%"  // 30% dari bawah
-                },
-                decoder : {
-                    readers : ["code_128_reader", "ean_reader"],  // Jenis barcode yang ingin di-scan
-                },
-                locate: true // Aktifkan mode pelacakan barcode
-            }, function(err) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                console.log("Quagga initialized successfully");
-                Quagga.start();
-            });
-        // Event handler ketika barcode terdeteksi
-        Quagga.onDetected(function(result) {
-            var code = result.codeResult.code;
-            let inputField = document.getElementById('productcode');
-            if(inputField) {
-                inputField.value = code;
-                inputField.dispatchEvent(new Event('input'));
+        // Inisialisasi pemindai QR code menggunakan html5-qrcode
+        const html5QrCode = new Html5Qrcode("interactiveqr");
 
-                // Mainkan suara beep setelah barcode terdeteksi
+        html5QrCode.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,    // Frame per detik untuk pemindaian
+                qrbox: { width: 250, height: 250 } // Ukuran kotak untuk pemindaian QR code
+            },
+            (decodedText, decodedResult) => {
+                // QR code berhasil dipindai
+                document.getElementById('scanned-result').innerText = `Code Scanned: ${decodedText}`;
+
+                // Mainkan suara klik
                 klikSound.play();
-                 // Tampilkan hasil scan dan langsung redirect
-                document.getElementById('scanned-result').innerText = `Code Scanned: ${code}`;
+
+                // Tunggu beberapa saat sebelum redirect ke halaman yang diinginkan
                 setTimeout(() => {
-                    window.location.href = `{{ url('selfordercheckout') }}/${code}`;
+                    window.location.href = `{{ url('selfordercheckout') }}/${decodedText}`;
                 }, 500); // Delay singkat sebelum redirect
+            },
+            (errorMessage) => {
+                // Pesan kesalahan jika pemindaian gagal
+                console.log(errorMessage);
             }
+        ).catch(err => {
+            console.log("Unable to start scanning", err);
         });
+        // Quagga.onProcessed(function(result) {
+        //     if (result) {
+        //         console.log("Processing Frame", result);
+        //     } else {
+        //         console.log("No result");
+        //     }
+        // });
+        // Quagga.init({
+        //         inputStream : {
+        //             name : "Live",
+        //             type : "LiveStream",
+        //             target: document.querySelector('#interactiveqr'), // Elemen video
+        //             constraints: {
+        //                 facingMode: "environment", // Menggunakan kamera belakang
+        //                 advanced: [
+        //                     { focusMode: "manual" }, // Nonaktifkan autofokus
+        //                     { zoom: 4 },  // Perbesar tampilan untuk barcode kecil
+        //                 ]
+        //             }
+        //         },
+        //         locator: {
+        //             patchSize: "small",  // Ukuran deteksi lebih kecil untuk barcode kecil
+        //             halfSample: false,    // Tidak perlu sampling 50% untuk akurasi yang lebih baik
+        //             debug: {
+        //                 showCanvas: true, // Menampilkan canvas untuk debug
+        //                 showPatches: true,
+        //                 showFoundPatches: true,
+        //                 showSkeleton: true,
+        //                 showLabels: true,
+        //                 showPatchLabels: true,
+        //                 showRemainingPatchLabels: true,
+        //             }
+        //         },
+        //         area: { // Fokus pada seluruh area kamera
+        //             top: "0%",
+        //             right: "0%",
+        //             left: "0%",
+        //             bottom: "0%"
+        //         },
+        //         decoder : {
+        //             readers : [ "qrcode_reader"],  // Jenis barcode yang ingin di-scan
+        //         },
+        //         locate: true // Aktifkan mode pelacakan barcode
+        //     }, function(err) {
+        //         if (err) {
+        //             console.log(err);
+        //             return;
+        //         }
+        //         console.log("Quagga initialized successfully");
+        //         Quagga.start();
+        //     });
+        // Event handler ketika barcode terdeteksi
+        // Quagga.onDetected(function(result) {
+        //     var code = result.codeResult.code;
+        //     let inputField = document.getElementById('productcode');
+        //     if(inputField) {
+        //         inputField.value = code;
+        //         inputField.dispatchEvent(new Event('input'));
+
+        //         // Mainkan suara beep setelah barcode terdeteksi
+        //         klikSound.play();
+        //          // Tampilkan hasil scan dan langsung redirect
+        //         document.getElementById('scanned-result').innerText = `Code Scanned: ${code}`;
+        //         setTimeout(() => {
+        //             window.location.href = `{{ url('selfordercheckout') }}/${code}`;
+        //         }, 500); // Delay singkat sebelum redirect
+        //     }
+        // });
 
 
     });
@@ -120,6 +183,42 @@
 
 @endpush
 @push('page_css')
+<style>
+    #interactiveqr {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        background-color: #000;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Styling garis di sekitar pemindai */
+    .scanner-laser-qr {
+        position: absolute;
+        border: 2px solid green;
+        width: 80%;
+        height: 80%;
+        top: 10%;
+        left: 10%;
+        z-index: 2;
+        box-shadow: 0 0 10px green;
+    }
+
+    /* Styling hasil scanning */
+    #scanned-result {
+        font-size: 18px;
+        color: green;
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+@endpush
+
+{{-- @push('page_css')
 <style>
     #interactiveqr {
         /* position: relative;
@@ -165,4 +264,4 @@
         margin-top: 20px;
     }
 </style>
-@endpush
+@endpush --}}
