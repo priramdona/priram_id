@@ -16,6 +16,7 @@ class Checkout extends Component
 
     public $cart_instance;
     public $customers;
+    public $selforder_business;
     public $global_discount;
     public $global_tax;
     public $shipping;
@@ -31,9 +32,10 @@ class Checkout extends Component
     public $payment_channels = [];
     public $itemActions = [];
 
-    public function mount($cartInstance, $customers) {
+    public function mount($cartInstance, $customers, $selforderBusiness) {
         $this->cart_instance = $cartInstance;
         $this->customers = $customers;
+        $this->selforder_business = $selforderBusiness;
 
         $this->global_discount = 0;
         $this->global_tax = 0;

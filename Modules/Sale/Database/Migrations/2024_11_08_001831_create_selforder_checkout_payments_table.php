@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('selforder_checkout_payments', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('business_id')->references('id')->on('businesses')->cascadeOnDelete();
             $table->foreignUuid('selforder_checkout_id')->references('id')->on('selforder_checkouts')->cascadeOnDelete();
             $table->string('payment_method')->nullable();
             $table->foreignUuid('payment_method_id')->nullable();

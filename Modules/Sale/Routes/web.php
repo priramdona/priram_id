@@ -25,13 +25,15 @@ Route::post('/selforder-posmobileorder/{id}', [SelforderController::class, 'posM
 
 Route::get('/selforder/mobile-order-qr/{id}', [SelforderController::class, 'mobileOrderQrCodeGenerator'])->name('selforder.mobileOrderQrCodeGenerator');
 Route::get('/sales-show/{sale}', [SaleController::class, 'showsale'])->name('sales.showdata');
+Route::post('/app/mobileorder', 'SelforderController@storeMobileOrder')->name('app.selforder.mobileorder.store');
+// Route::post('/ordered/mobileorder/{id}', [SelforderController::class, 'orderedMobile'])->name('ordered.mobileorder');
+
 // Route::get('/product-sale/{product}', [ProductController::class, 'showsale'])->name('product.sale');
 Route::group(['middleware' => 'auth'], function () {
 
     //selforder
-    Route::get('/app/mobileorder', 'SelforderController@indexMobileOrder')->name('app.selforder.mobileorder');
+    // Route::get('/app/mobileorder', 'SelforderController@indexMobileOrder')->name('app.selforder.mobileorder');
 
-    Route::post('/app/mobileorder', 'SelforderController@storeMobileOrder')->name('app.selforder.mobileorder.store');
     //POS
     Route::get('/app/pos', 'PosController@index')->name('app.pos.index');
     Route::post('/app/pos', 'PosController@store')->name('app.pos.store');
@@ -69,6 +71,8 @@ Route::group(['middleware' => 'auth'], function () {
     // })->name('sales.pos.pdf');
 
     //Sales
+
+
     Route::resource('sales', 'SaleController');
     Route::resource('pos', 'PosController');
 
@@ -82,7 +86,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/sale-payments/destroy/{salePayment}', 'SalePaymentsController@destroy')->name('sale-payments.destroy');
 
     Route::get('/selforder/mobileorder', 'SelforderController@manageMobileOrder')->name('selforder.mobileorder');
-    Route::patch('/selforder/business/{id}', 'SelforderController@updateSelforderBusinessMobile')->name('selforder..business.update');
+    Route::patch('/selforder/business/{id}', 'SelforderController@updateSelforderBusinessMobile')->name('selforder.business.update');
+    Route::get('/selforder/mobileorder/index', [SelforderController::class, 'indexSelforderCheckout'])->name('selforder.mobileorder.index');
+    Route::get('/selfordercheckout/{selforderCheckout}', [SelforderController::class, 'selforderCheckout'])->name('selfordercheckout');
+    Route::get('/selforder/selforderprocess', [SelforderController::class, 'selforderProcess'])->name('selforder.selforderprocess');
+
+    Route::get('/selforder/deliveryorder', 'SelforderController@manageDeliveryOrder')->name('selforder.deliveryorder');
+
 
 
 });

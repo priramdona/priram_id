@@ -2,6 +2,8 @@
 
 return [
     'home' => 'Beranda',
+    'pos' => 'Kasir',
+
     'whatsapp' => 'Whatsapp',
     'wallet' => 'Manajemen Saldo',
     'wallet_information' => 'Informasi Saldo',
@@ -38,10 +40,12 @@ return [
     'selforder' => 'Layanan Pesanan Mandiri',
     'create_income' => 'Buat Pemasukan',
     'income_categories' => 'Kategori Pemasukan',
-    'selforder_mobile' => 'Pesan Keliling',
-    'selforder_stay' => 'Pesan Ditempat',
-    'selforder_delivery' => 'Pesan Kirim',
+    'selforder_mobile' => 'Info Pesan Keliling',
+    'selforder_stay' => 'Info Pesan Ditempat',
+    'process_selforder' => 'Proses Pesanan',
+    'selforder_delivery' => 'Info Pesan Kirim',
     'all_incomes' => 'Semua Pemasukan',
+    'all_selforder' => 'Semua Pesanan',
     'parties' => 'Pihak',
     'customers' => 'Pelanggan',
     'suppliers' => 'Pemasok',

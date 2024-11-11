@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Http;
 use Modules\PaymentGateway\Entities\XenditDisbursement;
 use Modules\PaymentGateway\Entities\XenditVirtualAccountRequest;
 use Modules\Quotation\Entities\Quotation;
+use Modules\Sale\Entities\SelforderCheckout;
 
 class XenditWebhookController extends Controller
 {
@@ -408,6 +409,18 @@ class XenditWebhookController extends Controller
 
                                 if ($sourceTransaction){
                                     $sourceType = "incomes";
+                                    $sourceId = $sourceTransaction->id;
+                                    $sourceTransaction->paymet_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
+
+                            if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\SelforderCheckout'){
+                                $sourceTransaction = SelforderCheckout::find($xenditCreatePayments->source_id);
+
+                                if ($sourceTransaction){
+                                    $sourceType = "Selforder Mobile";
                                     $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->paymet_status = "Paid";
                                 }else{

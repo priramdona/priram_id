@@ -84,10 +84,12 @@
                         </div>
 
                         <div class="col-lg-7">
-                            <livewire:search-product-sale/>
+                            {{-- <livewire:search-product-sale/> --}}
+                            <livewire:search-product-mobile-selforder :business="$business"/>
+
                         </div>
                         <div class="col-lg-5">
-                            <livewire:mobile-order.checkout :cart-instance="'sale'" :customers="$customers"/>
+                            <livewire:mobile-order.checkout :cart-instance="'mobile-order'" :customers="$customers" :business="$business" :selforder-business="$selforderBusiness"/>
 
                         </div>
                     </div>
@@ -107,7 +109,7 @@
         $(document).ready(function () {
             $("#payment_method").empty();
             window.addEventListener('dispatchBrowserEvent',function(event)  {
-                alert('');
+
                 $.ajax({
                 url: "{{ url('/get-payment-method') }}/",
                 method: "GET",
@@ -117,7 +119,6 @@
                 dataType: 'json',
                 success: function(data) {
                     if (data.length > 0) {
-                        // alert(data);
                         $("#payment_method").empty();
                         op = '<option value="" disabled="true" selected="true">-Select-</option>'
                         for (var i = 0; i < data.length; i++) {
@@ -150,7 +151,6 @@
 
         function generatePhone(id, productName) {
             var phoneNumber = document.getElementById('phone_number_' + id).value;
-            // alert(phoneNumber + ' id = ' +  id);
             var generateButton = document.getElementById('generate_button_' + id);
             generateButton.classList.remove('btn-primary');
             generateButton.classList.add('btn-success');

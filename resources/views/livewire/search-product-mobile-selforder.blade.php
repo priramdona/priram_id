@@ -71,7 +71,6 @@
 </div>
 
 <script>
-
     document.addEventListener('DOMContentLoaded', function () {
         // Inisialisasi suara beep
         var beepSound = new Audio("{{ asset('sounds/beep.mp3') }}");

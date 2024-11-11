@@ -1,6 +1,27 @@
 <?php
 
 return [
+    'home' => 'Home',
+    'selforders' => 'Self Orders',
+    'process' => [
+        'scan' => 'Scan QR Code',
+
+        'info' => 'Please Scan the QR Code Order Result to Continue Process Self Order'
+    ],
+    'lists' => [
+        'reference' => 'Reference',
+        'customer' => 'Customer',
+        'status' => 'Status',
+        'total_amount' => 'Total Amount',
+        'paid_amount' => 'Paid Amount',
+        'due_amount' => 'Due Amount',
+        'payment_method' => 'Payment Method',
+        'payment_status' => 'Payment Status',
+        'code' => 'Code',
+        'action_modal_label' => 'Choose Action',
+        'action_process' => 'Process Order',
+        'action_cancel' => 'Cancel',
+    ],
     'enter' =>[
         'welcome'=> 'Welcome',
         'info_welcome'=> 'Complete Your Information',

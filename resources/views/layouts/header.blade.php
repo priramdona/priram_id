@@ -6,21 +6,17 @@
     <i class="bi bi-list" style="font-size: 2rem;"></i>
 </button>
 
-<ul class="c-header-nav ml-auto">
-
-</ul>
 <ul class="c-header-nav ml-auto mr-4">
     @can('create_pos_sales')
     <li class="c-header-nav-item mr-3">
         <a class="btn btn-primary btn-pill {{ request()->routeIs('app.pos.index') ? 'disabled' : '' }}" href="{{ route('app.pos.index') }}">
-            <i class="bi bi-cart mr-1"></i> POS System
+            <i class="bi bi-cart mr-1"></i> {{ __('menu.pos') }}
         </a>
     </li>
     @endcan
 
-
     @can('show_notifications')
-  <li class="c-header-nav-item dropdown">
+    <li class="c-header-nav-item dropdown">
         <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="bi bi-envelope" style="font-size: 20px;"></i>
             @php

@@ -23,6 +23,7 @@
                     @endif
                     <div class="row">
                         <div>
+                            <input type="hidden" value="{{ $selforder_business->id }}" name="selforder_business_id"  id="selforder_business_id">
                             <input type="hidden" value="{{ $customers->id }}" name="customer_id"  id="customer_id">
                             <input type="hidden" id="payment_id" name="payment_id">
                             <input type="hidden" id="paylater_plan_id" name="paylater_plan_id">
@@ -211,6 +212,8 @@
     }
 
     $('#checkout-form').on('submit', function(e) {
+        if (isSubmitting) return; // Jika sudah dalam proses submit, hentikan
+        isSubmitting = true; // Set flag sebagai true untuk submit pertama kali
 
         var paymentChannel = document.getElementById('payment_channel').value;
         if (paymentChannel.length > 0){
@@ -357,7 +360,7 @@
                                                             },
                                                             dataType: 'json',
                                                             success: function(data) {
-
+                                                                alert(response.payment_request_id);
                                                                 $('#payment_by').attr('src', data.image_url);
                                                                 $('input[name=payment_id]').val(response.payment_request_id);
 
@@ -461,7 +464,7 @@
                                                                 }
 
                                                                 startautosave = setInterval(function() {
-
+                                                                    console.log("checking...");
                                                                     $.ajax({
                                                                     url: "{{ url('/check-payment') }}/",
                                                                     method: "GET",
@@ -470,7 +473,7 @@
                                                                     },
                                                                     dataType: 'json',
                                                                     success: function(paymentinfo) {
-
+                                                                        console.log(paymentinfo.status);
                                                                         if(paymentinfo.status == "Paid"){
                                                                             clearInterval(startautosave);
                                                                             Swal.fire({

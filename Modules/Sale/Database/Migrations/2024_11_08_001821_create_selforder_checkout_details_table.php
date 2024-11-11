@@ -24,6 +24,8 @@ return new class extends Migration
             $table->decimal('product_discount_amount',14,2)->nullable();
             $table->string('product_discount_type')->default('fixed');
             $table->decimal('product_tax_amount',14,2)->nullable();
+            $table->foreignUuid('business_id')->references('id')->on('businesses')->cascadeOnDelete();
+
             $table->timestamps();
             $table->softDeletes();
         });

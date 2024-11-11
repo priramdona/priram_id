@@ -2,6 +2,7 @@
 
 return [
     'home' => 'Home',
+    'pos' => 'POS System',
     'whatsapp' => 'Whatsapp',
     'wallet' => 'Saldo Management',
     'wallet_information' => 'Saldo Info',
@@ -38,10 +39,12 @@ return [
     'incomes' => 'Incomes',
     'create_income' => 'Create Income',
     'income_categories' => 'Income Categories',
-    'selforder_mobile' => 'Order Around',
-    'selforder_stay' => 'Order on Site',
-    'selforder_delivery' => 'Order Delivery',
+    'selforder_mobile' => 'Mobile Order Info',
+    'selforder_stay' => 'Order on Site Info',
+    'selforder_delivery' => 'Order Delivery Info',
     'all_incomes' => 'All Incomes',
+    'all_selforder' => 'All Self Orders',
+    'process_selforder' => 'Process Self Order',
     'parties' => 'Parties',
     'customers' => 'Customers',
     'suppliers' => 'Suppliers',

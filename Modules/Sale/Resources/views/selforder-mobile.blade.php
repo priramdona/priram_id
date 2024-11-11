@@ -5,7 +5,7 @@
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Self Order</a></li>
         <li class="breadcrumb-item active">Details</li>
     </ol>
 @endsection
@@ -47,7 +47,7 @@
             <div class="col-lg-9">
                 <div class="card h-100">
                     <div class="card-body">
-                        <form id="product-form" action="{{ route('selforder..business.update', $business->id) }}" method="POST" enctype="multipart/form-data">
+                        <form id="product-form" action="{{ route('selforder.business.update', $business->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('patch')
                             <div class="product-details">
@@ -95,6 +95,7 @@
                                 <div class="container">
                                     <p><span style="font-size: 12px; font-weight: bold; color: red;">{{ __('selforder.info_attention') }}</span></p>
                                     <p><span style="font-size: 12px;  font-weight: bold;">{{ __('selforder.info_qrcode_mobile') }}</span></p>
+                                    <p class="text-muted">{{ $link }}</p>
                                     <figure class="text-center">
                                         {{-- <img id="qrCodeImage" src="data:image/png;base64, {{ $qrCode }}" alt="QR Code" class="img-fluid img-thumbnail"> --}}
                                         <img id="qrCodeImage" src="data:image/png;base64, {{ $qrCode }}" alt="QR Code" class="img-fluid img-thumbnail" style="width: 300px; height: 300px;">
@@ -119,8 +120,6 @@
                 </div>
 
             </div>
-
-
         </div>
     </div>
 @endsection

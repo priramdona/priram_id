@@ -30,7 +30,7 @@
         @endif
         @endcan
         @can('show_sales')
-            <a href="{{ route('sales.show', $data->id) }}" class="dropdown-item">
+            <a href="{{ route('selfordercheckout', $data->id) }}" class="dropdown-item">
                 <i class="bi bi-eye mr-2 text-info" style="line-height: 1;"></i> Details
             </a>
         @endcan

@@ -210,6 +210,8 @@
     }
 
     $('#checkout-form').on('submit', function(e) {
+        if (isSubmitting) return; // Jika sudah dalam proses submit, hentikan
+        isSubmitting = true; // Set flag sebagai true untuk submit pertama kali
 
         var paymentChannel = document.getElementById('payment_channel').value;
         if (paymentChannel.length > 0){

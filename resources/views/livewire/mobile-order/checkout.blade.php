@@ -16,6 +16,7 @@
                 <div class="form-group">
                     <label for="customer_id"><span style="font-size: 12px;  font-weight: bold;">Welcome</span></label>
                     <div class="form-group">
+                        <input type="hidden" value="{{ $selforder_business->id }}" name="selforder_business_id_info">
                         <input type="hidden" value="{{ $customers->id }}" name="customer_id_info">
                         <input type="hidden" value="{{ $customers->customer_name }}" name="customer_name_info">
                         <input type="hidden" value="{{ $customers->customer_phone }}" name="customer_phone_info">

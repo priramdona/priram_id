@@ -7,8 +7,9 @@ use Illuminate\Support\Collection;
 use Modules\Product\Entities\Product;
 use Illuminate\Support\Facades\Auth;
 
-class SearchProductSale extends Component
+class SearchProductMobileSelforder extends Component
 {
+
     public $query;
     public $search_results;
     public $how_many;
@@ -19,14 +20,14 @@ class SearchProductSale extends Component
         $this->how_many = 5;
         $this->search_results = Collection::empty();
     }
-
-    public function render() {
-        return view('livewire.search-product-sale');
+    public function render()
+    {
+        return view('livewire.search-product-mobile-selforder');
     }
 
     public function updatedQuery() {
         // dd($this->business);
-        $this->search_results = Product::where('business_id',Auth::user()->business_id)
+        $this->search_results = Product::where('business_id',$this->business->id)
         ->where(
                 fn ($query) => $query
                 ->where('product_name', 'like', '%' . $this->query . '%')
@@ -34,6 +35,7 @@ class SearchProductSale extends Component
             )->take($this->how_many)->get();
 
     }
+
 
     public function loadMore() {
         $this->how_many += 5;
@@ -54,7 +56,6 @@ class SearchProductSale extends Component
             $this->selectProduct($product->id); // Langsung panggil selectProduct jika produk ditemukan
         }
     }
-
     public function selectProduct($productData) {
         //ini dari search
         // dd('asd',$productData);
@@ -71,4 +72,5 @@ class SearchProductSale extends Component
         toast('Product Selected', 'success');
         $this->dispatch('productSelected', $product);
     }
+
 }
