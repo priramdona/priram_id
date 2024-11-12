@@ -92,7 +92,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/selforder/selforderprocess', [SelforderController::class, 'selforderProcess'])->name('selforder.selforderprocess');
 
     Route::get('/selforder/deliveryorder', 'SelforderController@manageDeliveryOrder')->name('selforder.deliveryorder');
-
+    Route::post('/calculate-route', [SelforderController::class, 'calculateRoute'])->name('calculate.route');
 
 
 });

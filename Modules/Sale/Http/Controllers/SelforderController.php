@@ -94,6 +94,60 @@ class SelforderController extends Controller
 
         return $dataTable->render('sale::selforder.ordered.lists.mobileorder');
     }
+
+    public function calculateRoute(Request $request)
+    {
+        // Ambil input latitude dan longitude dari permintaan
+        $fromLat = $request->input('from_lat');
+        $fromLng = $request->input('from_lng');
+        $toLat = $request->input('to_lat');
+        $toLng = $request->input('to_lng');
+
+        // URL API OpenRouteService
+        $url = 'https://api.openrouteservice.org/v2/directions/driving-car';
+
+        // Data yang akan dikirim ke API dalam format JSON
+        $data = [
+            'coordinates' => [
+                [$fromLng, $fromLat], // Titik awal (longitude, latitude)
+                [$toLng, $toLat]      // Titik tujuan (longitude, latitude)
+            ]
+        ];
+
+        // Inisialisasi cURL
+        $ch = curl_init($url);
+
+        // Konfigurasi opsi cURL
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: 5b3ce3597851110001cf62484495a59384c04dca8ce3521b11ac8cac'
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        // Eksekusi permintaan
+        $response = curl_exec($ch);
+
+        // Cek error
+        if (curl_errno($ch)) {
+            return response()->json(['error' => curl_error($ch)], 500);
+        }
+
+        curl_close($ch);
+
+        // Decode JSON response
+        $responseData = json_decode($response, true);
+
+        // Ambil data jarak dalam kilometer (nilai default dalam meter)
+        $distanceInMeters = $responseData['routes'][0]['segments'][0]['distance'] ?? null;
+        $distanceInKm = intval(ceil($distanceInMeters)) ? round(ceil($distanceInMeters) / 1000, 0, PHP_ROUND_HALF_UP) : null;
+
+        return response()->json([
+            'distance_km' => $distanceInKm,
+            'raw_response' => $responseData
+        ]);
+    }
     public function selforderProcess()
     {
 

@@ -51,13 +51,13 @@
         @csrf
         <div class="form-group">
             <label for="address">Alamat</label>
-            <input type="text" id="address" name="address" class="form-control" required>
+            <input type="text" id="address" name="address" class="form-control" >
         </div>
 
         <div class="form-group">
             <label for="city">Kota</label>
             <div style="display: flex; align-items: center;">
-                <input type="text" id="city" name="city" class="form-control" required>
+                <input type="text" id="city" name="city" class="form-control" >
                 <button type="button" onclick="searchCity()" style="margin-left: 10px;">Cari</button>
             </div>
             <div id="city-error" class="error-message" style="display: none;">Kota tidak ditemukan.</div>
@@ -65,12 +65,12 @@
 
         <div class="form-group">
             <label for="province">Provinsi</label>
-            <input type="text" id="province" name="province" class="form-control" required>
+            <input type="text" id="province" name="province" class="form-control" >
         </div>
 
         <div class="form-group">
             <label for="postal_code">Kode Pos</label>
-            <input type="text" id="postal_code" name="postal_code" class="form-control" required>
+            <input type="text" id="postal_code" name="postal_code" class="form-control" >
         </div>
 
         <div class="form-group">
@@ -81,8 +81,29 @@
             <label>Jarak dari Lokasi Awal:</label>
             <input type="text" id="distance" name="distance" class="form-control" readonly>
         </div>
+
         <button type="submit" class="btn btn-primary">Simpan Lokasi</button>
+
     </form>
+    <form id="distanceForm" method="POST" action="{{ route('calculate.route') }}">
+        @csrf
+        <label for="from_lat">From Latitude:</label>
+        <input type="text" name="from_lat" id="from_lat" value="-6.200000"><br><br>
+
+        <label for="from_lng">From Longitude:</label>
+        <input type="text" name="from_lng" id="from_lng" value="106.816666" required><br><br>
+
+        <label for="to_lat">To Latitude:</label>
+        <input type="text" name="to_lat" id="to_lat" required><br><br>
+
+        <label for="to_lng">To Longitude:</label>
+        <input type="text" name="to_lng" id="to_lng" required><br><br>
+
+        <button type="submit">Calculate Route Distance</button>
+    </form>
+    <div id="result">
+        <!-- Hasil jarak akan ditampilkan di sini -->
+    </div>
 </div>
 
 <!-- Map Container -->
@@ -99,6 +120,35 @@
     const defaultLat = -6.200000;
     const defaultLng = 106.816666;
 
+     document.getElementById('distanceForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.distance_km) {
+                    document.getElementById('result').innerText = `Distance: ${result.distance_km} km`;
+                } else {
+                    document.getElementById('result').innerText = 'Failed to calculate distance.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Error calculating distance.';
+            }
+        });
     // Inisialisasi Peta dan Marker
     var map = L.map('map').setView([defaultLat, defaultLng], 13);
 
@@ -119,11 +169,13 @@
                 document.getElementById('province').value = data.address.state || '';
                 document.getElementById('postal_code').value = data.address.postcode || '';
                 document.getElementById('location_info').value = `Lat: ${lat}, Lng: ${lng}`;
+                document.getElementById('to_lat').value = `${lat}`;
+                document.getElementById('to_lng').value = `${lng}`;
+
                 calculateDistance(lat, lng);
             })
             .catch(error => console.error('Error:', error));
     }
-
     // Fungsi untuk mendapatkan lokasi pengguna dan memperbarui peta
     function getLocation() {
         if (navigator.geolocation) {
@@ -133,7 +185,6 @@
                 map.setView([userLat, userLng], 15); // Level zoom 15 untuk lebih akurat
                 marker.setLatLng([userLat, userLng]);
                 updateLocationInputs(userLat, userLng);
-                calculateRoute();
             }, error => {
                 console.error('Error retrieving location:', error.message);
                 alert('Tidak dapat mendeteksi lokasi Anda. Menampilkan lokasi default.');
@@ -209,47 +260,7 @@
         document.getElementById('distance').value = `${distance.toFixed(2)} km`;
     }
 
-    async function calculateRoute() {
-        // API key OpenRouteService
-        const apiKey = 'YOUR_API_KEY';
 
-        // Koordinat asal dan tujuan
-        const start = [-6.910535981144117, 106.9228506088257]; // Lokasi asal (lat, lng)
-        const end = [-6.200000, 106.816666]; // Lokasi tujuan (lat, lng)
-
-        // Membuat request body dalam format GeoJSON
-        const geoJson = {
-            type: "FeatureCollection",
-            features: [
-                {
-                    type: "Feature",
-                    geometry: {
-                        type: "LineString",
-                        coordinates: [start, end]
-                    },
-                    properties: {}
-                }
-            ]
-        };
-
-        // Mengirim request POST ke OpenRouteService API
-        const response = await fetch('https://api.openrouteservice.org/v2/directions/driving-car', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': apiKey // Menggunakan API Key yang sudah didapatkan
-            },
-            body: JSON.stringify(geoJson)
-        });
-
-        const data = await response.json();
-
-        // Mengekstrak jarak dari response
-        const distance = data.features[0].properties.segments[0].distance; // dalam meter
-        const distanceKm = distance / 1000; // konversi ke kilometer
-
-        console.log(`Jarak antara dua lokasi: ${distanceKm.toFixed(2)} km`);
-    }
     // Fungsi pencarian kota
     function searchCity() {
         const city = document.getElementById('city').value;
