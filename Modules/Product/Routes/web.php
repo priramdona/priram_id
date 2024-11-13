@@ -19,5 +19,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('products', 'ProductController');
     //Product Category
     Route::resource('product-categories', 'CategoriesController')->except('create', 'show');
+    Route::get('/generate-unique-barcode', [ProductController::class, 'generateUniqueBarcode'])
+    ->name('generate.unique.barcode');
 });
 

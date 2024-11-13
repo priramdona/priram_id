@@ -3,6 +3,7 @@
 namespace Modules\PaymentMethod\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\businessAmount;
 use App\Models\DataConfig;
 use App\Models\MasterConfig;
 use Carbon\Carbon;
@@ -11,9 +12,18 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\PaymentGateway\Entities\XenditCreatePayment;
+use Modules\PaymentGateway\Entities\XenditInvoiceRequest;
+use Modules\PaymentGateway\Entities\XenditPaylaterPlan;
+use Modules\PaymentGateway\Entities\XenditPaylaterRequest;
+use Modules\PaymentGateway\Entities\xenditPaymentMethod;
+use Modules\PaymentGateway\Entities\XenditPaymentRequest;
+use Modules\PaymentGateway\Entities\XenditVirtualAccountRequest;
 use Modules\PaymentGateway\Http\Controllers\PaymentGatewayController;
 use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\PaymentMethod\Entities\PaymentMethod;
+use Modules\Sale\Entities\SelforderCheckout;
+use Modules\Sale\Entities\SelforderCheckoutDetail;
+use Modules\Sale\Entities\SelforderCheckoutPayment;
 use Modules\Sale\Http\Controllers\PosController;
 use Str;
 
@@ -75,6 +85,94 @@ class PaymentMethodController extends Controller
         }
 
     }
+
+    public function changePayment(request $request)
+    {
+        $createPayment = XenditCreatePayment::findOrFail($request->payment_request_id);
+
+        if ( $createPayment){
+            if ($createPayment->source_type == "Modules\Sale\Entities\SelforderCheckout"){
+                $selforderCheckout = SelforderCheckout::find(id: $createPayment->source_id);
+                if ($selforderCheckout){
+                    $selforderCheckout->delete();
+                }
+
+                $selforderCheckoutDetails = SelforderCheckoutDetail::where('selforder_checkout_id', $createPayment->source_id)
+                ->get();
+
+                foreach ($selforderCheckoutDetails as $record) {
+                    $record->delete();
+                }
+
+                $selforderCheckoutPayments = SelforderCheckoutPayment::where('selforder_checkout_id', $createPayment->source_id)
+                ->get();
+
+                foreach ($selforderCheckoutPayments as $record) {
+                    $record->delete();
+                }
+            }
+
+            $businessAmount = businessAmount::query()
+            ->where('reference_id',$createPayment->reference_id)
+            ->first();
+
+            if ($businessAmount){
+                $businessAmount->delete();
+            }
+
+            $virtualAccountRequest = XenditVirtualAccountRequest::query()
+            ->where('external_id',$createPayment->reference_id)
+            ->first();
+
+            if ($virtualAccountRequest){
+                $virtualAccountRequest->delete();
+            }
+
+            $paymentRequest = XenditPaymentRequest::query()
+            ->where('reference_id',$createPayment->reference_id)
+            ->first();
+
+            if($paymentRequest){
+                $paymentRequest->delete();
+            }
+
+            $paymentMethod = XenditPaymentMethod::query()
+            ->where('reference_id',$createPayment->reference_id)
+            ->first();
+
+            if ($paymentMethod){
+                $paymentMethod->delete();
+            }
+
+            $invoiceRequest = XenditInvoiceRequest::query()
+            ->where('external_id', $createPayment->reference_id)
+            ->first();
+
+            if ($invoiceRequest){
+                $invoiceRequest->delete();
+            }
+
+            $paylaterRequest = XenditPaylaterRequest::query()
+            ->where('reference_id',$createPayment->reference_id)
+            ->first();
+
+            if ($paylaterRequest){
+                $paylaterPlan = XenditPaylaterPlan::find($paylaterRequest->xendit_paylater_plan_id);
+
+                if($paylaterPlan){
+                    $paylaterPlan->delete();
+                }
+
+                $paylaterRequest->delete();
+            }
+            $createPayment->delete();
+        }
+
+
+        return response()->json(['result' => 'success'] , 200);
+
+    }
+
     public function checkPayment(request $request)
     {
         $createPayment = XenditCreatePayment::find($request->payment_request_id);

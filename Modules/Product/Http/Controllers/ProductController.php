@@ -13,10 +13,29 @@ use Modules\Product\Entities\Product;
 use Modules\Product\Http\Requests\StoreProductRequest;
 use Modules\Product\Http\Requests\UpdateProductRequest;
 use Modules\Upload\Entities\Upload;
+use Milon\Barcode\Facades\DNS1DFacade;
 
 class ProductController extends Controller
 {
 
+    public function generateUniqueBarcode()
+    {
+        do {
+            // Generate random 12 digits for EAN-13 (first digit for country code can be set as desired)
+            $barcode = mt_rand(100000000000, 999999999999);
+
+            // Check if the generated barcode already exists in product_code column
+            $exists = Product::where('product_code', $barcode)->exists();
+        } while ($exists);
+
+        // Return barcode HTML and the code itself
+        $barcodeHtml = DNS1DFacade::getBarcodeHTML($barcode, 'EAN13');
+
+        return response()->json([
+            'barcode' => $barcode,
+            'barcodeHtml' => $barcodeHtml
+        ]);
+    }
     public function index(ProductDataTable $dataTable) {
         abort_if(Gate::denies('access_products'), 403);
 

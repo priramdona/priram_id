@@ -14,6 +14,7 @@ use Modules\People\Http\Controllers\CustomersController;
 |
 */
 
+Route::get('/customer-selforder/{id}', [CustomersController::class, 'customerSelforderUpdate']);
 Route::group(['middleware' => 'auth'], function () {
 
     //Customers

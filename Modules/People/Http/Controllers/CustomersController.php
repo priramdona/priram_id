@@ -32,6 +32,66 @@ class CustomersController extends Controller
 
 
     }
+
+    public function customerSelforderUpdate(string $id, request $request)
+    {
+        $customer = Customer::find($id);
+
+        $custId = Str::orderedUuid()->toString();
+
+        $paymentGateway = new PaymentGatewayController();
+
+        if (blank($customer->cust_id)){
+            $registCustomer = $paymentGateway->createCustomer(
+                reffId: $custId,
+                firstName: $request->customer_first_name,
+                lastName: $request->customer_last_name,
+                dob: $request->dob,
+                email: $request->customer_email,
+                mobileNumber: $customer->customer_phone,
+                gender: $request->gender,
+                streetLine1: $request->address,
+                city: $request->city,
+                province: $request->province,
+                postalCode: $request->postal_code,
+                description: 'Registration From Selforder',
+                businessId: $customer->business_id
+            );
+        }else{
+            $registCustomer = $paymentGateway->updateCustomer(
+                id: $customer->cust_id,
+                refId: $customer->id,
+                firstName: $request->customer_first_name,
+                lastName: $request->customer_last_name,
+                dob: $request->dob,
+                email: $request->customer_email,
+                mobileNumber: $customer->customer_phone,
+                gender: $request->gender,
+                streetLine1: $request->address,
+                city: $request->city,
+                province: $request->province,
+                postalCode: $request->postal_code,
+                description: 'Update From Selforder',
+            );
+        }
+
+        $customer->update([
+            'customer_name'  => $request->customer_first_name . ' ' . $request->customer_last_name,
+            'customer_first_name'  => $request->customer_first_name,
+            'customer_last_name'  => $request->customer_last_name,
+            'customer_email' => $request->customer_email,
+            'city'           => $request->city,
+            'province'           => $request->province,
+            'country'        => 'ID',
+            'address'        => $request->address,
+            'dob' => $request->dob,
+            'gender' => $request->gender,
+            'postal_code' => $request->postal_code,
+            'cust_id' => $registCustomer['id'],
+        ]);
+        return response()->json($customer);
+    }
+
     public function create() {
         abort_if(Gate::denies('create_customers'), 403);
 
@@ -169,7 +229,7 @@ class CustomersController extends Controller
 
         $paymentGateway = new PaymentGatewayController();
         $registCustomer = $paymentGateway->updateCustomer(
-            id: $customer->reference_id,
+            id: $customer->cust_id,
             refId: $customer->id,
             firstName: $request->customer_first_name,
             lastName: $request->customer_last_name,

@@ -317,6 +317,7 @@ class PaymentGatewayController extends Controller
         $apiInstance = new InvoiceApi();
         $forUserId = null;
         $amount = 0;
+        $additionalAmount = 0;
         $idTransaction = str::orderedUuid()->toString();
         $reffPayment =  $idTransaction . '-' . Carbon::now()->format('Ymdss');
 
@@ -350,22 +351,25 @@ class PaymentGatewayController extends Controller
             ];
         }
 
-            $feesData = [];
-            $feesData=[
-                    [
-                        'type'  => 'Payment Fee',
-                        'value' => $fees['paymentFee'],
-                    ],
-                    [
-                        'type'  => 'Payment Fee PPN',
-                        'value' => $fees['paymentFeePpn'] ?? 0,
-                    ],
-                    [
-                        'type'  => 'Application Fee',
-                        'value' => $fees['applicationFee'] ?? 0,
-                    ]
-                ];
+        $additionalAmount += $fees['paymentFee'] + $fees['paymentFeePpn'] +  $fees['applicationFee'];
+
+        $feesData = [];
+        $feesData=[
+                [
+                    'type'  => 'Payment Fee',
+                    'value' => $fees['paymentFee'],
+                ],
+                [
+                    'type'  => 'Payment Fee PPN',
+                    'value' => $fees['paymentFeePpn'] ?? 0,
+                ],
+                [
+                    'type'  => 'Application Fee',
+                    'value' => $fees['applicationFee'] ?? 0,
+                ]
+            ];
             if ($discountAmount > 0){
+                $additionalAmount -= $discountAmount;
                 $feesData[] =
                     [
                     'type'  => 'Discount',
@@ -373,6 +377,7 @@ class PaymentGatewayController extends Controller
                     ];
             }
             if ($taxAmount > 0){
+                $additionalAmount += $discountAmount;
                 $feesData[] =
                     [
                     'type'  => 'Tax',
@@ -380,6 +385,7 @@ class PaymentGatewayController extends Controller
                     ];
             }
             if ($shippingAmount > 0){
+                $additionalAmount += $discountAmount;
                 $feesData[] = [
                     'type'  => 'Shipping',
                     'value' => ($shippingAmount ?? 0),
@@ -388,7 +394,7 @@ class PaymentGatewayController extends Controller
         $payloadCreateInvoice = [
             'external_id' => $reffPayment,
             'description' => 'Invoice for ' . $customer->customer_name . ' Date : ' . Carbon::now()->format('d-M-Y') . ' Total : ' . format_currency($totalAmount),
-            'amount' => $totalAmount,
+            'amount' => $totalAmount + $additionalAmount,
             'customer' => [
                 'given_names'=> $customer->customer_first_name,
                 'surname'=> $customer->customer_last_name,
@@ -723,7 +729,7 @@ class PaymentGatewayController extends Controller
         int $saleAmount,
         ){
             $customerData = Customer::find($customerId);
-
+            $additionalAmount = 0;
             $idTransaction = str::orderedUuid()->toString();
             $base64 = base64_encode(env('XENDIT_KEY').':');
             $secret_key = 'Basic ' . $base64;
@@ -780,7 +786,7 @@ class PaymentGatewayController extends Controller
                     $paymentFeeAmount2 = format_currency($paymentChannel['fee_value_2']);
                 }
             }
-
+                $additionalAmount += round($paymentFees['totalFee']);
                 $dataConfig = DataConfig::first();
                 $linkPayment = route('channel.product', ['channel' => $paymentChannel['id']]);
                 // $productData = Product::find($product['product_id']);
@@ -801,6 +807,7 @@ class PaymentGatewayController extends Controller
                 ];
 
                 if ($discountAmount > 0 ){
+                    $additionalAmount += round($discountAmount * -1);
                     $orderedItems[] = [
                         "type" => "DISCOUNT",
                         "reference_id" => $idTransaction,
@@ -817,7 +824,7 @@ class PaymentGatewayController extends Controller
                 "customer_id" => $customerData->cust_id,
                 "channel_code" => $paymentChannel['code'],
                 "currency" => "IDR",
-                "amount" => $totalAmount,
+                "amount" => $totalAmount + $additionalAmount,
                 "order_items" => $orderedItems
             ];
 
@@ -921,6 +928,7 @@ class PaymentGatewayController extends Controller
         string $province,
         string $postalCode,
         string $description,
+        ?string $businessId = null
         ){
         Configuration::setXenditKey(env('XENDIT_KEY'));
         $apiInstance = new CustomerApi();
@@ -929,8 +937,11 @@ class PaymentGatewayController extends Controller
 
         try {
 
-        $businessData = Business::find(Auth::user()->business_id);
-
+            if (blank($businessId)){
+                $businessData = Business::find(Auth::user()->business_id);
+            }else{
+                $businessData = Business::find($businessId);
+            }
         $addressInfo = [
             [
                 'country' => 'ID',

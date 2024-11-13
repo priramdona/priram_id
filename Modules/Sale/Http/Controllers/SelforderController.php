@@ -641,7 +641,7 @@ class SelforderController extends Controller
                     $discountAmount ?? 0,
                     $taxAmount ?? 0,
                     $shippingAmount ?? 0,
-                    $request->sale_amount,86400,true,
+                    $request->sale_amount,3600,true,
                     $business->id);
 
                 $paymentRequestId = $dataResult['id'];
@@ -717,7 +717,8 @@ class SelforderController extends Controller
                     refId: $reffPayment,
                     customerId: $request->customer_id,
                     xenditPaylaterPlanId: $paylaterPlanResult['id'],
-                    saleAmount:$request->sale_amount
+                    saleAmount:$request->sale_amount,
+                    businessId:$business->id
                 );
 
                 $paymentRequestId = $dataResult['id'];
@@ -837,4 +838,54 @@ class SelforderController extends Controller
             'nominal_information' => format_currency($request->amount),
         ]);
     }
+
+    public function paymentFees(
+        ?int $amount = 0,
+        ?string $feeType1 = null,
+        ?string $feeType2,
+        ?float $feeValue1,
+        ?float $feeValue2,
+        ?bool $isPpn = false){
+
+            if ($feeType1 == '%'){
+                $paymentFee1 = ($amount * $feeValue1) / 100;
+            }else
+            {
+                $paymentFee1 = $feeValue1;
+            }
+
+            if ($feeType2 == '%'){
+                $paymentFee2 = ($amount * $feeValue2) / 100;
+            }else
+            {
+                $paymentFee2 = $feeValue2;
+            }
+
+
+            $dataConfigs = DataConfig::first();
+
+            if ($isPpn == true){
+                $ratePPN = $dataConfigs->ppn_value;
+                $paymentFeePPN = (($paymentFee1 + $paymentFee2) * $ratePPN) / 100;
+            }
+
+            $applicationFee = $dataConfigs->app_fee_value;
+
+            if ($amount > 9999999){
+                $applicationFee = $amount * 0.01;
+            }
+
+            if ($amount > 99999999){
+                $applicationFee = $amount * 0.025;
+            }
+
+            $totalFees = $paymentFee1 + $paymentFee2 + $applicationFee + $paymentFeePPN;
+            return [
+                'totalFee'=>$totalFees,
+                'paymentFee'=> $paymentFee1 + $paymentFee2,
+                'applicationFee'=>$applicationFee,
+                'paymentFeePpn'=>$paymentFeePPN,
+            ];
+
+        }
 }

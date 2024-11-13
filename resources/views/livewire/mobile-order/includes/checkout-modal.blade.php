@@ -195,9 +195,75 @@
             </div>
             <div class="modal-footer">
 
-                {{-- <button type="button" class="btn btn-success" name="checkPayment" id="checkPayment" onclick="fetchpaymentstatus()">Check Payment</button> --}}
+                <button type="button" class="btn btn-success" name="checkPayment" id="checkPayment" onclick="fetchpaymentstatus()">Check Payment</button>
                 <button type="button" class="btn btn-primary" name="manualConfirmation" id="manualConfirmation" onclick="changePaymentMethod()" >Change Payment</button>
                 {{-- <button type="button" class="btn btn-warning" name="setToWaiting" id="setToWaiting" hidden>Set to Waiting status</button> --}}
+             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="cust_selforder" tabindex="-1" role="dialog" aria-labelledby="lbl_payment_action" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="cust_selforder_info" name="cust_selforder_info" style="font-size: 18px; font-weight: bold;">Need Complete for this Payment Method</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group align-middle text-left align-items-center col-md-12">
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Phone</span><br>
+                        <label class="text-primary" style="font-weight: bold; font-size: 18px;" name="cust_selforder_phone" id="cust_selforder_phone">{{ $customers->customer_phone }}</label>
+                    </div>
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">First Name </span><br>
+                        <input id="cust_selforder_first_name" type="text" class="form-control" value="{{ $customers->customer_first_name }}" name="cust_selforder_first_name" required>
+                    </div>
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Last Name </span><br>
+                        <input id="cust_selforder_last_name" type="text" class="form-control" value="{{ $customers->customer_last_name }}" name="cust_selforder_last_name" required>
+                    </div>
+
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Gender </span><br>
+                        {{-- <input type="text" class="form-control" name="gender" required> --}}
+                        <select name="cust_selforder_gender" id="cust_selforder_gender" class="form-control" required>
+                            <option value="" {{ $customers->gender == '' ? 'selected' : '' }}>Select</option>
+                            <option value="MALE" {{ $customers->gender == 'MALE' ? 'selected' : '' }}>Male</option>
+                            <option value="FEMALE" {{ $customers->gender == 'FEMALE' ? 'selected' : '' }}>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Date Of Birth</span><br>
+                        <input type="date" class="form-control" name="cust_selforder_dob" id="cust_selforder_dob" required value="{{ $customers->dob ? \Carbon\Carbon::parse($customers->dob)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                    </div>
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Email</span><br>
+                        <input id="cust_selforder_email" type="text" class="form-control" value="{{ $customers->customer_email }}"  name="cust_selforder_email" required>
+                    </div>
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Address</span><br>
+                        <input id="cust_selforder_address" type="text" class="form-control" value="{{ $customers->address }}" name="cust_selforder_address" required>
+                    </div>
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">City</span><br>
+                        <input id="cust_selforder_city" type="text" class="form-control" value="{{ $customers->city }}"  name="cust_selforder_city" required>
+                    </div>
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Province</span><br>
+                        <input id="cust_selforder_province" type="text" class="form-control" value="{{ $customers->province }}" name="cust_selforder_province" required>
+                    </div>
+                    <div class="row">
+                        <span style="font-size: 12px; color: #007bff; font-weight: bold;">Postal Code</span><br>
+                        <input id="cust_selforder_postal" type="number" class="form-control" value="{{ $customers->postal_code }}" name="cust_selforder_postal" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cust_selforder_close" name="cust_selforder_close" >Close</button>
+                <button type="button" class="btn btn-primary" name="cust_selforder_process" id="cust_selforder_process">Proceed</button>
              </div>
         </div>
     </div>
@@ -221,8 +287,8 @@
     }
 
     $('#checkout-form').on('submit', function(e) {
+
         if (isSubmitting) return; // Jika sudah dalam proses submit, hentikan
-        isSubmitting = true; // Set flag sebagai true untuk submit pertama kali
 
         var paymentChannel = document.getElementById('payment_channel').value;
         if (paymentChannel.length > 0){
@@ -235,7 +301,6 @@
             method: $(this).attr('method'),
             data: formData,
             success: function (response) {
-                // alert(response.selforder_checkout_id);
                     $('input[name=selforder_checkout_id]').val(response.selforder_checkout_id);
                 },
         });
@@ -564,6 +629,156 @@
 
 
     });
+    $(document).on('click', '#cust_selforder_close', function(){
+        $('#cust_selforder').modal('hide');
+    });
+
+    $(document).on('click', '#cust_selforder_process', function(){
+        var cust_selforder_first_name = document.getElementById('cust_selforder_first_name').value; // ID yang diinginkan
+        var cust_selforder_last_name = document.getElementById('cust_selforder_last_name').value; // ID yang diinginkan
+        var cust_selforder_email = document.getElementById('cust_selforder_email').value; // ID yang diinginkan
+        var cust_selforder_address = document.getElementById('cust_selforder_address').value; // ID yang diinginkan
+        var cust_selforder_city = document.getElementById('cust_selforder_city').value; // ID yang diinginkan
+        var cust_selforder_province = document.getElementById('cust_selforder_province').value; // ID yang diinginkan
+        var cust_selforder_postal = document.getElementById('cust_selforder_postal').value; // ID yang diinginkan
+        var cust_selforder_gender = document.getElementById('cust_selforder_gender').value; // ID yang diinginkan
+        var cust_selforder_dob = document.getElementById('cust_selforder_dob').value; // ID yang diinginkan
+        var is_selforder_process = true;
+
+        var customer_id = document.getElementById('customer_id').value;
+        if (cust_selforder_first_name.length == 0){
+            is_selforder_process = false;
+            $('#cust_selforder_first_name').focus();
+        }
+
+        let today = new Date();
+        let formattedToday = today.toISOString().split('T')[0]; // Format: 'Y-m-d'
+
+        if (!cust_selforder_dob) {
+            is_selforder_process = false;
+            $('#cust_selforder_dob').focus();
+        } else if (cust_selforder_dob === formattedToday) {
+            is_selforder_process = false;
+            $('#cust_selforder_dob').focus();
+        }
+
+        if (cust_selforder_gender.length == 0){
+            is_selforder_process = false;
+            $('#cust_selforder_gender').focus();
+        }
+
+        if (cust_selforder_email.length == 0){
+            is_selforder_process = false;
+            $('#cust_selforder_email').focus();
+        }
+
+        if (cust_selforder_address.length == 0){
+            is_selforder_process = false;
+            $('#cust_selforder_address').focus();
+        }
+
+        if (cust_selforder_city.length == 0){
+            is_selforder_process = false;
+            $('#cust_selforder_city').focus();
+        }
+
+        if (cust_selforder_province.length == 0){
+            is_selforder_process = false;
+            $('#cust_selforder_province').focus();
+        }
+
+        if (cust_selforder_postal.length == 0){
+            is_selforder_process = false;
+            $('#cust_selforder_postal').focus();
+        }
+
+        if (is_selforder_process == false){
+            Swal.fire({
+                title: 'Complete Your Informations',
+                text: 'Please Complete your Informations for Billing address',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                icon: 'error',
+                didOpen: () => {
+                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                },
+                });
+                return;
+        }
+
+        $.ajax({
+            url: '/customer-selforder/' + customer_id, // Menggunakan URL dari route
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                'customer_first_name': cust_selforder_first_name,
+                'customer_last_name': cust_selforder_last_name,
+                'dob': cust_selforder_dob,
+                'customer_email': cust_selforder_email,
+                'gender': cust_selforder_gender,
+                'city': cust_selforder_city,
+                'province': cust_selforder_province,
+                'address': cust_selforder_address,
+                'postal_code': cust_selforder_postal,
+            },
+            success: function(response) {
+            Swal.fire({
+                title: "Confirmation Your Information",
+                icon: 'info',
+                html: `
+                    <p class="form-group align-middle text-left bi bi-people text-success"> Name  : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_name + `</span></class=>
+                    <p class="form-group align-middle text-left bi bi-phone text-success"> Phone : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_phone + `</span></p>
+                    <p class="form-group align-middle text-left bi bi-envelope text-success"> Email : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_email + `</span></p>
+                    <p style="font-size: 16px;">Please Check your Information</p>
+                `,showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Confirm!',
+                cancelButtonText: 'No, cancel!',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetchPaymentChannels();
+                    }
+                    else if (result.dismiss === Swal.DismissReason.cancel) {
+
+                        Swal.fire({
+                            title: 'Cancelled',
+                            text: 'Your action has been cancelled.',
+                            icon: 'error',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                            },
+                        });
+                        return;
+                    }
+                });
+            }
+            // ,
+            // error: function(error) {
+            //     let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+            //     Swal.fire({
+            //         title: 'Process Failed!',
+            //         text: errorMessage,
+            //         icon: 'error',
+            //         allowOutsideClick: false,
+            //         allowEscapeKey: false,
+            //         didOpen: () => {
+            //                 $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+            //         },
+            //     });
+
+            //     return;
+            // }
+        });
+        $('#cust_selforder').modal('hide');
+    });
 
     $(document).on('change', '#payment_method', function() {
 
@@ -579,7 +794,7 @@
                 url: '/get-payment-method-id/' + paymentMethodId, // Menggunakan URL dari route
                 type: 'GET',
                 data: {
-                    'source': 'pos',
+                    'source': 'selforder',
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -600,66 +815,7 @@
                                 });
                                 return;
                         }else{
-                            $.ajax({
-                                url: '/customer-id/' + customer_id, // Menggunakan URL dari route
-                                type: 'GET',
-                                dataType: 'json',
-                                success: function(response) {
-                                    Swal.fire({
-                                        title: "Confirmation Customer Information : ",
-                                        icon: 'info',
-                                        html: `
-                                            <p class="form-group align-middle text-left bi bi-people text-success"> Name  : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_name + `</span></class=>
-                                            <p class="form-group align-middle text-left bi bi-phone text-success"> Phone : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_phone + `</span></p>
-                                            <p class="form-group align-middle text-left bi bi-envelope text-success"> Email : <span style="font-size: 18px; color: #007bff; font-weight: bold;">` + response.customer_email + `</span></p>
-                                            <p style="font-size: 16px;">Please Check the Customer Information....</p>
-                                        `,showCancelButton: true,
-                                        confirmButtonColor: '#3085d6',
-                                        cancelButtonColor: '#d33',
-                                        confirmButtonText: 'Yes, Confirm!',
-                                        cancelButtonText: 'No, cancel!',
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        didOpen: () => {
-                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                        },
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        fetchPaymentChannels();
-                                                    }
-                                                    else if (result.dismiss === Swal.DismissReason.cancel) {
-
-                                                        Swal.fire({
-                                                            title: 'Cancelled',
-                                                            text: 'Your action has been cancelled.',
-                                                            icon: 'error',
-                                                            allowOutsideClick: false,
-                                                            allowEscapeKey: false,
-                                                            didOpen: () => {
-                                                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                                            },
-                                                        });
-                                                        return;
-                                                    }
-                                                });
-                                },
-                                error: function(error) {
-
-                                                let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
-                                                Swal.fire({
-                                                    title: 'Process Failed!',
-                                                    text: errorMessage,
-                                                    icon: 'error',
-                                                    allowOutsideClick: false,
-                                                    allowEscapeKey: false,
-                                                    didOpen: () => {
-                                                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                                                    },
-                                                });
-
-                                                return;
-                                            }
-                            });
+                            $('#cust_selforder').modal('show');
                         }
                     }else{
                         fetchPaymentChannels();
@@ -764,55 +920,47 @@
 
     function changePaymentMethod() {
         var payment_id = document.getElementById('payment_id').value;
-        $.ajax({
-            url: "{{ url('/check-payment') }}/",
-            method: "GET",
-            data: {
-                'payment_request_id': payment_id,
-            },
-            dataType: 'json',
-            success: function(paymentinfo) {
+        var selforder_checkout_id = document.getElementById('selforder_checkout_id').value;
+        var customer_id = document.getElementById('customer_id').value;
 
-                if(paymentinfo.status == "Paid"){
-                    clearInterval(startautosave);
-                    Swal.fire({
-                            title: 'Payment Success',
-                            text: 'Your Payment has been Successful..!!',
-                            icon: 'success',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            didOpen: () => {
-                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                            },
-                            }).then((result) => {
-                        if (result.isConfirmed) {
-                            newtransaction();
-                        }
-                    });
-                }else{
-                    Swal.fire({
-                            title: 'Change Payment?',
-                            text: 'Are you want to change your Payment Method?',
-                            icon: 'question',  // Tipe ikon question
-                            showCancelButton: true,  // Menampilkan tombol cancel
-                            confirmButtonColor: '#3085d6',  // Warna tombol confirm
-                            cancelButtonColor: '#d33',  // Warna tombol cancel
-                            confirmButtonText: 'Confirm',
-                            cancelButtonText: 'Wait',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            didOpen: () => {
-                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                            },
-                            }).then((result) => {
-                        if (result.isConfirmed) {
-                            // newtransaction();
-                        }
-                    });
-                }
-            }
+        Swal.fire({
+                title: 'Change Payment?',
+                text: 'Are you want to change your Payment Method?',
+                icon: 'question',  // Tipe ikon question
+                showCancelButton: true,  // Menampilkan tombol cancel
+                confirmButtonColor: '#3085d6',  // Warna tombol confirm
+                cancelButtonColor: '#d33',  // Warna tombol cancel
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Wait',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ url('/change-payment') }}/",
+                            method: "GET",
+                            data: {
+                                'payment_request_id': payment_id,
+                                'selforder_checkout_id': selforder_checkout_id,
+                                'customer_id': customer_id,
+                            },
+                            dataType: 'json',
+                            success: function(paymentinfo) {
+                                $('input[name=selforder_checkout_id]').val('');
+                                isSubmitting = false; // Set flag sebagai true untuk submit pertama kali
+                                clearInterval(startautosave);
+                                $('#actionModal').modal('hide');
+                                $('#checkoutModal').modal('show');
+                            }
+                            });
+
+                    }
         });
     }
+
 
     function fetchpaymentstatus() {
         var payment_id = document.getElementById('payment_id').value;
