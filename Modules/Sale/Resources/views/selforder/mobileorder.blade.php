@@ -52,6 +52,18 @@
             text-align: center;
             margin-top: 20px;
         }
+
+            /* Untuk Chrome, Safari, Edge, dan Opera */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Untuk Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 
     <!-- Masukkan QuaggaJS dari CDN -->
@@ -89,7 +101,7 @@
 
                         </div>
                         <div class="col-lg-5">
-                            <livewire:mobile-order.checkout :cart-instance="'mobile-order'" :customers="$customers" :business="$business" :selforder-business="$selforderBusiness"/>
+                            <livewire:mobile-order.checkout :cart-instance="$customers->id" :customers="$customers" :business="$business" :selforder-business="$selforderBusiness"/>
 
                         </div>
                     </div>
@@ -114,7 +126,7 @@
                 url: "{{ url('/get-payment-method') }}/",
                 method: "GET",
                 data: {
-                    'source': 'pos',
+                    'source': 'selforder',
                 },
                 dataType: 'json',
                 success: function(data) {

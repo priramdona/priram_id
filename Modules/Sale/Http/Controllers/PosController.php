@@ -238,7 +238,6 @@ class PosController extends Controller
         $dataResult = null;
         $paymentRequestId = null;
         $paymentReferenceId = NULL;
-        dd($request->all());
 
         if ($paymentChannelData){
 

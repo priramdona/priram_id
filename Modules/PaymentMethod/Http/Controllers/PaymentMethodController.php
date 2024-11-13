@@ -31,6 +31,12 @@ class PaymentMethodController extends Controller
             $paymentMethod = PaymentMethod::where('status',true)
             ->where('is_income',true)->get();
         }
+
+        if ($sourceInfo == 'selforder'){
+            $paymentMethod = PaymentMethod::where('status',true)
+            ->where('is_selforder',true)->get();
+        }
+
         if ($sourceInfo == 'sale'){
             $paymentMethod = PaymentMethod::where('status',true)
             ->where('is_sale',true)->get();

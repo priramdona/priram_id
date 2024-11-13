@@ -23,6 +23,8 @@
                     @endif
                     <div class="row">
                         <div>
+                            <input type="hidden" value="" name="selforder_checkout_id"  id="selforder_checkout_id">
+
                             <input type="hidden" value="{{ $selforder_business->id }}" name="selforder_business_id"  id="selforder_business_id">
                             <input type="hidden" value="{{ $customers->id }}" name="customer_id"  id="customer_id">
                             <input type="hidden" id="payment_id" name="payment_id">
@@ -194,7 +196,7 @@
             <div class="modal-footer">
 
                 {{-- <button type="button" class="btn btn-success" name="checkPayment" id="checkPayment" onclick="fetchpaymentstatus()">Check Payment</button> --}}
-                <button type="button" class="btn btn-primary" name="manualConfirmation" id="manualConfirmation" onclick="manualnewtransacation()" >Change Payment</button>
+                <button type="button" class="btn btn-primary" name="manualConfirmation" id="manualConfirmation" onclick="changePaymentMethod()" >Change Payment</button>
                 {{-- <button type="button" class="btn btn-warning" name="setToWaiting" id="setToWaiting" hidden>Set to Waiting status</button> --}}
              </div>
         </div>
@@ -203,12 +205,19 @@
 @push('page_scripts')
 <script>
 
-
-     var startautosave;
+    var startautosave;
+    var isSubmitting;
+    var baseSelfOrderSuccessUrl = "{{ route('selforder-checkout.success', ['id' => ':id']) }}";
 
     function newtransaction() {
         clearInterval(startautosave);
+        var id = document.getElementById('selforder_checkout_id').value; // ID yang diinginkan
+        var dynamicUrl = getSelfOrderSuccessUrl(id);
+        window.location.href = dynamicUrl;
         // window.location.href = '{{ route('app.pos.index') }}';
+    }
+    function getSelfOrderSuccessUrl(id) {
+        return baseSelfOrderSuccessUrl.replace(':id', id);
     }
 
     $('#checkout-form').on('submit', function(e) {
@@ -219,25 +228,20 @@
         if (paymentChannel.length > 0){
             e.preventDefault();
         }
-        // var paid_amount = $('#paid_amount').maskMoney('unmasked')[0];
-        // $('#paid_amount').val(paid_amount);
-        // var total_amount = $('#total_amount').maskMoney('unmasked')[0];
-        // $('#total_amount').val(total_amount);
         var formData = $(this).serialize();
 
         $.ajax({
             url: $(this).attr('action'),
             method: $(this).attr('method'),
             data: formData,
+            success: function (response) {
+                // alert(response.selforder_checkout_id);
+                    $('input[name=selforder_checkout_id]').val(response.selforder_checkout_id);
+                },
         });
     });
 
-    // $(document).on('click', '#submitBtn', function() {
-    //     $('#checkout-form').submit();
-    // });
-
-    $(document).on('click', '#continuePayment', function()
-    {
+    $(document).on('click', '#continuePayment', function(){
         var paymentChannel = document.getElementById('payment_channel').value;
         var numberPhone = document.getElementById('number_phone').value;
 
@@ -245,6 +249,7 @@
         var amount =  document.getElementById('grand_total').value; //$('#paid_amount').maskMoney('unmasked')[0];
         var sale_amount = document.getElementById('amount_sale').value;// $('#amount_sale').maskMoney('unmasked')[0];;
         var customer_id = document.getElementById('customer_id').value;
+        var selforder_business_id = document.getElementById('selforder_business_id').value;
 
         if (selectedOptionText == 'OVO'){
 
@@ -317,7 +322,7 @@
                                     }
                                     });
                                         $.ajax({
-                                            url: "{{ url('/get-payment') }}/",
+                                            url: "{{ url('/get-payment-selforder') }}/",
                                             method: "GET",
                                             data: {
                                                 'payment_channel_id': paymentChannel,
@@ -326,6 +331,7 @@
                                                 'number_phone': numberPhone,
                                                 'transaction_type': 'sale',
                                                 'customer_id': customer_id,
+                                                'selforder_business_id': selforder_business_id,
                                                 // 'action': data.action,
                                                 // 'source': data.source
                                             },
@@ -360,7 +366,7 @@
                                                             },
                                                             dataType: 'json',
                                                             success: function(data) {
-                                                                alert(response.payment_request_id);
+                                                                // alert(response.payment_request_id);
                                                                 $('#payment_by').attr('src', data.image_url);
                                                                 $('input[name=payment_id]').val(response.payment_request_id);
 
@@ -559,7 +565,6 @@
 
     });
 
-
     $(document).on('change', '#payment_method', function() {
 
         var paymentMethodId = document.getElementById('payment_method').value;
@@ -684,231 +689,193 @@
             $('body').addClass('modal-open');
         }
     });
-        function formatRupiah(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-            //tambahkan titik jika yang di input sudah menjadi angka ribuan
-            if (ribuan) {
-                separator = sisa ? ',' : '';
-                rupiah += separator + ribuan.join(',');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            rupiahDecial = rupiah + '.00'
-            return prefix == undefined ? rupiahDecial : (rupiahDecial ? 'Rp. ' + rupiahDecial : '');
+        //tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? ',' : '';
+            rupiah += separator + ribuan.join(',');
         }
 
-        function fetchPaymentChannels() {
-            var paymentMethodId = document.getElementById('payment_method').value;
-            var paymentMethodName =  $('#payment_method option:selected').text();
-            var paymentChannelSelect = document.getElementById('payment_channel');
-            var sale_amount = document.getElementById('amount_sale').value;
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        rupiahDecial = rupiah + '.00'
+        return prefix == undefined ? rupiahDecial : (rupiahDecial ? 'Rp. ' + rupiahDecial : '');
+    }
 
-            $('#payment_fee_info').text('Rp. 0.00');
-            $('input[name=payment_fee]').val('0');
-            $('#payment_ppn_info').text('Rp. 0.00');
-            $('input[name=payment_ppn]').val('0');
-            $('#application_fee_info').text('Rp. 0.00');
-            $('input[name=application_fee]').val('0');
+    function fetchPaymentChannels() {
+        var paymentMethodId = document.getElementById('payment_method').value;
+        var paymentMethodName =  $('#payment_method option:selected').text();
+        var paymentChannelSelect = document.getElementById('payment_channel');
+        var sale_amount = document.getElementById('amount_sale').value;
 
-            $('#grand_total_info').text('Rp. ' + formatRupiah(sale_amount));
-            $('input[name=grand_total]').val(sale_amount);
-            $('input[name=paid_amount]').val(sale_amount);
+        $('#payment_fee_info').text('Rp. 0.00');
+        $('input[name=payment_fee]').val('0');
+        $('#payment_ppn_info').text('Rp. 0.00');
+        $('input[name=payment_ppn]').val('0');
+        $('#application_fee_info').text('Rp. 0.00');
+        $('input[name=application_fee]').val('0');
 
-                $.ajax({
-                    url: "{{ url('/get-payment-channels') }}/",
-                    method: "GET",
-                    data: {
-                        'payment_method': paymentMethodId,
-                    },
-                    dataType: 'json',
-                    success: function(data) {
+        $('#grand_total_info').text('Rp. ' + formatRupiah(sale_amount));
+        $('input[name=grand_total]').val(sale_amount);
+        $('input[name=paid_amount]').val(sale_amount);
 
-                        if (data.length > 0) {
+            $.ajax({
+                url: "{{ url('/get-payment-channels') }}/",
+                method: "GET",
+                data: {
+                    'payment_method': paymentMethodId,
+                },
+                dataType: 'json',
+                success: function(data) {
 
-                            $("#payment_channel").empty();
-                            op = '<option value="" disabled="true" selected="true">-Select-</option>';
-                            for (var i = 0; i < data.length; i++) {
-                                op += '<option value="' + data[i].id + '">' + data[i]
-                                    .name + '</option>';
-                            }
-                            $("#payment_channel").append(op);
-                            $('#payment_channel').attr('hidden', false);
-                            $('#payment_warning_information').attr('hidden', false);
+                    if (data.length > 0) {
 
-                            $('#lbl_payment_channel').attr('hidden', false);
-                            $('#submitBtn').attr('hidden', true);
-                            $('#continuePayment').attr('hidden', true);
-
-                        }else{
-                            $('#submitBtn').attr('hidden', false);
-                            $('#lbl_payment_channel').attr('hidden', true);
-                            $('#payment_warning_information').attr('hidden', true);
-
-                            $('#payment_channel').attr('hidden', true);
-                            $('#continuePayment').attr('hidden', true);
-                            $("#payment_channel").empty();
+                        $("#payment_channel").empty();
+                        op = '<option value="" disabled="true" selected="true">-Select-</option>';
+                        for (var i = 0; i < data.length; i++) {
+                            op += '<option value="' + data[i].id + '">' + data[i]
+                                .name + '</option>';
                         }
-                    }
-                });
-        }
+                        $("#payment_channel").append(op);
+                        $('#payment_channel').attr('hidden', false);
+                        $('#payment_warning_information').attr('hidden', false);
 
-        function manualnewtransacation() {
-            var payment_id = document.getElementById('payment_id').value;
-            $.ajax({
-                url: "{{ url('/check-payment') }}/",
-                method: "GET",
-                data: {
-                    'payment_request_id': payment_id,
-                },
-                dataType: 'json',
-                success: function(paymentinfo) {
+                        $('#lbl_payment_channel').attr('hidden', false);
+                        $('#submitBtn').attr('hidden', true);
+                        $('#continuePayment').attr('hidden', true);
 
-                    if(paymentinfo.status == "Paid"){
-                        clearInterval(startautosave);
-                        Swal.fire({
-                                title: 'Payment Success',
-                                text: 'Your Payment has been Successful..!!',
-                                icon: 'success',
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                didOpen: () => {
-                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                                },
-                                }).then((result) => {
-                            if (result.isConfirmed) {
-                                newtransaction();
-                            }
-                        });
                     }else{
-                        Swal.fire({
-                                title: 'Proceed New Transaction?',
-                                text: 'Payment Not Received, You can check Payment status on Sales transaction Lists..',
-                                icon: 'question',  // Tipe ikon question
-                                showCancelButton: true,  // Menampilkan tombol cancel
-                                confirmButtonColor: '#3085d6',  // Warna tombol confirm
-                                cancelButtonColor: '#d33',  // Warna tombol cancel
-                                confirmButtonText: 'Confirm',
-                                cancelButtonText: 'Wait',
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                didOpen: () => {
-                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                                },
-                                }).then((result) => {
-                            if (result.isConfirmed) {
-                                newtransaction();
-                            }
-                        });
+                        $('#submitBtn').attr('hidden', false);
+                        $('#lbl_payment_channel').attr('hidden', true);
+                        $('#payment_warning_information').attr('hidden', true);
+
+                        $('#payment_channel').attr('hidden', true);
+                        $('#continuePayment').attr('hidden', true);
+                        $("#payment_channel").empty();
                     }
                 }
             });
-        }
+    }
 
-        function fetchpaymentstatus() {
-            var payment_id = document.getElementById('payment_id').value;
-            $.ajax({
-                url: "{{ url('/check-payment') }}/",
-                method: "GET",
-                data: {
-                    'payment_request_id': payment_id,
-                },
-                dataType: 'json',
-                success: function(paymentinfo) {
+    function changePaymentMethod() {
+        var payment_id = document.getElementById('payment_id').value;
+        $.ajax({
+            url: "{{ url('/check-payment') }}/",
+            method: "GET",
+            data: {
+                'payment_request_id': payment_id,
+            },
+            dataType: 'json',
+            success: function(paymentinfo) {
 
-                    if(paymentinfo.status == "Paid"){
-                        clearInterval(startautosave);
-                        Swal.fire({
-                                title: 'Payment Success',
-                                text: 'Your Payment has been Successful..!!',
-                                icon: 'success',
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                didOpen: () => {
-                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                                },
-                                }).then((result) => {
-                            if (result.isConfirmed) {
-                                newtransaction();
-                            }
-                        });
-                    }else{
-                        Swal.fire({
-                                title: 'Awaiting Payment',
-                                text: 'Payment Not Received',
-                                icon: 'info',
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                didOpen: () => {
-                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                                },
-                                })
-                    }
-                }
-            });
-        }
-        function fetchdetailchannel() {
-            var paymentChannel = document.getElementById('payment_channel').value;
-            var selectedOptionText = $('#payment_channel option:selected').text();
-            var payment_method_type = document.getElementById('payment_method_type').value;
-            var total_amount_pay = document.getElementById('amount_sale').value;
-
-            var paymentMethodId = document.getElementById('payment_method').value;
-            //proses Plan dipindah ketika Go ahead
-            var customer_id = document.getElementById('customer_id').value;
-
-            $.ajax({
-                url: '/get-payment-channel-id/' + paymentChannel,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-
-                    if (parseFloat(total_amount_pay) < parseFloat(response.min)){
-                            Swal.fire({
-                            title: 'Process Failed!',
-                            text: 'Minimum amount Invalid...',
-                            icon: 'error',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            didOpen: () => {
-                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                            },
-                        });
-                        return;
-                    }
-                    if (parseFloat(total_amount_pay) > parseFloat(response.max)){
-                            Swal.fire({
-                            title: 'Process Failed!',
-                            text: 'Maximum amount Invalid...',
-                            icon: 'error',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            didOpen: () => {
-                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                            },
-                        });
-                        return;
-                    }
-
-                    if (response.code == 'OVO') {
-                        $('#lbl_number_phone').attr('hidden', false);
-                        $('#group_number_phone').attr('hidden', false);
-                        $('#number_phone').attr('required', true);
-                    } else {
-                        $('#lbl_number_phone').attr('hidden', true);
-                        $('#group_number_phone').attr('hidden', true);
-                        $('#number_phone').removeAttr('required');
-                    }
-                },
-                error: function(error) {
-                    let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+                if(paymentinfo.status == "Paid"){
+                    clearInterval(startautosave);
                     Swal.fire({
+                            title: 'Payment Success',
+                            text: 'Your Payment has been Successful..!!',
+                            icon: 'success',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                            },
+                            }).then((result) => {
+                        if (result.isConfirmed) {
+                            newtransaction();
+                        }
+                    });
+                }else{
+                    Swal.fire({
+                            title: 'Change Payment?',
+                            text: 'Are you want to change your Payment Method?',
+                            icon: 'question',  // Tipe ikon question
+                            showCancelButton: true,  // Menampilkan tombol cancel
+                            confirmButtonColor: '#3085d6',  // Warna tombol confirm
+                            cancelButtonColor: '#d33',  // Warna tombol cancel
+                            confirmButtonText: 'Confirm',
+                            cancelButtonText: 'Wait',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                            },
+                            }).then((result) => {
+                        if (result.isConfirmed) {
+                            // newtransaction();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function fetchpaymentstatus() {
+        var payment_id = document.getElementById('payment_id').value;
+        $.ajax({
+            url: "{{ url('/check-payment') }}/",
+            method: "GET",
+            data: {
+                'payment_request_id': payment_id,
+            },
+            dataType: 'json',
+            success: function(paymentinfo) {
+
+                if(paymentinfo.status == "Paid"){
+                    clearInterval(startautosave);
+                    Swal.fire({
+                            title: 'Payment Success',
+                            text: 'Your Payment has been Successful..!!',
+                            icon: 'success',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                            },
+                            }).then((result) => {
+                        if (result.isConfirmed) {
+                            newtransaction();
+                        }
+                    });
+                }else{
+                    Swal.fire({
+                            title: 'Awaiting Payment',
+                            text: 'Payment Not Received',
+                            icon: 'info',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                            },
+                            })
+                }
+            }
+        });
+    }
+    function fetchdetailchannel() {
+        var paymentChannel = document.getElementById('payment_channel').value;
+        var selectedOptionText = $('#payment_channel option:selected').text();
+        var payment_method_type = document.getElementById('payment_method_type').value;
+        var total_amount_pay = document.getElementById('amount_sale').value;
+
+        var paymentMethodId = document.getElementById('payment_method').value;
+        //proses Plan dipindah ketika Go ahead
+        var customer_id = document.getElementById('customer_id').value;
+
+        $.ajax({
+            url: '/get-payment-channel-id/' + paymentChannel,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+
+                if (parseFloat(total_amount_pay) < parseFloat(response.min)){
+                        Swal.fire({
                         title: 'Process Failed!',
-                        text: errorMessage,
+                        text: 'Minimum amount Invalid...',
                         icon: 'error',
                         allowOutsideClick: false,
                         allowEscapeKey: false,
@@ -918,36 +885,74 @@
                     });
                     return;
                 }
-            });
+                if (parseFloat(total_amount_pay) > parseFloat(response.max)){
+                        Swal.fire({
+                        title: 'Process Failed!',
+                        text: 'Maximum amount Invalid...',
+                        icon: 'error',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                        },
+                    });
+                    return;
+                }
 
-            if(paymentChannel != ''){
-                    $('#continuePayment').attr('hidden', false);
-                    $.ajax({
-                    url: "{{ url('/get-channel-attribute') }}/",
-                    method: "GET",
-                    data: {
-                        'id': paymentChannel,
-                        'amount': total_amount_pay,
-                    },
-
-                    dataType: 'json',
-                    success: function(data) {
-
-                        $('#payment_fee_info').text(data.payment_fee_masked);
-                        $('input[name=payment_fee]').val(data.payment_fee);
-                        $('#payment_ppn_info').text(data.payment_ppn_masked);
-                        $('input[name=payment_ppn]').val(data.payment_ppn);
-
-                        $('#application_fee_info').text(data.application_fee_masked);
-                        $('input[name=application_fee]').val(data.application_fee);
-
-                        $('#grand_total_info').text(data.grand_total_masked);
-                        $('input[name=grand_total]').val(data.grand_total);
-                        $('input[name=paid_amount]').val(data.grand_total);
-                    }
+                if (response.code == 'OVO') {
+                    $('#lbl_number_phone').attr('hidden', false);
+                    $('#group_number_phone').attr('hidden', false);
+                    $('#number_phone').attr('required', true);
+                } else {
+                    $('#lbl_number_phone').attr('hidden', true);
+                    $('#group_number_phone').attr('hidden', true);
+                    $('#number_phone').removeAttr('required');
+                }
+            },
+            error: function(error) {
+                let errorMessage = error.responseJSON?.message || error.responseText || 'Unknown error occurred';
+                Swal.fire({
+                    title: 'Process Failed!',
+                    text: errorMessage,
+                    icon: 'error',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                    },
                 });
+                return;
             }
+        });
+
+        if(paymentChannel != ''){
+                $('#continuePayment').attr('hidden', false);
+                $.ajax({
+                url: "{{ url('/get-channel-attribute') }}/",
+                method: "GET",
+                data: {
+                    'id': paymentChannel,
+                    'amount': total_amount_pay,
+                },
+
+                dataType: 'json',
+                success: function(data) {
+
+                    $('#payment_fee_info').text(data.payment_fee_masked);
+                    $('input[name=payment_fee]').val(data.payment_fee);
+                    $('#payment_ppn_info').text(data.payment_ppn_masked);
+                    $('input[name=payment_ppn]').val(data.payment_ppn);
+
+                    $('#application_fee_info').text(data.application_fee_masked);
+                    $('input[name=application_fee]').val(data.application_fee);
+
+                    $('#grand_total_info').text(data.grand_total_masked);
+                    $('input[name=grand_total]').val(data.grand_total);
+                    $('input[name=paid_amount]').val(data.grand_total);
+                }
+            });
         }
+    }
 </script>
 
 @endpush

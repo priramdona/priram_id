@@ -4,6 +4,7 @@ use App\Livewire\Pos\Checkout;
 use Illuminate\Support\Facades\Route;
 use Modules\PaymentMethod\Http\Controllers\PaymentMethodController;
 use Modules\Sale\Http\Controllers\PosController;
+use Modules\Sale\Http\Controllers\SelforderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,5 @@ Route::group([], function () {
     Route::get('/get-barcode', [PosController::class, 'getBarcodePayment']);
     Route::get('/get-channel-attribute', [PosController::class, 'paymentFeeChange']);
 
+    Route::get('/get-payment-selforder', [SelforderController::class, 'createPaymentGatewayRequest']);
 });

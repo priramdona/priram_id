@@ -46,35 +46,35 @@
 <!-- CoreUI -->
 <script src="{{ mix('js/app.js') }}" defer></script>
 <script>
-    let entermobileorder = document.getElementById('entermobileorder');
-    let first_name = document.getElementById('first_name');
-    let last_name = document.getElementById('last_name');
-    let phone_number = document.getElementById('phone_number');
-    let email = document.getElementById('email');
-    let gender = document.getElementById('gender');
-    let spinner = document.getElementById('spinner')
+    // let entermobileorder = document.getElementById('entermobileorder');
+    // let first_name = document.getElementById('first_name');
+    // let last_name = document.getElementById('last_name');
+    // let phone_number = document.getElementById('phone_number');
+    // let email = document.getElementById('email');
+    // let gender = document.getElementById('gender');
+    // let spinner = document.getElementById('spinner')
 
-    entermobileorder.addEventListener('submit', (e) => {
-        submit.disabled = true;
-        first_name.readonly = true;
-        last_name.readonly = true;
-        phone_number.readonly = true;
-        email.readonly = true;
-        gender.readonly = true;
-        spinner.style.display = 'block';
-        // entermobileorder.submit();
-    });
+    // entermobileorder.addEventListener('submit', (e) => {
+    //     submit.disabled = true;
+    //     first_name.readonly = true;
+    //     last_name.readonly = true;
+    //     phone_number.readonly = true;
+    //     email.readonly = true;
+    //     gender.readonly = true;
+    //     spinner.style.display = 'block';
+    //     // entermobileorder.submit();
+    // });
 
-    setTimeout(() => {
-        submit.disabled = false;
-        first_name.readonly = false;
-        last_name.readonly = false;
-        phone_number.readonly = false;
-        email.readonly = false;
-        gender.readonly = false;
+    // setTimeout(() => {
+    //     submit.disabled = false;
+    //     first_name.readonly = false;
+    //     last_name.readonly = false;
+    //     phone_number.readonly = false;
+    //     email.readonly = false;
+    //     gender.readonly = false;
 
-        spinner.style.display = 'none';
-    }, 3000);
+    //     spinner.style.display = 'none';
+    // }, 3000);
 </script>
 
 </body>

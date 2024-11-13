@@ -33,7 +33,20 @@ class Checkout extends Component
     public $itemActions = [];
 
     public function mount($cartInstance, $customers, $selforderBusiness) {
+
         $this->cart_instance = $cartInstance;
+        $cart_items = Cart::instance($cartInstance)->content();
+        if ( !($cart_items->isEmpty())) {
+
+            foreach ($cart_items as $item) {
+                $this->quantity[$item->id] = $item->qty; // Inisialisasi quantity berdasarkan cart item id
+                $this->quantity_action_existing = $this->quantity[$item->id];
+                $this->total_amount = $this->calculateTotal();
+                $this->check_quantity[$item->id] =  $item->options->stock;
+            }
+        }
+
+
         $this->customers = $customers;
         $this->selforder_business = $selforderBusiness;
 
@@ -54,7 +67,22 @@ class Checkout extends Component
 
     public function render() {
         $cart_items = Cart::instance($this->cart_instance)->content();
+        // if ( !($cart_items->isEmpty())) {
 
+        //     foreach ($cart_items as $item) {
+        //         $this->quantity[$item->id] = $item->qty; // Inisialisasi quantity berdasarkan cart item id
+        //         $this->quantity_action_existing = $this->quantity[$item->id];
+        //         $this->total_amount = $this->calculateTotal();
+        //         $this->check_quantity[$item->id] =  $item->options->stock;
+        //         $this->updateQuantity($item->rowId,$item->id);
+        //     }
+        // }
+       if ( !($cart_items->isEmpty())) {
+
+            // foreach ($cart_items as $item) {
+                $this->total_amount = $this->calculateTotal();
+            // }
+        }
         return view('livewire.mobile-order.checkout', [
             'cart_items' => $cart_items
         ]);
@@ -81,8 +109,17 @@ class Checkout extends Component
         if ($quantityItem == 0) {
             $quantityItem = 1;
         }
+        $cart_items = Cart::instance($this->cart_instance)->content();
 
-        $this->quantity_action_existing = $this->quantity[$cartItemId];
+        if ( !($cart_items->isEmpty())) {
+            foreach ($cart_items as $item) {
+                $this->quantity[$item->id] = $item->qty; // Inisialisasi quantity berdasarkan cart item id
+                $this->quantity_action_existing = $this->quantity[$item->id];
+                $this->total_amount = $this->calculateTotal();
+                $this->check_quantity[$item->id] =  $item->options->stock;
+            }
+        }
+
         $this->quantity[$cartItemId] = $quantityItem;
         $this->updateQuantity($rowId,$cartItemId);
     }
@@ -106,8 +143,6 @@ class Checkout extends Component
             return;
         }
         $image_url = isset($product['media'][0]['original_url']) ? $product['media'][0]['original_url'] : null;
-
-        // dd($product);
 
         $dataAdd = $cart->add([
             'id'      => $product['id'],
@@ -178,6 +213,7 @@ class Checkout extends Component
 
             return;
         }
+
 
         Cart::instance($this->cart_instance)->update($row_id, $this->quantity[$product_id]);
 

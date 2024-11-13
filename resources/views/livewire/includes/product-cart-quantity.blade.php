@@ -23,7 +23,9 @@
         >
     </div>
     @push('page_scripts')
-        <script>
+
+        {{-- <script>
+
             Livewire.on('quantityUpdated', (rowId, newQuantity) => {
                 // Update input value langsung di tampilan
                 document.getElementById(`quantity-input-${rowId}`).value = newQuantity;
@@ -38,7 +40,7 @@
             //     }
             //     return true;
             // }
-        </script>
+        </script> --}}
 @endpush
 
 

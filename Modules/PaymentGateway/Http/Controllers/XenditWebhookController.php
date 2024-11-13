@@ -215,6 +215,18 @@ class XenditWebhookController extends Controller
                                 }
                             }
 
+                            if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\SelforderCheckout'){
+                                $sourceTransaction = SelforderCheckout::find($xenditCreatePayments->source_id);
+
+                                if ($sourceTransaction){
+                                    $sourceType = "Selforder";
+                                    $sourceId = $sourceTransaction->id;
+                                    $sourceTransaction->payment_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
+
 
                     }
                     else{
@@ -322,6 +334,18 @@ class XenditWebhookController extends Controller
                                 }
                             }
 
+                            if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\SelforderCheckout'){
+                                $sourceTransaction = SelforderCheckout::find($xenditCreatePayments->source_id);
+
+                                if ($sourceTransaction){
+                                    $sourceType = "Selforder";
+                                    $sourceId = $sourceTransaction->id;
+                                    $sourceTransaction->payment_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
+
 
                     }
                     else{
@@ -410,7 +434,7 @@ class XenditWebhookController extends Controller
                                 if ($sourceTransaction){
                                     $sourceType = "incomes";
                                     $sourceId = $sourceTransaction->id;
-                                    $sourceTransaction->paymet_status = "Paid";
+                                    $sourceTransaction->payment_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
                                 }
@@ -420,9 +444,9 @@ class XenditWebhookController extends Controller
                                 $sourceTransaction = SelforderCheckout::find($xenditCreatePayments->source_id);
 
                                 if ($sourceTransaction){
-                                    $sourceType = "Selforder Mobile";
+                                    $sourceType = "Selforder";
                                     $sourceId = $sourceTransaction->id;
-                                    $sourceTransaction->paymet_status = "Paid";
+                                    $sourceTransaction->payment_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
                                 }
@@ -626,6 +650,18 @@ class XenditWebhookController extends Controller
                                     $sourceType = "incomes";
                                     $sourceId = $sourceTransaction->id;
                                     $sourceTransaction->paymet_status = "Paid";
+                                }else{
+                                    return response()->json("No Source Found....", 422);
+                                }
+                            }
+
+                            if ($xenditCreatePayments->source_type == 'Modules\Sale\Entities\SelforderCheckout'){
+                                $sourceTransaction = SelforderCheckout::find($xenditCreatePayments->source_id);
+
+                                if ($sourceTransaction){
+                                    $sourceType = "Selforder";
+                                    $sourceId = $sourceTransaction->id;
+                                    $sourceTransaction->payment_status = "Paid";
                                 }else{
                                     return response()->json("No Source Found....", 422);
                                 }

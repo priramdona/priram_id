@@ -26,9 +26,9 @@ Route::post('/selforder-posmobileorder/{id}', [SelforderController::class, 'posM
 Route::get('/selforder/mobile-order-qr/{id}', [SelforderController::class, 'mobileOrderQrCodeGenerator'])->name('selforder.mobileOrderQrCodeGenerator');
 Route::get('/sales-show/{sale}', [SaleController::class, 'showsale'])->name('sales.showdata');
 Route::post('/app/mobileorder', 'SelforderController@storeMobileOrder')->name('app.selforder.mobileorder.store');
-// Route::post('/ordered/mobileorder/{id}', [SelforderController::class, 'orderedMobile'])->name('ordered.mobileorder');
 
-// Route::get('/product-sale/{product}', [ProductController::class, 'showsale'])->name('product.sale');
+Route::get('/selforder/checkout/{id}', [SelforderController::class, 'redirectSuccessSelfOrder'])->name('selforder-checkout.success');
+
 Route::group(['middleware' => 'auth'], function () {
 
     //selforder
@@ -93,6 +93,5 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/selforder/deliveryorder', 'SelforderController@manageDeliveryOrder')->name('selforder.deliveryorder');
     Route::post('/calculate-route', [SelforderController::class, 'calculateRoute'])->name('calculate.route');
-
 
 });

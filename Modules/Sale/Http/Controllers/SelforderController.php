@@ -86,7 +86,24 @@ class SelforderController extends Controller
                 );
             }
 
-            Cart::instance('mobile-order')->destroy();
+
+            // $customerId = $customers->id;
+            // // Cart::instance($customers->id)->destroy();
+            // if (session()->has("cart_{'$customerId'}")) {
+            //     // Kembalikan isi cart dari sesi jika sudah ada
+            //     // Cart::instance($customers->id)->restore(session("cart_{'$customers->id'}"));
+
+            //     Cart::instance($customers->id)->restore(session("cart_{'$customerId'}"));
+            // } else {
+            //     // Jika belum ada, buat instance cart baru
+            //     Cart::instance($customers->id);
+            // }
+
+            // Simpan instance cart ke sesi
+            // session(["cart_{$customerId}" => Cart::instance($customerId)->content()]);
+            // php artisan vendor:publish --    provider="Gloudemans\Shoppingcart\ShoppingcartServiceProvider" --tag="migrations"
+
+
             return view('sale::selforder.mobileorder', compact( 'customers', 'selforderBusiness', 'business'));
         }
 
@@ -288,7 +305,7 @@ class SelforderController extends Controller
 
 
         $selforderCheckoutId = null;
-        // try{
+        try{
             // DB::transaction(function () use ($request) {
                 $paymentRequestData = null;
 
@@ -347,11 +364,10 @@ class SelforderController extends Controller
                     'payment_status' => $payment_status,
                     'payment_method' => $paymentChannelName,
                     'note' => $request->note,
-                    'tax_amount' => Cart::instance('mobile-order')->tax(),
-                    'discount_amount' => Cart::instance('mobile-order')->discount(),
+                    'tax_amount' => Cart::instance($request->customer_id)->tax(),
+                    'discount_amount' => Cart::instance($request->customer_id)->discount(),
                 ]);
-
-                foreach (Cart::instance('mobile-order')->content() as $cart_item) {
+                foreach (Cart::instance($request->customer_id)->content() as $cart_item) {
                     SelforderCheckoutDetail::create([
                         'selforder_checkout_id' => $selforderCheckout->id,
                         'product_id' => $cart_item->id,
@@ -369,7 +385,9 @@ class SelforderController extends Controller
 
                 }
 
-                Cart::instance('mobile-order')->destroy();
+
+
+                DB::table('shoppingcart')->where('identifier', "cart_{$request->customer_id}")->delete();
 
                 if ($selforderCheckout->paid_amount > 0) {
 
@@ -413,6 +431,11 @@ class SelforderController extends Controller
             // });
 
 
+            // return response()->json([
+            //     'selforder_checkout_id' => $selforderCheckoutId
+            // ]);
+
+            $selforder_checkout_id = $selforderCheckoutId;
             $link = route('selfordercheckout', ['selforderCheckout' => $selforderCheckoutId]);
             $qrCodePng = DNS2DFacade::getBarcodePNG($link, 'QRCODE', 8,8 );
             $qrImage = Image::make(base64_decode($qrCodePng));
@@ -423,15 +446,395 @@ class SelforderController extends Controller
             $canvas->insert($qrImage, 'center');
             $qrCode = base64_encode($canvas->encode('png'));
 
-            return view('sale::selforder.ordered.mobileorder',compact( ['qrCode', 'link']));
+
+                // Jika requestnya AJAX, kembalikan JSON
+            if (request()->ajax()) {
+                return response()->json([
+                    'selforder_checkout_id' => $selforderCheckoutId,
+                    'qrCode' => $qrCode,
+                    'link' => $link,
+                ]);
+            }
+            Cart::instance($selforderCheckout->customer_id)->destroy();
+             return view('sale::selforder.ordered.mobileorder',compact( ['qrCode', 'link','selforder_checkout_id']))->render();
+
+        }catch(Exception $e){
+            toast($e->getMessage(), 'error');
+        }
+
+    }
+    public function redirectSuccessSelfOrder($id){
+
+        $selforderCheckout = SelforderCheckout::find($id);
+        $selforder_checkout_id = $id;
+        $link = route('selfordercheckout', ['selforderCheckout' => $id]);
+        $qrCodePng = DNS2DFacade::getBarcodePNG($link, 'QRCODE', 8,8 );
+        $qrImage = Image::make(base64_decode($qrCodePng));
+        $margin = 20;
+        $canvasWidth = $qrImage->width() + ($margin * 2);
+        $canvasHeight = $qrImage->height() + ($margin * 2);
+        $canvas = Image::canvas($canvasWidth, $canvasHeight, '#ffffff');
+        $canvas->insert($qrImage, 'center');
+        $qrCode = base64_encode($canvas->encode('png'));
+
+        Cart::instance($selforderCheckout->customer_id)->destroy();
+        return view('sale::selforder.ordered.mobileorder',compact( ['qrCode', 'link','selforder_checkout_id']));
+
+    }
+
+    public function createPaymentGatewayRequest(
+        request $request){
+        $valueResponse = null;
+        $responseType = null;
+        $nameResponse = null;
+        $expireResponse = null;
+        $valueQr = 'sample-barcode-text';
+        $paymentChannelData = PaymentChannel::find($request->payment_channel_id);
+        $reffPayment =  Str::orderedUuid()->toString() . '-' . Carbon::now()->format('Ymdss');
+        $phoneNumber = $request->number_phone ?? null;
+        $dataResult = null;
+        $paymentRequestId = null;
+        $paymentReferenceId = NULL;
+
+        if ($paymentChannelData){
+
+            $customerData = Customer::find($request->customer_id);
+            $selforderBusiness = SelforderBusiness::find($request->selforder_business_id);
+            $business = Business::find($selforderBusiness->business_id);
+
+            if($paymentChannelData->type == 'VIRTUAL_ACCOUNT'){
+                $createVirtualAccount = new PaymentGatewayController();
+
+                $virtualAccountInfo = $createVirtualAccount->createVirtualAccount(
+                    $reffPayment,
+                    $paymentChannelData->code,
+                    $request->amount,
+                    $request->sale_amount,
+                    $business->id
+                );
+
+                $paymentRequestId = $virtualAccountInfo['id'];
+                $paymentReferenceId = $virtualAccountInfo['reference_id'];
+                $virtualAccountInfo = $virtualAccountInfo['virtual_account'];
+                $nameResponse = $virtualAccountInfo['name'];
+                $valueResponse = $virtualAccountInfo['account_number'];
+                $expResponseDate = $virtualAccountInfo['expiration_date'];
+                $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
+                $responseType = 'account';
+
+            }
+            elseif($paymentChannelData->type == 'INVOICE'){
+                $totalOrderedAmounts = 0;
+
+                $orderedProducts=[];
+
+                $invoiceRequest = new PaymentGatewayController();
+
+                $paymentChannelData = PaymentChannel::query()
+                ->where('action','invoice_link')
+                ->first();
+
+                $paymentFee  = $this->paymentFees(
+                    $request->sale_amount,
+                    $paymentChannelData->fee_type_1,
+                    $paymentChannelData->fee_type_2,
+                    $paymentChannelData->fee_value_1 ?? 0,
+                    $paymentChannelData->fee_value_2 ?? 0,
+                    $paymentChannelData->is_ppn ?? false,
+                );
+
+                $expiryDate = Carbon::parse($request->invoice_expiry_date)->endOfDay();
+                $now = Carbon::now();
+
+                // Jika invoice_expiry_date adalah hari ini, set ke 1 hari (86,400 detik)
+                if ($expiryDate->isToday()) {
+                    $diffInSeconds = 86400; // 1 hari dalam detik
+                } else {
+                    // Jika lebih dari 1 hari, hitung selisih detik dari now() ke invoice_expiry_date
+                    $diffInSeconds = $now->diffInSeconds($expiryDate, false) - 1;
+                }
+
+                $paymentMethodsData = ["CREDIT_CARD",
+                    "BCA", "BNI", "BSI", "BRI", "MANDIRI", "PERMATA", "SAHABAT_SAMPOERNA", "BNC",
+                    "ALFAMART", "INDOMARET",
+                    "OVO", "DANA", "SHOPEEPAY", "LINKAJA", "JENIUSPAY",
+                    "KREDIVO", "AKULAKU", "UANGME", "ATOME",
+                    "QRIS"
+                ];
+
+                $dataResult = $invoiceRequest->createTransactionInvoiceRequest(
+                    $customerData,
+                    $orderedProducts,
+                    $paymentMethodsData,
+                    $paymentFee,
+                    $request->amount + $paymentFee['totalFee'],
+                    0,
+                    0,
+                    0,
+                    $request->sale_amount,
+                    $diffInSeconds,
+                    true,
+                    $business->id
+                );
+
+                $paymentRequestData = XenditCreatePayment::find($dataResult['id']);
+                $invoiceRequestId = $dataResult['invoice_requests']['id'];
+                $invoiceStatus = 'Pending';
+                $invoiceUrl = $dataResult['invoice_requests']['invoice_url'];
+                $expResponseDate = $dataResult['invoice_requests']['expiry_date'];
+                $invoiceExpiryDate = Carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? null;;
+
+                $paymentRequestId = $dataResult['id'];
+                $paymentReferenceId = $dataResult['reference_id'];
+                $invoiceRequests = $dataResult['invoice_requests'];
+
+                $nameResponse = $customerData->customer_name.'|'.$customerData->customer_phone.'|'.$customerData->customer_email ;
+                $valueResponse = $invoiceRequests['invoice_url'];
+                $expResponseDate = $invoiceRequests['expiry_date'];
+                $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
+                $responseType = 'links';
+            }
+            elseif($paymentChannelData->type == 'CARD'){
+                $invoiceRequest = new PaymentGatewayController();
+
+                $orderedProducts = [];
+                $totalOrderedAmounts = 0;
+                $discountAmount = Cart::instance($request->customer_id)->discount();
+                $taxAmount = Cart::instance($request->customer_id)->tax();
+                $shippingAmount = $request->shipping_amount;
+                foreach (Cart::instance($request->customer_id)->content() as $cart_item) {
+
+                    $unitPrice = $cart_item->options->unit_price;
+
+                    $orderedProducts[] = [
+                        'product_id' => $cart_item->id,
+                        'product_name' => $cart_item->name,
+                        'product_code' => $cart_item->options->code,
+                        'quantity' => $cart_item->qty,
+                        'price' => $cart_item->price,
+                        'unit_price' => $unitPrice,
+                        'sub_total' => round($unitPrice) * $cart_item->qty,
+                        'product_discount_amount' => $cart_item->options->product_discount,
+                        'product_discount_type' => $cart_item->options->product_discount_type,
+                        'product_tax_amount' => $cart_item->options->product_tax,
+                        'business_id' => $business->id,
+                    ];
+                    $totalOrderedAmounts +=  round($unitPrice) * $cart_item->qty;
+                }
+
+                $paymentFee  = $this->paymentFees(
+                    $request->sale_amount,
+                    $paymentChannelData->fee_type_1,
+                    $paymentChannelData->fee_type_2,
+                    $paymentChannelData->fee_value_1 ?? 0,
+                    $paymentChannelData->fee_value_2 ?? 0,
+                    $paymentChannelData->is_ppn ?? false,
+                );
+                $paymentMethodsData = ['CREDIT_CARD'];
+
+                $dataResult = $invoiceRequest->createTransactionInvoiceRequest(
+                    $customerData,
+                    $orderedProducts,
+                    $paymentMethodsData,
+                    $paymentFee,
+                    $request->amount,
+                    $discountAmount ?? 0,
+                    $taxAmount ?? 0,
+                    $shippingAmount ?? 0,
+                    $request->sale_amount,86400,true,
+                    $business->id);
+
+                $paymentRequestId = $dataResult['id'];
+                $paymentReferenceId = $dataResult['reference_id'];
+                $invoiceRequests = $dataResult['invoice_requests'];
+
+                $nameResponse = $customerData->customer_name.'|'.$customerData->customer_phone.'|'.$customerData->customer_email ;
+                $valueResponse = $invoiceRequests['invoice_url'];
+                $expResponseDate = $invoiceRequests['expiry_date'];
+                $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
+                $responseType = 'links';
+
+            }
+            elseif($paymentChannelData->type == 'PAYLATER'){
+                //start refer to xendit_paylater_request
+                $paylaterPlan = new PaymentGatewayController();
+
+                $orderedProducts = [];
+                $totalOrderedAmounts = 0;
+                $discountAmount = Cart::instance($request->customer_id)->discount();
+                $taxAmount = Cart::instance($request->customer_id)->tax();
+                $shippingAmount = $request->shipping_amount;
+
+                foreach (Cart::instance($request->customer_id)->content() as $cart_item) {
+
+                    $unitPrice = $cart_item->options->unit_price;
+
+                    $orderedProducts[] = [
+                        'product_id' => $cart_item->id,
+                        'product_name' => $cart_item->name,
+                        'product_code' => $cart_item->options->code,
+                        'quantity' => $cart_item->qty,
+                        'price' => $cart_item->price,
+                        'unit_price' => $cart_item->options->unit_price,
+                        'sub_total' => round($unitPrice),
+                        'product_discount_amount' => $cart_item->options->product_discount,
+                        'product_discount_type' => $cart_item->options->product_discount_type,
+                        'product_tax_amount' => $cart_item->options->product_tax,
+                        'business_id' => $business->id,
+                    ];
+                    $totalOrderedAmounts +=  round($unitPrice ) * $cart_item->qty;
+                }
+
+                $paymentFee  = $this->paymentFees(
+                    $request->sale_amount,
+                    $paymentChannelData->fee_type_1,
+                    $paymentChannelData->fee_type_2,
+                    $paymentChannelData->fee_value_1 ?? 0,
+                    $paymentChannelData->fee_value_2 ?? 0,
+                    $paymentChannelData->is_ppn ?? false,
+                );
 
 
+                // $paymentChannelData = PaymentChannel::find($request->payment_channel);
 
-        // }catch(Exception $e){
-        //     toast($e->getMessage(), 'error');
-        // }
-        //Redirect to Barcode Summaries
-        // return redirect()->route('app.pos.index');
+                $paylaterPlanResult = $paylaterPlan->paylaterPlans(
+                $request->customer_id,
+                $paymentFee,
+                $taxAmount  ?? 0,
+                $discountAmount ?? 0,
+                $shippingAmount ?? 0,
+                $orderedProducts,
+                $paymentChannelData,
+                $request->amount,
+                $request->sale_amount);
 
+                $paylaterPlan = XenditPaylaterPlan::find($paylaterPlanResult['id']);
+
+                $paymentGatewayController = new PaymentGatewayController();
+
+                $dataResult = $paymentGatewayController->createPaylaterRequest(
+                    planId: $paylaterPlan->plan_id,
+                    refId: $reffPayment,
+                    customerId: $request->customer_id,
+                    xenditPaylaterPlanId: $paylaterPlanResult['id'],
+                    saleAmount:$request->sale_amount
+                );
+
+                $paymentRequestId = $dataResult['id'];
+                $paymentReferenceId = $dataResult['reference_id'];
+                $paylaterRequest = $dataResult['paylater_requests'];
+
+
+                $nameResponse = $customerData->customer_name.'|'.$customerData->customer_phone ;
+                $paylaterRequestAction = json_decode($paylaterRequest['actions']);
+                $valueResponse = $paylaterRequestAction->mobile_web_checkout_url;
+                $expResponseDate = $paylaterRequest['expires_at'];
+                $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
+                $responseType = 'direct';
+            }else{
+                //start refer to xendit_payment_request
+                if ($paymentChannelData->code == 'OVO'){
+                    if(Str::length($phoneNumber) <= 7){
+                        throw new \Exception("Payment failed, Phone Number Error! " . "Check again ". $paymentChannelData->code . ' Numbers');
+                    }
+                }
+
+                $paymentGatewayController = new PaymentGatewayController();
+
+                $paymentResponse = $paymentGatewayController->createPaymentRequest(
+                    refId: $reffPayment,
+                    forUserId:null,
+                    withSplitRule:null,
+                    amount: $request->amount ,
+                    saleAmount: $request->sale_amount ,
+                    type:$paymentChannelData->type,
+                    channelCode:$paymentChannelData->code,
+                    reusability:'ONE_TIME_USE',
+                    phoneNumber: $phoneNumber,
+                    transactionalType: $request->transaction_type,
+                    businessId: $business->id
+                );
+
+                $responseArray = $paymentResponse->getData(true);
+                $dataResult = $responseArray['data'];
+
+                $paymentRequestId = $dataResult['id'];
+                $paymentReferenceId = $dataResult['reference_id'];
+                $paymentRequests = $dataResult['payment_requests'];
+
+
+                $responseActions = json_decode($paymentRequests['actions'], true);
+                if ($responseActions){
+                    foreach ($responseActions as $item) {
+                        if($paymentChannelData->type =='EWALLET'){
+                            if (($paymentChannelData->code == 'ASTRAPAY') || ($paymentChannelData->code == 'LINKAJA') || ($paymentChannelData->code == 'DANA')){
+                                if ($item['url_type']== 'MOBILE'){
+                                    if (isset($item['qr_code']) && !is_null($item['qr_code'])) {
+                                        $valueResponse = DNS2DFacade::getBarcodeHTML($item['qr_code'], 'QRCODE', 8,8 );
+                                        $responseType = 'qrcode';
+                                    }
+                                    else{
+                                        if (isset($item['url']) && !is_null($item['url'])){
+                                            $valueResponse = $item['url'];
+                                            $responseType = 'url';
+                                        }else{
+                                            throw new \Exception('Payment failed., Please try again');
+                                        }
+                                    }
+                                }
+                            }elseif($paymentChannelData->code == 'SHOPEEPAY'){
+                                if ($item['action']== 'PRESENT_TO_CUSTOMER'){
+                                    if (isset($item['qr_code']) && !is_null($item['qr_code'])) {
+                                        $valueResponse = DNS2DFacade::getBarcodeHTML($item['qr_code'], 'QRCODE', 8,8 );
+                                        $responseType = 'qrcode';
+                                    }
+                                    else{
+                                        throw new \Exception('Payment failed., Please try again');
+                                    }
+                                }
+                            }elseif($paymentChannelData->code == 'OVO'){
+                                $valueResponse = "Please payment on Customer OVO's Account";
+                                $responseType = 'info';
+                            }else{
+                                throw new \Exception("Payment failed, Payment Channel doesn't exist" . $paymentChannelData->code);
+                            }
+                        }else{
+                            throw new \Exception("Payment failed, Payment Type doesn't exist for ". $paymentChannelData->type);
+                        }
+                    }
+                }else{
+                    $responseActions = json_decode($paymentRequests['payment_method'], true);
+                    if ($responseActions){
+                        if($paymentChannelData->type =='VIRTUAL_ACCOUNT'){
+                            $nameResponse = $responseActions['virtual_account']['channel_properties']['customer_name'];
+                            $valueResponse = $responseActions['virtual_account']['channel_properties']['virtual_account_number'];
+                            $expResponseDate = $responseActions['virtual_account']['channel_properties']['expires_at'];
+                            $expireResponse = carbon::parse($expResponseDate)->setTimezone(config('app.timezone'))->format('d-m-Y H:m') ?? null;
+                            $responseType = 'account';
+                        }elseif(($paymentChannelData->type =='EWALLET') && ($paymentChannelData->code =='OVO')){
+                            $valueResponse = $responseActions['ewallet']['channel_properties']['mobile_number'];
+                            $responseType = 'info';
+                        }elseif($paymentChannelData->type =='QR_CODE'){
+                            $valueResponse = DNS2DFacade::getBarcodeHTML($responseActions['qr_code']['channel_properties']['qr_string'], 'QRCODE', 8,8 );
+
+                            $responseType = 'qrcode';
+                        }else{
+                            throw new \Exception('Payment failed., Please try again');
+                        }
+                    }
+                }
+                //end refer to xendit_payment_request
+            }
+        }
+
+        return response()->json(data: [
+            'payment_request_id' => $paymentRequestId ?? null,
+            'reference_id' => $paymentReferenceId ?? null,
+            'name_response' => $nameResponse ?? null,
+            'value_response' => $valueResponse,
+            'expired_response' => $expireResponse,
+            'response_type' => $responseType,
+            'nominal_information' => format_currency($request->amount),
+        ]);
     }
 }

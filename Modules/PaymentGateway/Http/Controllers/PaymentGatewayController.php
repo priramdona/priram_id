@@ -40,6 +40,7 @@ use Modules\PaymentGateway\Entities\XenditCreateVirtualAccount;
 use Modules\PaymentGateway\Entities\XenditDisbursementChannel;
 use Modules\PaymentGateway\Entities\XenditInvoiceRequest;
 use Modules\PaymentGateway\Entities\XenditVirtualAccountRequest;
+use Modules\Sale\Entities\SelforderCheckout;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 use Xendit\Invoice\Invoice;
 use Xendit\Payout\CreatePayoutRequest;
@@ -182,15 +183,19 @@ class PaymentGatewayController extends Controller
         string $city,
         string $postalCode,
         string $description,
+        ?string $businessId = null,
 
     )
     {
         $base64 = base64_encode(env('XENDIT_KEY').':');
         $secret_key = 'Basic ' . $base64;
 
+        if (blank($businessId)){
+            $businessId = Auth::user()->business_id;
+        }
         try {
 
-        $businessData = Business::find(Auth::user()->business_id);
+        $businessData = Business::find($businessId);
 
             $addressInfo = [
                 [
@@ -305,6 +310,7 @@ class PaymentGatewayController extends Controller
         int $saleAmount,
         ?int $expryDuration = 86400,
         ?bool $sendNotification = true,
+        ?string $businessId = null,
 
     ){
         Configuration::setXenditKey(env('XENDIT_KEY'));
@@ -315,6 +321,9 @@ class PaymentGatewayController extends Controller
         $reffPayment =  $idTransaction . '-' . Carbon::now()->format('Ymdss');
 
         $createPaymentTransactionalType = XenditInvoiceRequest::class;
+        if (blank($businessId)){
+            $businessId = Auth::user()->business_id;
+        };
 
         if (!blank($orderedroducts)){
             foreach($orderedroducts as $orderedroduct){
@@ -468,7 +477,7 @@ class PaymentGatewayController extends Controller
             ]);
 
             $payloadBusinessAmount = [
-                'business_id' => Auth::user()->business_id ?? null,
+                'business_id' => $businessId,
                 'status_credit' => 1,
                 'transactional_type' => XenditInvoiceRequest::class ?? null,
                 'transactional_id' => $xenditInvoiceRequest->id ?? null,
@@ -609,6 +618,7 @@ class PaymentGatewayController extends Controller
         string $customerId,
         string $xenditPaylaterPlanId,
         int $saleAmount,
+        ?string $businessId = null,
         ){
 
             $createPaymentTransactionalType = XenditPaylaterRequest::class;
@@ -616,6 +626,10 @@ class PaymentGatewayController extends Controller
             $base64 = base64_encode(env('XENDIT_KEY').':');
             $secret_key = 'Basic ' . $base64;
             $url = 'https://api.xendit.co/paylater/charges';
+
+            if (blank($businessId)){
+                $businessId = Auth::user()->business_id;
+            }
 
         try {
 
@@ -660,7 +674,7 @@ class PaymentGatewayController extends Controller
 
 
             $payloadBusinessAmount = [
-                'business_id' => Auth::user()->business_id ?? null,
+                'business_id' => $businessId,
                 'status_credit' => 1,
                 'transactional_type' => XenditPaylaterRequest::class ?? null,
                 'transactional_id' => $xenditPaylaterRequest->id ?? null,
@@ -1037,6 +1051,7 @@ class PaymentGatewayController extends Controller
         string $channelCode,
         float $totalAmount,
         float $transactionAmount,
+        ?string $businessId = null
         ){
 
             $base64 = base64_encode(env('XENDIT_KEY').':');
@@ -1044,9 +1059,13 @@ class PaymentGatewayController extends Controller
             $url = 'https://api.xendit.co/callback_virtual_accounts';
 
         // try {
+            if(blank($businessId)){
+                $businessId = Auth::user()->business_id;
+            }
+
             $timestamp = Carbon::now(config('app.timezone'))->addDay()->toIso8601String();
 
-            $getBusinessData = Business::find(Auth::user()->business_id);
+            $getBusinessData = Business::find($businessId);
 
             $payloadRequest = [
                 "external_id" => $refId,
@@ -1088,7 +1107,7 @@ class PaymentGatewayController extends Controller
                 'updated' => null,
             ]);
             $payloadBusinessAmount = [
-                'business_id' => Auth::user()->business_id ?? null,
+                'business_id' => $businessId,
                 'status_credit' => 1,
                 'transactional_type' => XenditVirtualAccountRequest::class ?? null,
                 'transactional_id' => $xenditCreateVirtualAccount->id ?? null,
@@ -1135,6 +1154,7 @@ class PaymentGatewayController extends Controller
                                         string $type,
                                         string $channelCode,
                                         mixed $transactionalType,
+                                        ?string $businessId = null,
                                         ?string $reusability = 'ONE_TIME_USE',
                                         ?string $phoneNumber = null,
                                         ?array $basket = null,
@@ -1146,17 +1166,23 @@ class PaymentGatewayController extends Controller
         $idempotency_key = rand(1,10000) . Carbon::now()->format('Ymmddss');
         $paymentMethod = null;
         $channelProperties = null;
-        $getBusinessData = Business::find(Auth::user()->business_id);
+        if(blank($businessId)){
+            $businessId = Auth::user()->business_id;
+        }
+
+        $getBusinessData = Business::find($businessId);
         $payloadType = null;
 
         $createPaymentTransactionalType = XenditPaymentRequest::class;
         $createPaymentTransactionalId = null;
 
-
         if ($transactionalType == 'sale'){
             $transactionModel = Sale::class;
-        }else{
+        }elseif($transactionalType == 'income')
+        {
             $transactionModel = Income::class;
+        }else{
+            $transactionModel = SelforderCheckout::class;
         }
 
         if ($type === 'EWALLET'){
@@ -1292,7 +1318,7 @@ class PaymentGatewayController extends Controller
 
             $xenditPaymentMethodData = XenditPaymentMethod::create($payloadPaymentMethod);
             $payloadBusinessAmount = [
-                'business_id' => Auth::user()->business_id ?? null,
+                'business_id' => $businessId,
                 'status_credit' => 1,
                 'transactional_type' => XenditPaymentMethod::class ?? null,
                 'transactional_id' => $xenditPaymentMethodData['id'] ?? null,
