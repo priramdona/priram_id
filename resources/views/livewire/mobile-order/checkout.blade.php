@@ -153,6 +153,7 @@
                                                     onclick="generatePhone('{{ $itemAction['action_id'] }}', '{{ $itemAction['product_name'] }}')">
                                                     <i class="bi bi-phone"></i> Apply
                                                 </button>
+
                                             </div>
                                             </td>
                                         </tr>

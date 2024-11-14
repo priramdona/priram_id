@@ -1,155 +1,122 @@
 @extends('layouts.app')
 
-@section('title', 'Sales Details')
+@section('title', 'Create Sale From Quotation')
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('selforder.mobileorder.index') }}">Mobile Self Order</a></li>
-        <li class="breadcrumb-item active">Details</li>
+        <li class="breadcrumb-item"><a href="{{ route('quotations.index') }}">Quotations</a></li>
+        <li class="breadcrumb-item active">Make Sale</li>
     </ol>
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12">
+    <div class="container-fluid mb-4">
+
+        @php
+            $invoiceInfo = \Modules\PaymentMethod\Entities\PaymentMethod::find($payment->payment_method_id);
+            $paymentChannel = \Modules\PaymentMethod\Entities\PaymentChannel::find($payment->payment_channel_id);
+        @endphp
+        <div class="row mt-4">
+            <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header d-flex flex-wrap align-items-center">
-                        <div>
-                            Reference: <strong>{{ $selforderCheckout->reference }}</strong>
-                        </div>
-                        <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('sales.pdf', $selforderCheckout->id) }}">
-                            <i class="bi bi-printer"></i> Print
-                        </a>
-                        <a target="_blank" class="btn btn-sm btn-info mfe-1 d-print-none" href="{{ route('sales.pdf', $selforderCheckout->id) }}">
-                            <i class="bi bi-save"></i> Save
-                        </a>
-                    </div>
                     <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-sm-4 mb-3 mb-md-0">
-                                <h5 class="mb-2 border-bottom pb-2">Company Info:</h5>
-                                <div><strong>{{ settings()->company_name }}</strong></div>
-                                <div>{{ settings()->company_address }}</div>
-                                <div>Email: {{ settings()->company_email }}</div>
-                                <div>Phone: {{ settings()->company_phone }}</div>
-                            </div>
-                            @if($customer)
-                            <div class="col-sm-4 mb-3 mb-md-0">
-                                <h5 class="mb-2 border-bottom pb-2">Customer Info:</h5>
-                                <div><strong>{{ $customer->customer_name }}</strong></div>
-                                <div>{{ $customer->address }}</div>
-                                <div>Email: {{ $customer->customer_email }}</div>
-                                <div>Phone: {{ $customer->customer_phone }}</div>
-                            </div>
-                            @else
-                            <div class="col-sm-4 mb-3 mb-md-0">
-                                <h5 class="mb-2 border-bottom pb-2">Customer Info:</h5>
-                                <div><strong>Not Registered</strong></div>
-                                <div>-</div>
-                                <div>Email: -</div>
-                                <div>Phone: -</div>
-                            </div>
-                            @endif
-                            <div class="col-sm-4 mb-3 mb-md-0">
-                                <h5 class="mb-2 border-bottom pb-2">Invoice Info:</h5>
-                                <div>Invoice: <strong>INV/{{ $selforderCheckout->reference }}</strong></div>
-                                <div>Date: {{ \Carbon\Carbon::parse($selforderCheckout->date)->format('d M, Y') }}</div>
-                                <div>
-                                    Status: <strong>{{ $selforderCheckout->status }}</strong>
+                        @include('utils.alerts')
+                        <form id="sale-form" action="{{ route('sales.store') }}" method="POST">
+                            @csrf
+
+                            <div class="form-row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="reference">Reference <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="reference" required readonly value="{{ $selforder_type->code ?? "SOM" }}">
+                                    </div>
                                 </div>
-                                <div>
-                                    Payment Status: <strong>{{ $selforderCheckout->payment_status }}</strong>
+                                <div class="col-lg-4">
+                                    <div class="from-group">
+                                        <div class="form-group">
+                                            <label for="customer_id">Customer <span class="text-danger">*</span></label>
+                                            <select class="form-control" name="customer_id" id="customer_id" readonly>
+                                                {{-- @foreach(\Modules\People\Entities\Customer::where('business_id', Auth::user()->business_id)->get() as $customer) --}}
+                                                    <option selected value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
+                                                {{-- @endforeach --}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="from-group">
+                                        <div class="form-group">
+                                            <label for="date">Date <span class="text-danger">*</span></label>
+                                            <input type="date" class="form-control" name="date" readonly value="{{ \Carbon\Carbon::parse($sale->date)->format('Y-m-d') }}">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                        </div>
+                            <livewire:product-cart :cartInstance="'sale'" :data="$sale"/>
 
-                        <div class="table-responsive-sm">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th class="align-middle">Product</th>
-                                    <th class="align-middle">Net Unit Price</th>
-                                    <th class="align-middle">Quantity</th>
-                                    <th class="align-middle">Discount</th>
-                                    <th class="align-middle">Tax</th>
-                                    <th class="align-middle">Sub Total</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($selforderCheckout->selforderCheckoutDetails as $item)
-                                    <tr>
-                                        <td class="align-middle">
-                                            {{ $item->product_name }} <br>
-                                            <span class="badge badge-success">
-                                                {{ $item->product_code }}
-                                            </span>
-                                        </td>
+                            <div class="form-row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="status">Status <span class="text-danger">*</span></label>
+                                        <select class="form-control" name="status" id="status" required>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Completed">Completed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="from-group">
+                                        <div class="form-group">
+                                            <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
+                                            <select class="form-control" name="payment_method" id="payment_method" readonly>
+                                                <option selected value="{{ $invoiceInfo->id ?? '' }}">{{ $invoiceInfo->name ?? '' }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if($paymentChannel)
+                                <div class="col-lg-4">
+                                    <div class="from-group">
+                                        <div class="form-group">
 
-                                        <td class="align-middle">{{ format_currency($item->unit_price) }}</td>
-
-                                        <td class="align-middle">
-                                            {{ $item->quantity }}
-                                        </td>
-
-                                        <td class="align-middle">
-                                            {{ format_currency($item->product_discount_amount) }}
-                                        </td>
-
-                                        <td class="align-middle">
-                                            {{ format_currency($item->product_tax_amount) }}
-                                        </td>
-
-                                        <td class="align-middle">
-                                            {{ format_currency($item->sub_total) }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-4 col-sm-5 ml-md-auto">
-                                <table class="table">
-                                    <tbody>
-                                    @if ($selforderCheckout->discount_amount > 0)
-                                    <tr>
-                                        <td class="left"><strong>Discount ({{ $selforderCheckout->discount_percentage }}%)</strong></td>
-                                        <td class="right">{{ format_currency($selforderCheckout->discount_amount) }}</td>
-                                    </tr>
-                                    @endif
-                                    @if ($selforderCheckout->discount_amount > 0)
-                                    <tr>
-                                        <td class="left"><strong>Tax ({{ $selforderCheckout->tax_percentage }}%)</strong></td>
-                                        <td class="right">{{ format_currency($selforderCheckout->tax_amount) }}</td>
-                                    </tr>
-                                    @endif
-                                    @if ($selforderCheckout->discount_amount > 0)
-                                    <tr>
-                                        <td class="left"><strong>Shipping</strong></td>
-                                        <td class="right">{{ format_currency($selforderCheckout->shipping_amount) }}</td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <td class="left"><strong>Total</strong></td>
-                                        <td class="right"><strong>{{ format_currency($selforderCheckout->total_amount) }}</strong></td>
-                                    </tr>
-                                    {{-- @if ($selforderCheckout->additional_paid_amount > 0) --}}
-                                    <tr>
-                                        <td class="left">Additional Amount</></td>
-                                        <td class="right">{{ format_currency($selforderCheckout->additional_paid_amount) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="left"><strong>Grand Total</strong></td>
-                                        <td class="right"><strong>{{ format_currency($selforderCheckout->total_paid_amount) }}</strong></td>
-                                    </tr>
-                                    {{-- @endif --}}
-                                    </tbody>
-                                </table>
+                                            <label for="payment_channel">Payment Channel <span class="text-danger">*</span></label>
+                                            <select class="form-control" name="payment_channel" id="payment_channel" readonly>
+                                                <option selected value="{{ $paymentChannel->id }}">{{ $paymentChannel->name }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                <div class="col-lg-4" {{ $paymentChannel ? 'hidden' : ''}}>
+                                    <div class="form-group">
+                                        <label for="paid_amount">Amount Received <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input id="paid_amount" type="text" class="form-control" name="paid_amount" value= "{{ $paymentChannel ? format_currency($sale->paid_amount) : 0 }}" {{ $paymentChannel ? 'readonly' : 'required' }}>
+                                            <div class="input-group-append">
+                                                <button id="getTotalAmount" class="btn btn-primary" type="button">
+                                                    <i class="bi bi-check-square"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+
+                            <div class="form-group">
+                                <label for="note">Note (If Needed)</label>
+                                <textarea name="note" id="note" rows="5" class="form-control"></textarea>
+                            </div>
+
+                            <input type="hidden" name="selforder_checkout_id" value="{{ $selforder_checkout_id }}">
+
+                            <div class="mt-3">
+                                <button id="proccedaction" name="proccedaction" type="submit" class="btn btn-primary" {{ $paymentChannel ? 'hidden' : '' }}>
+                                    Create Sale <i class="bi bi-check"></i>
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -157,3 +124,59 @@
     </div>
 @endsection
 
+@push('page_scripts')
+    <script src="{{ asset('js/jquery-mask-money.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#paid_amount').maskMoney({
+                prefix:'{{ settings()->currency->symbol }}',
+                thousands:'{{ settings()->currency->thousand_separator }}',
+                decimal:'{{ settings()->currency->decimal_separator }}',
+                allowZero: true,
+            });
+
+            $('#getTotalAmount').click(function () {
+                $('#paid_amount').maskMoney('mask', {{ Cart::instance('sale')->total() }});
+            });
+
+            $('#sale-form').submit(function () {
+                var paid_amount = $('#paid_amount').maskMoney('unmasked')[0];
+                $('#paid_amount').val(paid_amount);
+            });
+
+        });
+
+
+        function generatePhone(id, productName) {
+            // var phoneNumber = document.getElementById('phone_number_' + id).value;
+            var generateButton = document.getElementById('generate_button_' + id);
+            generateButton.classList.remove('btn-primary');
+            generateButton.classList.add('btn-success');
+            generateButton.innerHTML = '<i class="bi bi-check"></i> Verified';
+            generateButton.disabled = true;
+
+            checkAllGenerated();
+        }
+
+        function checkAllGenerated() {
+            // Dapatkan semua tombol Generate
+            var buttons = document.querySelectorAll('button[id^="generate_button_"]');
+            var allGenerated = true;
+
+            // Cek apakah semua tombol sudah di-disable
+            buttons.forEach(function(button) {
+                if (!button.disabled) {
+                    allGenerated = false;
+                }
+            });
+
+            // Tampilkan tombol Proceed jika semua tombol sudah di-disable
+            var proceedButton = document.getElementById('proccedaction');
+            if (allGenerated) {
+                proceedButton.hidden = false;
+            } else {
+                proceedButton.hidden = true;
+            }
+        }
+    </script>
+@endpush

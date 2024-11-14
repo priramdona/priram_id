@@ -201,8 +201,8 @@
 @push('page_scripts')
 <script>
 
-
-     var startautosave;
+    var isSubmitting = false;
+    var startautosave;
 
     function newtransaction() {
         clearInterval(startautosave);

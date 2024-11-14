@@ -24,7 +24,7 @@ class SelforderCheckout extends Model
     }
 
     public function selforderCheckoutPayments() {
-        return $this->hasMany(SelforderCheckoutPayment::class, 'selforder_checkout_id', 'id');
+        return $this->hasOne(SelforderCheckoutPayment::class, 'selforder_checkout_id', 'id');
     }
 
     public function business() {

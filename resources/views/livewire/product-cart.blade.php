@@ -10,6 +10,11 @@
                 </div>
             </div>
         @endif
+        @php
+            $payments = \Modules\Sale\Entities\SelforderCheckoutPayment::where('selforder_checkout_id', $data->id)->first();
+            $invoiceInfo = \Modules\PaymentMethod\Entities\PaymentMethod::find($payments->payment_method_id);
+            $paymentChannel = \Modules\PaymentMethod\Entities\PaymentChannel::find($payments->payment_channel_id);
+        @endphp
         <div class="table-responsive position-relative">
             <div wire:loading.flex class="col-12 position-absolute justify-content-center align-items-center" style="top:0;right:0;left:0;bottom:0;background-color: rgba(255,255,255,0.5);z-index: 99;">
                 <div class="spinner-border text-primary" role="status">
@@ -38,17 +43,11 @@
                                     <span class="badge badge-success">
                                         {{ $cart_item->options->code }}
                                     </span>
-                                    @include('livewire.includes.product-cart-modal')
+                                    {{-- @include('livewire.includes.product-cart-modal') --}}
                                 </td>
 
-                                <td x-data="{ open{{ $cart_item->id }}: false }" class="align-middle text-left">
-
-                                    <span>Price : </span>
-                                    <span x-show="!open{{ $cart_item->id }}" @click="open{{ $cart_item->id }} = !open{{ $cart_item->id }}">{{ format_currency($cart_item->price) }}</span>
-                                    <br>
-                                    <div x-show="open{{ $cart_item->id }}">
-                                        @include('livewire.includes.product-cart-price')
-                                    </div>
+                                <td class="align-middle text-center">
+                                    {{ format_currency($cart_item->options->unit_price) }}
                                 </td>
 
                                 <td class="align-middle text-center text-center">
@@ -56,7 +55,18 @@
                                 </td>
 
                                 <td class="align-middle text-center">
-                                    @include('livewire.includes.product-cart-quantity')
+                                    <div class="input-group d-flex justify-content-center">
+                                        <input
+                                            id="quantity-input-{{ $cart_item->rowId }}"
+                                            wire:change="quantityChange($event.target.value,'{{ $cart_item->rowId }}', '{{ $cart_item->id }}')"
+                                            style="min-width: 40px; max-width: 90px;"
+                                            type="number"
+                                            class="form-control"
+                                            value="{{ $cart_item->qty }}"
+                                            min="1"
+                                             onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
+                                             {{ $paymentChannel ? 'readonly' : '' }}>
+                                    </div>
                                 </td>
 
                                 <td class="align-middle text-center">
@@ -72,9 +82,14 @@
                                 </td>
 
                                 <td class="align-middle text-center">
-                                    <a href="#" wire:click.prevent="removeItem('{{ $cart_item->rowId }}')">
+                                    <a href="#" wire:click.prevent="removeItem('{{ $cart_item->rowId }}')"  {{ $paymentChannel ? 'hidden' : '' }}>
                                         <i class="bi bi-x-circle font-2xl text-danger"></i>
                                     </a>
+
+                                    <button type="button" class="btn btn-primary"  id="generate_button_{{ $cart_item->rowId }}"
+                                        onclick="generatePhone('{{ $cart_item->rowId }}', '{{ $cart_item->name }}')">
+                                        <i class="bi bi-cart"></i> Verification
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -92,7 +107,7 @@
         </div>
     </div>
 
-    <div class="form-row">
+    <div class="form-row" hidden>
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="tax_percentage">Tax (%)</label>
@@ -123,7 +138,7 @@
         <div class="col-md-4">
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <tr>
+                    {{-- <tr>
                         <th>Tax ({{ $global_tax }}%)</th>
                         <td>(+) {{ format_currency(Cart::instance($cart_instance)->tax()) }}</td>
                     </tr>
@@ -135,7 +150,7 @@
                         <th>Shipping</th>
                         <input type="hidden" value="{{ $shipping }}" name="shipping_amount">
                         <td>(+) {{ format_currency($shipping) }}</td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                         <th>Grand Total</th>
                         @php

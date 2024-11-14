@@ -40,6 +40,12 @@ class SaleController extends Controller
     public function store(StoreSaleRequest $request) {
 
         DB::transaction(function () use ($request) {
+            $prefix = "INV/";
+
+            if ($request->reference != "SL"){
+                $prefix = strtoupper($request->reference)."/";
+            }
+
             $due_amount = $request->total_amount - $request->paid_amount;
 
             if ($due_amount == $request->total_amount) {
@@ -109,7 +115,7 @@ class SaleController extends Controller
             if ($sale->paid_amount > 0) {
                 SalePayment::create([
                     'date' => $request->date,
-                    'reference' => 'INV/'.$sale->reference,
+                    'reference' => $prefix.$sale->reference,
                     'amount' => $sale->paid_amount,
                     'sale_id' => $sale->id,
                     'business_id' => $request->user()->business_id,
@@ -121,10 +127,17 @@ class SaleController extends Controller
                 ]);
             }
         });
-
+        if ($request->reference != "SL"){
+            $prefix = strtoupper($request->reference)."/";
+        }
         toast('Sale Created!', 'success');
 
-        return redirect()->route('sales.index');
+        if ($request->reference == "SL"){
+            return redirect()->route('sales.index');
+        }else{
+            return redirect()->route('selforder.selforderprocess');
+        }
+
     }
 
     public function showsale(Sale $sale) {

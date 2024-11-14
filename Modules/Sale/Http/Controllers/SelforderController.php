@@ -174,9 +174,52 @@ class SelforderController extends Controller
 
     public function selforderCheckout(SelforderCheckout $selforderCheckout)
     {
+
+
         $customer = Customer::find($selforderCheckout->customer_id) ?? null;
 
-        return view('sale::selforder.ordered.show.mobileorder', compact('selforderCheckout', 'customer'));
+        $selforderCheckout_details = $selforderCheckout->selforderCheckoutDetails;
+
+        $selforderCheckout_Payment = $selforderCheckout->selforderCheckoutPayments;
+
+        $selforderType = $selforderCheckout->selforderBusiness->selforderType;
+        Cart::instance('sale')->destroy();
+
+        $cart = Cart::instance('sale');
+
+        foreach ($selforderCheckout_details as $selforderCheckout_detail) {
+            $cart->add([
+                'id'      => $selforderCheckout_detail->product_id,
+                'name'    => $selforderCheckout_detail->product_name,
+                'qty'     => $selforderCheckout_detail->quantity,
+                'price'   => $selforderCheckout_detail->price,
+                'weight'  => 1,
+                'options' => [
+                    'product_discount' => $selforderCheckout_detail->product_discount_amount,
+                    'product_discount_type' => $selforderCheckout_detail->product_discount_type,
+                    'sub_total'   => $selforderCheckout_detail->sub_total,
+                    'code'        => $selforderCheckout_detail->product_code,
+                    'stock'       => Product::findOrFail($selforderCheckout_detail->product_id)->product_quantity,
+                    'product_tax' => $selforderCheckout_detail->product_tax_amount,
+                    'unit_price'  => $selforderCheckout_detail->unit_price
+                ]
+            ]);
+        }
+
+        return view('sale::selforder.ordered.show.mobileorder', [
+            'selforder_checkout_id' => $selforderCheckout->id,
+            'sale' => $selforderCheckout,
+            'payment' => $selforderCheckout_Payment,
+            'customer' => $customer,
+            'selforder_type' => $selforderType
+        ]);
+
+        // return view('quotation::quotation-sales.create', [
+        //     'quotation_id' => $quotation->id,
+        //     'sale' => $quotation
+        // ]);
+
+        // return view('sale::selforder.ordered.show.mobileorder', compact('selforderCheckout', 'customer'));
 
         //ini nanti diarahkan ke selforderCheckout Preview Detail
         // return view('sale::selforder.ordered.mobileorder',compact( ['selforderCheckout']));
