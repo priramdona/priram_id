@@ -25,6 +25,7 @@
                 <div class="card-body">
                     <h1>Terima Kasih!</h1>
                     <div class="text-center mt-5">
+                        <p class="text-muted">Simpan dan tunjukan bukti pemesanan Kode QR anda ke Konter</p>
                         <p class="text-muted">{{ $link }}</p>
                     <!-- QR Code Image -->
                         <figure>

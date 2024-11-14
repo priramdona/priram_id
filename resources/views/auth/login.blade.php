@@ -73,6 +73,11 @@
                                 </button>
                             </div>
                             <div class="col-8 text-right">
+                                <a class="btn btn-link px-0" href="{{ route('register') }}">
+                                    Register
+                                </a>
+                            </div>
+                            <div class="col-8 text-right">
                                 <a class="btn btn-link px-0" href="{{ route('password.request') }}">
                                     Forgot password?
                                 </a>
@@ -81,6 +86,12 @@
                     </form>
                 </div>
             </div>
+            <p class="text-center mt-4">
+                Dengan masuk, Anda setuju dengan
+                <a href="{{ route('terms.service') }}" target="_blank">Syarat & Ketentuan</a>
+                dan
+                <a href="{{ route('privacy.policy') }}" target="_blank">Kebijakan Privasi</a> kami.
+            </p>
 
             <p class="text-center mt-5 lead">
                 Developed By

@@ -57,8 +57,7 @@ class SearchProductMobileSelforder extends Component
         }
     }
     public function selectProduct($productData) {
-        //ini dari search
-        // dd('asd',$productData);
+
         $isDataTable = $productData['id'] ?? null;
 
         if($isDataTable){

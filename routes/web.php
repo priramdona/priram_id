@@ -20,6 +20,8 @@ Route::get('/', function () {
 })->middleware('guest');
 
 Auth::routes(['register' => true]);
+Route::view('/privacy-policy', 'auth.privacy_policy')->name('privacy.policy');
+Route::view('/terms-of-service', 'auth.terms_of_service')->name('terms.service');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')

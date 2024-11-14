@@ -387,12 +387,14 @@ class SelforderController extends Controller
                 $selforderBusiness = SelforderBusiness::find($request->selforder_business_id);
                 $business = Business::find($selforderBusiness->business_id);
 
+                $selforderCheckout = SelforderCheckout::query()->where('business_id',$business->id)->count();
+                $referenceNumber = 'SOM' . str_pad($selforderCheckout, 10, '0', STR_PAD_LEFT);
                 $selforderCheckout = SelforderCheckout::create([
                     'selforder_business_id' => $request->selforder_business_id,
                     'business_id' => $business->id,
                     'business_name' => $business->name,
                     'date' => now()->format('Y-m-d'),
-                    'reference' => 'SOM',
+                    'reference' => $referenceNumber,
                     'customer_id' => $request->customer_id,
                     'customer_name' => Customer::find($request->customer_id)->customer_name ?? null,
                     'tax_percentage' => $request->tax_percentage,

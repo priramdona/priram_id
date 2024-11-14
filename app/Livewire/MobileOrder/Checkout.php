@@ -124,6 +124,16 @@ class Checkout extends Component
         $this->updateQuantity($rowId,$cartItemId);
     }
     public function productSelected($product) {
+        $cart_items = Cart::instance($this->cart_instance)->content();
+
+        if ( !($cart_items->isEmpty())) {
+            foreach ($cart_items as $item) {
+                $this->quantity[$item->id] = $item->qty; // Inisialisasi quantity berdasarkan cart item id
+                $this->quantity_action_existing = $this->quantity[$item->id];
+                $this->total_amount = $this->calculateTotal();
+                $this->check_quantity[$item->id] =  $item->options->stock;
+            }
+        }
 
         $cart = Cart::instance($this->cart_instance);
 
