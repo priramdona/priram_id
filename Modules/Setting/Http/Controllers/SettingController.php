@@ -22,14 +22,16 @@ class SettingController extends Controller
         abort_if(Gate::denies('access_settings'), 403, __('general_settings.setting_controller.access_settings'));
 
 
-        $settings = Setting::firstOrFail();
+        $settings = Setting::query()->where('business_id', Auth::user()->business_id)->first();
 
         return view('setting::index', compact('settings'));
     }
 
 
     public function update(StoreSettingsRequest $request) {
-        Setting::firstOrFail()->update([
+        Setting::query()
+            ->where('business_id', Auth::user()->business_id)
+            ->update([
             'company_name' => $request->company_name,
             'company_email' => $request->company_email,
             'company_phone' => $request->company_phone,

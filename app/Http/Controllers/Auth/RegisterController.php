@@ -15,6 +15,9 @@ use Modules\Sale\Entities\SelforderBusiness;
 use Modules\Sale\Entities\SelforderType;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Modules\Currency\Entities\Currency;
+use Modules\Setting\Entities\Setting;
+
 class RegisterController extends Controller
 {
     /*
@@ -94,6 +97,27 @@ class RegisterController extends Controller
             'phone' => null,
             'prefix' => $this->generatePrefix($data['business_name']),
             'email' => null,
+        ]);
+        $curencyData = Currency::create([
+            'currency_name' => 'RP Indonesia',
+            'code' => 'ID',
+            'symbol' => 'Rp, ',
+            'thousand_separator' => ',',
+            'decimal_separator' => '.',
+            'exchange_rate' => null,
+            'business_id' => $business->id,
+        ]);
+
+        Setting::create([
+            'company_name' => $data['business_name'],
+            'company_email' => $data['email'],
+            'company_phone' => $data['phone_number'],
+            'notification_email' => $data['email'],
+            'default_currency_id' => $curencyData->id,
+            'default_currency_position' => 'prefix',
+            'footer_text' => 'Kasir Mulia © 2024 || Developed by <strong><a target="_blank" href="www.priram.id">Priram</a></strong>',
+            'company_address' => $data['business_address'],
+            'business_id' => $business->id,
         ]);
 
         $phoneNumber = $data['phone_number'];
