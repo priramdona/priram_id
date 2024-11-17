@@ -67,7 +67,6 @@ class SalesDataTable extends DataTable
                 'language' => __('sales.datatable.tools'),
         ]);
     }
-
     protected function getColumns() {
         return [
             Column::make('reference')

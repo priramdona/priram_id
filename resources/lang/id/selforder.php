@@ -9,6 +9,7 @@ return [
         ],
     'home' => 'Beranda',
     'selforders' => 'Daftar Pesanan Mandiri',
+    'selforder' => 'Pesanan Mandiri',
     'process' => [
         'scan' => 'Pindai Kode QR',
         'info' => 'Silakan Pindai Hasil Pemesanan Kode QR untuk Melanjutkan Proses Pemesanan Mandiri',

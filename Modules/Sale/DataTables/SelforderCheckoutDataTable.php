@@ -59,13 +59,13 @@ class SelforderCheckoutDataTable extends DataTable
             ->orderBy(8)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
-                Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
-                Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
-                Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
+                ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('sales.datatable.buttons.excel')),
+            Button::make('print')
+                ->text('<i class="bi bi-printer-fill"></i> ' . __('sales.datatable.buttons.print')),
+            Button::make('reset')
+                ->text('<i class="bi bi-x-circle"></i> ' . __('sales.datatable.buttons.reset')),
+            Button::make('reload')
+                ->text('<i class="bi bi-arrow-repeat"></i> ' . __('sales.datatable.buttons.reload'))
             ) ->parameters([
                 'responsive' => true,
                 'autoWidth' => true,

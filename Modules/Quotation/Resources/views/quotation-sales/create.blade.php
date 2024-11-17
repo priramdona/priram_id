@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Create Sale From Quotation')
+@section('title', __('quotation.sale.title'))
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('quotations.index') }}">Quotations</a></li>
-        <li class="breadcrumb-item active">Make Sale</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('quotation.breadcrumb.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('quotations.index') }}">{{ __('quotation.breadcrumb.quotations') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('quotation.sale.make_sale') }}</li>
     </ol>
 @endsection
 
@@ -29,14 +29,14 @@
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="reference">Reference <span class="text-danger">*</span></label>
+                                        <label for="reference">{{ __('quotation.form.reference') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="reference" required readonly value="SL">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="customer_id">Customer <span class="text-danger">*</span></label>
+                                            <label for="customer_id">{{ __('quotation.form.customer') }} <span class="text-danger">*</span></label>
                                             <select class="form-control" name="customer_id" id="customer_id" {{ $sale->with_invoice ? 'readonly' : 'required' }}>
                                                 @foreach(\Modules\People\Entities\Customer::where('business_id', Auth::user()->business_id)->get() as $customer)
                                                     <option {{ $sale->customer_id == $customer->id ? 'selected' : '' }} value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
@@ -48,7 +48,7 @@
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="date">Date <span class="text-danger">*</span></label>
+                                            <label for="date">{{ __('quotation.form.date') }} <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control" name="date" required value="{{ now()->format('Y-m-d') }}">
                                         </div>
                                     </div>
@@ -60,11 +60,11 @@
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="status">Status <span class="text-danger">*</span></label>
+                                        <label for="status">{{ __('quotation.form.status') }} <span class="text-danger">*</span></label>
                                         <select class="form-control" name="status" id="status" required>
-                                            <option value="Pending">Pending</option>
-                                            <option value="Shipped">Shipped</option>
-                                            <option value="Completed">Completed</option>
+                                            <option value="Pending">{{ __('quotation.sale.status_options.pending') }}</option>
+                                            <option value="Shipped">{{ __('quotation.sale.status_options.shipped') }}</option>
+                                            <option value="Completed">{{ __('quotation.sale.status_options.completed') }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -74,21 +74,21 @@
                                             @php
                                                 $invoiceInfo = \Modules\PaymentMethod\Entities\PaymentMethod::where('code','INVOICE')->first();
                                             @endphp
-                                            <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
+                                            <label for="payment_method">{{ __('quotation.sale.payment_method') }} <span class="text-danger">*</span></label>
                                             <select class="form-control" name="payment_method" id="payment_method"  {{ $sale->with_invoice ? 'readonly' : 'required' }}>
                                                 <option {{ $sale->with_invoice ? 'selected' : '' }} value="{{ $invoiceInfo->id ?? '' }}">{{ $invoiceInfo->name ?? '' }}</option>
 
-                                                <option value="Cash">Cash</option>
-                                                <option value="Credit Card">Credit Card</option>
-                                                <option value="Bank Transfer">Bank Transfer</option>
-                                                <option value="Other">Other</option>
+                                                <option value="Cash">{{ __('quotation.sale.payment_options.cash') }}</option>
+                                                <option value="Credit Card">{{ __('quotation.sale.payment_options.credit_card') }}</option>
+                                                <option value="Bank Transfer">{{ __('quotation.sale.payment_options.bank_transfer') }}</option>
+                                                <option value="Other">{{ __('quotation.sale.payment_options.other') }}</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="paid_amount">Amount Received <span class="text-danger">*</span></label>
+                                        <label for="paid_amount">{{ __('quotation.sale.amount_received') }} <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input id="paid_amount" type="text" class="form-control" name="paid_amount" value= {{ $sale->with_invoice ? "$sale->total_amount" : "0" }} {{ $sale->with_invoice ? 'readonly' : 'required' }}>
                                             <div class="input-group-append">
@@ -102,7 +102,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="note">Note (If Needed)</label>
+                                <label for="note">{{ __('quotation.form.note') }}</label>
                                 <textarea name="note" id="note" rows="5" class="form-control"></textarea>
                             </div>
 
@@ -110,7 +110,7 @@
 
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary">
-                                    Create Sale <i class="bi bi-check"></i>
+                                    {{ __('quotation.sale.create_sale') }} <i class="bi bi-check"></i>
                                 </button>
                             </div>
                         </form>

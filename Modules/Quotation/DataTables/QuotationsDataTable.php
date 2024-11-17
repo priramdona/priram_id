@@ -42,35 +42,45 @@ class QuotationsDataTable extends DataTable
             ->orderBy(6)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('quotation.datatable.buttons.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('quotation.datatable.buttons.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('quotation.datatable.buttons.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('quotation.datatable.buttons.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('quotation.datatable.tools'),
+        ]);
     }
 
     protected function getColumns() {
         return [
             Column::make('date')
+                ->title(__('quotation.datatable.columns.date'))
                 ->className('text-center align-middle'),
 
             Column::make('reference')
+            ->title(__('quotation.datatable.columns.reference'))
                 ->className('text-center align-middle'),
 
             Column::make('customer_name')
-                ->title('Customer')
+            ->title(__('quotation.datatable.columns.customer_name'))
                 ->className('text-center align-middle'),
 
             Column::computed('status')
+            ->title(__('quotation.datatable.columns.status'))
                 ->className('text-center align-middle'),
 
             Column::computed('total_amount')
+            ->title(__('quotation.datatable.columns.total_amount'))
                 ->className('text-center align-middle'),
 
             Column::computed('action')
+            ->title(__('quotation.datatable.columns.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->className('text-center align-middle'),

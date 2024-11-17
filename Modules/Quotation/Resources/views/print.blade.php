@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Quotation Details</title>
+    <title>{{ __('quotation.print.title') }}</title>
     <link rel="stylesheet" href="{{ public_path('b3/bootstrap.min.css') }}">
 </head>
 <body>
@@ -15,38 +15,34 @@
             <div style="text-align: center;margin-bottom: 25px;">
                 <img width="180" src="{{ public_path('images/logo-dark.png') }}" alt="Logo">
                 <h4 style="margin-bottom: 20px;">
-                    <span>Reference::</span> <strong>{{ $quotation->reference }}</strong>
+                    <span>{{ __('quotation.print.reference') }}:</span> <strong>{{ $quotation->reference }}</strong>
                 </h4>
             </div>
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Company Info:</h4>
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.company_info') }}:</h4>
                             <div><strong>{{ settings()->company_name }}</strong></div>
                             <div>{{ settings()->company_address }}</div>
-                            <div>Email: {{ settings()->company_email }}</div>
-                            <div>Phone: {{ settings()->company_phone }}</div>
+                            <div>{{ __('quotation.print.email') }}: {{ settings()->company_email }}</div>
+                            <div>{{ __('quotation.print.phone') }}: {{ settings()->company_phone }}</div>
                         </div>
 
                         <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Customer Info:</h4>
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.customer_info') }}:</h4>
                             <div><strong>{{ $customer->customer_name }}</strong></div>
                             <div>{{ $customer->address }}</div>
-                            <div>Email: {{ $customer->customer_email }}</div>
-                            <div>Phone: {{ $customer->customer_phone }}</div>
+                            <div>{{ __('quotation.print.email') }}: {{ $customer->customer_email }}</div>
+                            <div>{{ __('quotation.print.phone') }}: {{ $customer->customer_phone }}</div>
                         </div>
 
                         <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Invoice Info:</h4>
-                            <div>Invoice: <strong>INV/{{ $quotation->reference }}</strong></div>
-                            <div>Date: {{ \Carbon\Carbon::parse($quotation->date)->format('d M, Y') }}</div>
-                            <div>
-                                Status: <strong>{{ $quotation->status }}</strong>
-                            </div>
-                            <div>
-                                Payment Status: <strong>{{ $quotation->payment_status }}</strong>
-                            </div>
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.invoice_info') }}:</h4>
+                            <div>{{ __('quotation.print.invoice') }}: <strong>INV/{{ $quotation->reference }}</strong></div>
+                            <div>{{ __('quotation.print.date') }}: {{ \Carbon\Carbon::parse($quotation->date)->format('d M, Y') }}</div>
+                            <div>{{ __('quotation.print.status') }}: <strong>{{ $quotation->status }}</strong></div>
+                            <div>{{ __('quotation.print.payment_status') }}: <strong>{{ $quotation->payment_status }}</strong></div>
                         </div>
 
                     </div>
@@ -55,12 +51,12 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th class="align-middle">Product</th>
-                                <th class="align-middle">Net Unit Price</th>
-                                <th class="align-middle">Quantity</th>
-                                <th class="align-middle">Discount</th>
-                                <th class="align-middle">Tax</th>
-                                <th class="align-middle">Sub Total</th>
+                                <th class="align-middle">{{ __('quotation.print.table.product') }}</th>
+                                <th class="align-middle">{{ __('quotation.print.table.net_unit_price') }}</th>
+                                <th class="align-middle">{{ __('quotation.print.table.quantity') }}</th>
+                                <th class="align-middle">{{ __('quotation.print.table.discount') }}</th>
+                                <th class="align-middle">{{ __('quotation.print.table.tax') }}</th>
+                                <th class="align-middle">{{ __('quotation.print.table.sub_total') }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -100,19 +96,19 @@
                             <table class="table">
                                 <tbody>
                                 <tr>
-                                    <td class="left"><strong>Discount ({{ $quotation->discount_percentage }}%)</strong></td>
+                                    <td class="left"><strong>{{ __('quotation.print.discount') }} ({{ $quotation->discount_percentage }}%)</strong></td>
                                     <td class="right">{{ format_currency($quotation->discount_amount) }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="left"><strong>Tax ({{ $quotation->tax_percentage }}%)</strong></td>
+                                    <td class="left"><strong>{{ __('quotation.print.tax') }} ({{ $quotation->tax_percentage }}%)</strong></td>
                                     <td class="right">{{ format_currency($quotation->tax_amount) }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="left"><strong>Shipping)</strong></td>
+                                    <td class="left"><strong>{{ __('quotation.print.shipping') }}</strong></td>
                                     <td class="right">{{ format_currency($quotation->shipping_amount) }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="left"><strong>Grand Total</strong></td>
+                                    <td class="left"><strong>{{ __('quotation.print.grand_total') }}</strong></td>
                                     <td class="right"><strong>{{ format_currency($quotation->total_amount) }}</strong></td>
                                 </tr>
                                 </tbody>

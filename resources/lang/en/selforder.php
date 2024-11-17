@@ -9,6 +9,7 @@ return [
         ],
     'home' => 'Home',
     'selforders' => 'Self Orders',
+    'selforder' => 'Self Orders',
     'process' => [
         'scan' => 'Scan QR Code',
 
