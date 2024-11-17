@@ -8,8 +8,8 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item active">POS</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('checkout.breadcrumb.home') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('checkout.breadcrumb.pos') }}</li>
     </ol>
 @endsection
 
@@ -49,7 +49,7 @@
                     if (data.length > 0) {
                         // alert(data);
                         $("#payment_method").empty();
-                        op = '<option value="" disabled="true" selected="true">-Select-</option>'
+                        op = '<option value="" disabled="true" selected="true">'+  @json(__('checkout_modal.select'), JSON_UNESCAPED_UNICODE) +'</option>'
                         for (var i = 0; i < data.length; i++) {
                             op += '<option value="' + data[i].id + '">' + data[i]
                                 .name + '</option>';

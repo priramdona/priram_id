@@ -25,8 +25,8 @@
                 <div class="card-body">
                     <form id="login" method="post" action="{{ url('/login') }}">
                         @csrf
-                        <h1>Expired</h1>
-                        <p class="text-muted">Please enter Valid address</p>
+                        <h1>Halaman tidak berlaku</h1>
+                        <p class="text-muted">Silakan masuk dengan Kode QR yang Valid</p>
                         <div class="row mb-3">
                             <div class="col-12 d-flex justify-content-center">
                                 <img width="200" src="{{ asset('images/logo-dark.png') }}" alt="Logo">

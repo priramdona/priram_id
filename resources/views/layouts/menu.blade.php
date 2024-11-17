@@ -94,7 +94,7 @@
                     </i> {{ __('menu.selforder_mobile') }}
                 </a>
             </li>
-            <li class="c-sidebar-nav-item">
+            {{-- <li class="c-sidebar-nav-item">
                 <a class="c-sidebar-nav-link {{ request()->routeIs('income-categories.*') ? 'c-active' : '' }}" href="{{ route('income-categories.index') }}">
                     <i class="c-sidebar-nav-icon" style="line-height: 1;">
                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108.39 122.88" width="18" height="18" fill="currentColor">
@@ -111,7 +111,7 @@
                         </svg>
                     </i> {{ __('menu.selforder_delivery') }}
                 </a>
-            </li>
+            </li> --}}
             <li class="c-sidebar-nav-item">
                 <a class="c-sidebar-nav-link {{ request()->routeIs('selforder.selforderprocess') ? 'c-active' : '' }}" href="{{ route('selforder.selforderprocess') }}">
                     {{-- <svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox=""><path d=""/></svg> --}}

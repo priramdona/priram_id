@@ -52,6 +52,18 @@
             text-align: center;
             margin-top: 20px;
         }
+
+              /* Untuk Chrome, Safari, Edge, dan Opera */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Untuk Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 
     <!-- Masukkan QuaggaJS dari CDN -->

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sales')
+@section('title', __('sales.index.title'))
 
 @section('third_party_stylesheets')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
@@ -8,8 +8,8 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item active">Sales</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('sales.breadcrumb.home') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('sales.breadcrumb.sales') }}</li>
     </ol>
 @endsection
 
@@ -20,7 +20,7 @@
                 <div class="card">
                     <div class="card-body">
                         <a href="{{ route('sales.create') }}" class="btn btn-primary">
-                            Add Sale <i class="bi bi-plus"></i>
+                            {{ __('sales.index.add_sale') }} <i class="bi bi-plus"></i>
                         </a>
 
                         <hr>

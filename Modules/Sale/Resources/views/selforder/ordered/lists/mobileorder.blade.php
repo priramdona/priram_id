@@ -59,8 +59,11 @@
 @endsection
 
 @push('page_scripts')
+
     {!! $dataTable->scripts() !!}
     <script>
+
+    const messages = @json(__('selforder'));
         $(document).ready(function() {
             var tableId = '{!! $dataTable->getTableId() !!}';
             var table = $('#' + tableId).DataTable();
@@ -74,8 +77,8 @@
                 var paymentStatus = $(data.payment_status).text().trim();
                 if (paymentStatus == 'waiting' || paymentStatus == 'Waiting'){
                     Swal.fire({
-                    title: 'Payment Waiting',
-                    text: 'Cannot Process while Payment is Waiting...',
+                    title: messages.list.error.title,
+                    text: messages.list.error.text,
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     icon: 'error',

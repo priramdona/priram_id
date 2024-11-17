@@ -11,9 +11,23 @@
             </div>
         @endif
         @php
-            $payments = \Modules\Sale\Entities\SelforderCheckoutPayment::where('selforder_checkout_id', $data->id)->first();
-            $invoiceInfo = \Modules\PaymentMethod\Entities\PaymentMethod::find($payments->payment_method_id);
-            $paymentChannel = \Modules\PaymentMethod\Entities\PaymentChannel::find($payments->payment_channel_id);
+
+            $source = null;
+            if($data){
+
+                $source = $data->getTable();
+                $payments = null;
+                $invoiceInfo = null;
+                $paymentChannel = null;
+                if ($source == 'selforder_checkouts'){
+                    $payments = \Modules\Sale\Entities\SelforderCheckoutPayment::where('selforder_checkout_id', $data->id)->first();
+                    $invoiceInfo = \Modules\PaymentMethod\Entities\PaymentMethod::find($payments->payment_method_id);
+                    $paymentChannel = \Modules\PaymentMethod\Entities\PaymentChannel::find($payments->payment_channel_id);
+
+                }
+             }
+
+
         @endphp
         <div class="table-responsive position-relative">
             <div wire:loading.flex class="col-12 position-absolute justify-content-center align-items-center" style="top:0;right:0;left:0;bottom:0;background-color: rgba(255,255,255,0.5);z-index: 99;">
@@ -24,14 +38,14 @@
             <table class="table table-bordered">
                 <thead class="thead-dark">
                 <tr>
-                    <th class="align-middle">Product</th>
-                    <th class="align-middle text-center">Net Unit Price</th>
-                    <th class="align-middle text-center">Stock</th>
-                    <th class="align-middle text-center">Quantity</th>
-                    <th class="align-middle text-center">Discount</th>
-                    <th class="align-middle text-center">Tax</th>
-                    <th class="align-middle text-center">Sub Total</th>
-                    <th class="align-middle text-center">Action</th>
+                    <th class="align-middle">{{ __("sales.show.table.product") }}</th>
+                    <th class="align-middle text-center">{{ __("sales.show.table.net_unit_price") }}</th>
+                    <th class="align-middle text-center">{{ __("sales.show.table.stock") }}</th>
+                    <th class="align-middle text-center">{{ __("sales.show.table.quantity") }}</th>
+                    <th class="align-middle text-center">{{ __("sales.show.table.discount") }}</th>
+                    <th class="align-middle text-center">{{ __("sales.show.table.tax") }}</th>
+                    <th class="align-middle text-center">{{ __("sales.show.table.sub_total") }}</th>
+                    <th class="align-middle text-center">{{ __("sales.show.table.action") }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -43,7 +57,10 @@
                                     <span class="badge badge-success">
                                         {{ $cart_item->options->code }}
                                     </span>
-                                    {{-- @include('livewire.includes.product-cart-modal') --}}
+
+                                    {{-- @if($source != 'selforder_checkouts')
+                                    @include('livewire.includes.product-cart-modal')
+                                    @endif --}}
                                 </td>
 
                                 <td class="align-middle text-center">
@@ -65,7 +82,7 @@
                                             value="{{ $cart_item->qty }}"
                                             min="1"
                                              onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
-                                             {{ $paymentChannel ? 'readonly' : '' }}>
+                                             {{ $paymentChannel ?? '' ? 'readonly' : '' }}>
                                     </div>
                                 </td>
 
@@ -82,14 +99,17 @@
                                 </td>
 
                                 <td class="align-middle text-center">
-                                    <a href="#" wire:click.prevent="removeItem('{{ $cart_item->rowId }}')"  {{ $paymentChannel ? 'hidden' : '' }}>
-                                        <i class="bi bi-x-circle font-2xl text-danger"></i>
-                                    </a>
 
+                                    @if($source == 'selforder_checkouts')
                                     <button type="button" class="btn btn-primary"  id="generate_button_{{ $cart_item->rowId }}"
                                         onclick="generatePhone('{{ $cart_item->rowId }}', '{{ $cart_item->name }}')">
-                                        <i class="bi bi-cart"></i> Verification
+                                        <i class="bi bi-cart"></i> {{ __("sales.show.table.verification") }}
                                     </button>
+                                    @else
+                                    <a href="#" wire:click.prevent="removeItem('{{ $cart_item->rowId }}')"  {{ $paymentChannel ?? '' ? 'hidden' : '' }}>
+                                        <i class="bi bi-x-circle font-2xl text-danger"></i>
+                                    </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -97,7 +117,7 @@
                         <tr>
                             <td colspan="8" class="text-center">
                         <span class="text-danger">
-                            Please search & select products!
+                            {{ __("sales.show.table.info_select") }}
                         </span>
                             </td>
                         </tr>

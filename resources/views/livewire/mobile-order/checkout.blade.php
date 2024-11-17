@@ -14,7 +14,7 @@
                 @endif
 
                 <div class="form-group">
-                    <label for="customer_id"><span style="font-size: 12px;  font-weight: bold;">Welcome</span></label>
+                    <label for="customer_id"><span style="font-size: 12px;  font-weight: bold;">Selamat Datang</span></label>
                     <div class="form-group">
                         <input type="hidden" value="{{ $selforder_business->id }}" name="selforder_business_id_info">
                         <input type="hidden" value="{{ $customers->id }}" name="customer_id_info">
@@ -26,12 +26,12 @@
                             <tr>
 
                                 <td style="width: 30%; text-align: left; padding: 10px 10px 10px 10px; border-top: 1px solid #d9d7e0; white-space: nowrap; vertical-align: top; font-size: 10px;">
-                                    Customer Information
+                                    Informasi Pelanggan
                                 </td>
                                 <td style="width: 70%; margin: 10px 0px 10px 10px; border-top: 1px solid #d9d7e0; font-size: 10px;">
                                     <div style="font-weight: bold">{{ $customers->customer_name }}</div>
                                     <div>Email: {{ $customers->customer_email }}</div>
-                                    <div>Phone: {{ $customers->customer_phone }}</div>
+                                    <div>Telepon: {{ $customers->customer_phone }}</div>
 
                                 </td>
                             </tr>
@@ -46,9 +46,9 @@
                         <thead class="thead-default">
                             <tr class="text-center">
                                 <th class="align-middle"></th>
-                                <th class="align-middle">Product</th>
-                                <th class="align-middle">Price</th>
-                                <th class="align-middle">Quantity</th>
+                                <th class="align-middle">Produk</th>
+                                <th class="align-middle">Harga</th>
+                                <th class="align-middle">Jumlah</th>
                                 <th class="align-middle"></th>
                             </tr>
                         </thead>
@@ -84,7 +84,7 @@
                             <tr>
                                 <td colspan="8" class="text-center">
                                     <span class="text-danger">
-                                        Please search & select products!
+                                        Silahkan cari & Pilih Produk
                                     </span>
                                 </td>
                             </tr>
@@ -99,12 +99,12 @@
                 <div class="col-md-12">
                     <div class="table-responsive">
                         <table class="table table-striped">
-                            <tr>
-                                <th>Discount ({{ $global_discount }}%)</th>
+                            {{-- <tr>
+                                <th>Diskon ({{ $global_discount }}%)</th>
                                 <td>(-) {{ format_currency(Cart::instance($cart_instance)->discount()) }}</td>
-                            </tr>
+                            </tr> --}}
                             <tr class="text-primary">
-                                <th>Grand Total</th>
+                                <th>Total Keseluruhan</th>
                                 @php
                                     $total_with_shipping = Cart::instance($cart_instance)->total() + (float) $shipping
                                 @endphp
@@ -119,23 +119,23 @@
 
             <div class="form-group d-flex justify-content-center flex-wrap mb-0">
                 <button wire:click="resetCart" type="button" class="btn btn-pill btn-danger mr-3"><i class="bi bi-x"></i> Reset</button>
-                <button wire:loading.attr="disabled" wire:click="proceed({{ $total_with_shipping }})" type="button" class="btn btn-pill btn-primary" {{  $total_amount == 0 ? 'disabled' : '' }}><i class="bi bi-check"></i> Proceed</button>
+                <button wire:loading.attr="disabled" wire:click="proceed({{ $total_with_shipping }})" type="button" class="btn btn-pill btn-primary" {{  $total_amount == 0 ? 'disabled' : '' }}><i class="bi bi-check"></i> Lanjutkan</button>
             </div>
 
             <div class="modal fade" id="applyAction" tabindex="-1" role="dialog" aria-labelledby="lbl_payment_action" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="lbl_payment_action">Please fill Destination Phone Number</h5>
+                            <h5 class="modal-title" id="lbl_payment_action">Silakan isi Nomor tujuan</h5>
                         </div>
                         <div class="modal-body">
                             <div class="table-responsive" id="table-wrapper">
                                 <table  class="table table-bordered table-hover">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th style="width: 40%;">Phone Number</th>
-                                            <th class="w-auto">Product Name</th>
-                                            <th style="width: 20%;">Action</th>
+                                            <th style="width: 40%;">Nomor Telepon</th>
+                                            <th class="w-auto">Nama Produk</th>
+                                            <th style="width: 20%;">Tindakan</th>
                                         </tr>
                                     </thead>
                                     <tbody id="actiondata">
@@ -151,7 +151,7 @@
                                                 <div class="d-flex align-items-center">
                                                 <button type="button" class="btn btn-primary"  id="generate_button_{{ $itemAction['action_id'] }}"
                                                     onclick="generatePhone('{{ $itemAction['action_id'] }}', '{{ $itemAction['product_name'] }}')">
-                                                    <i class="bi bi-phone"></i> Apply
+                                                    <i class="bi bi-phone"></i> Terapkan
                                                 </button>
 
                                             </div>
@@ -164,9 +164,9 @@
                         </div>
                         <div class="modal-footer">
                             <button id='proccedaction' type="button" class="btn btn-primary" hidden>
-                                Procced
+                                Lanjutkan
                             </button>
-                            <button type="button" class="btn btn-secondary" id="closeModalAction" name="closeModalAction" >Close</button>
+                            <button type="button" class="btn btn-secondary" id="closeModalAction" name="closeModalAction" >Tutup</button>
                          </div>
                     </div>
                 </div>

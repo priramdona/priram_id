@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'list' => [
+        'error' => [
+            'title' => 'Menunggu Pembayaran',
+            'text' => 'Tidak dapat proses sementara menunggu pembayaran'
+        ]
+        ],
     'home' => 'Beranda',
     'selforders' => 'Daftar Pesanan Mandiri',
     'process' => [

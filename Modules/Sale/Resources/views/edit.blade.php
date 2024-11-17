@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Sale')
+@section('title', __('sales.edit.title.edit'))
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('sales.index') }}">Sales</a></li>
-        <li class="breadcrumb-item active">Edit</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('sales.edit.breadcrumb.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('sales.index') }}">{{ __('sales.edit.breadcrumb.sales') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('sales.edit.breadcrumb.edit') }}</li>
     </ol>
 @endsection
 
@@ -29,16 +29,16 @@
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="reference">Reference <span class="text-danger">*</span></label>
+                                        <label for="reference">{{ __('sales.edit.form.reference') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="reference" required value="{{ $sale->reference }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="customer_id">Customer</span></label>
+                                            <label for="customer_id">{{ __('sales.edit.form.customer') }}</label>
                                             <select class="form-control" name="customer_id" id="customer_id">
-                                                <option value="">Not Registered</option>
+                                                <option value="">{{ __('sales.edit.form.not_registered') }}</option>
                                                 @foreach(\Modules\People\Entities\Customer::where('business_id', auth::user()->business_id)->get() as $customer)
                                                     <option {{ $sale->customer_id == $customer->id ? 'selected' : '' }} value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                                                 @endforeach
@@ -49,7 +49,7 @@
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="date">Date <span class="text-danger">*</span></label>
+                                            <label for="date">{{ __('sales.edit.form.date') }} <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control" name="date" required value="{{ $sale->date }}">
                                         </div>
                                     </div>
@@ -61,38 +61,38 @@
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="status">Status <span class="text-danger">*</span></label>
+                                        <label for="status">{{ __('sales.edit.form.status.label') }} <span class="text-danger">*</span></label>
                                         <select class="form-control" name="status" id="status" required>
-                                            <option {{ $sale->status == 'Pending' ? 'selected' : '' }} value="Pending">Pending</option>
-                                            <option {{ $sale->status == 'Shipped' ? 'selected' : '' }} value="Shipped">Shipped</option>
-                                            <option {{ $sale->status == 'Completed' ? 'selected' : '' }} value="Completed">Completed</option>
+                                            <option {{ $sale->status == 'Pending' ? 'selected' : '' }} value="Pending">{{ __('sales.edit.form.status.pending') }}</option>
+                                            <option {{ $sale->status == 'Shipped' ? 'selected' : '' }} value="Shipped">{{ __('sales.edit.form.status.shipped') }}</option>
+                                            <option {{ $sale->status == 'Completed' ? 'selected' : '' }} value="Completed">{{ __('sales.edit.form.status.completed') }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
+                                            <label for="payment_method">{{ __('sales.edit.form.payment_method') }} <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" name="payment_method" required value="{{ $sale->payment_method }}" readonly>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="paid_amount">Amount Received <span class="text-danger">*</span></label>
+                                        <label for="paid_amount">{{ __('sales.edit.form.amount_received') }} <span class="text-danger">*</span></label>
                                         <input id="paid_amount" type="text" class="form-control" name="paid_amount" required value="{{ $sale->paid_amount }}" readonly>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="note">Note (If Needed)</label>
+                                <label for="note">{{ __('sales.edit.form.note') }}</label>
                                 <textarea name="note" id="note" rows="5" class="form-control">{{ $sale->note }}</textarea>
                             </div>
 
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary">
-                                    Update Sale <i class="bi bi-check"></i>
+                                    {{ __('sales.edit.form.update') }} <i class="bi bi-check"></i>
                                 </button>
                             </div>
                         </form>

@@ -53,17 +53,7 @@
             margin-top: 20px;
         }
 
-            /* Untuk Chrome, Safari, Edge, dan Opera */
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
 
-        /* Untuk Firefox */
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
     </style>
 
     <!-- Masukkan QuaggaJS dari CDN -->
@@ -79,12 +69,7 @@
     {{-- @include('layouts.sidebar') --}}
 
     <div class="c-wrapper">
-        <header class="c-header c-header-light c-header-fixed">
-            {{-- @include('layouts.header') --}}
-            <div class="c-subheader justify-content-between px-3">
-                @yield('breadcrumb')
-            </div>
-        </header>
+
 
         <div class="c-body">
             <main class="c-main">

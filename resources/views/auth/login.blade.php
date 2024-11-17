@@ -13,13 +13,27 @@
     <link rel="stylesheet" href="{{ mix('css/app.css') }}" crossorigin="anonymous">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+     <!-- Tambahkan styling untuk garis pembatas -->
+     <style>
+              /* Untuk Chrome, Safari, Edge, dan Opera */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Untuk Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
 </head>
 
 <body class="c-app flex-row align-items-center">
 <div class="container">
     <div class="row mb-3">
         <div class="col-12 d-flex justify-content-center">
-            <img width="200" src="{{ asset('images/logo-dark.png') }}" alt="Logo">
+            <img width="150" src="{{ asset('images/logo-dark.png') }}" alt="Logo">
         </div>
     </div>
     <div class="row justify-content-center">
@@ -34,7 +48,7 @@
                     <form id="login" method="post" action="{{ url('/login') }}">
                         @csrf
                         <h1>Login</h1>
-                        <p class="text-muted">Sign In to your account</p>
+                        <p class="text-muted">Masuk ke akun Anda</p>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -43,7 +57,7 @@
                             </div>
                             <input id="phone_number" type="number" class="form-control @error('phone_number') is-invalid @enderror"
                                    name="phone_number" value="{{ old('phone_number') }}"
-                                   placeholder="Phone Number">
+                                   placeholder="Nomor Telepon">
                             @error('phone_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -56,16 +70,20 @@
                             </div>
                             <input id="password" type="password"
                                    class="form-control @error('password') is-invalid @enderror"
-                                   placeholder="Password" name="password">
+                                   placeholder="Kata Sandi" name="password">
+                                <span class="input-group-text" onclick="togglePassword('password', this)">
+                                    <i class="bi bi-eye"></i>
+                                </span>
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="row">
+
                             <div class="col-4">
                                 <button id="submit" class="btn btn-primary px-4 d-flex align-items-center"
                                         type="submit">
-                                    Login
+                                    Masuk
                                     <div id="spinner" class="spinner-border text-info" role="status"
                                          style="height: 20px;width: 20px;margin-left: 5px;display: none;">
                                         <span class="sr-only">Loading...</span>
@@ -74,12 +92,15 @@
                             </div>
                             <div class="col-8 text-right">
                                 <a class="btn btn-link px-0" href="{{ route('register') }}">
-                                    Register
+                                    Daftar
                                 </a>
                             </div>
-                            <div class="col-8 text-right">
+
+                        </div>
+                        <div class="row text-center align-items-center">
+                            <div class="col-8 mx-auto">
                                 <a class="btn btn-link px-0" href="{{ route('password.request') }}">
-                                    Forgot password?
+                                    Lupa Password?
                                 </a>
                             </div>
                         </div>
@@ -93,10 +114,6 @@
                 <a href="{{ route('privacy.policy') }}" target="_blank">Kebijakan Privasi</a> kami.
             </p>
 
-            <p class="text-center mt-5 lead">
-                Developed By
-                <a href="priram.id" class="font-weight-bold text-primary">Utama Yaksa Mandiri</a>
-            </p>
         </div>
     </div>
 </div>
@@ -127,6 +144,22 @@
 
         spinner.style.display = 'none';
     }, 3000);
+
+
+    function togglePassword(fieldId, toggleIcon) {
+        const passwordField = document.getElementById(fieldId);
+        const icon = toggleIcon.querySelector('i');
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
 </script>
 
 </body>

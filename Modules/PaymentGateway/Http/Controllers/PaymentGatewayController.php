@@ -82,7 +82,7 @@ class PaymentGatewayController extends Controller
         float $transactionAmount,
         string $notes)
     {
-        Configuration::setXenditKey(env('XENDIT_KEY'));
+        Configuration::setXenditKey(config('services.xendit.key'));
         $idTransaction = str::orderedUuid()->toString();
         $reffPayment =  $idTransaction . '-' . Carbon::now()->format('Ymdss');
 
@@ -187,7 +187,7 @@ class PaymentGatewayController extends Controller
 
     )
     {
-        $base64 = base64_encode(env('XENDIT_KEY').':');
+        $base64 = base64_encode(config('services.xendit.key').':');
         $secret_key = 'Basic ' . $base64;
 
         if (blank($businessId)){
@@ -254,7 +254,7 @@ class PaymentGatewayController extends Controller
         string $description,
         ){
 
-            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $base64 = base64_encode(config('services.xendit.key').':');
         $secret_key = 'Basic ' . $base64;
 
         try {
@@ -313,7 +313,7 @@ class PaymentGatewayController extends Controller
         ?string $businessId = null,
 
     ){
-        Configuration::setXenditKey(env('XENDIT_KEY'));
+        Configuration::setXenditKey(config('services.xendit.key'));
         $apiInstance = new InvoiceApi();
         $forUserId = null;
         $amount = 0;
@@ -514,7 +514,7 @@ class PaymentGatewayController extends Controller
     }
     public function createInvoiceRequestSample(){
 
-        Configuration::setXenditKey(env('XENDIT_KEY'));
+        Configuration::setXenditKey(config('services.xendit.key'));
 
         $apiInstance = new InvoiceApi();
         $payloadCreateInvoice = [
@@ -629,7 +629,7 @@ class PaymentGatewayController extends Controller
 
             $createPaymentTransactionalType = XenditPaylaterRequest::class;
             $createPaymentTransactionalId = null;
-            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $base64 = base64_encode(config('services.xendit.key').':');
             $secret_key = 'Basic ' . $base64;
             $url = 'https://api.xendit.co/paylater/charges';
 
@@ -731,7 +731,7 @@ class PaymentGatewayController extends Controller
             $customerData = Customer::find($customerId);
             $additionalAmount = 0;
             $idTransaction = str::orderedUuid()->toString();
-            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $base64 = base64_encode(config('services.xendit.key').':');
             $secret_key = 'Basic ' . $base64;
             $url = 'https://api.xendit.co/paylater/plans';
             $orderedItems = [];
@@ -874,7 +874,7 @@ class PaymentGatewayController extends Controller
         string $postalCode,
         string $description,
         ){
-        Configuration::setXenditKey(env('XENDIT_KEY'));
+        Configuration::setXenditKey(config('services.xendit.key'));
         $apiInstance = new CustomerApi();
         $idempotency_key = 'cust' . rand(1,10000) . Carbon::now()->format('Ymmddss');
         $forUserId = null;
@@ -930,7 +930,7 @@ class PaymentGatewayController extends Controller
         string $description,
         ?string $businessId = null
         ){
-        Configuration::setXenditKey(env('XENDIT_KEY'));
+        Configuration::setXenditKey(config('services.xendit.key'));
         $apiInstance = new CustomerApi();
         $idempotency_key = 'cust' . rand(1,10000) . Carbon::now()->format('Ymmddss');
         $forUserId = null;
@@ -988,7 +988,7 @@ class PaymentGatewayController extends Controller
         float $saleAmount,
         ){
 
-            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $base64 = base64_encode(config('services.xendit.key').':');
             $secret_key = 'Basic ' . $base64;
             $url = 'https://api.xendit.co/qr_codes';
 
@@ -1065,7 +1065,7 @@ class PaymentGatewayController extends Controller
         ?string $businessId = null
         ){
 
-            $base64 = base64_encode(env('XENDIT_KEY').':');
+            $base64 = base64_encode(config('services.xendit.key').':');
             $secret_key = 'Basic ' . $base64;
             $url = 'https://api.xendit.co/callback_virtual_accounts';
 
@@ -1172,7 +1172,7 @@ class PaymentGatewayController extends Controller
                                         ?array $metadata = null,
                                         ?string $transactionalId = null){
 
-        Configuration::setXenditKey(env('XENDIT_KEY'));
+        Configuration::setXenditKey(config('services.xendit.key'));
         $apiInstance = new PaymentRequestApi();
         $idempotency_key = rand(1,10000) . Carbon::now()->format('Ymmddss');
         $paymentMethod = null;
@@ -1399,10 +1399,10 @@ class PaymentGatewayController extends Controller
 
     public function showBalanceBackup($forUserId = null){
         $apiInstance = new PaymentMethodApi();
-        Configuration::setXenditKey(env('XENDIT_KEY'));
+        Configuration::setXenditKey(config('services.xendit.key'));
 
         $customerId = '66fad06d0abd34c4121e089c';
-        $apiKey = env('XENDIT_KEY');
+        $apiKey = config('services.xendit.key');
 
         Configuration::setXenditKey($apiKey);
 
@@ -1430,7 +1430,7 @@ class PaymentGatewayController extends Controller
     {
 
 
-        Configuration::setXenditKey(env('XENDIT_KEY'));
+        Configuration::setXenditKey(config('services.xendit.key'));
 
         $apiInstance = new PaymentMethodApi();
         $for_user_id = "5f9a3fbd571a1c4068aa40cf"; // string

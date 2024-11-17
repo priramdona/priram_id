@@ -8,4 +8,4 @@
     <div style="background-image: url(https://picsum.photos/seed/picsum/1920/1080);" class="absolute pin bg-no-repeat md:bg-left lg:bg-center bg-cover"></div>
 @endsection
 
-@section('message', __('Something went wrong. Call the dev!!!'))
+@section('message', __('Ada yang tidak beres, Hubungi kontak kami!!!'))

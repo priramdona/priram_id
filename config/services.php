@@ -29,5 +29,8 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-
+    'xendit' => [
+        'key' => "xnd_development_kUV1T0HvdsGIZjjCB44UAZbf3y0uWdsiljJj8waKePO6Be3OYFsushKpNJHtujZB",
+        'public_key' => 'xnd_public_development_MH_989vykBMlxR6b45ZcoljKGwRxSQS7XxVzR38aw8bJBtcF5Mm79PuP0LBqmh5'
+    ],
 ];

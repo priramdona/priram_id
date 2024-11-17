@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'list' => [
+        'error' => [
+            'title' => 'Payment Waiting',
+            'text' => 'Cannot Process while Payment is Waiting...'
+        ]
+        ],
     'home' => 'Home',
     'selforders' => 'Self Orders',
     'process' => [

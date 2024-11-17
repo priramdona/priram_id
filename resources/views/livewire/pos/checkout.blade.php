@@ -14,7 +14,7 @@
                 @endif
 
                 <div class="form-group">
-                    <label for="customer_id">Customer</label>
+                    <label for="customer_id">{{ __('checkout.customer.label') }}</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <a href="{{ route('customers.create') }}" class="btn btn-primary">
@@ -22,7 +22,7 @@
                             </a>
                         </div>
                         <select wire:model.live="customer_id" id="customer_id" class="form-control">
-                            <option value="" selected>Not Registered</option>
+                            <option value="" selected>{{ __('checkout.customer.not_registered') }}</option>
                             @foreach($customers as $customer)
                                 <option value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                             @endforeach
@@ -36,10 +36,10 @@
                     {{-- <table class="table table-bordered table-hover table-sm">
                         <thead> --}}
                             <tr class="text-center">
-                                <th class="align-middle">Product</th>
-                                <th class="align-middle">Price</th>
-                                <th class="align-middle">Quantity</th>
-                                <th class="align-middle">Action</th>
+                                <th class="align-middle">{{ __('checkout.cart.table.product') }}</th>
+                                <th class="align-middle">{{ __('checkout.cart.table.price') }}</th>
+                                <th class="align-middle">{{ __('checkout.cart.table.quantity') }}</th>
+                                <th class="align-middle">{{ __('checkout.cart.table.action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,7 +70,7 @@
                             <tr>
                                 <td colspan="8" class="text-center">
                                     <span class="text-danger">
-                                        Please search & select products!
+                                        {{ __('checkout.cart.empty_message') }}
                                     </span>
                                 </td>
                             </tr>
@@ -86,20 +86,20 @@
                     <div class="table-responsive">
                         <table class="table table-striped">
                             {{-- <tr>
-                                <th>Order Tax ({{ $global_tax }}%)</th>
+                                <th>{{ __('checkout.summary.tax') }} ({{ $global_tax }}%)</th>
                                 <td>(+) {{ format_currency(Cart::instance($cart_instance)->tax()) }}</td>
                             </tr> --}}
                             <tr>
-                                <th>Discount ({{ $global_discount }}%)</th>
+                                <th>{{ __('checkout.summary.discount') }} ({{ $global_discount }}%)</th>
                                 <td>(-) {{ format_currency(Cart::instance($cart_instance)->discount()) }}</td>
                             </tr>
                             {{-- <tr>
-                                <th>Shipping</th>
+                                <th>{{ __('checkout.summary.shipping') }}</th>
                                 <input type="hidden" value="{{ $shipping }}" name="shipping_amount">
                                 <td>(+) {{ format_currency($shipping) }}</td>
                             </tr> --}}
                             <tr class="text-primary">
-                                <th>Grand Total</th>
+                                <th>{{ __('checkout.summary.grand_total') }}</th>
                                 @php
                                     $total_with_shipping = Cart::instance($cart_instance)->total() + (float) $shipping
                                 @endphp
@@ -121,7 +121,7 @@
                 </div> --}}
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <label for="discount_percentage">Discount (%)</label>
+                        <label for="discount_percentage">{{ __('checkout.summary.discount') }} (%)</label>
                         <input wire:model.blur="global_discount" onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }
                         const newValue = parseFloat(this.value + event.key);
                                 if (newValue > 100 || (newValue < 0 && this.value.length > 0)) {
@@ -139,24 +139,24 @@
             </div>
 
             <div class="form-group d-flex justify-content-center flex-wrap mb-0">
-                <button wire:click="resetCart" type="button" class="btn btn-pill btn-danger mr-3"><i class="bi bi-x"></i> Reset</button>
-                <button wire:loading.attr="disabled" wire:click="proceed({{ $total_with_shipping }})" type="button" class="btn btn-pill btn-primary" {{  $total_amount == 0 ? 'disabled' : '' }}><i class="bi bi-check"></i> Proceed</button>
+                <button wire:click="resetCart" type="button" class="btn btn-pill btn-danger mr-3"><i class="bi bi-x"></i> {{ __('checkout.buttons.reset') }}</button>
+                <button wire:loading.attr="disabled" wire:click="proceed({{ $total_with_shipping }})" type="button" class="btn btn-pill btn-primary" {{  $total_amount == 0 ? 'disabled' : '' }}><i class="bi bi-check"></i> {{ __('checkout.buttons.proceed') }}</button>
             </div>
 
             <div class="modal fade" id="applyAction" tabindex="-1" role="dialog" aria-labelledby="lbl_payment_action" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="lbl_payment_action">Please fill Destination Phone Number</h5>
+                            <h5 class="modal-title" id="lbl_payment_action">{{ __('checkout.payment.title') }}</h5>
                         </div>
                         <div class="modal-body">
                             <div class="table-responsive" id="table-wrapper">
                                 <table  class="table table-bordered table-hover">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th style="width: 40%;">Phone Number</th>
-                                            <th class="w-auto">Product Name</th>
-                                            <th style="width: 20%;">Action</th>
+                                            <th style="width: 40%;">{{ __('checkout.payment.table.phone') }}</th>
+                                            <th class="w-auto">{{ __('checkout.payment.table.product') }}</th>
+                                            <th style="width: 20%;">{{ __('checkout.payment.table.action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody id="actiondata">
@@ -175,7 +175,7 @@
                                                 <!-- Tombol Generate memanggil JavaScript untuk mengambil nilai phone_number dan mengirim ke Livewire -->
                                                 <button type="button" class="btn btn-primary"  id="generate_button_{{ $itemAction['action_id'] }}"
                                                     onclick="generatePhone('{{ $itemAction['action_id'] }}', '{{ $itemAction['product_name'] }}')">
-                                                    <i class="bi bi-phone"></i> Apply
+                                                    <i class="bi bi-phone"></i> {{ __('checkout.payment.buttons.apply') }}
                                                 </button>
                                                        <!-- Tombol Remove -->
                                                 {{-- <button type="button" class="btn btn-danger"
@@ -192,9 +192,9 @@
                         </div>
                         <div class="modal-footer">
                             <button id='proccedaction' type="button" class="btn btn-primary" hidden>
-                                Procced
+                                {{ __('checkout.payment.buttons.proceed') }}
                             </button>
-                            <button type="button" class="btn btn-secondary" id="closeModalAction" name="closeModalAction" >Close</button>
+                            <button type="button" class="btn btn-secondary" id="closeModalAction" name="closeModalAction" >{{ __('checkout.payment.buttons.close') }}</button>
                          </div>
                     </div>
                 </div>

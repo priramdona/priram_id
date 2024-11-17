@@ -70,38 +70,38 @@
                     <div class="card-body">
                         <div class="row mb-4">
                             <div class="col-sm-4 mb-3 mb-md-0">
-                                <h5 class="mb-2 border-bottom pb-2">Company Info:</h5>
+                                <h5 class="mb-2 border-bottom pb-2">Info Usaha:</h5>
                                 <div><strong>{{ settings()->company_name }}</strong></div>
                                 <div>{{ settings()->company_address }}</div>
                                 <div>Email: {{ settings()->company_email }}</div>
-                                <div>Phone: {{ settings()->company_phone }}</div>
+                                <div>Telepon: {{ settings()->company_phone }}</div>
                             </div>
                             @if($customer)
                             <div class="col-sm-4 mb-3 mb-md-0">
-                                <h5 class="mb-2 border-bottom pb-2">Customer Info:</h5>
+                                <h5 class="mb-2 border-bottom pb-2">Info Pelanggan:</h5>
                                 <div><strong>{{ $customer->customer_name }}</strong></div>
                                 <div>{{ $customer->address }}</div>
                                 <div>Email: {{ $customer->customer_email }}</div>
-                                <div>Phone: {{ $customer->customer_phone }}</div>
+                                <div>Telepon: {{ $customer->customer_phone }}</div>
                             </div>
                             @else
                             <div class="col-sm-4 mb-3 mb-md-0">
-                                <h5 class="mb-2 border-bottom pb-2">Customer Info:</h5>
-                                <div><strong>Not Registered</strong></div>
+                                <h5 class="mb-2 border-bottom pb-2">Info Pelanggan:</h5>
+                                <div><strong>Tidak Terdaftar</strong></div>
                                 <div>-</div>
                                 <div>Email: -</div>
-                                <div>Phone: -</div>
+                                <div>Telepon: -</div>
                             </div>
                             @endif
                             <div class="col-sm-4 mb-3 mb-md-0">
-                                <h5 class="mb-2 border-bottom pb-2">Invoice Info:</h5>
-                                <div>Invoice: <strong>INV/{{ $sale->reference }}</strong></div>
-                                <div>Date: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}</div>
+                                <h5 class="mb-2 border-bottom pb-2">Info Faktur:</h5>
+                                <div>Faktur: <strong>INV/{{ $sale->reference }}</strong></div>
+                                <div>Tanggal: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}</div>
                                 <div>
                                     Status: <strong>{{ $sale->status }}</strong>
                                 </div>
                                 <div>
-                                    Payment Status: <strong>{{ $sale->payment_status }}</strong>
+                                    Status Pembayaran: <strong>{{ $sale->payment_status }}</strong>
                                 </div>
                             </div>
 
@@ -111,11 +111,11 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th class="align-middle">Product</th>
-                                    <th class="align-middle">Net Unit Price</th>
-                                    <th class="align-middle">Quantity</th>
-                                    <th class="align-middle">Discount</th>
-                                    <th class="align-middle">Tax</th>
+                                    <th class="align-middle">Produk</th>
+                                    <th class="align-middle">Harga unit</th>
+                                    <th class="align-middle">Jumlah</th>
+                                    <th class="align-middle">Diskon</th>
+                                    <th class="align-middle">Pajak</th>
                                     <th class="align-middle">Sub Total</th>
                                 </tr>
                                 </thead>
@@ -157,19 +157,19 @@
                                     <tbody>
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>Discount ({{ $sale->discount_percentage }}%)</strong></td>
+                                        <td class="left"><strong>Diskon ({{ $sale->discount_percentage }}%)</strong></td>
                                         <td class="right">{{ format_currency($sale->discount_amount) }}</td>
                                     </tr>
                                     @endif
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>Tax ({{ $sale->tax_percentage }}%)</strong></td>
+                                        <td class="left"><strong>Pajak ({{ $sale->tax_percentage }}%)</strong></td>
                                         <td class="right">{{ format_currency($sale->tax_amount) }}</td>
                                     </tr>
                                     @endif
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>Shipping</strong></td>
+                                        <td class="left"><strong>Pengiriman</strong></td>
                                         <td class="right">{{ format_currency($sale->shipping_amount) }}</td>
                                     </tr>
                                     @endif
@@ -179,11 +179,11 @@
                                     </tr>
                                     {{-- @if ($sale->additional_paid_amount > 0) --}}
                                     <tr>
-                                        <td class="left">Additional Amount</></td>
+                                        <td class="left">Biaya tambahan</td>
                                         <td class="right">{{ format_currency($sale->additional_paid_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>Grand Total</strong></td>
+                                        <td class="left"><strong>Total Keseluruhan</strong></td>
                                         <td class="right"><strong>{{ format_currency($sale->total_paid_amount) }}</strong></td>
                                     </tr>
                                     {{-- @endif --}}

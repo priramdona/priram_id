@@ -4,10 +4,10 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('sales.index') }}">Sales</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('sales.breadcrumb.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('sales.index') }}">{{ __('sales.breadcrumb.sales') }}</a></li>
         <li class="breadcrumb-item"><a href="{{ route('sales.show', $sale) }}">{{ $sale->reference }}</a></li>
-        <li class="breadcrumb-item active">Edit Payment</li>
+        <li class="breadcrumb-item active">{{ __('sales.breadcrumb.edit_payment') }}</li>
     </ol>
 @endsection
 
@@ -20,7 +20,7 @@
                 <div class="col-lg-12">
                     @include('utils.alerts')
                     <div class="form-group">
-                        <button class="btn btn-primary">Update Payment <i class="bi bi-check"></i></button>
+                        <button class="btn btn-primary">{{ __('sales.add_payments.update_payment') }} <i class="bi bi-check"></i></button>
                     </div>
                 </div>
                 <div class="col-lg-12">
@@ -29,13 +29,13 @@
                             <div class="form-row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label for="reference">Reference <span class="text-danger">*</span></label>
+                                        <label for="reference">{{ __('sales.add_payments.reference') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="reference" required readonly value="{{ $salePayment->reference }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label for="date">Date <span class="text-danger">*</span></label>
+                                        <label for="date">{{ __('sales.add_payments.date') }} <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" name="date" required value="{{ $salePayment->getAttributes()['date'] }}">
                                     </div>
                                 </div>
@@ -44,13 +44,13 @@
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="due_amount">Due Amount <span class="text-danger">*</span></label>
+                                        <label for="due_amount">{{ __('sales.add_payments.due_amount') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="due_amount" required value="{{ format_currency($sale->due_amount) }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="amount">Amount <span class="text-danger">*</span></label>
+                                        <label for="amount">{{ __('sales.add_payments.amount') }} <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input id="amount" type="text" class="form-control" name="amount" required value="{{ old('amount') ?? $salePayment->amount }}">
                                             <div class="input-group-append">
@@ -64,7 +64,7 @@
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
+                                            <label for="payment_method">{{ __('sales.add_payments.payment_method') }} <span class="text-danger">*</span></label>
                                             <select class="form-control" name="payment_method" id="payment_method" required>
                                                 @foreach(\Modules\PaymentMethod\Entities\PaymentMethod::where('is_sale', true)->where('status', true)->get() as $paymentMethod)
                                                     <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
@@ -76,7 +76,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="note">Note</label>
+                                <label for="note">{{ __('sales.add_payments.note') }}</label>
                                 <textarea class="form-control" rows="4" name="note">{{ old('note') ?? $salePayment->note }}</textarea>
                             </div>
 

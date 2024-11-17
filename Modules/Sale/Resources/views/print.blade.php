@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sale Details</title>
+    <title>{{ __('sales.print.title') }}</title>
     <link rel="stylesheet" href="{{ public_path('b3/bootstrap.min.css') }}">
 </head>
 <body>
@@ -15,46 +15,46 @@
             <div style="text-align: center;margin-bottom: 25px;">
                 <img width="180" src="{{ public_path('images/logo-dark.png') }}" alt="Logo">
                 <h4 style="margin-bottom: 20px;">
-                    <span>Reference::</span> <strong>{{ $sale->reference }}</strong>
+                    <span>{{ __('sales.print.reference') }}</span> <strong>{{ $sale->reference }}</strong>
                 </h4>
             </div>
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Company Info:</h4>
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.company') }}</h4>
                             <div><strong>{{ settings()->company_name }}</strong></div>
                             <div>{{ settings()->company_address }}</div>
-                            <div>Email: {{ settings()->company_email }}</div>
-                            <div>Phone: {{ settings()->company_phone }}</div>
+                            <div>{{ __('sales.print.customer.email') }}: {{ settings()->company_email }}</div>
+                            <div>{{ __('sales.print.customer.phone') }}: {{ settings()->company_phone }}</div>
                         </div>
                         @if($customer)
                         <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Customer Info:</h4>
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.customer') }}</h4>
                             <div><strong>{{ $customer->customer_name }}</strong></div>
                             <div>{{ $customer->address }}</div>
-                            <div>Email: {{ $customer->customer_email }}</div>
-                            <div>Phone: {{ $customer->customer_phone }}</div>
+                            <div>{{ __('sales.print.customer.email') }}: {{ $customer->customer_email }}</div>
+                            <div>{{ __('sales.print.customer.phone') }}: {{ $customer->customer_phone }}</div>
                         </div>
                         @else
                         <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Customer Info:</h4>
-                            <div><strong>Not Registered</strong></div>
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.customer') }}</h4>
+                            <div><strong>{{ __('sales.print.customer.not_registered') }}</strong></div>
                             <div>-</div>
-                            <div>Email: -</div>
-                            <div>Phone: -</div>
+                            <div>{{ __('sales.print.customer.email') }}: -</div>
+                            <div>{{ __('sales.print.customer.phone') }}: -</div>
                         </div>
                         @endif
 
                         <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">Invoice Info:</h4>
-                            <div>Invoice: <strong>INV/{{ $sale->reference }}</strong></div>
-                            <div>Date: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}</div>
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.invoice') }}</h4>
+                            <div>{{ __('sales.print.invoice.number') }}: <strong>INV/{{ $sale->reference }}</strong></div>
+                            <div>{{ __('sales.print.invoice.date') }}: <strong>{{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}</strong></div>
                             <div>
-                                Status: <strong>{{ $sale->status }}</strong>
+                                {{ __('sales.print.invoice.status') }}: <strong>{{ $sale->status }}</strong>
                             </div>
                             <div>
-                                Payment Status: <strong>{{ $sale->payment_status }}</strong>
+                                {{ __('sales.print.invoice.payment_status') }}: <strong>{{ $sale->payment_status }}</strong>
                             </div>
                         </div>
 
@@ -64,22 +64,20 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th class="align-middle">Product</th>
-                                <th class="align-middle">Net Unit Price</th>
-                                <th class="align-middle">Quantity</th>
-                                <th class="align-middle">Discount</th>
-                                <th class="align-middle">Tax</th>
-                                <th class="align-middle">Sub Total</th>
+                                <th class="align-middle">{{ __("sales.print.table.product") }}</th>
+                                <th class="align-middle">{{ __("sales.print.table.net_unit_price") }}</th>
+                                <th class="align-middle">{{ __("sales.print.table.quantity") }}</th>
+                                <th class="align-middle">{{ __("sales.print.table.discount") }}</th>
+                                <th class="align-middle">{{ __("sales.print.table.tax") }}</th>
+                                <th class="align-middle">{{ __("sales.print.table.sub_total") }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($sale->saleDetails as $item)
                                 <tr>
                                     <td class="align-middle">
-                                        {{ $item->product_name }} <br>
-                                        <span class="badge badge-success">
-                                                {{ $item->product_code }}
-                                            </span>
+                                        {{ $item->product_name }}<br>
+                                        <strong>{{ $item->product_code }}</strong>
                                     </td>
 
                                     <td class="align-middle">{{ format_currency($item->unit_price) }}</td>
@@ -110,33 +108,33 @@
                                 <tbody>
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>Discount ({{ $sale->discount_percentage }}%)</strong></td>
+                                        <td class="left"><strong>{{ __("sales.show.table.discount") }} ({{ $sale->discount_percentage }}%)</strong></td>
                                         <td class="right">{{ format_currency($sale->discount_amount) }}</td>
                                     </tr>
                                     @endif
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>Tax ({{ $sale->tax_percentage }}%)</strong></td>
+                                        <td class="left"><strong>{{ __("sales.show.table.tax") }} ({{ $sale->tax_percentage }}%)</strong></td>
                                         <td class="right">{{ format_currency($sale->tax_amount) }}</td>
                                     </tr>
                                     @endif
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>Shipping</strong></td>
+                                        <td class="left"><strong>{{ __("sales.show.table.shipping") }}</strong></td>
                                         <td class="right">{{ format_currency($sale->shipping_amount) }}</td>
                                     </tr>
                                     @endif
                                     <tr>
-                                        <td class="left"><strong>Total</strong></td>
+                                        <td class="left"><strong>{{ __("sales.show.table.total") }}</strong></td>
                                         <td class="right"><strong>{{ format_currency($sale->total_amount) }}</strong></td>
                                     </tr>
                                     {{-- @if ($sale->additional_paid_amount > 0) --}}
                                     <tr>
-                                        <td class="left">Additional Amount</></td>
+                                        <td class="left">{{ __("sales.show.table.additional_amount") }}</td>
                                         <td class="right">{{ format_currency($sale->additional_paid_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>Grand Total</strong></td>
+                                        <td class="left"><strong>{{ __("sales.show.table.grand_total") }}</strong></td>
                                         <td class="right"><strong>{{ format_currency($sale->total_paid_amount) }}</strong></td>
                                     </tr>
                                     {{-- @endif --}}
