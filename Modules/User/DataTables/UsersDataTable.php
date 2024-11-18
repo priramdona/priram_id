@@ -61,34 +61,45 @@ class UsersDataTable extends DataTable
             ->orderBy(6)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('user.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('user.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('user.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('user.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('user.datatable'),
+            ]);
     }
 
     protected function getColumns() {
         return [
             Column::computed('image')
+            ->title(__('user.image'))
                 ->className('text-center align-middle'),
 
             Column::make('name')
+            ->title(__('user.name'))
                 ->className('text-center align-middle'),
 
             Column::make('email')
+            ->title(__('user.email'))
                 ->className('text-center align-middle'),
 
             Column::computed('role')
+            ->title(__('user.role'))
                 ->className('text-center align-middle'),
 
             Column::computed('status')
+            ->title(__('user.status'))
                 ->className('text-center align-middle'),
 
             Column::computed('action')
+            ->title(__('user.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->className('text-center align-middle'),

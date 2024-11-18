@@ -42,13 +42,15 @@ class IncomeController extends Controller
         $request->validate([
             'date' => 'required|date',
             'reference' => 'required|string|max:255',
-            'category_id' => 'required',
+            // 'category_id' => 'required',
+            'customer_id' => 'required',
             'amount' => 'required|numeric|max:2147483647',
             'details' => 'nullable|string|max:1000'
         ]);
 
         $income = Income::create([
             'date' => $request->date,
+            'customer_id' => $request->customer_id,
             'category_id' => $request->category_id,
             'amount' => $request->amount,
             'paid_amount' => $request->grand_total,
@@ -143,7 +145,7 @@ class IncomeController extends Controller
         $request->validate([
             'date' => 'required|date',
             'reference' => 'required|string|max:255',
-            'category_id' => 'required',
+            // 'category_id' => 'required',
             'amount' => 'required|numeric|max:2147483647',
             'details' => 'nullable|string|max:1000'
         ]);

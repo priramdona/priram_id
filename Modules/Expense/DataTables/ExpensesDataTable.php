@@ -39,38 +39,48 @@ class ExpensesDataTable extends DataTable
             ->orderBy(6)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('expense.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('expense.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('expense.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('expense.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('expense.datatable'),
+            ]);
     }
 
     protected function getColumns() {
         return [
             Column::make('date')
-                ->className('text-center align-middle'),
+                ->className('text-center align-middle')
+                ->title(__('expense.date')),
 
             Column::make('reference')
-                ->className('text-center align-middle'),
+                ->className('text-center align-middle')
+                ->title(__('expense.reference')),
 
             Column::make('category.category_name')
-                ->title('Category')
+                ->title(__('expense.category'))
                 ->className('text-center align-middle'),
 
             Column::computed('amount')
-                ->className('text-center align-middle'),
+                ->className('text-center align-middle')
+                ->title(__('expense.amount')),
 
             Column::make('details')
-                ->className('text-center align-middle'),
+                ->className('text-center align-middle')
+                ->title(__('expense.details')),
 
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
-                ->className('text-center align-middle'),
+                ->className('text-center align-middle')
+                ->title(__('expense.action')),
 
             Column::make('created_at')
                 ->visible(false)

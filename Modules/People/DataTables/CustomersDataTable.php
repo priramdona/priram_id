@@ -36,28 +36,37 @@ class CustomersDataTable extends DataTable
             ->orderBy(4)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('people.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('people.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('people.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('people.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('people.datatable'),
+            ]);
     }
 
     protected function getColumns() {
         return [
             Column::make('customer_name')
-                ->className('text-center align-middle'),
+                ->className('text-center align-middle')
+                ->title(__('people.customer_name')),
 
             Column::make('customer_email')
-                ->className('text-center align-middle'),
+                ->className('text-center align-middle')
+                ->title(__('people.email')),
 
             Column::make('customer_phone')
-                ->className('text-center align-middle'),
+                ->className('text-center align-middle')
+                ->title(__('people.phone')),
 
             Column::computed('action')
+                ->title(__('people.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->className('text-center align-middle'),

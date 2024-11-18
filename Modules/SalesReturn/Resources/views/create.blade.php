@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Create Sale Return')
+@section('title', __('sales_return.add_sale_return'))
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('sale-returns.index') }}">Sale Returns</a></li>
-        <li class="breadcrumb-item active">Add</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('sales_return.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('sale-returns.index') }}">{{ __('sales_return.sale_returns') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('sales_return.add_sale_return') }}</li>
     </ol>
 @endsection
 
@@ -29,16 +29,16 @@
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="reference">Reference <span class="text-danger">*</span></label>
+                                        <label for="reference">{{ __('sales_return.reference') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="reference" required readonly value="SLRN">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="customer_id">Customer</span></label>
+                                            <label for="customer_id">{{ __('sales_return.customer_info') }}</label>
                                             <select class="form-control" name="customer_id" id="customer_id">
-                                                <option value="">Not Registered</option>
+                                                <option value="">{{ __('sales_return.not_registered') }}</option>
                                                 @foreach(\Modules\People\Entities\Customer::where('business_id',Auth::user()->business_id)->get() as $customer)
                                                     <option value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
                                                 @endforeach
@@ -49,7 +49,7 @@
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="date">Date <span class="text-danger">*</span></label>
+                                            <label for="date">{{ __('sales_return.date') }} <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control" name="date" required value="{{ now()->format('Y-m-d') }}">
                                         </div>
                                     </div>
@@ -61,18 +61,18 @@
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="status">Status <span class="text-danger">*</span></label>
+                                        <label for="status">{{ __('sales_return.status') }} <span class="text-danger">*</span></label>
                                         <select class="form-control" name="status" id="status" required>
-                                            <option value="Pending">Pending</option>
-                                            <option value="Shipped">Shipped</option>
-                                            <option value="Completed">Completed</option>
+                                            <option value="Pending">{{ __('sales_return.pending') }}</option>
+                                            <option value="Shipped">{{ __('sales_return.shipped') }}</option>
+                                            <option value="Completed">{{ __('sales_return.completed') }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="from-group">
                                         <div class="form-group">
-                                            <label for="payment_method">Payment Method <span class="text-danger">*</span></label>
+                                            <label for="payment_method">{{ __('sales_return.payment_method') }} <span class="text-danger">*</span></label>
                                             <select class="form-control" name="payment_method" id="payment_method" required>
 
                                             </select>
@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="paid_amount">Amount Received <span class="text-danger">*</span></label>
+                                        <label for="paid_amount">{{ __('sales_return.paid_amount') }} <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input id="paid_amount" type="text" class="form-control" name="paid_amount" required>
                                             <div class="input-group-append">
@@ -95,13 +95,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="note">Note (If Needed)</label>
+                                <label for="note">{{ __('sales_return.note') }} ({{ __('sales_return.if_needed') }})</label>
                                 <textarea name="note" id="note" rows="5" class="form-control"></textarea>
                             </div>
 
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary">
-                                    Create Sale Return <i class="bi bi-check"></i>
+                                    {{ __('sales_return.add_sale_return') }} <i class="bi bi-check"></i>
                                 </button>
                             </div>
                         </form>
@@ -143,15 +143,13 @@
             success: function(data) {
                 if (data.length > 0) {
                     $("#payment_method").empty();
-                    op = '<option value="" disabled="true" selected="true">-Select-</option>'
+                    op = '<option value="" disabled="true" selected="true">{{ __('sales_return.select') }}</option>'
                     for (var i = 0; i < data.length; i++) {
                         op += '<option value="' + data[i].id + '">' + data[i]
                             .name + '</option>';
                     }
                     $("#payment_method").append(op);
                     $('#payment_method').attr('hidden', false);
-                    $('#payment_method').attr('hidden', false);
-
                 } else {
                     $("#payment_method").empty();
                 }

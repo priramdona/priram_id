@@ -1,10 +1,10 @@
 @can('edit_incomes')
 @if($data->incomePayments->payment_channel_id == null)
-<a href="{{ route('incomes.edit', $data->id) }}" class="btn btn-info btn-sm">
+<a href="{{ route('incomes.edit', $data->id) }}" class="btn btn-info btn-sm" title="{{ __('income.edit') }}">
     <i class="bi bi-pencil"></i>
 </a>
 @else
-<a class="btn btn-danger btn-sm" title="Action Disabled if Payment Online">
+<a class="btn btn-danger btn-sm" title="{{ __('income.action_disabled_payment_online') }}">
     <i class="bi bi-x-circle"></i>
 </a>
 @endif
@@ -13,7 +13,7 @@
 @if($data->incomePayments->payment_channel_id == null)
 <button id="delete" class="btn btn-danger btn-sm" onclick="
     event.preventDefault();
-    if (confirm('Are you sure? It will delete the data permanently!')) {
+    if (confirm('{{ __('income.confirm_delete') }}')) {
     document.getElementById('destroy{{ $data->id }}').submit();
     }
     ">
@@ -24,7 +24,7 @@
     </form>
 </button>
 @else
-<a class="btn btn-danger btn-sm" title="Action Disabled if Payment Online">
+<a class="btn btn-danger btn-sm" title="{{ __('income.action_disabled_payment_online') }}">
     <i class="bi bi-x-circle"></i>
 </a>
 @endif

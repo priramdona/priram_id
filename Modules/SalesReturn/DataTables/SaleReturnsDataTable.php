@@ -51,41 +51,53 @@ class SaleReturnsDataTable extends DataTable
             ->orderBy(8)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('sales_return.datatable.sales_return.buttons.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('sales_return.datatable.sales_return.buttons.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('sales_return.datatable.sales_return.buttons.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('sales_return.datatable.sales_return.buttons.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('sales_return.datatable.sales_return.tools'),
+        ]);
     }
 
     protected function getColumns() {
         return [
             Column::make('reference')
+            ->title(__('sales_return.datatable.sales_return.columns.reference'))
                 ->className('text-center align-middle'),
 
             Column::make('customer_name')
-                ->title('Customer')
+            ->title(__('sales_return.datatable.sales_return.columns.customer'))
                 ->className('text-center align-middle'),
 
             Column::computed('status')
+            ->title(__('sales_return.datatable.sales_return.columns.status'))
                 ->className('text-center align-middle'),
 
             Column::computed('total_amount')
+            ->title(__('sales_return.datatable.sales_return.columns.total_amount'))
                 ->className('text-center align-middle'),
 
             Column::computed('paid_amount')
+            ->title(__('sales_return.datatable.sales_return.columns.paid_amount'))
                 ->className('text-center align-middle'),
 
             Column::computed('due_amount')
+            ->title(__('sales_return.datatable.sales_return.columns.due_amount'))
                 ->className('text-center align-middle'),
 
             Column::computed('payment_status')
+            ->title(__('sales_return.datatable.sales_return.columns.payment_status'))
                 ->className('text-center align-middle'),
 
             Column::computed('action')
+            ->title(__('sales_return.datatable.sales_return.columns.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->className('text-center align-middle'),

@@ -479,7 +479,6 @@
                                                                     $('#input_payment_detail').attr('hidden', false);
                                                                     $('#input_payment_detail_email').text(email);
                                                                     $('#input_payment_detail_wa').text(nomorTelepon);
-
                                                                     $('#name_action_account').text(namaLengkap);
                                                                     $('#exp_action_account').text(response.expired_response);
                                                                     $('#action_account_url').attr('hidden', true);
@@ -589,8 +588,8 @@
                     allowEscapeKey: false,
                     icon: 'error',
                     didOpen: () => {
-                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                    },
+                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                    },
             });
             }
                 });

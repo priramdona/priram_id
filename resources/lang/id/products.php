@@ -7,6 +7,7 @@ return [
         'reset' => 'Reset',
         'reload' => 'Reload',
     ],
+
     'image' => 'Gambar',
     'remove' => 'Hapus',
     'none' => 'Tidak ada',

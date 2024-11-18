@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Customer')
+@section('title', __('people.edit_customer'))
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('customers.index') }}">Customers</a></li>
-        <li class="breadcrumb-item active">Edit</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('people.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('customers.index') }}">{{ __('people.customers') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('people.edit_customer') }}</li>
     </ol>
 @endsection
 
@@ -19,7 +19,7 @@
                 <div class="col-lg-12">
                     @include('utils.alerts')
                     <div class="form-group">
-                        <button class="btn btn-primary">Update Customer <i class="bi bi-check"></i></button>
+                        <button class="btn btn-primary">{{ __('people.update_customer') }} <i class="bi bi-check"></i></button>
                     </div>
                 </div>
                 <div class="col-lg-12">
@@ -28,14 +28,14 @@
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="first_name">First Name <span class="text-danger">*</span></label>
+                                        <label for="first_name">{{ __('people.first_name') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="customer_first_name" value="{{ $customer->customer_first_name }}" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="last_name">Last Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="customer_last_name" value="{{ $customer->customer_last_name }}"  required>
+                                        <label for="last_name">{{ __('people.last_name') }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="customer_last_name" value="{{ $customer->customer_last_name }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -43,35 +43,18 @@
                             <div class="form-row">
                                 <div class="col-lg-2">
                                     <div class="form-group">
-                                        <label for="first_name">Gender <span class="text-danger">*</span></label>
-                                        {{-- <input type="text" class="form-control" name="gender" required> --}}
+                                        <label for="gender">{{ __('people.gender') }} <span class="text-danger">*</span></label>
                                         <select name="gender" id="gender" class="form-control" required>
-                                            @if( $customer->gender == '' )
-                                                <option value="" selected>Select</option>
-                                            @else
-                                                <option value="">Select</option>
-                                            @endif
-
-                                            @if( $customer->gender == 'MALE')
-                                                <option value="MALE" selected>Male</option>
-                                            @else
-                                                <option value="MALE">Male</option>
-                                            @endif
-
-                                            @if( $customer->gender === 'FEMALE')
-                                                <option value="FEMALE" selected>Female</option>
-                                            @else
-                                                <option value="FEMALE">Female</option>
-                                            @endif
-
+                                            <option value="" {{ $customer->gender == '' ? 'selected' : '' }}>{{ __('people.select') }}</option>
+                                            <option value="MALE" {{ $customer->gender == 'MALE' ? 'selected' : '' }}>{{ __('people.male') }}</option>
+                                            <option value="FEMALE" {{ $customer->gender == 'FEMALE' ? 'selected' : '' }}>{{ __('people.female') }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-2">
                                     <div class="form-group">
-                                        <label for="last_name">Date of birth <span class="text-danger">*</span></label>
+                                        <label for="dob">{{ __('people.date_of_birth') }} <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" name="dob" required value="{{ \Carbon\Carbon::parse($customer->dob)->format('Y-m-d') }}">
-
                                     </div>
                                 </div>
                             </div>
@@ -79,14 +62,14 @@
                             <div class="form-row">
                                 <div class="col-lg-5">
                                     <div class="form-group">
-                                        <label for="customer_email">Email <span class="text-danger">*</span></label>
-                                        <input type="email" class="form-control" name="customer_email"  value="{{ $customer->customer_email }}" required>
+                                        <label for="customer_email">{{ __('people.email') }} <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" name="customer_email" value="{{ $customer->customer_email }}" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group">
-                                        <label for="customer_phone">Phone <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="customer_phone"  value="{{ $customer->customer_phone }}" required>
+                                        <label for="customer_phone">{{ __('people.phone') }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="customer_phone" value="{{ $customer->customer_phone }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -94,36 +77,35 @@
                             <div class="form-row">
                                 <div class="col-lg-10">
                                     <div class="form-group">
-                                        <label for="address">Address <span class="text-danger">*</span></label>
+                                        <label for="address">{{ __('people.address') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="address" value="{{ $customer->address }}" required>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="form-row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="city">City <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="city"  value="{{ $customer->city }}" required>
+                                        <label for="city">{{ __('people.city') }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="city" value="{{ $customer->city }}" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="province">Province <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="province" required>
+                                        <label for="province">{{ __('people.province') }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="province" value="{{ $customer->province }}" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-2">
                                     <div class="form-group">
-                                        <label for="postalCode">Postal Code <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="postalCode"  value="{{ $customer->postal_code }}" required>
+                                        <label for="postalCode">{{ __('people.postal_code') }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="postalCode" value="{{ $customer->postal_code }}" required>
                                     </div>
                                 </div>
-                                    <div class="form-group" hidden>
-                                        <label for="country">Country <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="country"  value="{{ $customer->country }}" required>
-                                    </div>
+                                <div class="form-group" hidden>
+                                    <label for="country">{{ __('people.country') }} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="country" value="{{ $customer->country }}" required>
+                                </div>
                             </div>
 
                         </div>

@@ -196,16 +196,9 @@ return [
                 'columns' => [
                     'date' => 'Tanggal',
                     'reference' => 'Referensi',
-                    'customer_name' => 'Nama Pelanggan',
-                    'amount' => 'Jumlah',
+                    'amount' => 'Nominal',
                     'payment_method' => 'Metode Pembayaran',
                     'action' => 'Tindakan',
-                    'customer' => 'Pelanggan',
-                    'status' => 'Status',
-                    'total_amount' => 'Total',
-                    'paid_amount' => 'Dibayar',
-                    'due_amount' => 'Sisa',
-                    'payment_status' => 'Status Pembayaran',
                 ],
                 'buttons' => [
                     'excel' => 'Excel',

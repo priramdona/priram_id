@@ -4,7 +4,7 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item active">{{ __('home.breadcrumb') }}</li>
+        <li class="breadcrumb-item active">{{ __('payment_gateway.withdrawal') }}</li>
     </ol>
 @endsection
 
@@ -19,7 +19,7 @@
                         </div>
                         <div>
                             <div class="text-value text-primary" style="font-weight: bold; font-size: 20px;">{{ format_currency($balance) }}</div>
-                            <div class="text-muted text-uppercase font-weight-bold large">{{ __('home.balance') }}</div>
+                            <div class="text-muted text-uppercase font-weight-bold large">{{ __('payment_gateway.saldo') }}</div>
                         </div>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
             @include('utils.alerts')
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Withdraw Balance</h5>
+                    <h5 class="mb-0">{{ __('payment_gateway.withdraw_balance') }}</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('financial.management.withdraw.process') }}" method="POST">
@@ -40,19 +40,19 @@
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label name="label_transaction_amount" id="label_transaction_amount" for="transaction_amount">Amount<span class="text-danger"> Minimum Rp. 10.000,-</span><span class="text-info"> (Admin fee Rp. 3.000)</span></label>
+                                    <label name="label_transaction_amount" id="label_transaction_amount" for="transaction_amount">{{ __('payment_gateway.transaction_amount') }}<span class="text-danger"> {{ __('payment_gateway.minimum_amount') }}</span><span class="text-info"> ({{ __('payment_gateway.admin_fee') }})</span></label>
 
                                      <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
-                                    type="number" class="form-control" name="transaction_amount"id="transaction_amount"  value="" required>
+                                    type="number" class="form-control" name="transaction_amount" id="transaction_amount" value="" required>
                                 </div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="disbursement_method">Method<span class="text-danger">*</span></label>
+                                    <label for="disbursement_method">{{ __('payment_gateway.method') }}<span class="text-danger">*</span></label>
                                     <select name="disbursement_method" id="disbursement_method" class="form-control" required>
-                                        <option value="" selected disabled>Select</option>
+                                        <option value="" selected disabled>{{ __('payment_gateway.select') }}</option>
                                         @foreach(\Modules\PaymentGateway\Entities\XenditDisbursementMethod::where('status',true)->get() as $disbursement_method)
                                             <option value="{{ $disbursement_method->id }}">{{ $disbursement_method->name }}</option>
                                         @endforeach
@@ -63,9 +63,9 @@
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label name="label_disbursement_channel" id="label_disbursement_channel"  for="disbursement_channel">Bank<span class="text-danger">*</span></label>
+                                    <label name="label_disbursement_channel" id="label_disbursement_channel" for="disbursement_channel">{{ __('payment_gateway.bank') }}<span class="text-danger">*</span></label>
                                     <select name="disbursement_channel" id="disbursement_channel" class="form-control" required>
-                                        <option value="" selected disabled>Select Channel</option>
+                                        <option value="" selected disabled>{{ __('payment_gateway.select_channel') }}</option>
                                         <!-- Options akan diisi berdasarkan pilihan disbursement_method -->
                                     </select>
                                 </div>
@@ -74,8 +74,8 @@
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="account_name">Account Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="account_name"id="account_name"  value="" required>
+                                    <label for="account_name">{{ __('payment_gateway.account_name') }} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="account_name" id="account_name" value="" required>
                                 </div>
                             </div>
                         </div>
@@ -83,25 +83,23 @@
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label name="label_account_number" id="label_account_number" for="account_number">Account Number <span class="text-danger">*</span></label>
+                                    <label name="label_account_number" id="label_account_number" for="account_number">{{ __('payment_gateway.account_number') }} <span class="text-danger">*</span></label>
                                     <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
-                                    type="number" class="form-control" name="account_number"id="account_number"  value="" required>
+                                    type="number" class="form-control" name="account_number" id="account_number" value="" required>
                                 </div>
                             </div>
                         </div>
 
-
                         <div class="form-row">
                             <div class="col-lg-4">
                                 <div class="form-group">
+                                    <label name="label_transaction_info" id="label_transaction_info" for="transaction_info">{{ __('payment_gateway.requested_amount') }} : </label>
+                                    <label class="text-info font-weight-bold col-lg-6" id="transaction_info" name="transaction_info" style="font-weight: bold; font-size: 20px;">Rp. 0.00</label>
 
-                                    <label name="label_transaction_info" id="label_transaction_info" for="transaction_info">Requested Amount : </label>
-                                    <label class="text-info font-weight-bold col-lg-6" id="transaction_info" name="transaction_info"  style="font-weight: bold; font-size: 20px;">Rp. 0.00</label>
+                                    <label name="label_amount" id="label_amount" for="amount">{{ __('payment_gateway.deduction_amount') }} : </label>
+                                    <label class="text-primary font-weight-bold col-lg-6" id="amount_info" name="amount_info" style="font-weight: bold; font-size: 20px;">Rp. 0.00</label>
 
-                                    <label name="label_amount" id="label_amount" for="amount">Deduction Amount : </label>
-                                    <label class="text-primary font-weight-bold col-lg-6" id="amount_info" name="amount_info"  style="font-weight: bold; font-size: 20px;">Rp. 0.00</label>
-
-                                    <input type="hidden" class="form-control" name="amount"id="amount"  value="" readonly >
+                                    <input type="hidden" class="form-control" name="amount" id="amount" value="" readonly>
                                 </div>
                             </div>
                         </div>
@@ -109,14 +107,14 @@
                         <div class="form-row">
                             <div class="col-lg-8">
                                 <div class="form-group">
-                                    <label for="company_address">Notes <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="notes"id="notes" value="">
+                                    <label for="company_address">{{ __('payment_gateway.notes') }} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="notes" id="notes" value="">
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group mb-0">
-                            <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> Withdraw</button>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> {{ __('payment_gateway.withdraw') }}</button>
                         </div>
                     </form>
                 </div>
@@ -155,11 +153,10 @@
                     $('#transaction_info').text(formatRupiah(0,'Rp. '));
                 }
 
-                    // let xdmName = $(this).find(':selected').data('xdm-id'); // Ambil xdm_id dari option yang dipilih
                 $('#label_disbursement_channel').text(xdmName);
 
                 // Hapus semua opsi sebelumnya dari dropdown disbursement_channel
-                $('#disbursement_channel').empty().append('<option value="" selected disabled>Select Channel</option>');
+                $('#disbursement_channel').empty().append('<option value="" selected disabled>{{ __('payment_gateway.select_channel') }}</option>');
 
                 if (xdmId) {
                     // Kirim permintaan AJAX ke server untuk mendapatkan channel berdasarkan xdm_id
@@ -178,8 +175,6 @@
                         }
                     });
                 }
-
-
             });
         // });
         $(document).on('input', '#transaction_amount', function() {

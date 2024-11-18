@@ -36,29 +36,37 @@ class AdjustmentsDataTable extends DataTable
             ->orderBy(4)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('adjustment.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('adjustment.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('adjustment.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('adjustment.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('adjustment.datatable'),
+            ]);
     }
 
     protected function getColumns() {
         return [
             Column::make('date')
+            ->title(__('adjustment.date'))
                 ->className('text-center align-middle'),
 
             Column::make('reference')
+            ->title(__('adjustment.reference'))
                 ->className('text-center align-middle'),
 
             Column::make('adjusted_products_count')
-                ->title('Products')
+                ->title(__('adjustment.products_count'))
                 ->className('text-center align-middle'),
 
             Column::computed('action')
+                ->title(__('adjustment.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->className('text-center align-middle'),

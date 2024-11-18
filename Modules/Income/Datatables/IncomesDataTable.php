@@ -39,35 +39,45 @@ class IncomesDataTable extends DataTable
             ->orderBy(6)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('expense.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('expense.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('expense.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('expense.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('expense.datatable'),
+            ]);
     }
 
     protected function getColumns() {
         return [
             Column::make('date')
+                ->title(__('income.date'))
                 ->className('text-center align-middle'),
 
             Column::make('reference')
+                ->title(__('income.reference'))
                 ->className('text-center align-middle'),
 
             Column::make('category.category_name')
-                ->title('Category')
+                ->title(__('income.category'))
                 ->className('text-center align-middle'),
 
             Column::computed('amount')
+                ->title(__('income.amount'))
                 ->className('text-center align-middle'),
 
             Column::make('details')
+                ->title(__('income.details'))
                 ->className('text-center align-middle'),
 
             Column::computed('action')
+                ->title(__('income.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->className('text-center align-middle'),

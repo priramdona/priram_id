@@ -36,31 +36,40 @@ class ExpenseCategoriesDataTable extends DataTable
             ->orderBy(4)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('expense.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('expense.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('expense.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('expense.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('expense.datatable'),
+        ]);
     }
 
     protected function getColumns() {
         return [
             Column::make('category_name')
-                ->addClass('text-center'),
+                ->addClass('text-center')
+                ->title(__('expense.category_name')),
 
             Column::make('category_description')
-                ->addClass('text-center'),
+                ->addClass('text-center')
+                ->title(__('expense.category_description')),
 
             Column::make('expenses_count')
-                ->addClass('text-center'),
+                ->addClass('text-center')
+                ->title(__('expense.expenses')),
 
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
-                ->addClass('text-center'),
+                ->addClass('text-center')
+                ->title(__('expense.action')),
 
             Column::make('created_at')
                 ->visible(false)

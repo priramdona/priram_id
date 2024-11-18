@@ -44,14 +44,19 @@ class RolesDataTable extends DataTable
             ->orderBy(4)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('user.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('user.print')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('user.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('user.reload'))
+            )->parameters([
+                'responsive' => true,
+                'autoWidth' => true,
+                'scrollX' => true,
+                'language' => __('user.datatable'),
+            ]);
     }
 
     protected function getColumns() {
@@ -61,15 +66,18 @@ class RolesDataTable extends DataTable
                 ->addClass('align-middle'),
 
             Column::make('name')
+            ->title(__('user.name'))
                 ->addClass('text-center')
                 ->addClass('align-middle'),
 
             Column::computed('permissions')
+            ->title(__('user.permissions'))
                 ->addClass('text-center')
                 ->addClass('align-middle')
                 ->width('700px'),
 
             Column::computed('action')
+            ->title(__('user.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->addClass('text-center')

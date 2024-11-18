@@ -12,22 +12,22 @@
 
 @section('content')
     <div class="container">
-        <h2 class="my-4">Payment Channels Information</h2>
+        <h2 class="my-4">{{ __('payment_gateway.payment_channels_info') }}</h2>
 
         @if($result->isNotEmpty())
             <div class="table-responsive" id="table-wrapper">
                 <table class="table table-bordered table-hover" style="table-layout: auto; width: 100%;">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Fee 1</th>
-                            <th>Fee 2</th>
-                            <th>PPN <span class="small ">(From Fees)</span></th>
-                            <th>Min</th>
-                            <th>Max</th>
-                            <th>Process</th>
-                            <th>Settlement</th>
+                            <th>{{ __('payment_gateway.name') }}</th>
+                            <th>{{ __('payment_gateway.type') }}</th>
+                            <th>{{ __('payment_gateway.fee_1') }}</th>
+                            <th>{{ __('payment_gateway.fee_2') }}</th>
+                            <th>{{ __('payment_gateway.ppn') }} <span class="small ">(From Fees)</span></th>
+                            <th>{{ __('payment_gateway.min') }}</th>
+                            <th>{{ __('payment_gateway.max') }}</th>
+                            <th>{{ __('payment_gateway.process') }}</th>
+                            <th>{{ __('payment_gateway.settlement') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,12 +38,12 @@
                                         @if($channel->image_url)
                                             <img src="{{ $channel->image_url }}" alt="{{ $channel->name }} Image" class="img-fluid me-2" style="max-width: 30px;">
                                         @else
-                                            <span>No Image</span>
+                                            <span>{{ __('payment_gateway.no_image') }}</span>
                                         @endif
                                         <span>{{ $channel->name }}</span>
                                     </div>
                                 </td>
-                                <td>{{ $channel->type == 'VIRTUAL_ACCOUNT' ? 'VA' : $channel->type }}</td>
+                                <td>{{ $channel->type == 'VIRTUAL_ACCOUNT' ? __('payment_gateway.va') : $channel->type }}</td>
                                 <td>
                                     @if($channel->fee_type_1 == "%")
                                         {{ round($channel->fee_value_1, 2) }} %
@@ -72,14 +72,14 @@
                                 <td>{{ format_currency($channel->min) }}</td>
                                 <td>{{ format_currency($channel->max) }}</td>
                                 <td>{{ $channel->payment_process }}</td>
-                                <td>{{ $channel->settlement }} Days</td>
+                                <td>{{ $channel->settlement }} {{ __('payment_gateway.days') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
         @else
-            <p>No Payment Channels found.</p>
+            <p>{{ __('payment_gateway.no_payment_channels') }}</p>
         @endif
     </div>
 
