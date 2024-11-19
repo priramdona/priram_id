@@ -64,10 +64,6 @@ class ProductDatabaseSeeder extends Seeder
             ->preservingOriginal()
             ->toMediaCollection('images');
 
-            $product->addMedia($imagePath)
-            ->preservingOriginal()
-            ->toMediaCollection('images');
-
             $categoryMaxId += $categoryMaxId + 1;
             $categoryCode = $business->prefix . str_pad($categoryMaxId, 4, '0', STR_PAD_LEFT);
 
