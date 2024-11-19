@@ -61,7 +61,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/paramex.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $categoryMaxId += $categoryMaxId + 1;
@@ -98,7 +98,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/1.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $product = Product::create([
@@ -125,7 +125,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/2.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -152,7 +152,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/3.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -179,7 +179,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/4.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -206,7 +206,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/5.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -233,7 +233,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/6.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $categoryMaxId += $categoryMaxId + 1;
@@ -269,7 +269,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/7.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -297,7 +297,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/8.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -325,7 +325,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/9.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -363,7 +363,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/10.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -391,7 +391,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/11.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $product = Product::create([
@@ -418,7 +418,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/12.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $product = Product::create([
@@ -445,7 +445,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/13.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -483,7 +483,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/14.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -511,7 +511,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/15.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -539,7 +539,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/16.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -567,7 +567,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/17.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $categoryMaxId += $categoryMaxId + 1;
@@ -603,7 +603,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/18.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -631,7 +631,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/19.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -660,7 +660,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/20.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -688,7 +688,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/21.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $product = Product::create([
@@ -715,7 +715,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/22.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -743,7 +743,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/23.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -780,7 +780,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/24.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $product = Product::create([
@@ -806,7 +806,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/25.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -833,7 +833,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/26.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -860,7 +860,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/27.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -887,7 +887,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/28.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
@@ -914,7 +914,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/29.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
             $product = Product::create([
@@ -940,7 +940,7 @@ class ProductDatabaseSeeder extends Seeder
             $imagePath = public_path('images/seeder_images/30.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
-            ->preservingOriginal()
+             //->preservingOriginal()
             ->toMediaCollection('images');
 
 
