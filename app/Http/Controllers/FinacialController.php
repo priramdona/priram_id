@@ -23,14 +23,14 @@ class FinacialController extends Controller
     public function withdraw(Request $request) {
 
         if ($request->amount < 0 ){
-            toast('Input Amount first...', 'error');
+            toast(__('controller.input_amount'), 'error');
             return redirect()->route('financial.management.withdraw');
         }
         $paymentGateway =  new PaymentGatewayController();
         $balance = $paymentGateway->showBalance();
 
         if ($request->amount > $balance ){
-            toast('insufficient balance', 'error');
+            toast(__('controller.insufficient_balance'), 'error');
             return redirect()->route('financial.management.withdraw');
         }
 
@@ -47,7 +47,7 @@ class FinacialController extends Controller
         );
         // $businessAmount = Setting::firstOrFail();
 
-        toast('Withdrawal Requested....!', 'success');
+        toast(__('controller.withdrawal_requested'), 'success');
         return redirect()->route('financial.management.withdraw');
     }
 }

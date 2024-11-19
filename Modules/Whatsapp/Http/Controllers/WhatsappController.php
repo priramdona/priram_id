@@ -134,7 +134,7 @@ class WhatsappController extends Controller
                 $file->getPathname()
             );
 
-            toast('Message Sent with File...', 'success');
+            toast(__('controller.sent'), 'success');
             return redirect()->route('whatsapp.index');
         } else {
                 $send_message_request = new \SdkWhatsappWebMultiDevice\Model\SendMessageRequest();
@@ -143,11 +143,11 @@ class WhatsappController extends Controller
 
                 $apiInstance->sendMessage($send_message_request);
         }
-        toast('Message has ben sent..!', 'success');
+        toast(__('controller.sent'), 'success');
         return redirect()->route('whatsapp.index');
     } catch (Exception $e) {
 
-        toast('Message Failed', 'error');
+        toast(__('controller.error'), 'error');
         return redirect()->route('whatsapp.index');
     }
 }
@@ -229,7 +229,7 @@ public function broadcastMessage(Request $request)
                     ],
                     ]);
 
-                    toast('Message Sent with Image... To ' . $phone, 'success');
+                    toast(__('controller.sent'), 'success');
 
                 } elseif ($request->hasFile('file')) {
                     $file = $request->file('file');
@@ -240,7 +240,7 @@ public function broadcastMessage(Request $request)
                         $file->getPathname()
                     );
 
-                    toast('Message Sent with File... To ' . $phone, 'success');
+                    toast(__('controller.sent'), 'success');
                 } else {
                     $send_message_request = new \SdkWhatsappWebMultiDevice\Model\SendMessageRequest();
                     $send_message_request->setPhone($phone);
@@ -248,20 +248,20 @@ public function broadcastMessage(Request $request)
 
                     $result = $apiInstance->sendMessage($send_message_request);
 
-                    toast('Message Sent.. To ' . $phone, 'success');
+                    toast(__('controller.sent'), 'success');
 
                 }
 
             } catch (Exception $e) {
 
                     return response()->json(['success' => false, 'message' => 'Error sending file: ' . $e->getMessage()]);
-                    toast('Message Failed', 'error');
+                    toast(__('controller.error'), 'error');
                     return redirect()->route('whatsapp.index');}
         }
     }else{
 
         return response()->json(['success' => false, 'message' => 'Tidak ada destination']);
-        toast('Message Failed', 'error');
+        toast(__('controller.error'), 'error');
         return redirect()->route('whatsapp.index');
     }
 

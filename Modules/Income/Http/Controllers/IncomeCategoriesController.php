@@ -32,7 +32,7 @@ class IncomeCategoriesController extends Controller
             'business_id' => $request->user()->business_id,
         ]);
 
-        toast('Income Category Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('income-categories.index');
     }
@@ -58,7 +58,7 @@ class IncomeCategoriesController extends Controller
             'category_description' => $request->category_description
         ]);
 
-        toast('Income Category Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('income-categories.index');
     }
@@ -73,7 +73,7 @@ class IncomeCategoriesController extends Controller
 
         $incomeCategory->delete();
 
-        toast('Income Category Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('income-categories.index');
     }

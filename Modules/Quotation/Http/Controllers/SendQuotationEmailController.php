@@ -34,11 +34,11 @@ class SendQuotationEmailController extends Controller
                 'status' => 'Sent'
             ]);
 
-            toast('Sent To "' . $quotation->customer->customer_email . '"!', 'success');
+            toast(__('controller.sent'). $quotation->customer->customer_email . '"!', 'success');
 
         } catch (\Exception $exception) {
             Log::error($exception);
-            toast('Something Went Wrong!', 'error');
+            toast(__('controller.error'), 'error');
         }
 
         return back();

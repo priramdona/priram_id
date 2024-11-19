@@ -720,7 +720,7 @@ class PosController extends Controller
 
 
 
-        toast('POS Sale Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         }catch(Exception $e){
             toast($e->getMessage(), 'error');

@@ -168,7 +168,7 @@ class CustomersController extends Controller
             toast($e->getMessage(), 'error');
         }
 
-        toast('Customer Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('customers.index');
     }
@@ -249,7 +249,7 @@ class CustomersController extends Controller
             toast($e->getMessage(), 'error');
         }
 
-        toast('Customer Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('customers.index');
     }
@@ -260,7 +260,7 @@ class CustomersController extends Controller
 
         $customer->delete();
 
-        toast('Customer Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('customers.index');
     }

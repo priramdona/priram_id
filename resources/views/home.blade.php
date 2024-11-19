@@ -39,7 +39,7 @@
     // });
 </script>
     <div class="container-fluid">
-        @can('show_total_stats')
+        @can('access_financial')
         <div class="row">
             <div class="col-md-6 col-lg-3">
                 <div class="card border-0">

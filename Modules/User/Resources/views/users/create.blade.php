@@ -43,6 +43,12 @@
                                         <input class="form-control" type="email" name="email" required>
                                     </div>
                                 </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="phone_number">{{ __('user.phone_number') }} <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="phone_number" required>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-lg-6">

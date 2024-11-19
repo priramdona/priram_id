@@ -111,7 +111,7 @@ class IncomeController extends Controller
             }
         }
 
-        toast('Income Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('incomes.index');
     }
@@ -121,7 +121,7 @@ class IncomeController extends Controller
         $paymentChannels = $income->incomePayments;
         if (!blank($paymentChannels->payment_channel_id)){
 
-        toast('Income Update Payment Online Error', 'error');
+        toast(__('controller.income_error'), 'error');
 
         return redirect()->route('incomes.index');
         }
@@ -136,7 +136,7 @@ class IncomeController extends Controller
         $paymentChannels = $income->incomePayments;
         if (!blank($paymentChannels->payment_channel_id)){
 
-        toast('Income Update Payment Online Error', 'error');
+        toast(__('controller.income_error'), 'error');
 
         return redirect()->route('incomes.index');
         }
@@ -158,7 +158,7 @@ class IncomeController extends Controller
             'details' => $request->details
         ]);
 
-        toast('Income Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('incomes.index');
     }
@@ -168,7 +168,7 @@ class IncomeController extends Controller
         $paymentChannels = $income->incomePayments;
         if (!blank($paymentChannels->payment_channel_id)){
 
-        toast('Income Delete Payment Online Error', 'error');
+        toast(__('controller.income_delete_error'), 'error');
 
         return redirect()->route('incomes.index');
         }
@@ -176,7 +176,7 @@ class IncomeController extends Controller
 
         $income->delete();
 
-        toast('Income Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('incomes.index');
     }

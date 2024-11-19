@@ -130,7 +130,7 @@ class SaleController extends Controller
         if ($request->reference != "SL"){
             $prefix = strtoupper($request->reference)."/";
         }
-        toast('Sale Created!', 'success');
+        toast(__('controller.created'), 'success');type:
 
         if ($request->reference == "SL"){
             return redirect()->route('sales.index');
@@ -160,7 +160,7 @@ class SaleController extends Controller
         foreach($paymentChannels as $paymentChannel){
             if (!blank($paymentChannel->payment_channel_id)){
 
-            toast('Sale Update Payment Online Error', 'error');
+            toast(__('controller.update_error_online'), 'error');
 
             return redirect()->route('sales.index');
             }
@@ -201,7 +201,7 @@ class SaleController extends Controller
         foreach($paymentChannels as $paymentChannel){
             if (!blank($paymentChannel->payment_channel_id)){
 
-            toast('Sale Update Error', 'Error');
+            toast(__('controller.error'), 'Error');
 
             return redirect()->route('sales.index');
             }
@@ -278,7 +278,7 @@ class SaleController extends Controller
             Cart::instance('sale')->destroy();
         });
 
-        toast('Sale Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('sales.index');
     }
@@ -289,7 +289,7 @@ class SaleController extends Controller
         foreach($paymentChannels as $paymentChannel){
             if (!blank($paymentChannel->payment_channel_id)){
 
-            toast('Sale Delete Payment Online Error', 'error');
+            toast(__('controller.delete_error_online'), 'error');
 
             return redirect()->route('sales.index');
             }
@@ -298,7 +298,7 @@ class SaleController extends Controller
 
         $sale->delete();
 
-        toast('Sale Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('sales.index');
     }

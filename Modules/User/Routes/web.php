@@ -12,6 +12,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/profile', 'ProfileController@edit')->name('profile.edit');
     Route::patch('/user/profile', 'ProfileController@update')->name('profile.update');
     Route::patch('/user/password', 'ProfileController@updatePassword')->name('profile.update.password');
+    Route::get('/user/delete', 'ProfileController@delete')->name('profile.delete');
 
     //Users
     Route::resource('users', 'UsersController')->except('show');

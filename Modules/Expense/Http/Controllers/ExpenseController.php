@@ -46,7 +46,7 @@ class ExpenseController extends Controller
             'business_id' => $request->user()->business_id,
         ]);
 
-        toast('Expense Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('expenses.index');
     }
@@ -78,7 +78,7 @@ class ExpenseController extends Controller
             'details' => $request->details
         ]);
 
-        toast('Expense Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('expenses.index');
     }
@@ -89,7 +89,7 @@ class ExpenseController extends Controller
 
         $expense->delete();
 
-        toast('Expense Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('expenses.index');
     }

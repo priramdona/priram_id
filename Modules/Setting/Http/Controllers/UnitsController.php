@@ -35,7 +35,7 @@ class   UnitsController extends Controller
             'business_id' => Auth::user()->business_id,
         ]);
 
-        toast('Unit Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('units.index');
     }
@@ -53,7 +53,7 @@ class   UnitsController extends Controller
         ]);
 
         if ($unit->is_default = true){
-            toast('Unit is Default, Cannot Update or Modify!', 'info');
+            toast(__('controller.is_default_error'), 'info');
         }
         else{
             $unit->update([
@@ -63,17 +63,21 @@ class   UnitsController extends Controller
                 'operation_value' => $request->operation_value,
             ]);
 
-            toast('Unit Updated!', 'info');
+            toast(__('controller.updated'), 'info');
 
             return redirect()->route('units.index');
         }
     }
 
     public function destroy(Unit $unit) {
+        if ($unit->is_default = true){
+            toast(__('controller.is_default_error'), 'info');
+        }
+        else{
         $unit->delete();
 
-        toast('Unit Deleted!', 'warning');
-
+        toast(__('controller.deleted'), 'warning');
         return redirect()->route('units.index');
+        }
     }
 }

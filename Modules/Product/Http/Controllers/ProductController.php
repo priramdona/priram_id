@@ -63,7 +63,7 @@ class ProductController extends Controller
             }
         }
 
-        toast('Product Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('products.index');
     }
@@ -92,7 +92,7 @@ class ProductController extends Controller
 
 
         if ($product->is_default == true){
-            toast('Product is Default, Cannot Update or Modify!', 'info');
+            toast(__('controller.is_default_error'), 'info');
         }else{
             $product->update($request->except('document'));
 
@@ -114,7 +114,7 @@ class ProductController extends Controller
                 }
             }
 
-            toast('Product Updated!', 'info');
+            toast(__('controller.updated'), 'info');
 
             return redirect()->route('products.index');
         }
@@ -126,7 +126,7 @@ class ProductController extends Controller
 
         $product->delete();
 
-        toast('Product Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('products.index');
     }

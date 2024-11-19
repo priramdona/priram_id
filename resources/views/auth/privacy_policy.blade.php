@@ -72,8 +72,8 @@
 
         <!-- Persetujuan Penggunaan Kamera dan Lokasi -->
         <div class="section">
-            <h2>7. Persetujuan Penggunaan Kamera dan Lokasi</h2>
-            <p>Dengan menggunakan fitur tertentu pada aplikasi ini, seperti pemindai barcode atau fitur pengiriman, Anda memberikan izin bagi aplikasi untuk mengakses kamera dan lokasi perangkat Anda sesuai kebutuhan fungsi tersebut.</p>
+            <h2>7. Persetujuan Penggunaan Kamera, Lokasi dan Media Penyimpanan</h2>
+            <p>Dengan menggunakan fitur tertentu pada aplikasi ini, seperti pemindai barcode, fitur pengiriman dan mengatur gambar. Anda memberikan izin bagi aplikasi untuk mengakses kamera, lokasi dan media penyimpanan perangkat Anda sesuai kebutuhan fungsi tersebut.</p>
         </div>
 
         <!-- Penggunaan Cookie dan Teknologi Serupa -->
@@ -84,8 +84,8 @@
 
         <!-- Penyimpanan Data -->
         <div class="section">
-            <h2>9. Penyimpanan Data</h2>
-            <p>Kami menyimpan informasi Anda selama akun Anda aktif atau selama diperlukan untuk menyediakan layanan yang Anda minta. Jika Anda ingin menghapus akun, kami akan menghapus informasi pribadi sesuai dengan ketentuan yang berlaku, kecuali diwajibkan oleh hukum untuk menyimpannya.</p>
+            <h2>9. Penyimpanan dan Penghapusan Data</h2>
+            <p>Kami menyimpan informasi Anda selama akun Anda aktif atau selama diperlukan untuk menyediakan layanan yang Anda minta. Jika Anda ingin menghapus akun dapat dilakukan pada fitur yang sudah kami sediakan di pengaturan akun, kami akan menghapus informasi pribadi sesuai dengan ketentuan yang berlaku, kecuali diwajibkan oleh hukum untuk menyimpannya.</p>
         </div>
 
         <!-- Perubahan Kebijakan Privasi -->

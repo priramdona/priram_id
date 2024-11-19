@@ -33,7 +33,7 @@ class CategoriesController extends Controller
             'business_id' => $request->user()->business_id
         ]);
 
-        toast('Product Category Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->back();
     }
@@ -59,14 +59,14 @@ class CategoriesController extends Controller
         $category = Category::findOrFail($id);
 
         if ($category->is_default == true){
-            toast('Category is Default, Cannot Update or Modify!', 'info');
+            toast(__('controller.is_default_error'), 'info');
         }else{
             $category->update([
             'category_code' => $request->category_code,
             'category_name' => $request->category_name,
         ]);
 
-        toast('Product Category Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('product-categories.index');
         }
@@ -84,7 +84,7 @@ class CategoriesController extends Controller
 
         $category->delete();
 
-        toast('Product Category Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('product-categories.index');
     }

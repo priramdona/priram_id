@@ -32,7 +32,7 @@ class ExpenseCategoriesController extends Controller
             'business_id' => $request->user()->business_id,
         ]);
 
-        toast('Expense Category Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('expense-categories.index');
     }
@@ -58,7 +58,7 @@ class ExpenseCategoriesController extends Controller
             'category_description' => $request->category_description
         ]);
 
-        toast('Expense Category Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('expense-categories.index');
     }
@@ -73,7 +73,7 @@ class ExpenseCategoriesController extends Controller
 
         $expenseCategory->delete();
 
-        toast('Expense Category Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('expense-categories.index');
     }

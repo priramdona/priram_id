@@ -1,9 +1,14 @@
 <?php
 
 return [
+    'profile' => 'Profil Akun',
+    'logout' => 'Keluar',
     'home' => 'Beranda',
     'pos' => 'Kasir',
-
+    'about_us' => 'Tentang Kami',
+    'contact_us' => 'Hubungi Kami',
+    'privacy' => 'Kebijakan Privasi',
+    'terms' => 'Syarat dan Ketentuan',
     'whatsapp' => 'Whatsapp',
     'wallet' => 'Manajemen Saldo',
     'wallet_information' => 'Informasi Saldo',

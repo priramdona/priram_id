@@ -36,7 +36,7 @@ class RolesController extends Controller
         ]);
 
         $user = $request->user();
-        $role = CustomRole::create([
+        $role = Role::create([
             'id' => str::orderedUuid()->toString(),
             'name' => $request->name,
             'business_id' => $user->business_id
@@ -44,7 +44,7 @@ class RolesController extends Controller
 
         $role->givePermissionTo($request->permissions);
 
-        toast('Role Created With Selected Permissions!', 'success');
+        toast(__('controller.role_created'), 'success');
 
         return redirect()->route('roles.index');
     }
@@ -71,7 +71,7 @@ class RolesController extends Controller
 
         $role->syncPermissions($request->permissions);
 
-        toast('Role Updated With Selected Permissions!', 'success');
+        toast(__('controller.role_updated'), 'success');
 
         return redirect()->route('roles.index');
     }
@@ -82,7 +82,7 @@ class RolesController extends Controller
 
         $role->delete();
 
-        toast('Role Deleted!', 'success');
+        toast(__('controller.deleted'), 'success');
 
         return redirect()->route('roles.index');
     }

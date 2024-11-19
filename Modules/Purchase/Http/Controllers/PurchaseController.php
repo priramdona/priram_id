@@ -109,7 +109,7 @@ class PurchaseController extends Controller
             }
         });
 
-        toast('Purchase Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('purchases.index');
     }
@@ -223,7 +223,7 @@ class PurchaseController extends Controller
             Cart::instance('purchase')->destroy();
         });
 
-        toast('Purchase Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('purchases.index');
     }
@@ -234,7 +234,7 @@ class PurchaseController extends Controller
 
         $purchase->delete();
 
-        toast('Purchase Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('purchases.index');
     }

@@ -2,6 +2,12 @@
 
 return [
     'home' => 'Home',
+    'profile' => 'Profile',
+    'logout' => 'Logout',
+    'privacy' => 'Privacy Policy',
+    'terms' => 'Term of Conditions',
+    'about_us' => 'About Us',
+    'contact_us' => 'Contact Us',
     'pos' => 'POS System',
     'whatsapp' => 'Whatsapp',
     'wallet' => 'Saldo Management',

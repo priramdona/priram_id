@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\SalesReturn\Entities\SaleReturn;
 use Modules\SalesReturn\Entities\SaleReturnPayment;
 
@@ -44,13 +45,17 @@ class SaleReturnPaymentsController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
+
             SaleReturnPayment::create([
                 'date' => $request->date,
                 'reference' => $request->reference,
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'sale_return_id' => $request->sale_return_id,
-                'payment_method' => $request->payment_method,
+                'payment_method_id' => $paymentMethodData->id ?? null,
+                'payment_method' => $paymentMethodData->name ?? null,
+                'payment_method_name' => $paymentMethodData->name ?? null,
                 'business_id' => $request->user()->business_id,
             ]);
 
@@ -73,7 +78,7 @@ class SaleReturnPaymentsController extends Controller
             ]);
         });
 
-        toast('Sale Return Payment Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('sale-returns.index');
     }
@@ -129,7 +134,7 @@ class SaleReturnPaymentsController extends Controller
             ]);
         });
 
-        toast('Sale Return Payment Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('sale-returns.index');
     }
@@ -140,7 +145,7 @@ class SaleReturnPaymentsController extends Controller
 
         $saleReturnPayment->delete();
 
-        toast('Sale Return Payment Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('sale-returns.index');
     }

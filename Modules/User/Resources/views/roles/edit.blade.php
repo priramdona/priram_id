@@ -103,6 +103,28 @@
                                     </div>
                                 </div>
 
+
+                                <!-- Financial Management Permission -->
+                                <div class="col-lg-4 col-md-6 mb-3">
+                                    <div class="card h-100 border-0 shadow">
+                                        <div class="card-header">
+                                            {{ __('user.financial_management') }} <!-- Tambahan -->
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                            id="access_financial" name="permissions[]"
+                                                            value="access_financial" {{ $role->hasPermissionTo('access_financial') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="access_financial">{{ __('user.access') }}</label> <!-- Tambahan -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- User Management Permission -->
                                 <div class="col-lg-4 col-md-6 mb-3">
                                     <div class="card h-100 border-0 shadow">
@@ -527,6 +549,26 @@
                                                                id="delete_suppliers" name="permissions[]"
                                                                value="delete_suppliers" {{ $role->hasPermissionTo('delete_suppliers') ? 'checked' : '' }}>
                                                         <label class="custom-control-label" for="delete_suppliers">{{ __('user.delete') }}</label> <!-- Tambahan -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- selforders Management Permission -->
+                                <div class="col-lg-4 col-md-6 mb-3">
+                                    <div class="card h-100 border-0 shadow">
+                                        <div class="card-header">
+                                            {{ __('user.selforders') }} <!-- Tambahan -->
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                            id="access_selforders" name="permissions[]"
+                                                            value="access_selforders" {{ $role->hasPermissionTo('access_selforders') ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="access_selforders">{{ __('user.access') }}</label> <!-- Tambahan -->
                                                     </div>
                                                 </div>
                                             </div>

@@ -2,6 +2,7 @@
 
 namespace Modules\User\Http\Controllers;
 
+use App\Helpers\PhoneHelper;
 use Modules\User\DataTables\UsersDataTable;
 use App\Models\User;
 use Illuminate\Contracts\Support\Renderable;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Modules\Upload\Entities\Upload;
 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 class UsersController extends Controller
 {
@@ -32,15 +34,36 @@ class UsersController extends Controller
     public function store(Request $request) {
         abort_if(Gate::denies('access_user_management'), 403);
 
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|max:255|unique:users,email',
+        // $request->validate([
+        //     'name'     => 'required|string|max:255',
+        //     'email'    => 'required|email|max:255|unique:users,email',
+        //     'password' => 'required|string|min:8|max:255|confirmed'
+        // ]);
+
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone_number' => ['required', 'string', 'min:6', 'max:16', 'unique:users,phone_number'],
             'password' => 'required|string|min:8|max:255|confirmed'
         ]);
+
+        $phoneNumber = $request['phone_number'];
+        $formattedPhone = PhoneHelper::formatToE164Indonesia($phoneNumber);
+
+        $validator->after(function ($validator) use ($formattedPhone) {
+            if (blank($formattedPhone)) {
+                $validator->errors()->add('phone_number', 'Invalid phone number');
+            }
+        });
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
 
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
+            'phone_number'    => $formattedPhone,
             'password' => Hash::make($request->password),
             'is_active' => $request->is_active,
             'business_id' => Auth::user()->business_id
@@ -52,14 +75,14 @@ class UsersController extends Controller
             $tempFile = Upload::where('folder', $request->image)->first();
 
             if ($tempFile) {
-                $user->addMedia(Storage::path('public/temp/' . $request->image . '/' . $tempFile->filename))->toMediaCollection('avatars');
+                $user->addMedia(Storage::path('temp/' . $request->image . '/' . $tempFile->filename))->toMediaCollection('avatars');
 
                 Storage::deleteDirectory('public/temp/' . $request->image);
                 $tempFile->delete();
             }
         }
 
-        toast("User Created & Assigned '$request->role' Role!", 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('users.index');
     }
@@ -96,14 +119,14 @@ class UsersController extends Controller
             }
 
             if ($tempFile) {
-                $user->addMedia(Storage::path('public/temp/' . $request->image . '/' . $tempFile->filename))->toMediaCollection('avatars');
+                $user->addMedia(Storage::path('temp/' . $request->image . '/' . $tempFile->filename))->toMediaCollection('avatars');
 
                 Storage::deleteDirectory('public/temp/' . $request->image);
                 $tempFile->delete();
             }
         }
 
-        toast("User Updated & Assigned '$request->role' Role!", 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('users.index');
     }
@@ -114,7 +137,7 @@ class UsersController extends Controller
 
         $user->delete();
 
-        toast('User Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('users.index');
     }

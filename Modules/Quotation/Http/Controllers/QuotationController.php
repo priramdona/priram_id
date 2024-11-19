@@ -223,9 +223,9 @@ class QuotationController extends Controller
             if ($request->status == 'Sent'){
                 $quotationMail = new SendQuotationEmailController();
                 $quotationMail($quotation);
-                toast('Quotation Created & Sent to '. $quotation->customer->customer_email, 'success');
+                toast(__('menu.quotations') . ' ' . __('controller.created') . ' ' . __('controller.sent').  ' ' . $quotation->customer->customer_email, 'success');
             }else{
-                toast('Quotation Created!', 'success');
+                toast(__('controller.created'), 'success');
             }
         });
 
@@ -248,7 +248,7 @@ class QuotationController extends Controller
 
         if(!blank($quotation->xendit_invoice_request_id)){
 
-            toast('Unable Edit Payment Online.. Quotation Update Error!', 'error');
+            toast(__('controller.update_error_online'), 'error');
 
             return redirect()->route('quotations.index');
         }
@@ -288,7 +288,7 @@ class QuotationController extends Controller
 
         if(!blank($quotation->xendit_invoice_request_id)){
 
-            toast('Unable Edit Payment Online.. Quotation Update Error!', 'error');
+            toast(__('controller.update_error_online'), 'error');
 
             return redirect()->route('quotations.index');
         }
@@ -332,7 +332,7 @@ class QuotationController extends Controller
             Cart::instance('quotation')->destroy();
         });
 
-        toast('Quotation Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('quotations.index');
     }
@@ -342,7 +342,7 @@ class QuotationController extends Controller
 
         if(!blank($quotation->xendit_invoice_request_id)){
 
-            toast('Unable Delete Payment Online.. Quotation Delete Error!', 'error');
+            toast(__('controller.delete_error_online'), 'error');
 
             return redirect()->route('quotations.index');
         }
@@ -350,7 +350,7 @@ class QuotationController extends Controller
 
         $quotation->delete();
 
-        toast('Quotation Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('quotations.index');
     }

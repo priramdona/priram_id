@@ -48,7 +48,7 @@ class CurrencyController extends Controller
             'business_id' => $request->user()->business_id,
         ]);
 
-        toast('Currency Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('currencies.index');
     }
@@ -82,7 +82,7 @@ class CurrencyController extends Controller
             'exchange_rate' => $request->exchange_rate
         ]);
 
-        toast('Currency Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('currencies.index');
     }
@@ -93,7 +93,7 @@ class CurrencyController extends Controller
 
         $currency->delete();
 
-        toast('Currency Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('currencies.index');
     }

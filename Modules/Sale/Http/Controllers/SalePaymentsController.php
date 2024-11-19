@@ -74,7 +74,7 @@ class SalePaymentsController extends Controller
             ]);
         });
 
-        toast('Sale Payment Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('sales.index');
     }
@@ -82,7 +82,7 @@ class SalePaymentsController extends Controller
 
     public function edit($sale_id, SalePayment $salePayment) {
         if (!blank($salePayment->payment_channel_id)){
-            toast('Error data payment', 'error');
+            toast(__('controller.error'), 'error');
 
             return redirect()->route('sales.index');
         }
@@ -96,7 +96,7 @@ class SalePaymentsController extends Controller
 
     public function update(Request $request, SalePayment $salePayment) {
         if (!blank($salePayment->payment_channel_id)){
-            toast('Error data payment', 'error');
+            toast(__('controller.error'), 'error');
 
             return redirect()->route('sales.index');
         }
@@ -142,7 +142,7 @@ class SalePaymentsController extends Controller
             ]);
         });
 
-        toast('Sale Payment Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('sales.index');
     }
@@ -153,7 +153,7 @@ class SalePaymentsController extends Controller
 
         $salePayment->delete();
 
-        toast('Sale Payment Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('sales.index');
     }
