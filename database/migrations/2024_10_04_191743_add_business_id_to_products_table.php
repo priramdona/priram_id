@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->foreignUuid('business_id')->references('id')->on('businesses')->after('id');
+            $table->unique(['product_code', 'business_id']);
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('business_id');
+            $table->dropUnique(['product_code', 'business_id']);
         });
     }
 };

@@ -36,6 +36,21 @@ class ProductController extends Controller
             'barcodeHtml' => $barcodeHtml
         ]);
     }
+    public function generateBarcode()
+    {
+        do {
+            // Generate random 12 digits for EAN-13 (first digit for country code can be set as desired)
+            $barcode = mt_rand(100000000000, 999999999999);
+
+            // Check if the generated barcode already exists in product_code column
+            $exists = Product::where('product_code', $barcode)->exists();
+        } while ($exists);
+
+        // Return barcode HTML and the code itself
+        $barcodeHtml = DNS1DFacade::getBarcodeHTML($barcode, 'EAN13');
+
+        return  $barcode;
+    }
     public function index(ProductDataTable $dataTable) {
         abort_if(Gate::denies('access_products'), 403);
 

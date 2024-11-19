@@ -48,7 +48,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Paramex',
-                'product_code' => str_pad(mt_rand(1,999999999999),12,'0',STR_PAD_LEFT),
+                'product_code' => $barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '10500',
@@ -58,7 +58,11 @@ class ProductDatabaseSeeder extends Seeder
                 'product_note' => 'Data Seeder',
                 'business_id' => $business->id,
             ]);
-            $imagePath = Storage::path('seeder_images/paramex.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/paramex.jpg'); // Path absolut
+
+            $product->addMedia($imagePath)
+            ->preservingOriginal()
+            ->toMediaCollection('images');
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -78,7 +82,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness T-shirt New Olive',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' => $barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '170000',
@@ -95,7 +99,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/1.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/1.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -105,7 +109,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness CoolTech Coca Mocha',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '80000',
@@ -123,7 +127,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/2.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/2.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -133,7 +137,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Otter OS T-Shirt White HG',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '120000',
@@ -150,7 +154,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/3.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/3.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -160,7 +164,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Otter OS T-Shirt Steel Blue',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '120000',
@@ -177,7 +181,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/4.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/4.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -187,7 +191,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Otter OS T-Shirt Red',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '120000',
@@ -204,7 +208,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/5.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/5.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -214,7 +218,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Otter OS T-Shirt Black',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '120000',
@@ -231,7 +235,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/6.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/6.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -249,7 +253,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Polo Slim Olive',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '130000',
@@ -267,7 +271,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/7.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/7.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -277,7 +281,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Polo Slim Black',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '130000',
@@ -295,7 +299,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/8.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/8.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -305,7 +309,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Polo Slim Morning Green',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '130000',
@@ -323,7 +327,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/9.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/9.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -343,7 +347,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Runner Sweater Olive',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '180000',
@@ -361,7 +365,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/10.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/10.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -371,7 +375,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Runner Sweater Navy',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '180000',
@@ -389,7 +393,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/11.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/11.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -398,7 +402,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Runner Sweater MIsty 68',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '180000',
@@ -416,7 +420,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/12.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/12.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -425,7 +429,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Runner Sweater MIsty 71',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '180000',
@@ -443,7 +447,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/13.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/13.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -463,7 +467,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Boxing Hood Maroon',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '220000',
@@ -481,7 +485,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/14.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/14.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -491,7 +495,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Boxing Hood Misty',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '220000',
@@ -509,7 +513,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/15.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/15.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -519,7 +523,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Boxing Hood D Jon',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '220000',
@@ -537,7 +541,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/16.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/16.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -547,7 +551,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Boxing Hood Black',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '375000',
@@ -565,7 +569,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/17.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/17.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -583,7 +587,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie zipper Olive',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '275000',
@@ -601,7 +605,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/18.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/18.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -611,7 +615,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie zipper Red',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '275000',
@@ -629,7 +633,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/19.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/19.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -640,7 +644,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie zipper Beige',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '275000',
@@ -658,7 +662,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/20.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/20.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -668,7 +672,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie zipper Rotten Yellow',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '275000',
@@ -686,7 +690,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/21.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/21.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -695,7 +699,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie Camouflage zipperper M90 Camo',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '275000',
@@ -713,7 +717,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/22.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/22.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -723,7 +727,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie Zipper Light Pink',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '275000',
@@ -741,7 +745,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/23.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/23.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -761,7 +765,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Olive',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '240000',
@@ -778,7 +782,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/24.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/24.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -787,7 +791,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Navy',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '240000',
@@ -804,7 +808,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/25.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/25.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -814,7 +818,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Dark Grey',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '240000',
@@ -831,7 +835,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/26.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/26.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -841,7 +845,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Classic Blue',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '240000',
@@ -858,7 +862,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/27.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/27.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -868,7 +872,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Black',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '240000',
@@ -885,7 +889,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/28.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/28.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -895,7 +899,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Beige',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '240000',
@@ -912,7 +916,7 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/29.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/29.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
@@ -921,7 +925,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Coca Mocha',
-                'product_code' =>mt_rand(100000000000, 999999999999),
+                'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '240000',
@@ -938,12 +942,11 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/30.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/30.jpg'); // Path absolut
 
             $product->addMedia($imagePath)
             ->preservingOriginal()
             ->toMediaCollection('images');
-
 
 
             $categoryMaxId += $categoryMaxId + 1;
@@ -954,7 +957,6 @@ class ProductDatabaseSeeder extends Seeder
                 'category_name' => 'Pembasmi Nyamuk',
                 'business_id' => $business->id,
             ]);
-
 
             $product = Product::create([
                 'category_id' => $category->id,
@@ -975,11 +977,8 @@ class ProductDatabaseSeeder extends Seeder
                 'business_id' => $business->id,
             ]);
 
-            $imagePath = Storage::path('seeder_images/31.jpg'); // Path absolut
+            $imagePath = public_path('images/seeder_images/31.jpg'); // Path absolut
 
-            $product->addMedia($imagePath)
-            ->preservingOriginal()
-            ->toMediaCollection('images');
 
             // $product->addMedia()
             //      ->usingFileName('otherFileName1.jpg')

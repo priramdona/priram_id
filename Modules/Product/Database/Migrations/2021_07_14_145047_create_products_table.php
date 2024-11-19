@@ -17,7 +17,7 @@ class CreateProductsTable extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('category_id')->references('id')->on('categories');
             $table->string('product_name');
-            $table->string('product_code')->unique()->nullable();
+            $table->string('product_code')->nullable();
             $table->string('product_barcode_symbology')->nullable();
             $table->integer('product_quantity');
             $table->decimal('product_cost',14,2)->nullable();
