@@ -101,7 +101,6 @@ class ProductDatabaseSeeder extends Seeder
             ->preservingOriginal()
             ->toMediaCollection('images');
 
-
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness CoolTech Coca Mocha',
