@@ -48,6 +48,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Paramex',
+                'image' => 'seeder_images/paramex.jpg',
                 'product_code' => $barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
