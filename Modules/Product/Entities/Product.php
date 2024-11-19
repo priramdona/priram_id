@@ -40,7 +40,15 @@ class Product extends Model implements HasMedia
             ->width(50)
             ->height(50);
     }
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            return asset('images/' . $this->image);
+        }
 
+        // Jika tidak ada gambar, kembalikan URL gambar default
+        return asset('images/default.png');
+    }
     // public function setProductCostAttribute($value) {
     //     $this->attributes['product_cost'] = ($value * 100);
     // }
