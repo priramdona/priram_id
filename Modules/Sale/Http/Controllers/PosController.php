@@ -44,30 +44,28 @@ class PosController extends Controller
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
-        // return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl]);
+        return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl]);
 
+        // $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
         $lineHeight = 41;
         $numberOfItems = count($sale->saleDetails);
         $estimatedHeight = ($numberOfItems * $lineHeight) + 500;
 
-        $heightMM =  (($estimatedHeight / 90) * 30) * 2.83465;
-
+        $heightMM =  (($estimatedHeight / 96) * 30) *3;
         $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])
         ->setPaper([0, 0, 226.772, $heightMM], 'portrait');
 
         // Render PDF untuk mendapatkan output
         $output = $pdf->download();
 
-        // Simpan PDF ke file atau kembalikan response untuk preview PDF
         $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '.pdf');
-        // Pastikan direktori ada
+
         if (!file_exists(dirname($filePath))) {
             mkdir(dirname($filePath), 0777, true);
         }
 
         file_put_contents($filePath, $output);
 
-        // Kembalikan response untuk preview PDF
         return response()->stream(
             function () use ($output) {
                 echo $output;
