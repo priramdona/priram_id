@@ -12,6 +12,20 @@
         .container { max-width: 800px; }
         .print-btn { margin-top: 20px; }
     </style>
+    <script>
+        function invokePrint() {
+            if (typeof Android !== "undefined" && Android.printPage) {
+                // Panggil metode print di Android
+                Android.printPage();
+            } else {
+                console.log("Android interface not available");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
+        });
+    </script>
 </head>
 <body>
     <div class="container mt-4">
