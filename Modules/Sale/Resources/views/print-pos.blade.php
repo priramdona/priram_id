@@ -122,7 +122,7 @@
             @endif
             </tbody>
         </table>
-        <table  border="0" cellpadding="0" cellspacing="0" style="width: 100%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <table  border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
             <tbody>
                 <tr>
                     <td style="width: 60%; text-align: left;">
