@@ -35,13 +35,10 @@
         }
 
         h2 {
-            font-size: 16px;
+            font-size: 10px;
             margin: 0;
         }
 
-        td, th {
-            padding: 5px 0;
-        }
 
         .centered {
             text-align: center;
@@ -67,9 +64,9 @@
 <div class="page">
         <div id="receipt-data" style="width: 70%;">
             <div class="centered">
-                <h3>{{ settings()->company_name }}</h3>
+                <h2>{{ settings()->company_name }}</h2>
 
-                <p style="font-size: 8px;margin-top: 0">
+                <p style="font-size: 8px;line-height: 8px;margin-top: 0">
                     {{ settings()->company_email }}, {{ settings()->company_phone }}
                     <br>{{ settings()->company_address }}
                 </p>
@@ -132,18 +129,29 @@
                        {{ format_currency($sale->total_paid_amount) }}
                     </td>
                 </tr>
+
+            </tbody>
+        </table>
+        <table  border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
+            <tbody>
                 <tr style="border-bottom: 0;">
-                    <td class="centered" colspan="3">
+                    <td style="width: 100%; text-align: center; ">
                         {{ __('sales.pos_receipt.scan_label') }}
                     </td>
                 </tr>
                 <tr style="border-bottom: 0;">
-                    <td class="centered" colspan="3">
-                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 50px; height: 50px;" />/>
+                    <td style="width: 100%; text-align: center; ">
+                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 50px; height: 50px;" />
+                    </td>
+                </tr>
+                <tr style="border-bottom: 0;">
+                    <td style="width: 100%; text-align: center; ">
+                        {{ __('sales.pos_receipt.thankyou') }}
                     </td>
                 </tr>
             </tbody>
         </table>
+
     </div>
 </div>
 

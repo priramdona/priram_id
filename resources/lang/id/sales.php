@@ -230,6 +230,7 @@ return [
             'paid_by' => 'Metode',
             'amount' => 'Jumlah'
         ],
+        'thankyou' => 'Terima Kasih',
         'scan_label' => 'Pindai untuk melihat detail'
     ],
     'actions' => [

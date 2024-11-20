@@ -226,7 +226,8 @@ return [
             'paid_by' => 'Method',
             'amount' => 'Amount'
         ],
-        'scan_label' => 'Scan me to get details'
+        'scan_label' => 'Scan me to get details',
+        'thankyou' => 'Thanks You'
     ],
     'actions' => [
         'pos_invoice' => 'POS Invoice',
