@@ -15,10 +15,10 @@
             body {
                 margin: 0;
                 padding: 0;
-                width: 80mm;
+                width: 58mm;
             }
             .page {
-                width: 80mm;
+                width: 58mm;
                 margin: 0 auto;
                 overflow: visible;
                 page-break-inside: avoid;
