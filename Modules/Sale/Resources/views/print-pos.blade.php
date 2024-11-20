@@ -9,16 +9,16 @@
     <style>
         @media print {
             @page {
-                size: 58mm auto; /* Lebar tetap 80mm, tinggi menyesuaikan konten */
+                size: 55mm auto; /* Lebar tetap 80mm, tinggi menyesuaikan konten */
                 margin: 0; /* Hilangkan margin otomatis */
             }
             body {
                 margin: 0;
                 padding: 0;
-                width: 58mm;
+                width: 55mm;
             }
             .page {
-                width: 58mm;
+                width: 55mm;
                 margin: 0 auto;
                 overflow: visible;
                 page-break-inside: avoid;
@@ -66,12 +66,11 @@
             <div class="centered">
                 <h2>{{ settings()->company_name }}</h2>
 
-                <p style="font-size: 8px;line-height: 5px;margin-top: 0">
+                <p style="font-size: 8px;line-height: 8px;margin-top: 0">
                     {{ settings()->company_email }}
                     <br>{{ settings()->company_phone }}
                     <br>{{ settings()->company_address }}
                 </p>
-
             </div>
             <p>
             {{ __('sales.pos_receipt.date') }}: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}<br>
