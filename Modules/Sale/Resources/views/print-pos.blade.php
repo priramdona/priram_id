@@ -7,68 +7,49 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        /* Atur ukuran halaman */
         @media print {
+            @page {
+                size: 80mm auto;
+                margin: 0;
+            }
+
             body {
-                width: 80mm;
                 margin: 0;
                 padding: 0;
             }
+
+            .page {
+                width: 80mm;
+                margin: 0 auto;
+                overflow: visible;
+                page-break-inside: avoid;
+            }
+
+            table, tbody, tr, td {
+                page-break-inside: avoid;
+            }
+
+            tbody::after {
+                content: none;
+            }
         }
 
-        /* Jika ingin diatur untuk tampilan layar */
-        .page {
-            width: 80mm;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            box-sizing: border-box;
-        }
         * {
             font-size: 12px;
             line-height: 18px;
             font-family: 'Ubuntu', sans-serif;
         }
+
         h2 {
             font-size: 16px;
         }
-        td,
-        th,
-        tr,
-        table {
-            border-collapse: collapse;
-        }
-        tr {border-bottom: 1px dashed #ddd;}
-        td,th {padding: 7px 0;width: 50%;}
 
-        table {
-            width: 100%;
-            max-width: 100%;
+        td, th {
+            padding: 5px 0;
         }
-        tfoot tr th:first-child {text-align: left;}
 
         .centered {
             text-align: center;
-            align-content: center;
-        }
-        small{font-size:11px;}
-
-        @media print {
-            * {
-                font-size:12px;
-                line-height: 20px;
-            }
-            td,th {padding: 5px 0;}
-            .hidden-print {
-                display: none !important;
-            }
-            tbody::after {
-                content: '';
-                display: block;
-                page-break-after: always;
-                page-break-inside: auto;
-                page-break-before: avoid;
-            }
         }
     </style>
     <script>
