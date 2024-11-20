@@ -227,7 +227,7 @@ return [
         'total_label' => 'Total',
         'additional_amount_label' => 'Jumlah Tambahan',
         'payment' => [
-            'paid_by' => 'Dibayar Dengan',
+            'paid_by' => 'Metode',
             'amount' => 'Jumlah'
         ],
         'scan_label' => 'Pindai untuk melihat detail'

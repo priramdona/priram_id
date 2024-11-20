@@ -223,7 +223,7 @@ return [
         'total_label' => 'Grand Total',
         'additional_amount_label' => 'Additional Amount',
         'payment' => [
-            'paid_by' => 'Paid By',
+            'paid_by' => 'Method',
             'amount' => 'Amount'
         ],
         'scan_label' => 'Scan me to get details'

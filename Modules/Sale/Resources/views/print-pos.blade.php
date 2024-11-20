@@ -29,7 +29,7 @@
         }
 
         * {
-            font-size: 12px;
+            font-size: 10px;
             line-height: 18px;
             font-family: 'Arial', sans-serif; /* Gunakan font sans-serif untuk kejelasan */
         }
@@ -86,14 +86,14 @@
                     <td colspan="2">
                         {{  ($saleDetail->product->product_name) }}
                         <br>
-                        ({{ $saleDetail->quantity }} x {{ format_currency($saleDetail->price) }})
+                        ({{ $saleDetail->quantity }} x {{ str_replace('.00','',str_replace('Rp. ','',format_currency($saleDetail->price))) }})
                     </td>
-                    <td style="text-align:right;vertical-align:bottom">{{ format_currency($saleDetail->sub_total) }}</td>
+                    <td style="text-align:right;vertical-align:bottom">{{ str_replace('.00','',str_replace('Rp. ','',format_currency($saleDetail->sub_total))) }}</td>
                 </tr>
             @endforeach
 
             @if($sale->tax_percentage > 0)
-                <tr>
+            <tr >
                     <th colspan="2" style="text-align:left">{{ __('sales.pos_receipt.tax_label') }} ({{ $sale->tax_percentage }}%)</th>
                     <th style="text-align:right">{{ format_currency($sale->tax_amount) }}</th>
                 </tr>
@@ -122,14 +122,14 @@
             @endif
             </tbody>
         </table>
-        <table>
+        <table  border="0" cellpadding="0" cellspacing="0" style="width: 100%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
             <tbody>
-                <tr style="background-color:#ddd;">
-                    <td class="centered" style="padding: 5px;">
+                <tr>
+                    <td style="width: 60%; text-align: left;">
                         {{ __('sales.pos_receipt.payment.paid_by') }}: {{ $sale->payment_method }}
                     </td>
-                    <td class="centered" style="padding: 5px;">
-                        {{ __('sales.pos_receipt.payment.amount') }}: {{ format_currency($sale->total_paid_amount) }}
+                    <td style="width: 40%; text-align: right;">
+                       {{ format_currency($sale->total_paid_amount) }}
                     </td>
                 </tr>
                 <tr style="border-bottom: 0;">
@@ -139,7 +139,7 @@
                 </tr>
                 <tr style="border-bottom: 0;">
                     <td class="centered" colspan="3">
-                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 100px; height: 100px;" />/>
+                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 100px; height: 50px;" />/>
                     </td>
                 </tr>
             </tbody>
