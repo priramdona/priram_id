@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Sale\Http\Controllers\PosController;
-use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+// use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Modules\Sale\Http\Controllers\SaleController;
 use Modules\Sale\Http\Controllers\SelforderController;
-
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
         $pdf = PDF::loadView('sale::print', [
             'sale' => $sale,
             'customer' => $customer,
-        ])->setPaper('a4');
+        ])->setPaper('a4', 'landscape');;
 
         return $pdf->stream('sale-'. $sale->reference .'.pdf');
     })->name('sales.pdf');

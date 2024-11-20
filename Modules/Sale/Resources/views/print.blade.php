@@ -7,6 +7,31 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ __('sales.print.title') }}</title>
     <link rel="stylesheet" href="{{ public_path('b3/bootstrap.min.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            font-size: 12px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -21,7 +46,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-xs-4 mb-3 mb-md-0">
+                        <div style="width: 33%; display: inline-block; vertical-align: top;">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.company') }}</h4>
                             <div><strong>{{ settings()->company_name }}</strong></div>
                             <div>{{ settings()->company_address }}</div>
@@ -29,7 +54,7 @@
                             <div>{{ __('sales.print.customer.phone') }}: {{ settings()->company_phone }}</div>
                         </div>
                         @if($customer)
-                        <div class="col-xs-4 mb-3 mb-md-0">
+                        <div style="width: 33%; display: inline-block; vertical-align: top; ">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.customer') }}</h4>
                             <div><strong>{{ $customer->customer_name }}</strong></div>
                             <div>{{ $customer->address }}</div>
@@ -37,7 +62,7 @@
                             <div>{{ __('sales.print.customer.phone') }}: {{ $customer->customer_phone }}</div>
                         </div>
                         @else
-                        <div class="col-xs-4 mb-3 mb-md-0">
+                        <div style="width: 33%; display: inline-block; vertical-align: top;">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.customer') }}</h4>
                             <div><strong>{{ __('sales.print.customer.not_registered') }}</strong></div>
                             <div>-</div>
@@ -46,7 +71,7 @@
                         </div>
                         @endif
 
-                        <div class="col-xs-4 mb-3 mb-md-0">
+                        <div style="width: 33%; display: inline-block; vertical-align: top;">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.invoice') }}</h4>
                             <div>{{ __('sales.print.invoice.number') }}: <strong>INV/{{ $sale->reference }}</strong></div>
                             <div>{{ __('sales.print.invoice.date') }}: <strong>{{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}</strong></div>
@@ -60,7 +85,7 @@
 
                     </div>
 
-                    <div class="table-responsive-sm" style="margin-top: 30px;">
+                    <div class="table-responsive-sm">
                         <table class="table table-striped">
                             <thead>
                             <tr>
@@ -154,3 +179,8 @@
 </div>
 </body>
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        window.print(); // Memicu dialog cetak
+    });
+</script>

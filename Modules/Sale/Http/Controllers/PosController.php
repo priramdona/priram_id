@@ -45,14 +45,11 @@ class PosController extends Controller
         $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
 
-        // $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
         $lineHeight = 41;
         $numberOfItems = count($sale->saleDetails);
         $estimatedHeight = ($numberOfItems * $lineHeight) + 500;
 
         $heightMM =  (($estimatedHeight / 90) * 30) * 2.83465;
-        // Render view ke PDF
-        // $pdf = Pdf::loadView('products.pdf', compact('products'));
 
         $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])
         ->setPaper([0, 0, 226.772, $heightMM], 'portrait');
