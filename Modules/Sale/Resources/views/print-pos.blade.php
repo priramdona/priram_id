@@ -29,7 +29,7 @@
         }
 
         * {
-            font-size: 10px;
+            font-size: 8px;
             line-height: 18px;
             font-family: 'Arial', sans-serif; /* Gunakan font sans-serif untuk kejelasan */
         }
