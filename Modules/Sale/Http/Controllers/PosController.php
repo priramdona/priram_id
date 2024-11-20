@@ -44,7 +44,7 @@ class PosController extends Controller
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
-        // return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl]);
+        return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl]);
 
         $lineHeight = 41;
         $numberOfItems = count($sale->saleDetails);
