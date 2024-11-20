@@ -57,7 +57,7 @@ class PosController extends Controller
         ->setOption('margin-right', 5);
 
         // Render PDF untuk mendapatkan output
-        $output = $pdf->output();
+        $output = $pdf->download();
 
         // Simpan PDF ke file atau kembalikan response untuk preview PDF
         $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '.pdf');
