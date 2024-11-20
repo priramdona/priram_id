@@ -9,16 +9,16 @@
     <style>
         @media print {
             @page {
-                size: 55mm auto; /* Lebar tetap 80mm, tinggi menyesuaikan konten */
+                size: 200px auto; /* Lebar tetap 80mm, tinggi menyesuaikan konten */
                 margin: 0; /* Hilangkan margin otomatis */
             }
             body {
                 margin: 0;
                 padding: 0;
-                width: 55mm;
+                width: 200px;
             }
             .page {
-                width: 55mm;
+                width: 200px;
                 margin: 0 auto;
                 overflow: visible;
                 page-break-inside: avoid;
@@ -29,7 +29,7 @@
         }
 
         * {
-            font-size: 8px;
+            font-size: 6px;
             line-height: 18px;
             font-family: 'Arial', sans-serif; /* Gunakan font sans-serif untuk kejelasan */
         }
@@ -61,7 +61,7 @@
 </head>
 <body>
 
-<div class="page">
+<div class="page" style="max-width:200px;margin:0 auto">
         <div id="receipt-data" style="width: 70%;">
             <div class="centered">
                 <h2>{{ settings()->company_name }}</h2>
@@ -81,12 +81,12 @@
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
                 <tr >
-                    <td style="width: 60%; text-align: left;border-top: 1px Dotted #514d6a; font-size: 8px;">
+                    <td style="width: 60%; text-align: left;border-top: 1px Dotted #514d6a; font-size: 6px;">
                         {{  ($saleDetail->product->product_name) }}
                         <br>
                         ({{ $saleDetail->quantity }} x {{ str_replace('.00','',str_replace('Rp. ','',format_currency($saleDetail->price))) }})
                     </td>
-                    <td style="width: 40%; text-align: right;vertical-align:bottom; border-top: 1px Dotted #514d6a; font-size: 8px;">{{ str_replace('.00','',str_replace('Rp. ','',format_currency($saleDetail->sub_total))) }}</td>
+                    <td style="width: 40%; text-align: right;vertical-align:bottom; border-top: 1px Dotted #514d6a; font-size: 6px;">{{ str_replace('.00','',str_replace('Rp. ','',format_currency($saleDetail->sub_total))) }}</td>
                 </tr>
             @endforeach
 
