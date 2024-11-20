@@ -9,7 +9,7 @@
     <style>
         @media print {
             @page {
-                size: 80mm auto; /* Lebar tetap 80mm, tinggi menyesuaikan konten */
+                size: 58mm auto; /* Lebar tetap 80mm, tinggi menyesuaikan konten */
                 margin: 0; /* Hilangkan margin otomatis */
             }
             body {
