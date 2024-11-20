@@ -71,7 +71,7 @@
             }
         }
     </style>
-    <script>
+    {{-- <script>
         function invokePrint() {
             if (typeof Android !== "undefined" && Android.printPage) {
                 // Panggil metode print di Android
@@ -84,7 +84,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
         });
-    </script>
+    </script> --}}
 </head>
 <body>
 
