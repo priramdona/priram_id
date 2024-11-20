@@ -33,7 +33,10 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Milon\Barcode\Facades\DNS1DFacade;
 use Milon\Barcode\Facades\DNS2DFacade;
 use Modules\PaymentGateway\Entities\XenditPaylaterPlan;
-use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+// use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+
 class PosController extends Controller
 {
     public function printPos($id)
@@ -42,19 +45,17 @@ class PosController extends Controller
         $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
 
-        $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
+        // $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
         $lineHeight = 41;
         $numberOfItems = count($sale->saleDetails);
         $estimatedHeight = ($numberOfItems * $lineHeight) + 500;
 
-        $heightMM =  ($estimatedHeight / 96) * 25.4;
-        $pdf = PDF::loadHTML($viewContent)
-        ->setOption('page-width', '80mm')
-        ->setOption('page-height', $heightMM . 'mm')
-        ->setOption('margin-top', 8)
-        ->setOption('margin-bottom', 8)
-        ->setOption('margin-left', 5)
-        ->setOption('margin-right', 5);
+        $heightMM =  (($estimatedHeight / 90) * 30) * 2.83465;
+        // Render view ke PDF
+        // $pdf = Pdf::loadView('products.pdf', compact('products'));
+
+        $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])
+        ->setPaper([0, 0, 226.772, $heightMM], 'portrait');
 
         // Render PDF untuk mendapatkan output
         $output = $pdf->download();
