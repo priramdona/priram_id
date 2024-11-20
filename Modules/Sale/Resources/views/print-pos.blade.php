@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<div style="max-width:400px;margin:0 auto">
+<div style="max-width:200px;margin:0 auto">
     <div id="receipt-data">
         <div class="centered">
             <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
