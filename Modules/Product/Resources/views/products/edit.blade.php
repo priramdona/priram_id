@@ -137,11 +137,11 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="image">Product Images <i class="bi bi-question-circle-fill text-info" data-toggle="tooltip" data-placement="top" title="Max Files: 3, Max File Size: 1MB, Image Size: 400x400"></i></label>
-                                <div class="dropzone d-flex flex-wrap align-items-center justify-content-center" id="document-dropzone">
-                                    <div class="dz-message" data-dz-message>
-                                        <i class="bi bi-cloud-arrow-up"></i>
-                                    </div>
+                                <label for="image">Product Image</label>
+                                <input type="file" class="form-control-file" id="imageInput" name="image" accept="image/*" onchange="previewImage(event)">
+                                <div class="mt-3">
+                                    <!-- Preview Image -->
+                                    <img id="imagePreview" src="{{ $product->image_url ?? asset('images/default.png') }}" alt="Image Preview" style="max-width: 200px;">
                                 </div>
                             </div>
                         </div>
@@ -153,49 +153,62 @@
 @endsection
 
 @section('third_party_scripts')
-    <script src="{{ asset('js/dropzone.js') }}"></script>
+    {{-- <script src="{{ asset('js/dropzone.js') }}"></script> --}}
 @endsection
 
 @push('page_scripts')
     <script>
-        var uploadedDocumentMap = {}
-        Dropzone.options.documentDropzone = {
-            url: '{{ route('dropzone.upload') }}',
-            maxFilesize: 1,
-            acceptedFiles: '.jpg, .jpeg, .png',
-            maxFiles: 3,
-            addRemoveLinks: true,
-            dictRemoveFile: "<i class='bi bi-x-circle text-danger'></i> remove",
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            success: function (file, response) {
-                $('form').append('<input type="hidden" name="document[]" value="' + response.name + '">');
-                uploadedDocumentMap[file.name] = response.name;
-            },
-            removedfile: function (file) {
-                file.previewElement.remove();
-                var name = '';
-                if (typeof file.file_name !== 'undefined') {
-                    name = file.file_name;
-                } else {
-                    name = uploadedDocumentMap[file.name];
-                }
-                $('form').find('input[name="document[]"][value="' + name + '"]').remove();
-            },
-            init: function () {
-                @if(isset($product) && $product->getMedia('images'))
-                var files = {!! json_encode($product->getMedia('images')) !!};
-                for (var i in files) {
-                    var file = files[i];
-                    this.options.addedfile.call(this, file);
-                    this.options.thumbnail.call(this, file, file.original_url);
-                    file.previewElement.classList.add('dz-complete');
-                    $('form').append('<input type="hidden" name="document[]" value="' + file.file_name + '">');
-                }
-                @endif
-            }
+        function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const preview = document.getElementById('imagePreview');
+            preview.src = reader.result;
         }
+
+        if (file) {
+            reader.readAsDataURL(file); // Membaca file sebagai data URL untuk preview
+        }
+    }
+        // var uploadedDocumentMap = {}
+        // Dropzone.options.documentDropzone = {
+        //     url: '{{ route('dropzone.upload') }}',
+        //     maxFilesize: 1,
+        //     acceptedFiles: '.jpg, .jpeg, .png',
+        //     maxFiles: 3,
+        //     addRemoveLinks: true,
+        //     dictRemoveFile: "<i class='bi bi-x-circle text-danger'></i> remove",
+        //     headers: {
+        //         'X-CSRF-TOKEN': "{{ csrf_token() }}"
+        //     },
+        //     success: function (file, response) {
+        //         $('form').append('<input type="hidden" name="document[]" value="' + response.name + '">');
+        //         uploadedDocumentMap[file.name] = response.name;
+        //     },
+        //     removedfile: function (file) {
+        //         file.previewElement.remove();
+        //         var name = '';
+        //         if (typeof file.file_name !== 'undefined') {
+        //             name = file.file_name;
+        //         } else {
+        //             name = uploadedDocumentMap[file.name];
+        //         }
+        //         $('form').find('input[name="document[]"][value="' + name + '"]').remove();
+        //     },
+        //     init: function () {
+        //         @if(isset($product) && $product->getMedia('images'))
+        //         var files = {!! json_encode($product->getMedia('images')) !!};
+        //         for (var i in files) {
+        //             var file = files[i];
+        //             this.options.addedfile.call(this, file);
+        //             this.options.thumbnail.call(this, file, file.original_url);
+        //             file.previewElement.classList.add('dz-complete');
+        //             $('form').append('<input type="hidden" name="document[]" value="' + file.file_name + '">');
+        //         }
+        //         @endif
+        //     }
+        // }
     </script>
 
     <script src="{{ asset('js/jquery-mask-money.js') }}"></script>

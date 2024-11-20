@@ -14,9 +14,30 @@ use Modules\Product\Http\Requests\StoreProductRequest;
 use Modules\Product\Http\Requests\UpdateProductRequest;
 use Modules\Upload\Entities\Upload;
 use Milon\Barcode\Facades\DNS1DFacade;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+    public function uploadImage(Request $request, $productId)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // validasi file gambar
+        ]);
+
+        $product = Product::findOrFail($productId);
+
+        // Proses upload gambar
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();  // beri nama file yang unik
+            $request->image->move(public_path('images'), $imageName);  // simpan ke folder 'images'
+
+            // Update path gambar di database
+            $product->image = $imageName;
+            $product->save();
+        }
+
+        return redirect()->back()->with('success', 'Gambar berhasil diupload.');
+    }
 
     public function generateUniqueBarcode()
     {
@@ -109,25 +130,58 @@ class ProductController extends Controller
         if ($product->is_default == true){
             toast(__('controller.is_default_error'), 'info');
         }else{
-            $product->update($request->except('document'));
+            $product->update($request->except('image'));
 
-            if ($request->has('document')) {
-                if (count($product->getMedia('images')) > 0) {
-                    foreach ($product->getMedia('images') as $media) {
-                        if (!in_array($media->file_name, $request->input('document', []))) {
-                            $media->delete();
-                        }
+            if ($request->hasFile('image')) {
+                // Hapus gambar lama jika ada
+             // Periksa apakah file gambar ada
+            // Periksa apakah file gambar ada
+                if ($product->image) {
+                    $imagePath = 'images/' . $product->image; // Pastikan path sesuai dengan yang ada di storage
+                    dd($imagePath);
+                    // Hapus gambar jika ada
+                    if (Storage::disk('public')->exists($imagePath)) {
+                        Storage::disk('public')->delete($imagePath);
                     }
                 }
 
-                $media = $product->getMedia('images')->pluck('file_name')->toArray();
 
-                foreach ($request->input('document', []) as $file) {
-                    if (count($media) === 0 || !in_array($file, $media)) {
-                        $product->addMedia(Storage::path('temp/dropzone/' . $file))->toMediaCollection('images');
-                    }
-                }
+                $image = $request->file('image');
+                $filename = Str::orderedUuid() . '.' . $image->getClientOriginalExtension(); // Nama file unik
+                // $imagePath = $image->storeAs('products', $filename, 'public'); // Menyimpan file di public/products
+                $request->image->move(public_path('images/products'), $filename);  // simpan ke folder 'images'
+
+                $product->update([
+                    'image' => 'products/' . $filename, // Update path gambar
+                ]);
             }
+
+               // Proses upload gambar
+            // if ($request->hasFile('document')) {
+            //     $imageName = time() . '.' . $request->image->extension();  // beri nama file yang unik
+            //     $request->image->move(public_path('images/products/'.$product->id), $imageName);  // simpan ke folder 'images'
+
+            //     // Update path gambar di database
+            //     $product->image = $imageName;
+            //     $product->save();
+            // }
+            // if ($request->has('document')) {
+            //     if (count($product->getMedia('images')) > 0) {
+            //         foreach ($product->getMedia('images') as $media) {
+            //             if (!in_array($media->file_name, $request->input('document', []))) {
+            //                 $media->delete();
+            //             }
+            //         }
+            //     }
+
+            //     $media = $product->getMedia('images')->pluck('file_name')->toArray();
+
+            //     foreach ($request->input('document', []) as $file) {
+            //         if (count($media) === 0 || !in_array($file, $media)) {
+            //             $product->addMedia(Storage::path('temp/dropzone/' . $file))->toMediaCollection('images');
+            //         }
+            //     }
+            // }
 
             toast(__('controller.updated'), 'info');
 
@@ -145,4 +199,5 @@ class ProductController extends Controller
 
         return redirect()->route('products.index');
     }
+
 }

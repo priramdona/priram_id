@@ -22,7 +22,7 @@ class ProductDataTable extends DataTable
             })
             ->addColumn('product_image', function ($data) {
                 $url = $data->getFirstMediaUrl('images', 'thumb');
-                return '<img src="'.$url.'" border="0" width="50" class="img-thumbnail" align="center"/>';
+                return '<img src="'.$data->image_url.'" border="0" width="50" class="img-fluid img-thumbnail mb-2 fixed-size-img" align="center"/>';
             })
             ->addColumn('product_price', function ($data) {
                 return format_currency($data->product_price);

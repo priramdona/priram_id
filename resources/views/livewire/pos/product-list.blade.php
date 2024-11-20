@@ -19,11 +19,8 @@
                     <div wire:click.prevent="selectProduct({{ $product }})" class="col-6 col-md-6 col-lg-4 mb-3" style="cursor: pointer;">
                         <div class="card border-0 shadow h-100">
                             <div class="position-relative">
-                                {{-- <img src="{{ $product->getFirstMediaUrl('images') }}" class="card-img-top" alt="Product Image" style="width: 100%; height: 100%; object-fit: fill;"> --}}
-                                <img src="{{ $product->getFirstMediaUrl('images') }}" class="card-img-top" alt="Product Image" style="width: 100%; height: 100%; object-fit: contain;">
-
-                                {{-- <img src="{{ $product->getFirstMediaUrl('images') }}" class="card-img-top" alt="Product Image" style="width: 100%; height: 100%; object-fit: cover;"> --}}
-                                <div class="badge badge-info mb-3 position-absolute" style="left:10px;top: 10px;">{{ __('sales.search_product.stock') }}: {{ $product->product_quantity }}</div>
+                                <img src="{{ $product->image_url }}" class="card-img-top" alt="Product Image" style="width: 100%; height: 100%; object-fit: contain;">
+                               <div class="badge badge-info mb-3 position-absolute" style="left:10px;top: 10px;">{{ __('sales.search_product.stock') }}: {{ $product->product_quantity }}</div>
                             </div>
                             <div class="card-body">
                                 <div class="mb-2">

@@ -152,7 +152,7 @@ class Checkout extends Component
 
             return;
         }
-        $image_url = isset($product['media'][0]['original_url']) ? $product['media'][0]['original_url'] : null;
+        $imageUrl = isset($product['image']) ? asset('images/' . $product['image']) : asset('images/default.png');
 
         $dataAdd = $cart->add([
             'id'      => $product['id'],
@@ -161,7 +161,7 @@ class Checkout extends Component
             'price'   => $this->calculate($product)['price'],
             'weight'  => 1,
             'options' => [
-                'image' => $image_url,
+                'image' => $imageUrl,
                 'product_discount'      => 0.00,
                 'product_discount_type' => 'fixed',
                 'sub_total'             => $this->calculate($product)['sub_total'],

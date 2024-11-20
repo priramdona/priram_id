@@ -57,11 +57,7 @@
                         @foreach($search_results as $result)
                             <li class="list-group-item list-group-item-action">
                                 <a wire:click="resetQuery" wire:click.prevent="selectProduct({{ $result }})" href="#">
-                                    @forelse($result->getMedia('images') as $media)
-                                        <img src="{{ $media->getUrl() }}" alt="{{ $result->product_name }}" border="0" width="50" class="img-thumbnail" align="center">
-                                    @empty
-                                        <img src="{{ $result->getFirstMediaUrl('images') }}" alt="Product Image" border="0" width="50" class="img-thumbnail" align="center">
-                                    @endforelse
+                                        <img src="{{ $result->image_url }}" alt="Product Image" border="0" width="50" class="img-thumbnail" align="center">
                                     {{ $result->product_name }} | {{ $result->product_code }}
                                 </a>
                             </li>

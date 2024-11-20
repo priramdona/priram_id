@@ -21,14 +21,7 @@
             <div class="col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        @forelse($product->getMedia('images') as $media)
-                        {{-- {{ dd($product->getFirstMediaUrl('images', 'thumb')) }} --}}
-                            <img src="{{ $media->getUrl() }}" alt="Product Image" class="img-fluid img-thumbnail mb-2">
-                        @empty
-                        {{-- {{ dd($product->media->toArray()) }} --}}
-
-                            <img src="{{ $product->getFirstMediaUrl('images') }}" alt="Product Image" class="img-fluid img-thumbnail mb-2">
-                        @endforelse
+                            <img src="{{ $product->image_url }}" alt="Product Image" class="img-fluid img-thumbnail mb-2 fixed-size-img">
                     </div>
                 </div>
             </div>
@@ -113,6 +106,11 @@
 
 @push('page_css')
 <style>
+    .fixed-size-img {
+    width: 100%;     /* Mengatur gambar agar lebar 100% dari lebar div */
+    height: auto;    /* Menyesuaikan tinggi untuk menjaga rasio */
+    object-fit: cover; /* Menjamin gambar memenuhi area div jika diperlukan */
+}
     .product-details {
         display: flex;
         flex-wrap: wrap;

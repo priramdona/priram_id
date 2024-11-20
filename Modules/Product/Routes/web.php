@@ -13,6 +13,7 @@ Route::get('/product-sale/{product}', [ProductController::class, 'showsale'])->n
 // Route::get('/purchase-payments/{purchase_id}', 'PurchasePaymentsController@index')->name('purchase-payments.index');
 
 Route::group(['middleware' => 'auth'], function () {
+    Route::post('product/{product}/upload-image', [ProductController::class, 'uploadImage'])->name('product.uploadImage');
     //Print Barcode
     Route::get('/products/print-barcode', 'BarcodeController@printBarcode')->name('barcode.print');
     //Product
