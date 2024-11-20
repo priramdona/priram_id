@@ -65,21 +65,21 @@
 <body>
 
 <div class="page">
-        <div id="receipt-data">
+        <div id="receipt-data" style="width: 90%;">
             <div class="centered">
-            <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
+                <h3>{{ settings()->company_name }}</h3>
 
-            <p style="font-size: 11px;line-height: 15px;margin-top: 0">
-                {{ settings()->company_email }}, {{ settings()->company_phone }}
-                <br>{{ settings()->company_address }}
-            </p>
-        </div>
-        <p>
+                <p style="font-size: 8px;margin-top: 0">
+                    {{ settings()->company_email }}, {{ settings()->company_phone }}
+                    <br>{{ settings()->company_address }}
+                </p>
+            </div>
+            <p>
             {{ __('sales.pos_receipt.date') }}: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}<br>
             {{ __('sales.pos_receipt.reference') }}: {{ $sale->reference }}<br>
             {{ __('sales.pos_receipt.customer_name') }}: {{ $sale->customer_name }}
         </p>
-        <table class="table-data">
+        <table class="table-data" border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
                 <tr>
@@ -111,7 +111,7 @@
                 </tr>
             @endif
             <tr>
-                <th colspan="2" style="text-align:left">{{ __('sales.pos_receipt.total_label') }}</th>
+                <th style="text-align:left">{{ __('sales.pos_receipt.total_label') }}</th>
                 <th style="text-align:right">{{ format_currency($sale->total_amount) }}</th>
             </tr>
             @if($sale->additional_paid_amount > 0)
@@ -144,6 +144,7 @@
                 </tr>
             </tbody>
         </table>
+    </div>
 </div>
 
 </body>
