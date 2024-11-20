@@ -7,6 +7,7 @@ use Modules\Product\DataTables\ProductDataTable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Modules\Product\Entities\Product;
@@ -46,9 +47,10 @@ class ProductController extends Controller
             $barcode = mt_rand(100000000000, 999999999999);
 
             // Check if the generated barcode already exists in product_code column
-            $exists = Product::where('product_code', $barcode)->exists();
+            $exists = Product::where('product_code', $barcode)
+            ->where('business_id',Auth::user()->businessIid)
+            ->exists();
         } while ($exists);
-
         // Return barcode HTML and the code itself
         $barcodeHtml = DNS1DFacade::getBarcodeHTML($barcode, 'EAN13');
 
@@ -88,15 +90,30 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request) {
         $user = $request->user();
-        $arrayRequestValue = $request->except('document');
+        $arrayRequestValue = $request->except('image');
         $arrayRequestValue['business_id'] = $user->business_id;
 
         $product = Product::create($arrayRequestValue);
 
-        if ($request->has('document')) {
-            foreach ($request->input('document', []) as $file) {
-                $product->addMedia(Storage::path('temp/dropzone/' . $file))->toMediaCollection('images');
+
+        if ($request->hasFile('image')) {
+
+            if ($product->image) {
+                $imagePath = 'images/' . $product->image; // Pastikan path sesuai dengan yang ada di storage
+                // Hapus gambar jika ada
+                if (Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
+                }
             }
+
+            $image = $request->file('image');
+            $filename = Str::orderedUuid() . '.' . $image->getClientOriginalExtension(); // Nama file unik
+            // $imagePath = $image->storeAs('products', $filename, 'public'); // Menyimpan file di public/products
+            $request->image->move(public_path('images/products'), $filename);  // simpan ke folder 'images'
+
+            $product->update([
+                'image' => 'products/' . $filename, // Update path gambar
+            ]);
         }
 
         toast(__('controller.created'), 'success');
