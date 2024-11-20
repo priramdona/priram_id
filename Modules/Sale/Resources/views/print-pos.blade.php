@@ -88,7 +88,7 @@
 </head>
 <body>
 
-    <div class="page">
+<div class="page">
         <div id="receipt-data">
             <div class="centered">
             <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
@@ -168,7 +168,6 @@
                 </tr>
             </tbody>
         </table>
-    </div>
 </div>
 
 </body>
