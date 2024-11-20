@@ -61,7 +61,7 @@
 </head>
 <body>
 
-<div class="page" style="max-width:200px;margin:0 auto">
+<div class="page" style="max-width:100%;margin:0 auto">
         <div id="receipt-data" style="width: 100%;">
             <div class="centered">
                 <h2>{{ settings()->company_name }}</h2>
