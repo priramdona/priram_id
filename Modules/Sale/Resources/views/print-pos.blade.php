@@ -9,39 +9,34 @@
     <style>
         @media print {
             @page {
-                size: 80mm auto;
-                margin: 0;
+                size: 80mm auto; /* Lebar tetap 80mm, tinggi menyesuaikan konten */
+                margin: 0; /* Hilangkan margin otomatis */
             }
-
             body {
                 margin: 0;
                 padding: 0;
+                width: 80mm;
             }
-
             .page {
                 width: 80mm;
                 margin: 0 auto;
                 overflow: visible;
                 page-break-inside: avoid;
             }
-
             table, tbody, tr, td {
-                page-break-inside: avoid;
-            }
-
-            tbody::after {
-                content: none;
+                page-break-inside: avoid; /* Hindari pemutusan tabel */
             }
         }
 
         * {
             font-size: 12px;
             line-height: 18px;
-            font-family: 'Ubuntu', sans-serif;
+            font-family: 'Arial', sans-serif; /* Gunakan font sans-serif untuk kejelasan */
         }
 
         h2 {
             font-size: 16px;
+            margin: 0;
         }
 
         td, th {
