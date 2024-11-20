@@ -79,6 +79,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness T-shirt New Olive',
+                'image' => 'seeder_images/1.jpg',
                 'product_code' => $barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -105,6 +106,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness CoolTech Coca Mocha',
+                'image' => 'seeder_images/2.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -133,6 +135,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Otter OS T-Shirt White HG',
+                'image' => 'seeder_images/3.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -160,6 +163,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Otter OS T-Shirt Steel Blue',
+                'image' => 'seeder_images/4.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -187,6 +191,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Otter OS T-Shirt Red',
+                'image' => 'seeder_images/5.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -214,6 +219,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Otter OS T-Shirt Black',
+                'image' => 'seeder_images/6.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -249,6 +255,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Polo Slim Olive',
+                'image' => 'seeder_images/7.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -277,6 +284,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Polo Slim Black',
+                'image' => 'seeder_images/8.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -305,6 +313,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Polo Slim Morning Green',
+                'image' => 'seeder_images/9.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -343,6 +352,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Runner Sweater Olive',
+                'image' => 'seeder_images/10.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -371,6 +381,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Runner Sweater Navy',
+                'image' => 'seeder_images/11.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -398,6 +409,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Runner Sweater MIsty 68',
+                'image' => 'seeder_images/12.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -425,6 +437,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Runner Sweater MIsty 71',
+                'image' => 'seeder_images/13.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -463,6 +476,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Boxing Hood Maroon',
+                'image' => 'seeder_images/14.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -491,6 +505,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Boxing Hood Misty',
+                'image' => 'seeder_images/15.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -519,6 +534,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Boxing Hood D Jon',
+                'image' => 'seeder_images/16.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -547,6 +563,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Boxing Hood Black',
+                'image' => 'seeder_images/17.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -583,6 +600,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie zipper Olive',
+                'image' => 'seeder_images/18.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -611,6 +629,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie zipper Red',
+                'image' => 'seeder_images/19.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -640,6 +659,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie zipper Beige',
+                'image' => 'seeder_images/20.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -668,6 +688,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie zipper Rotten Yellow',
+                'image' => 'seeder_images/21.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -695,6 +716,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie Camouflage zipperper M90 Camo',
+                'image' => 'seeder_images/22.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -723,6 +745,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Hoodie Zipper Light Pink',
+                'image' => 'seeder_images/23.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -761,6 +784,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Olive',
+                'image' => 'seeder_images/24.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -787,6 +811,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Navy',
+                'image' => 'seeder_images/25.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -814,6 +839,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Dark Grey',
+                'image' => 'seeder_images/26.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -841,6 +867,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Classic Blue',
+                'image' => 'seeder_images/27.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -868,6 +895,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Black',
+                'image' => 'seeder_images/28.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -895,6 +923,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Beige',
+                'image' => 'seeder_images/29.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -921,6 +950,7 @@ class ProductDatabaseSeeder extends Seeder
             $product = Product::create([
                 'category_id' => $category->id,
                 'product_name' => 'Human Greatness Diamond Coca Mocha',
+                'image' => 'seeder_images/30.jpg',
                 'product_code' =>$barcodeGenerator->generateBarcode(),
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
@@ -958,6 +988,7 @@ class ProductDatabaseSeeder extends Seeder
                 'category_id' => $category->id,
                 'product_name' => 'Baygon spray orchid greentea 600ml & floral Garden 600+75ml',
                 'product_code' => '8998899996080',
+                'image' => 'seeder_images/31.jpg',
                 'product_barcode_symbology' => 'EAN13',
                 'product_quantity' => '1000',
                 'product_cost' => '30000',
