@@ -7,41 +7,48 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        @media print {
-            @page {
-                size: 58mm auto; /* Lebar tetap 80mm, tinggi menyesuaikan konten */
-                margin: 0; /* Hilangkan margin otomatis */
-            }
-            body {
-                margin: 0;
-                padding: 0;
-                width: 58mm;
-            }
-            .page {
-                width: 58mm;
-                margin: 0 auto;
-                overflow: visible;
-                page-break-inside: avoid;
-            }
-            table, tbody, tr, td {
-                page-break-inside: avoid; /* Hindari pemutusan tabel */
-            }
-        }
-
         * {
-            font-size: 8px;
+            font-size: 12px;
             line-height: 18px;
-            font-family: 'Arial', sans-serif; /* Gunakan font sans-serif untuk kejelasan */
+            font-family: 'Ubuntu', sans-serif;
         }
-
         h2 {
-            font-size: 10px;
-            margin: 0;
+            font-size: 16px;
         }
+        td,
+        th,
+        tr,
+        table {
+            border-collapse: collapse;
+        }
+        tr {border-bottom: 1px dashed #ddd;}
+        td,th {padding: 7px 0;width: 50%;}
 
+        table {width: 100%;}
+        tfoot tr th:first-child {text-align: left;}
 
         .centered {
             text-align: center;
+            align-content: center;
+        }
+        small{font-size:11px;}
+
+        @media print {
+            * {
+                font-size:12px;
+                line-height: 20px;
+            }
+            td,th {padding: 5px 0;}
+            .hidden-print {
+                display: none !important;
+            }
+            tbody::after {
+                content: '';
+                display: block;
+                page-break-after: always;
+                page-break-inside: auto;
+                page-break-before: avoid;
+            }
         }
     </style>
     <script>
@@ -61,97 +68,76 @@
 </head>
 <body>
 
-<div class="page">
-        <div id="receipt-data" style="width: 70%;">
-            <div class="centered">
-                <h2>{{ settings()->company_name }}</h2>
+<div style="max-width:400px;margin:0 auto">
+    <div id="receipt-data">
+        <div class="centered">
+            <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
 
-                <p style="font-size: 8px;line-height: 8px;margin-top: 0">
-                    {{ settings()->company_email }}, {{ settings()->company_phone }}
-                    <br>{{ settings()->company_address }}
-                </p>
-            </div>
-            <p>
-            {{ __('sales.pos_receipt.date') }}: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}<br>
-            {{ __('sales.pos_receipt.reference') }}: {{ $sale->reference }}<br>
-            {{ __('sales.pos_receipt.customer_name') }}: {{ $sale->customer_name }}
+            <p style="font-size: 11px;line-height: 15px;margin-top: 0">
+                {{ settings()->company_email }}, {{ settings()->company_phone }}
+                <br>{{ settings()->company_address }}
+            </p>
+        </div>
+        <p>
+            Date: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}<br>
+            Reference: {{ $sale->reference }}<br>
+            Name: {{ $sale->customer_name }}
         </p>
-        <table  border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <table class="table-data">
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
-                <tr >
-                    <td style="width: 60%; text-align: left;border-top: 1px Dotted #514d6a; font-size: 8px;">
-                        {{  ($saleDetail->product->product_name) }}
-                        <br>
-                        ({{ $saleDetail->quantity }} x {{ str_replace('.00','',str_replace('Rp. ','',format_currency($saleDetail->price))) }})
+                <tr>
+                    <td colspan="2">
+                        {{ $saleDetail->product->product_name }}
+                        ({{ $saleDetail->quantity }} x {{ format_currency($saleDetail->price) }})
                     </td>
-                    <td style="width: 40%; text-align: right;vertical-align:bottom; border-top: 1px Dotted #514d6a; font-size: 8px;">{{ str_replace('.00','',str_replace('Rp. ','',format_currency($saleDetail->sub_total))) }}</td>
+                    <td style="text-align:right;vertical-align:bottom">{{ format_currency($saleDetail->sub_total) }}</td>
                 </tr>
             @endforeach
 
-            @if($sale->tax_percentage > 0)
-            <tr >
-                    <td style="width: 60%; text-align: left; ">{{ __('sales.pos_receipt.tax_label') }} ({{ $sale->tax_percentage }}%)</td>
-                    <td style="width: 40%; text-align: right;">{{ format_currency($sale->tax_amount) }}</td>
+            @if($sale->tax_percentage)
+                <tr>
+                    <th colspan="2" style="text-align:left">Tax ({{ $sale->tax_percentage }}%)</th>
+                    <th style="text-align:right">{{ format_currency($sale->tax_amount) }}</th>
                 </tr>
             @endif
-            @if($sale->discount_percentage > 0)
+            @if($sale->discount_percentage)
                 <tr>
-                    <td style="width: 60%; text-align: left;">{{ __('sales.pos_receipt.discount_label') }} ({{ $sale->discount_percentage }}%)</td>
-                    <td style="width: 40%; text-align: right;">{{ format_currency($sale->discount_amount) }}</td>
+                    <th colspan="2" style="text-align:left">Discount ({{ $sale->discount_percentage }}%)</th>
+                    <th style="text-align:right">{{ format_currency($sale->discount_amount) }}</th>
                 </tr>
             @endif
-            @if($sale->shipping_amount > 0)
+            @if($sale->shipping_amount)
                 <tr>
-                    <td style="width: 60%; text-align: left;">{{ __('sales.pos_receipt.shipping_label') }}</td>
-                    <td style="width: 40%; text-align: right;">{{ format_currency($sale->shipping_amount) }}</td>
+                    <th colspan="2" style="text-align:left">Shipping</th>
+                    <th style="text-align:right">{{ format_currency($sale->shipping_amount) }}</th>
                 </tr>
             @endif
             <tr>
-                <td style="width: 60%; text-align: left;">{{ __('sales.pos_receipt.total_label') }}</td>
-                <td style="width: 40%; text-align: right;">{{ format_currency($sale->total_amount) }}</td>
+                <th colspan="2" style="text-align:left">Grand Total</th>
+                <th style="text-align:right">{{ format_currency($sale->total_amount) }}</th>
             </tr>
-            @if($sale->additional_paid_amount > 0)
-            <tr>
-                <td style="width: 60%; text-align: left;">{{ __('sales.pos_receipt.additional_amount_label') }}</td>
-                <td style="width: 40%; text-align: right;">{{ format_currency($sale->additional_paid_amount) }}</td>
-            </tr>
-            @endif
             </tbody>
         </table>
-        <table  border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <table>
             <tbody>
-                <tr>
-                    <td style="width: 60%; text-align: left; font-weight: bold; border-top: 1px solid #514d6a; ">
-                        {{ __('sales.pos_receipt.payment.paid_by') }}: {{ $sale->payment_method }}
+                <tr style="background-color:#ddd;">
+                    <td class="centered" style="padding: 5px;">
+                        Paid By: {{ $sale->payment_method }}
                     </td>
-                    <td style="width: 40%; text-align: right;font-weight: bold; border-top: 1px solid #514d6a;">
-                       {{ format_currency($sale->total_paid_amount) }}
-                    </td>
-                </tr>
-
-            </tbody>
-        </table>
-        <table  border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
-            <tbody>
-                <tr style="border-bottom: 0;">
-                    <td style="width: 100%; text-align: center; ">
-                        {{ __('sales.pos_receipt.scan_label') }}
+                    <td class="centered" style="padding: 5px;">
+                        Amount: {{ format_currency($sale->paid_amount) }}
                     </td>
                 </tr>
                 <tr style="border-bottom: 0;">
-                    <td style="width: 100%; text-align: center; ">
-                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 50px; height: 50px;" />
-                    </td>
-                </tr>
-                <tr style="border-bottom: 0;">
-                    <td style="width: 100%; text-align: center; ">
-                        {{ __('sales.pos_receipt.thankyou') }}
+                    <td class="centered" colspan="3">
+                        <div style="margin-top: 10px;">
+                            {!! \Milon\Barcode\Facades\DNS1DFacade::getBarcodeSVG($sale->reference, 'C128', 1, 25, 'black', false) !!}
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-
     </div>
 </div>
 
