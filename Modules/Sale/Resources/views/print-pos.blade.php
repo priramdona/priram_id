@@ -62,7 +62,7 @@
 <body>
 
 <div class="page" style="max-width:200px;margin:0 auto">
-        <div id="receipt-data" style="width: 70%;">
+        <div id="receipt-data" style="width: 100%;">
             <div class="centered">
                 <h2>{{ settings()->company_name }}</h2>
 
@@ -77,7 +77,7 @@
             {{ __('sales.pos_receipt.reference') }}: {{ $sale->reference }}<br>
             {{ __('sales.pos_receipt.customer_name') }}: {{ $sale->customer_name }}
         </p>
-        <table  border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <table  border="0" cellpadding="0" cellspacing="0" style="width: 100%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
                 <tr >
@@ -120,7 +120,7 @@
             @endif
             </tbody>
         </table>
-        <table  border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <table  border="0" cellpadding="0" cellspacing="0" style="width: 100%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
             <tbody>
                 <tr>
                     <td style="width: 60%; text-align: left; font-weight: bold; border-top: 1px solid #514d6a; ">
@@ -133,7 +133,7 @@
 
             </tbody>
         </table>
-        <table  border="0" cellpadding="0" cellspacing="0" style="width: 90%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <table  border="0" cellpadding="0" cellspacing="0" style="width: 100%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif;">
             <tbody>
                 <tr style="border-bottom: 0;">
                     <td style="width: 100%; text-align: center; ">
