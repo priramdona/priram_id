@@ -7,7 +7,23 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        /* Atur ukuran halaman */
+        @media print {
+            body {
+                width: 80mm;
+                margin: 0;
+                padding: 0;
+            }
+        }
 
+        /* Jika ingin diatur untuk tampilan layar */
+        .page {
+            width: 80mm;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-sizing: border-box;
+        }
         * {
             font-size: 12px;
             line-height: 18px;
@@ -55,12 +71,26 @@
             }
         }
     </style>
+    <script>
+        function invokePrint() {
+            if (typeof Android !== "undefined" && Android.printPage) {
+                // Panggil metode print di Android
+                Android.printPage();
+            } else {
+                console.log("Android interface not available");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
+        });
+    </script>
 </head>
 <body>
 
-<div style="max-width:226.77px;margin:0 auto">
-    <div id="receipt-data">
-        <div class="centered">
+    <div class="page">
+        <div id="receipt-data">
+            <div class="centered">
             <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
 
             <p style="font-size: 11px;line-height: 15px;margin-top: 0">
@@ -78,7 +108,8 @@
             @foreach($sale->saleDetails as $saleDetail)
                 <tr>
                     <td colspan="2">
-                        {{ $saleDetail->product->product_name }}
+                        {{  ($saleDetail->product->product_name) }}
+                        <br>
                         ({{ $saleDetail->quantity }} x {{ format_currency($saleDetail->price) }})
                     </td>
                     <td style="text-align:right;vertical-align:bottom">{{ format_currency($saleDetail->sub_total) }}</td>
