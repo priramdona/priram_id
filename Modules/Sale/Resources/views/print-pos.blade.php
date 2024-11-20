@@ -139,7 +139,7 @@
                 </tr>
                 <tr style="border-bottom: 0;">
                     <td class="centered" colspan="3">
-                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 100px; height: 100px;" />/>
+                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 50px; height: 50px;" />/>
                     </td>
                 </tr>
             </tbody>
