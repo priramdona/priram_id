@@ -154,18 +154,16 @@
                     <div  name="action_account_account" id="action_account_account" hidden>
                         <span style="font-size: 12px; color: #007bff; font-weight: bold;">{{ __('checkout_modal.payment_action.account_no') }}</span><br>
                         <label class="text-primary" style="font-weight: bold; font-size: 24px;" name="input_payment_action_account" id="input_payment_action_account"></label>
-
                         <p class="form-group align-middle text-left" >{{ __('checkout_modal.payment_action.account_name') }} : <span id="name_action_account" style="font-size: 18px; color: #007bff; font-weight: bold;"></span></p>
                         <p class="form-group align-middle text-left" >{{ __('checkout_modal.payment_action.account_expired') }} : <span id="exp_action_account" style="font-size: 18px; color: #007bff; font-weight: bold;"></span></p>
-
                     </div>
                     <div  name="action_account_info" id="action_account_info" hidden>
                         <label class="text-primary" style="font-weight: bold; font-size: 18px;" name="input_payment_action_info" id="input_payment_action_info"></label>
                     </div>
-                    <div  name="action_account_url" id="action_account_url" hidden>
-                        <iframe id="urlIframe" width="100%" height="450px" frameborder="0"></iframe>
+                    <div name="action_account_url" id="action_account_url" hidden>
+                        <iframe id="urlIframe" width="100%" height="400px" frameborder="0"></iframe>
+                        <button id="refreshIframe" class="btn btn-primary mt-2">{{ __('checkout_modal.payment_action.refresh') }}</button>
                     </div>
-
                     <div class="card" name="input_payment_detail" id="input_payment_detail" hidden>
                         <div class="card-header d-flex flex-wrap align-items-center">
                             <span id="input_payment_detail_label" style="font-size: 16px; color: #b84a01; font-weight: bold;"></span>
@@ -182,14 +180,12 @@
                     <br>
                     <div>
                         <label class="text-success" style="font-weight: bold; font-size: 24px;" name="nominal_information" id="nominal_information"></label>
-                        </div>
+                    </div>
                 </div>
-
-                <p id="lbl_payment_information">{{ __('checkout_modal.payment_action.footer_info') }}</p>
+                {{-- <p id="lbl_payment_information">{{ __('checkout_modal.payment_action.footer_info') }}</p> --}}
 
             </div>
             <div class="modal-footer">
-
                 <button type="button" class="btn btn-success" name="checkPayment" id="checkPayment" onclick="fetchpaymentstatus()">{{ __('checkout_modal.payment_action.button_check_payment') }}</button>
                 <button type="button" class="btn btn-primary" name="manualConfirmation" id="manualConfirmation" onclick="manualnewtransacation()" >{{ __('checkout_modal.payment_action.button_new_transaction') }}</button>
                 {{-- <button type="button" class="btn btn-warning" name="setToWaiting" id="setToWaiting" hidden>Set to Waiting status</button> --}}
@@ -202,6 +198,12 @@
     const messages = @json(__('checkout_modal.continue_payment'));
     var isSubmitting = false;
     var startautosave;
+
+      // Tombol untuk refresh iframe
+    document.getElementById('refreshIframe').addEventListener('click', function() {
+        const iframe = document.getElementById('urlIframe');
+        iframe.src = iframe.src; // Reload hanya iframe
+    });
 
     function newtransaction() {
         clearInterval(startautosave);
@@ -461,7 +463,7 @@
                                                                     $('#name_action_account').text(namaLengkap);
                                                                     $('#exp_action_account').text(response.expired_response);
                                                                     $('#action_account_url').attr('hidden', false);
-                                                                    $('#action_account_account').attr('hidden', false);
+                                                                    $('#action_account_account').attr('hidden', true);
                                                                     $('#action_account_barcode').attr('hidden', true);
                                                                     $('#action_account_info').attr('hidden', true);
                                                                     document.getElementById('urlIframe').src = response.value_response;

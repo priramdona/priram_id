@@ -412,8 +412,8 @@ class PaymentGatewayController extends Controller
             ],
             'customer_notification_preference' => $notificationPreference,
             'invoice_duration' => $expryDuration,
-            'success_redirect_url' => 'https://redirect.me/success', //webView if Success
-            'failure_redirect_url' => 'https://redirect.me/failure',
+            'success_redirect_url' => route('succespayment'), //webView if Success
+            'failure_redirect_url' => route('failedpayment'),
 
             'payment_methods' => $paymentMethods,
             'currency' => 'IDR',
@@ -542,8 +542,8 @@ class PaymentGatewayController extends Controller
                 'invoice_paid' => ['whatsapp', 'email']
             ],
             'invoice_duration' => 86400,
-            'success_redirect_url' => 'https://redirect.me/success', //webView if Success
-            'failure_redirect_url' => 'https://redirect.me/failure',
+            'success_redirect_url' => route('succespayment'), //webView if Success
+            'failure_redirect_url' => route('failedpayment'),
 
             'payment_methods' => [
                 "CREDIT_CARD",
@@ -643,8 +643,8 @@ class PaymentGatewayController extends Controller
                 "plan_id" => $planId,
                 "reference_id" => $refId,
                 "checkout_method" => "ONE_TIME_PAYMENT",
-                'success_redirect_url' => 'https://redirect.me/success', //webView if Success
-                'failure_redirect_url' => 'https://redirect.me/failure', //webView if Failed
+                'success_redirect_url' => route('succespayment'), //webView if Success
+                'failure_redirect_url' => route('failedpayment'), //webView if Failed
             ];
 
             $dataRequest = Http::withHeaders([
@@ -1205,13 +1205,13 @@ class PaymentGatewayController extends Controller
             }
             else if ($channelCode == 'DANA' || $channelCode == 'LINKAJA' || $channelCode == 'SHOPEEPAY'  ){
                 $channelProperties = [
-                    'success_return_url' => 'https://redirect.me/success',
+                    'success_return_url' => route('succespayment'),
                 ];
             }
             else{
                 $channelProperties = [
-                    'success_return_url' => 'https://redirect.me/success',
-                    'failure_return_url' => 'https://redirect.me/failure',
+                    'success_return_url' => route('succespayment'),
+                    'failure_return_url' =>route('failed'),
                 ];
             }
 

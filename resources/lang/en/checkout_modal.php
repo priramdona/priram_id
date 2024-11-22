@@ -51,6 +51,7 @@ return [
         ],
     ],
     'payment_action' => [
+        'refresh' => 'Refresh',
         'account_no' => 'Number of Account',
         'account_name' => 'Name :',
         'account_expired' => 'Expired :',

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('reference')->nullable();
             $table->boolean('is_pos')->default(false);
             $table->boolean('is_sale')->default(false);
+            $table->boolean('is_selforder')->default(false);
             $table->boolean('is_income')->default(false);
             $table->boolean('is_purchase')->default(false);
             $table->boolean('is_sale_return')->default(false);

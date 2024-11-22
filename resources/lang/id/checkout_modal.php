@@ -30,6 +30,7 @@ return [
     'proceed_payment' => 'Lanjut Pembayaran',
     'close' => 'Tutup',
     'payment_action' => [
+        'refresh' => 'Perbarui',
         'account_no' => 'Nomor Akun',
         'account_name' => 'Nama',
         'account_expired' => 'Berlaku hingga',

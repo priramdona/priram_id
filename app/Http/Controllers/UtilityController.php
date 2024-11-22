@@ -7,6 +7,15 @@ use Illuminate\Http\Request;
 
 class UtilityController extends Controller
 {
+    public function succesPayment()
+    {
+        return view('callback.success_payment');
+    }
+    public function failedPayment()
+    {
+        return view('callback.failed_payment');
+    }
+
     public function encryptData($data)
     {
         $key = env('LOCKKEY');
