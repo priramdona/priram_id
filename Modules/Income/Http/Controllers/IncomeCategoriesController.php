@@ -2,7 +2,7 @@
 
 namespace Modules\Income\Http\Controllers;
 
-use Modules\Income\DataTables\IncomeCategoriesDataTable;
+use Modules\Income\Datatables\IncomeCategoriesDataTable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
