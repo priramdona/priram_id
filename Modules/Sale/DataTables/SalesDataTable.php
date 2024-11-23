@@ -38,7 +38,6 @@ class SalesDataTable extends DataTable
     }
 
     public function query(Sale $model) {
-
         return $model->where('business_id',Auth::user()->business_id)->newQuery();
     }
 
@@ -50,7 +49,7 @@ class SalesDataTable extends DataTable
             ->dom("<'row'<'col-md-3'l><'col-md-5 mb-2'B><'col-md-4'f>> .
                                 'tr' .
                                 <'row'<'col-md-5'i><'col-md-7 mt-2'p>>")
-            ->orderBy(8)
+            ->orderBy(7)
             ->buttons(
                 Button::make('excel')
                     ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('sales.datatable.buttons.excel')),
@@ -97,14 +96,15 @@ class SalesDataTable extends DataTable
                 ->title(__('sales.datatable.columns.payment_status'))
                 ->className('text-center align-middle'),
 
-            Column::computed('action')
-                ->title(__('sales.datatable.columns.action'))
-                ->exportable(false)
-                ->printable(false)
-                ->className('text-center align-middle'),
+                Column::make('created_at')
+                ->visible(false),
 
-            Column::make('created_at')
-                ->visible(false)
+            // Column::computed('action')
+            //     ->title(__('sales.datatable.columns.action'))
+            //     ->exportable(false)
+            //     ->printable(false)
+            //     ->className('text-center align-middle'),
+
         ];
     }
 

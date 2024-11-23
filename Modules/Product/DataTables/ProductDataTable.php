@@ -65,26 +65,9 @@ class ProductDataTable extends DataTable
                 ->parameters([
                     'responsive' => true,
                     'autoWidth' => true,
-                'scrollX' => true,
-                // 'columnDefs' => [
-                //     ['responsivePriority' => 1, 'targets' => 0],
-                //     ['responsivePriority' => 2, 'targets' => -1],
-                //     ['responsivePriority' => 3, 'targets' => 1],
-                // ],
+                    'scrollX' => true,
                     'language' => __('products.datatable'),
             ]);
-            // ->parameters([
-            //     'responsive' => true,
-            //     'autoWidth' => false,
-            //     'scrollX' => true,
-            //     'columnDefs' => [
-            //         ['responsivePriority' => 1, 'targets' => 0],
-            //         ['responsivePriority' => 2, 'targets' => -1],
-            //         ['responsivePriority' => 3, 'targets' => 1],
-            //     ],
-            //     'language' => __('product::products.datatable'),
-            //     // 'drawCallback' => 'function() { initHoldClickScroll(); }',
-            // ]);
     }
 
     protected function getColumns()

@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'action_modal' => 'Tindakan',
+    'action_modal_label' => 'Pilih tindakan anda.',
+    'action_show' => 'Lihat',
+    'action_edit' => 'Ubah',
+    'action_cancel' => 'Batal',
+    'action_delete' => 'Hapus',
+    'action_confirm_delete' => 'Ya, Hapus!',
     'add_payments' => [
         'update_payment' => 'Ubah Pembayaran',
         'create_payment' => 'Buat Pembayaran',
@@ -120,7 +127,7 @@ return [
             'excel' => 'Excel',
             'print' => 'Cetak',
             'reset' => 'Reset',
-            'reload' => 'Muat Ulang'
+            'reload' => 'Reload'
         ]
 
     ],
@@ -234,8 +241,8 @@ return [
         'scan_label' => 'Pindai untuk melihat detail'
     ],
     'actions' => [
-        'pos_invoice' => 'Faktur POS',
-        'show_payments' => 'Lihat Pembayaran',
+        'pos_invoice' => 'Struk',
+        'show_payments' => 'Pembayaran',
         'add_payment' => 'Tambah Pembayaran',
         'edit' => 'Edit',
         'details' => 'Detail',

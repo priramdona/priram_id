@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'action_modal' => 'Select Action',
+    'action_modal_label' => 'Select Action what you want to do',
+    'action_show' => 'Show',
+    'action_edit' => 'Edit',
+    'action_cancel' => 'Cancel',
+    'action_delete' => 'Delete',
+    'action_confirm_delete' => 'Yes, Delete it',
     'add_payments' => [
         'create_payment' => 'Create payment',
         'reference' => 'Reference',
@@ -230,8 +237,8 @@ return [
         'thankyou' => 'Thanks You'
     ],
     'actions' => [
-        'pos_invoice' => 'POS Invoice',
-        'show_payments' => 'Show Payments',
+        'pos_invoice' => 'Invoice',
+        'show_payments' => 'Payments',
         'add_payment' => 'Add Payment',
         'edit' => 'Edit',
         'details' => 'Details',

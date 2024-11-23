@@ -79,6 +79,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::get('/get-paylater-plans', [PosController::class, 'paylaterPlans']);
     //Payments
     Route::get('/sale-payments/{sale_id}', 'SalePaymentsController@index')->name('sale-payments.index');
+    Route::get('/get-payment-sales', 'SalePaymentsController@getPaymentSales')->name('getpaymentsales');
     Route::get('/sale-payments/{sale_id}/create', 'SalePaymentsController@create')->name('sale-payments.create');
     Route::post('/sale-payments/store', 'SalePaymentsController@store')->name('sale-payments.store');
     Route::get('/sale-payments/{sale_id}/edit/{salePayment}', 'SalePaymentsController@edit')->name('sale-payments.edit');

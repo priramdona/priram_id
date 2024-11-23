@@ -22,6 +22,21 @@ class SalePaymentsController extends Controller
         return $dataTable->render('sale::payments.index', compact('sale'));
     }
 
+    public function getPaymentSales(request $request) {
+
+        $result = "1";
+        $salePaymentData = SalePayment::where('sale_id',$request->sale_id)
+        ->whereNotNull('payment_channel_id')
+        ->get();
+
+        if (blank($salePaymentData)){
+            $result = "0";
+        }
+
+        return response()->json([
+            'result' => $result
+        ]);
+    }
 
     public function create($sale_id) {
         abort_if(Gate::denies('access_sale_payments'), 403);
@@ -33,6 +48,16 @@ class SalePaymentsController extends Controller
 
 
     public function store(Request $request) {
+        $salePaymentInfo = SalePayment::where('sale_id',$request->sale_id)
+        ->get();
+
+        foreach( $salePaymentInfo as  $salePayment){
+            if (!blank($salePaymentInfo->payment_channel_id)){
+                toast(__('controller.update_error_online'), 'error');
+                return back();
+            }
+        }
+
         abort_if(Gate::denies('access_sale_payments'), 403);
 
         $request->validate([

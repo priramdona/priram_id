@@ -22,7 +22,7 @@ return [
     'action' => 'Aksi',
     'print' => 'Cetak',
     'reset' => 'Reset',
-    'reload' => 'Muat Ulang',
+    'reload' => 'Reload',
     'excel' => 'Excel',
     'datatable' => [
         'sEmptyTable' => 'Tidak ada data yang tersedia pada tabel ini',

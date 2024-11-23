@@ -92,7 +92,7 @@ return [
                 'excel' => 'Excel',
                 'print' => 'Cetak',
                 'reset' => 'Reset',
-                'reload' => 'Muat Ulang'
+                'reload' => 'Reload'
             ]
             ],
         'payment' => [
@@ -138,7 +138,7 @@ return [
                     'excel' => 'Excel',
                     'print' => 'Cetak',
                     'reset' => 'Reset',
-                    'reload' => 'Muat Ulang'
+                    'reload' => 'Reload'
                 ]
         ]
     ]

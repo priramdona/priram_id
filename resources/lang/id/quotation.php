@@ -68,7 +68,7 @@ return [
                     'excel' => 'Excel',
                     'print' => 'Cetak',
                     'reset' => 'Reset',
-                    'reload' => 'Muat Ulang'
+                    'reload' => 'Reload'
                 ]
 
             ],

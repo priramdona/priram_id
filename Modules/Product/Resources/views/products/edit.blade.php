@@ -19,7 +19,7 @@
                 <div class="col-lg-12">
                     @include('utils.alerts')
                     <div class="form-group">
-                        <button class="btn btn-primary">Update Product <i class="bi bi-check"></i></button>
+                        <button class="btn btn-primary">{{ __('products.update_product') }} <i class="bi bi-check"></i></button>
                     </div>
                 </div>
                 <div class="col-lg-12">
@@ -28,13 +28,13 @@
                             <div class="form-row">
                                 <div class="col-md-7">
                                     <div class="form-group">
-                                        <label for="product_name">Product Name <span class="text-danger">*</span></label>
+                                        <label for="product_name">{{ __('products.product_name') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="product_name" required value="{{ $product->product_name }}">
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-group">
-                                        <label for="product_code">Code <span class="text-danger">*</span></label>
+                                        <label for="product_code">{{ __('products.code') }} <span class="text-danger">*</span></label>
                                         <input type="text" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" name="product_code" required value="{{ $product->product_code }}">
                                     </div>
                                 </div>
@@ -43,7 +43,7 @@
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="category_id">Category <span class="text-danger">*</span></label>
+                                        <label for="category_id">{{ __('products.category') }} <span class="text-danger">*</span></label>
                                         <select class="form-control" name="category_id" id="category_id" required>
                                             @foreach(\Modules\Product\Entities\Category::all() as $category)
                                                 <option {{ $category->id == $product->category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->category_name }}</option>
@@ -53,7 +53,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="barcode_symbology">Barcode Symbology <span class="text-danger">*</span></label>
+                                        <label for="barcode_symbology">{{ __('products.barcode_symbology') }} <span class="text-danger">*</span></label>
                                         <select class="form-control" name="product_barcode_symbology" id="barcode_symbology" required>
                                             {{-- <option {{ $product->product_barcode_symbology == 'C128' ? 'selected' : '' }} value="C128">Code 128</option>
                                             <option {{ $product->product_barcode_symbology == 'C39' ? 'selected' : '' }} value="C39">Code 39</option>
@@ -69,13 +69,13 @@
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_cost">Cost <span class="text-danger">*</span></label>
+                                        <label for="product_cost">{{ __('products.cost') }} <span class="text-danger">*</span></label>
                                         <input id="product_cost" type="text" class="form-control" min="0" name="product_cost" required value="{{ $product->product_cost }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_price">Price <span class="text-danger">*</span></label>
+                                        <label for="product_price">{{ __('products.price') }} <span class="text-danger">*</span></label>
                                         <input id="product_price" type="text" class="form-control" min="0" name="product_price" required value="{{ $product->product_price }}">
                                     </div>
                                 </div>
@@ -84,13 +84,13 @@
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_quantity">Quantity <span class="text-danger">*</span></label>
+                                        <label for="product_quantity">{{ __('products.quantity') }} <span class="text-danger">*</span></label>
                                         <input type="number" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" name="product_quantity" required value="{{ $product->product_quantity }}" min="1">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_stock_alert">Alert Quantity <span class="text-danger">*</span></label>
+                                        <label for="product_stock_alert">{{ __('products.alert_quantity') }} <span class="text-danger">*</span></label>
                                         <input type="number" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" name="product_stock_alert" required value="{{ $product->product_stock_alert }}" min="0">
                                     </div>
                                 </div>
@@ -99,13 +99,13 @@
                             <div class="form-row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="product_order_tax">Tax (%)</label>
+                                        <label for="product_order_tax">{{ __('products.tax') }} (%)</label>
                                         <input type="number"onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" name="product_order_tax" value="{{ $product->product_order_tax }}" min="0" max="100">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="product_tax_type">Tax type</label>
+                                        <label for="product_tax_type">{{ __('products.tax_type') }}</label>
                                         <select class="form-control" name="product_tax_type" id="product_tax_type">
                                             <option value="" selected>None</option>
                                             <option {{ $product->product_tax_type == 1 ? 'selected' : '' }}  value="1">Exclusive</option>
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="product_unit">Unit <i class="bi bi-question-circle-fill text-info" data-toggle="tooltip" data-placement="top" title="This short text will be placed after Product Quantity."></i> <span class="text-danger">*</span></label>
+                                        <label for="product_unit">{{ __('products.unit') }} <i class="bi bi-question-circle-fill text-info" data-toggle="tooltip" data-placement="top" title="This short text will be placed after Product Quantity."></i> <span class="text-danger">*</span></label>
                                         <select class="form-control" name="product_unit" id="product_unit" required>
                                             <option value="" selected >Select Unit</option>
                                             @foreach(\Modules\Setting\Entities\Unit::all() as $unit)
@@ -126,7 +126,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="product_note">Note</label>
+                                <label for="product_note">{{ __('products.note') }}</label>
                                 <textarea name="product_note" id="product_note" rows="4 " class="form-control">{{ $product->product_note }}</textarea>
                             </div>
                         </div>
@@ -137,11 +137,17 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="image">Product Image</label>
-                                <input type="file" class="form-control-file" id="imageInput" name="image" accept="image/*" onchange="previewImage(event)">
+                                <label for="image">{{ __('products.product_images') }}</label>
+                                <input type="file"
+                                        class="form-control-file"
+                                        id="imageInput"
+                                        name="image"
+                                        accept="image/*"
+                                        onchange="previewImage(event)"
+                                        title="{{ __('products.no_file_selected') }}">
                                 <div class="mt-3">
                                     <!-- Preview Image -->
-                                    <img id="imagePreview" src="{{ $product->image_url ?? asset('images/default.png') }}" alt="Image Preview" style="max-width: 200px;">
+                                    <img id="imagePreview" src="{{ $product->image_url ?? asset('images/default.png') }}" alt="{{ __('products.no_file_selected') }}" style="max-width: 200px;">
                                 </div>
                             </div>
                         </div>

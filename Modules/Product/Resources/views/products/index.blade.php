@@ -68,7 +68,7 @@
 
             $('#' + tableId + ' tbody').on('click', 'tr', function () {
                 var data = table.row(this).data();
-                selectedProductId = data.id;  // Assuming 'id' is the column name for product ID
+                selectedProductId = data.id;
                 showActionModal();
             });
 

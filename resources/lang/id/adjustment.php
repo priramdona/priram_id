@@ -20,7 +20,7 @@ return [
     'confirm_delete' => 'Apakah Anda yakin? Ini akan menghapus data secara permanen!',
     'print' => 'Cetak',
     'reset' => 'Reset',
-    'reload' => 'Muat Ulang',
+    'reload' => 'Reload',
     'excel' => 'Excel',
     'action' => 'Tindakan',
     'products_count' => 'Jumlah Produk',

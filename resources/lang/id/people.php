@@ -30,7 +30,7 @@ return [
     'delete_confirmation' => 'Apakah Anda yakin ingin menghapus item ini?',
     'print' => 'Cetak',
     'reset' => 'Reset',
-    'reload' => 'Muat Ulang',
+    'reload' => 'Reload',
     'excel' => 'Excel',
     'action' => 'Tindakan',
     'datatable' => [
