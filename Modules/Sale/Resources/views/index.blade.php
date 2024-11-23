@@ -129,7 +129,7 @@
                         $('#modalEditBtn').hide();
                         $('#modalDeleteBtn').hide();
                     }
-                    alert(isOnline);
+
                     $('#modalConfirmDeleteBtn').hide();
                     $('#modalInvoiceBtn').show();
                     $('#modalPaymentBtn').show();
@@ -233,6 +233,15 @@
 
 @push('page_css')
 <style>
+         table.dataTable tbody tr {
+            height: 60px; /* Atur tinggi baris */
+        }
+
+        table.dataTable tbody td {
+            padding: 15px;
+            vertical-align: middle; /* Konten di tengah */
+        }
+
     @media screen and (max-width: 767px) {
         div.dataTables_wrapper div.dataTables_length,
         div.dataTables_wrapper div.dataTables_filter,
