@@ -19,6 +19,9 @@ class QuotationsDataTable extends DataTable
             ->addColumn('total_amount', function ($data) {
                 return format_currency($data->total_amount);
             })
+            ->addColumn('with_invoice', function ($data) {
+                return $data->with_invoice;
+            })
             ->addColumn('status', function ($data) {
                 return view('quotation::partials.status', compact('data'));
             })
@@ -33,13 +36,13 @@ class QuotationsDataTable extends DataTable
 
     public function html() {
         return $this->builder()
-            ->setTableId('sales-table')
+            ->setTableId('quotations-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom("<'row'<'col-md-3'l><'col-md-5 mb-2'B><'col-md-4'f>> .
                                 'tr' .
                                 <'row'<'col-md-5'i><'col-md-7 mt-2'p>>")
-            ->orderBy(6)
+            ->orderBy(5)
             ->buttons(
                 Button::make('excel')
                     ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('quotation.datatable.buttons.excel')),
@@ -79,11 +82,11 @@ class QuotationsDataTable extends DataTable
             ->title(__('quotation.datatable.columns.total_amount'))
                 ->className('text-center align-middle'),
 
-            Column::computed('action')
-            ->title(__('quotation.datatable.columns.action'))
-                ->exportable(false)
-                ->printable(false)
-                ->className('text-center align-middle'),
+            // Column::computed('action')
+            // ->title(__('quotation.datatable.columns.action'))
+            //     ->exportable(false)
+            //     ->printable(false)
+            //     ->className('text-center align-middle'),
 
             Column::make('created_at')
                 ->visible(false)

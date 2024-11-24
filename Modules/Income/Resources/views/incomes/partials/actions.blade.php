@@ -11,7 +11,7 @@
 @endcan
 @can('delete_incomes')
 @if($data->incomePayments->payment_channel_id == null)
-<button id="delete" class="btn btn-danger btn-sm" onclick="
+{{-- <button id="delete" class="btn btn-danger btn-sm" onclick="
     event.preventDefault();
     if (confirm('{{ __('income.confirm_delete') }}')) {
     document.getElementById('destroy{{ $data->id }}').submit();
@@ -22,6 +22,12 @@
         @csrf
         @method('delete')
     </form>
+</button> --}}
+<button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+    data-id="{{ $data->id }}"
+    data-name="{{ $data->name }}"
+    title="{{ __('user.delete_user') }}">
+    <i class="bi bi-trash"></i>
 </button>
 @else
 <a class="btn btn-danger btn-sm" title="{{ __('income.action_disabled_payment_online') }}">

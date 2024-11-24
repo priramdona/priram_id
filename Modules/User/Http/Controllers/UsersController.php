@@ -15,6 +15,7 @@ use Modules\Upload\Entities\Upload;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 class UsersController extends Controller
 {
     public function index(UsersDataTable $dataTable) {
@@ -33,17 +34,25 @@ class UsersController extends Controller
 
     public function store(Request $request) {
         abort_if(Gate::denies('access_user_management'), 403);
-
-        // $request->validate([
-        //     'name'     => 'required|string|max:255',
-        //     'email'    => 'required|email|max:255|unique:users,email',
-        //     'password' => 'required|string|min:8|max:255|confirmed'
-        // ]);
-
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone_number' => ['required', 'string', 'min:6', 'max:16', 'unique:users,phone_number'],
+            'phone_number' => [
+                'required',
+                'string',
+                'max:6',
+                'max:16',
+                Rule::unique('users', 'phone_number')
+                    ->where('business_id', Auth::user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
+            'email' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'email')
+                    ->where('business_id', Auth::user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
             'password' => 'required|string|min:8|max:255|confirmed'
         ]);
 
@@ -71,15 +80,23 @@ class UsersController extends Controller
 
         $user->assignRole($request->role);
 
-        if ($request->has('image')) {
-            $tempFile = Upload::where('folder', $request->image)->first();
+        if ($request->hasFile('image')) {
 
-            if ($tempFile) {
-                $user->addMedia(Storage::path('temp/' . $request->image . '/' . $tempFile->filename))->toMediaCollection('avatars');
-
-                Storage::deleteDirectory('public/temp/' . $request->image);
-                $tempFile->delete();
+            if ($user->image) {
+                $imagePath = 'images/' . $user->image; // Pastikan path sesuai dengan yang ada di storage
+                // Hapus gambar jika ada
+                if (Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
+                }
             }
+
+            $image = $request->file('image');
+            $filename = $user->id . '.' . $image->getClientOriginalExtension(); // Nama file unik
+            $request->image->move(public_path('images/users'), $filename);  // simpan ke folder 'images'
+
+            $user->update([
+                'image' => 'users/' . $filename, // Update path gambar
+            ]);
         }
 
         toast(__('controller.created'), 'success');
@@ -100,7 +117,25 @@ class UsersController extends Controller
 
         $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|email|max:255|unique:users,email,'.$user->id,
+            'phone_number' => [
+                'required',
+                'string',
+                'max:6',
+                'max:16',
+                Rule::unique('users', 'phone_number')
+                ->ignore($user->id)
+                    ->where('business_id', $user->business_id)
+                    ->whereNull('deleted_at')
+            ],
+            'email' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'email')
+                ->ignore($user->id)
+                    ->where('business_id', $user->business_id)
+                    ->whereNull('deleted_at')
+            ],
         ]);
 
         $user->update([
@@ -111,20 +146,40 @@ class UsersController extends Controller
 
         $user->syncRoles($request->role);
 
-        if ($request->has('image')) {
-            $tempFile = Upload::where('folder', $request->image)->first();
+        if ($request->hasFile('image')) {
 
-            if ($user->getFirstMedia('avatars')) {
-                $user->getFirstMedia('avatars')->delete();
+            if ($user->image) {
+                $imagePath = 'images/' . $user->image; // Pastikan path sesuai dengan yang ada di storage
+                // Hapus gambar jika ada
+                if (Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
+                }
             }
 
-            if ($tempFile) {
-                $user->addMedia(Storage::path('temp/' . $request->image . '/' . $tempFile->filename))->toMediaCollection('avatars');
+            $image = $request->file('image');
+            $filename = $user->id . '.' . $image->getClientOriginalExtension(); // Nama file unik
+            // $imagePath = $image->storeAs('products', $filename, 'public'); // Menyimpan file di public/products
+            $request->image->move(public_path('images/users'), $filename);  // simpan ke folder 'images'
 
-                Storage::deleteDirectory('public/temp/' . $request->image);
-                $tempFile->delete();
-            }
+            $user->update([
+                'image' => 'users/' . $filename, // Update path gambar
+            ]);
         }
+
+        // if ($request->has('image')) {
+        //     $tempFile = Upload::where('folder', $request->image)->first();
+
+        //     if ($request->getFirstMedia('avatars')) {
+        //         $user->getFirstMedia('avatars')->delete();
+        //     }
+
+        //     if ($tempFile) {
+        //         $user->addMedia(Storage::path('temp/' . $request->image . '/' . $tempFile->filename))->toMediaCollection('avatars');
+
+        //         Storage::deleteDirectory('public/temp/' . $request->image);
+        //         $tempFile->delete();
+        //     }
+        // }
 
         toast(__('controller.updated'), 'info');
 

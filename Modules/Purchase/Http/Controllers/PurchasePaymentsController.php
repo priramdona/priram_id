@@ -79,7 +79,7 @@ class PurchasePaymentsController extends Controller
             ]);
         });
 
-        toast('Purchase Payment Created!', 'success');
+        toast(__('controller.created'), 'success');
 
         return redirect()->route('purchases.index');
     }
@@ -138,7 +138,7 @@ class PurchasePaymentsController extends Controller
             ]);
         });
 
-        toast('Purchase Payment Updated!', 'info');
+        toast(__('controller.updated'), 'info');
 
         return redirect()->route('purchases.index');
     }
@@ -146,10 +146,27 @@ class PurchasePaymentsController extends Controller
 
     public function destroy(PurchasePayment $purchasePayment) {
         abort_if(Gate::denies('access_purchase_payments'), 403);
+        $purchase = $purchasePayment->purchase;
+
+        $due_amount = $purchase->due_amount + $purchasePayment->amount;
+
+        if ($due_amount == $purchase->total_amount) {
+            $payment_status = 'Unpaid';
+        } elseif ($due_amount > 0) {
+            $payment_status = 'Partial';
+        } else {
+            $payment_status = 'Paid';
+        }
+
+        $purchase->update([
+            'paid_amount' => ($purchase->paid_amount  - $purchasePayment->amount),
+            'due_amount' => $due_amount,
+            'payment_status' => $payment_status
+        ]);
 
         $purchasePayment->delete();
 
-        toast('Purchase Payment Deleted!', 'warning');
+        toast(__('controller.deleted'), 'warning');
 
         return redirect()->route('purchases.index');
     }

@@ -150,8 +150,18 @@
         });
     </script>
 @endpush
+
 @push('page_css')
 <style>
+         table.dataTable tbody tr {
+            height: 60px; /* Atur tinggi baris */
+        }
+
+        table.dataTable tbody td {
+            padding: 15px;
+            vertical-align: middle; /* Konten di tengah */
+        }
+
     @media screen and (max-width: 767px) {
         div.dataTables_wrapper div.dataTables_length,
         div.dataTables_wrapper div.dataTables_filter,
@@ -170,7 +180,7 @@
             margin: 0;
         }
     }
-    #product-table tbody tr {
+    #selforder-table tbody tr {
         cursor: pointer;
     }
 </style>

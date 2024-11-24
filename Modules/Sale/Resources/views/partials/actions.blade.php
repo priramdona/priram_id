@@ -1,6 +1,7 @@
 @php
     $createPayment = \Modules\Sale\Entities\SalePayment::where('sale_id',$data->id)->whereNotNull('payment_channel_id')->get();
 @endphp
+
 <div class="btn-group dropleft">
     <button type="button" class="btn btn-ghost-primary dropdown rounded" data-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-three-dots-vertical"></i>

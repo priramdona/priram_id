@@ -66,7 +66,7 @@ return [
     'all_users' => 'Semua Pengguna',
     'roles_and_permissions' => 'Peran & Izin',
     'settings' => 'Pengaturan',
-    'units' => 'Unit',
+    'units' => 'Satuan',
     'currencies' => 'Mata Uang',
     'paymentgateway' => 'Pembayaran Online',
     'show_list' => 'Daftar Pembayaran',

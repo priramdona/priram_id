@@ -100,7 +100,7 @@
                         <div class="row text-center align-items-center">
                             <div class="col-8 mx-auto">
                                 <a class="btn btn-link px-0" href="{{ route('password.request') }}">
-                                    Lupa Password?
+                                    Lupa Sandi?
                                 </a>
                             </div>
                         </div>

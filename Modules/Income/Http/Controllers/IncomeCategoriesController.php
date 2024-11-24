@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Modules\Income\Entities\IncomeCategory;
+use Illuminate\Validation\Rule;
 
 class IncomeCategoriesController extends Controller
 {
@@ -22,7 +23,14 @@ class IncomeCategoriesController extends Controller
         abort_if(Gate::denies('access_income_categories'), 403);
 
         $request->validate([
-            'category_name' => 'required|string|max:255|unique:income_categories,category_name',
+            'category_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('income_categories', 'category_name')
+                ->where('business_id', $request->user()->business_id)
+                ->whereNull('deleted_at')
+            ],
             'category_description' => 'nullable|string|max:1000'
         ]);
 
@@ -49,7 +57,15 @@ class IncomeCategoriesController extends Controller
         abort_if(Gate::denies('access_income_categories'), 403);
 
         $request->validate([
-            'category_name' => 'required|string|max:255|unique:income_categories,category_name,' . $incomeCategory->id,
+            'category_name' => [
+            'required',
+            'string',
+            'max:255',
+        Rule::unique('income_categories', 'category_name')
+            ->ignore($incomeCategory->id)
+            ->where('business_id', $request->user()->business_id)
+            ->whereNull('deleted_at')
+            ],
             'category_description' => 'nullable|string|max:1000'
         ]);
 
@@ -67,7 +83,7 @@ class IncomeCategoriesController extends Controller
     public function destroy(incomeCategory $incomeCategory) {
         abort_if(Gate::denies('access_income_categories'), 403);
 
-        if ($incomeCategory->incomes()->isNotEmpty()) {
+        if ($incomeCategory->incomes->isNotEmpty()) {
             return back()->withErrors('Can\'t delete beacuse there are incomes associated with this category.');
         }
 

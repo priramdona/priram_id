@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'category_exist' => 'Can\'t delete beacuse there are datas associated with this category.',
     'updated' => 'Update Success',
     'created' => 'Create Success',
     'deleted' => 'Delete Success',

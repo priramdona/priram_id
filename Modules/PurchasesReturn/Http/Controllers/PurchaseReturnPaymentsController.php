@@ -148,6 +148,24 @@ class PurchaseReturnPaymentsController extends Controller
 
     public function destroy(PurchaseReturnPayment $purchaseReturnPayment) {
         abort_if(Gate::denies('access_purchase_return_payments'), 403);
+        $purchaseReturn = $purchaseReturnPayment->purchaseReturn;
+
+        $due_amount = $purchaseReturn->due_amount + $purchaseReturnPayment->amount;
+
+        if ($due_amount == $purchaseReturn->total_amount) {
+            $payment_status = 'Unpaid';
+        } elseif ($due_amount > 0) {
+            $payment_status = 'Partial';
+        } else {
+            $payment_status = 'Paid';
+        }
+
+        $purchaseReturn->update([
+            'paid_amount' => ($purchaseReturn->paid_amount  - $purchaseReturnPayment->amount),
+            'due_amount' => $due_amount,
+            'payment_status' => $payment_status
+        ]);
+
 
         $purchaseReturnPayment->delete();
 

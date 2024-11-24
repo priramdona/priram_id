@@ -80,6 +80,7 @@ return [
     'create' => 'Create',
     'edit' => 'Edit',
     'delete' => 'Delete',
+    'cancel' => 'Cancel',
     'view' => 'View',
     'send_email' => 'Send Email',
     'sale_from_quotation' => 'Sale From Quotation',

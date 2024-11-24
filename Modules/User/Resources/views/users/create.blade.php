@@ -89,8 +89,19 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="image">{{ __('user.profile_image') }} <span class="text-danger">*</span></label>
-                                <input id="image" type="file" name="image" data-max-file-size="500KB">
+                                <label for="image">{{ __('user.profile_image') }}</label>
+                                <input type="file"
+                                        class="form-control-file"
+                                        id="imageInput"
+                                        name="image"
+                                        accept="image/*"
+                                        onchange="previewImage(event)">
+                                <div class="mt-3">
+                                    <!-- Preview Image -->
+                                    <img id="imagePreview" src="{{ $user->image_url ?? asset('images/fallback_profile_image.png') }}" alt="{{ __('products.no_file_selected') }}" style="max-width: 200px;">
+                                </div>
+                                {{-- <label for="image">{{ __('user.profile_image') }} <span class="text-danger">*</span></label>
+                                <input id="image" type="file" name="image" data-max-file-size="500KB"> --}}
                             </div>
                         </div>
                     </div>
@@ -110,6 +121,23 @@
 @endsection
 
 @push('page_scripts')
+
+<script>
+    function previewImage(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function() {
+        const preview = document.getElementById('imagePreview');
+        preview.src = reader.result;
+    }
+
+    if (file) {
+        reader.readAsDataURL(file); // Membaca file sebagai data URL untuk preview
+    }
+}
+
+</script>
     <script>
         FilePond.registerPlugin(
             FilePondPluginImagePreview,

@@ -18,6 +18,7 @@ use Modules\Currency\Entities\Currency;
 use Modules\Sale\Entities\SelforderBusiness;
 use Modules\Setting\Entities\Setting;
 use Spatie\Permission\Models\Role;
+use Illuminate\Validation\Rule;
 
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 class ProfileController extends Controller
@@ -31,8 +32,24 @@ class ProfileController extends Controller
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . auth()->id()],
-            'phone_number' => ['required', 'string', 'min:6', 'max:16', 'unique:users,phone_number,' . auth()->id()],
+            'email' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'email')
+                    ->ignore(auth()->id())
+                    ->where('business_id', $request->user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
+            'phone_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'phone_number')
+                    ->ignore(auth()->id())
+                    ->where('business_id', $request->user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
         ]);
 
         $phoneNumber = $request['phone_number'];
@@ -58,20 +75,25 @@ class ProfileController extends Controller
 
         // dd($request->all()); // Akan menampilkan detail file
 
-        if ($request->has('image')) {
-            $tempFile = Upload::where('folder', $request->image)->first();
 
-            if ($tempFile) {
-                if ($user->getFirstMedia('avatars')) {
-                    $user->getFirstMedia('avatars')->delete();
+        if ($request->hasFile('image')) {
+
+            if ($user->image) {
+                $imagePath = 'images/' . $user->image; // Pastikan path sesuai dengan yang ada di storage
+                // Hapus gambar jika ada
+                if (Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
                 }
-
-                $user->addMedia(Storage::path('temp/' . $request->image . '/' . $tempFile->filename))
-                     ->toMediaCollection('avatars');
-
-                Storage::deleteDirectory('temp/' . $request->image);
-                $tempFile->delete();
             }
+
+            $image = $request->file('image');
+            $filename = $user->id . '.' . $image->getClientOriginalExtension(); // Nama file unik
+            // $imagePath = $image->storeAs('products', $filename, 'public'); // Menyimpan file di public/products
+            $request->image->move(public_path('images/users'), $filename);  // simpan ke folder 'images'
+
+            $user->update([
+                'image' => 'users/' . $filename, // Update path gambar
+            ]);
         }
 
         toast(__('controller.updated'), 'success');

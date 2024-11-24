@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Modules\Expense\Entities\ExpenseCategory;
 
+use Illuminate\Validation\Rule;
 class ExpenseCategoriesController extends Controller
 {
 
@@ -22,7 +23,14 @@ class ExpenseCategoriesController extends Controller
         abort_if(Gate::denies('access_expense_categories'), 403);
 
         $request->validate([
-            'category_name' => 'required|string|max:255|unique:expense_categories,category_name',
+            'category_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('expense_categories', 'category_name')
+                    ->where('business_id', $request->user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
             'category_description' => 'nullable|string|max:1000'
         ]);
 
@@ -49,7 +57,15 @@ class ExpenseCategoriesController extends Controller
         abort_if(Gate::denies('access_expense_categories'), 403);
 
         $request->validate([
-            'category_name' => 'required|string|max:255|unique:expense_categories,category_name,' . $expenseCategory->id,
+            'category_name' => [
+            'required',
+            'string',
+            'max:255',
+        Rule::unique('expense_categories', 'category_name')
+            ->ignore($expenseCategory->id)
+            ->where('business_id', $request->user()->business_id)
+            ->whereNull('deleted_at')
+            ],
             'category_description' => 'nullable|string|max:1000'
         ]);
 
@@ -67,8 +83,8 @@ class ExpenseCategoriesController extends Controller
     public function destroy(ExpenseCategory $expenseCategory) {
         abort_if(Gate::denies('access_expense_categories'), 403);
 
-        if ($expenseCategory->expenses()->isNotEmpty()) {
-            return back()->withErrors('Can\'t delete beacuse there are expenses associated with this category.');
+        if ($expenseCategory->expenses->isNotEmpty()) {
+            return back()->withErrors(__('controller.category_exist'));
         }
 
         $expenseCategory->delete();

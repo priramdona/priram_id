@@ -99,9 +99,7 @@
             $('#' + tableId + ' tbody').on('click', 'tr', function () {
                 var data = table.row(this).data();
                 selectedProductId = data.id;
-                var dueAmount = parseFloat(
-                    data.due_amount.replace(/[^\d.-]/g, '') // Hapus semua kecuali angka, tanda desimal, dan tanda minus
-                );
+                dueAmount = parseFloat(data.sisa_amount);
 
                 $.ajax({
                 url: "{{ url('/get-payment-sales') }}/",
@@ -260,7 +258,7 @@
             margin: 0;
         }
     }
-    #product-table tbody tr {
+    #sales-table tbody tr {
         cursor: pointer;
     }
 </style>

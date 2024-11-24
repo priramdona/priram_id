@@ -242,7 +242,9 @@ return [
     ],
     'actions' => [
         'pos_invoice' => 'Struk',
+        'make_sale' => 'Buat Penjualan',
         'show_payments' => 'Pembayaran',
+        'send_email' => 'Kirim Email',
         'add_payment' => 'Tambah Pembayaran',
         'edit' => 'Edit',
         'details' => 'Detail',

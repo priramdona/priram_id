@@ -25,6 +25,9 @@ class SaleReturnsDataTable extends DataTable
             ->addColumn('due_amount', function ($data) {
                 return format_currency($data->due_amount);
             })
+            ->addColumn('sisa_amount', function ($data) {
+                return ($data->due_amount);
+            })
             ->addColumn('status', function ($data) {
                 return view('salesreturn::partials.status', compact('data'));
             })
@@ -48,7 +51,7 @@ class SaleReturnsDataTable extends DataTable
             ->dom("<'row'<'col-md-3'l><'col-md-5 mb-2'B><'col-md-4'f>> .
                                 'tr' .
                                 <'row'<'col-md-5'i><'col-md-7 mt-2'p>>")
-            ->orderBy(8)
+            ->orderBy(7)
             ->buttons(
                 Button::make('excel')
                     ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('sales_return.datatable.sales_return.buttons.excel')),
@@ -96,11 +99,11 @@ class SaleReturnsDataTable extends DataTable
             ->title(__('sales_return.datatable.sales_return.columns.payment_status'))
                 ->className('text-center align-middle'),
 
-            Column::computed('action')
-            ->title(__('sales_return.datatable.sales_return.columns.action'))
-                ->exportable(false)
-                ->printable(false)
-                ->className('text-center align-middle'),
+            // Column::computed('action')
+            // ->title(__('sales_return.datatable.sales_return.columns.action'))
+            //     ->exportable(false)
+            //     ->printable(false)
+            //     ->className('text-center align-middle'),
 
             Column::make('created_at')
                 ->visible(false)

@@ -107,7 +107,7 @@ class ProductController extends Controller
             }
 
             $image = $request->file('image');
-            $filename = Str::orderedUuid() . '.' . $image->getClientOriginalExtension(); // Nama file unik
+            $filename = $product->id . '.' . $image->getClientOriginalExtension(); // Nama file unik
             // $imagePath = $image->storeAs('products', $filename, 'public'); // Menyimpan file di public/products
             $request->image->move(public_path('images/products'), $filename);  // simpan ke folder 'images'
 
@@ -160,7 +160,7 @@ class ProductController extends Controller
                 }
 
                 $image = $request->file('image');
-                $filename = Str::orderedUuid() . '.' . $image->getClientOriginalExtension(); // Nama file unik
+                $filename = $product->id . '.' . $image->getClientOriginalExtension(); // Nama file unik
                 // $imagePath = $image->storeAs('products', $filename, 'public'); // Menyimpan file di public/products
                 $request->image->move(public_path('images/products'), $filename);  // simpan ke folder 'images'
 

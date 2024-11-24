@@ -238,6 +238,8 @@ return [
     ],
     'actions' => [
         'pos_invoice' => 'Invoice',
+        'make_sale' => 'Make Sale',
+        'send_email' => 'Send Email',
         'show_payments' => 'Payments',
         'add_payment' => 'Add Payment',
         'edit' => 'Edit',

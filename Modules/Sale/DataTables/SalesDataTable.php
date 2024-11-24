@@ -26,6 +26,9 @@ class SalesDataTable extends DataTable
             ->addColumn('due_amount', function ($data) {
                 return format_currency($data->due_amount);
             })
+            ->addColumn('sisa_amount', function ($data) {
+                return ($data->due_amount);
+            })
             ->addColumn('status', function ($data) {
                 return view('sale::partials.status', compact('data'));
             })

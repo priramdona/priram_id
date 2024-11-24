@@ -22,12 +22,12 @@
                 <div class="card-body p-4">
                     <form method="post" action="{{ url('/register') }}" onsubmit="return validateForm()">
                         @csrf
-                        <h1 class="text-center mb-4">Register (Pendaftaran)</h1>
-                        <p class="text-muted text-center">User & Business Information (Informasi Pengguna & Usaha)</p>
+                        <h1 class="text-center mb-4">Pendaftaran</h1>
+                        <p class="text-muted text-center">Informasi Pengguna & Usaha</p>
 
                         <!-- Full Name -->
                         <div class="mb-3">
-                            <label for="name" class="form-label">Full Name (Nama Lengkap)</label>
+                            <label for="name" class="form-label">Nama Lengkap</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="Full Name">
@@ -39,7 +39,7 @@
 
                         <!-- Business Name -->
                         <div class="mb-3">
-                            <label for="business_name" class="form-label">Business Name (Nama Usaha)</label>
+                            <label for="business_name" class="form-label">Nama Usaha</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
                                 <input type="text" class="form-control @error('business_name') is-invalid @enderror" id="business_name" name="business_name" value="{{ old('business_name') }}" placeholder="Business Name">
@@ -51,7 +51,7 @@
 
                         <!-- Business Address -->
                         <div class="mb-3">
-                            <label for="business_address" class="form-label">Business Address (Alamat Usaha)</label>
+                            <label for="business_address" class="form-label">Alamat Usaha</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-map"></i></span>
                                 <input type="text" class="form-control @error('business_address') is-invalid @enderror" id="business_address" name="business_address" value="{{ old('business_address') }}" placeholder="Business Address">
@@ -61,11 +61,11 @@
                             </div>
                         </div>
 
-                        <p class="text-muted text-center">Account Information (Informasi Akun)</p>
+                        <p class="text-muted text-center">Informasi Akun</p>
 
                         <!-- Mobile Phone -->
                         <div class="mb-3">
-                            <label for="phone_number" class="form-label">Mobile Phone (Nomor Telepon)</label>
+                            <label for="phone_number" class="form-label">Nomor Telepon</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-phone"></i></span>
                                 <input type="phone" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" placeholder="Mobile Phone">
@@ -89,7 +89,7 @@
 
                         <!-- Password -->
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password (Kata Sandi)</label>
+                            <label for="password" class="form-label">Kata Sandi</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-lock"></i></span>
                                 <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password">
@@ -104,7 +104,7 @@
 
                         <!-- Confirm Password -->
                         <div class="mb-4">
-                            <label for="password_confirmation" class="form-label">Confirm Password (Konfirmasi Kata Sandi)</label>
+                            <label for="password_confirmation" class="form-label">Konfirmasi Kata Sandi</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-lock"></i></span>
                                 <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password">
@@ -118,19 +118,19 @@
                         <div class="form-check d-flex align-items-center mb-4">
                             <input type="checkbox" id="terms" name="terms" class="form-check-input me-2">
                             <label class="form-check-label" for="terms">
-                                I have read and agree to the (Saya telah membaca dan setuju)
-                                <p>
-                                <a href="{{ route('terms.service') }}" target="_blank">Terms of Service (Syarat dan Ketentuan)</a>
+                                Saya telah membaca dan setuju dengan
+
+                                <a href="{{ route('terms.service') }}" target="_blank">Syarat Ketentuan</a>
                                 &
-                                <a href="{{ route('privacy.policy') }}" target="_blank">Privacy Policy (Kebijakan Privasi)</a>.
-                            </p>
+                                <a href="{{ route('privacy.policy') }}" target="_blank">Kebijakan Privasi</a>.
+
                             </label>
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary btn-block mb-3">Register</button>
+                        <button type="submit" class="btn btn-primary btn-block mb-3">Daftar</button>
                         <p class="text-center">
-                            <a href="{{ route('login') }}">I already have an account</a>
+                            <a href="{{ route('login') }}">Login</a>
                         </p>
                     </form>
                 </div>

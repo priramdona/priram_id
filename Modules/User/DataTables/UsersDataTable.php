@@ -34,7 +34,8 @@ class UsersDataTable extends DataTable
                 return $html;
             })
             ->addColumn('image', function ($data) {
-                $url = $data->getFirstMediaUrl('avatars');
+                // $url = $data->getFirstMediaUrl('avatars');
+                $url = $data->image_url;
 
                 return '<img src="' . $url . '" style="width:50px;height:50px;" class="img-thumbnail rounded-circle"/>';
             })

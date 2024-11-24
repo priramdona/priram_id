@@ -70,10 +70,12 @@ class   UnitsController extends Controller
     }
 
     public function destroy(Unit $unit) {
-        if ($unit->is_default = true){
+        if ($unit->is_default){
             toast(__('controller.is_default_error'), 'info');
+            return back();
         }
         else{
+
         $unit->delete();
 
         toast(__('controller.deleted'), 'warning');

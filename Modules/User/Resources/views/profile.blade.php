@@ -29,13 +29,25 @@
                             @csrf
                             @method('patch')
 
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="image">{{ __('user.profiles.profile_image') }} <span class="text-danger">*</span></label>
                                 <img style="width: 100px; height: 100px;" class="d-block mx-auto img-thumbnail img-fluid rounded-circle mb-2"
                                      src="{{ auth()->user()->getFirstMediaUrl('avatars', 'thumb') }}" alt="Profile Image">
                                 <input id="image" type="file" name="image" accept="image/*">
+                            </div> --}}
+                            <div class="form-group">
+                                <label for="image">{{ __('user.profiles.profile_image') }}</label>
+                                <input type="file"
+                                        class="form-control-file"
+                                        id="imageInput"
+                                        name="image"
+                                        accept="image/*"
+                                        onchange="previewImage(event)">
+                                <div class="mt-3">
+                                    <!-- Preview Image -->
+                                    <img id="imagePreview" src="{{ auth()->user()->image_url ?? asset('images/fallback_profile_image.png') }}" alt="{{ __('products.no_file_selected') }}" style="max-width: 200px;">
+                                </div>
                             </div>
-
                             <div class="form-group">
                                 <label for="name">{{  __('user.profiles.name') }} <span class="text-danger">*</span></label>
                                 <input class="form-control" type="text" name="name" required value="{{ auth()->user()->name }}">
@@ -142,6 +154,22 @@
 
 @push('page_scripts')
     @include('includes.filepond-js')
+    <script>
+        function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const preview = document.getElementById('imagePreview');
+            preview.src = reader.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file); // Membaca file sebagai data URL untuk preview
+        }
+    }
+
+    </script>
 <script>
 
     const messages = @json(__('user.profiles'));

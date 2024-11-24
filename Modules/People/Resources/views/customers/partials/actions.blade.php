@@ -9,7 +9,7 @@
     </a>
 @endcan
 @can('delete_customers')
-    <button id="delete" class="btn btn-danger btn-sm" onclick="
+    {{-- <button id="delete" class="btn btn-danger btn-sm" onclick="
         event.preventDefault();
         if (confirm('{{ __('people.delete_confirmation') }}')) {
             document.getElementById('destroy{{ $data->id }}').submit()
@@ -20,5 +20,11 @@
             @csrf
             @method('delete')
         </form>
+    </button> --}}
+    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+        data-id="{{ $data->id }}"
+        data-name="{{ $data->name }}"
+        title="{{ __('user.delete_user') }}">
+        <i class="bi bi-trash"></i>
     </button>
 @endcan

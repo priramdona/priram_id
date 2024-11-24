@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Modules\Product\Entities\Category;
 use Modules\Product\DataTables\ProductCategoriesDataTable;
+use Illuminate\Validation\Rule;
 
 class CategoriesController extends Controller
 {
@@ -23,8 +24,23 @@ class CategoriesController extends Controller
         abort_if(Gate::denies('access_product_categories'), 403);
 
         $request->validate([
-            'category_code' => 'required|unique:categories,category_code',
-            'category_name' => 'required'
+            'category_code' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'category_code')
+                    ->where('business_id', $request->user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
+
+            'category_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'category_name')
+                    ->where('business_id', $request->user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
         ]);
 
         Category::create([
@@ -52,8 +68,24 @@ class CategoriesController extends Controller
         abort_if(Gate::denies('access_product_categories'), 403);
 
         $request->validate([
-            'category_code' => 'required|unique:categories,category_code,' . $id,
-            'category_name' => 'required'
+            'category_code' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'category_code')
+                    ->ignore($id)
+                    ->where('business_id', $request->user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
+            'category_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'category_name')
+                    ->ignore($id)
+                    ->where('business_id', $request->user()->business_id)
+                    ->whereNull('deleted_at')
+            ],
         ]);
 
         $category = Category::findOrFail($id);

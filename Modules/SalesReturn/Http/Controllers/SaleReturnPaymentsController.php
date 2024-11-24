@@ -72,8 +72,8 @@ class SaleReturnPaymentsController extends Controller
             }
 
             $sale_return->update([
-                'paid_amount' => ($sale_return->paid_amount + $request->amount) * 100,
-                'due_amount' => $due_amount * 100,
+                'paid_amount' => ($sale_return->paid_amount + $request->amount),
+                'due_amount' => $due_amount,
                 'payment_status' => $payment_status
             ]);
         });
@@ -119,10 +119,12 @@ class SaleReturnPaymentsController extends Controller
             }
 
             $sale_return->update([
-                'paid_amount' => (($sale_return->paid_amount - $saleReturnPayment->amount) + $request->amount) * 100,
-                'due_amount' => $due_amount * 100,
+                'paid_amount' => (($sale_return->paid_amount - $saleReturnPayment->amount) + $request->amount),
+                'due_amount' => $due_amount,
                 'payment_status' => $payment_status
             ]);
+
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
 
             $saleReturnPayment->update([
                 'date' => $request->date,
@@ -130,7 +132,9 @@ class SaleReturnPaymentsController extends Controller
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'sale_return_id' => $request->sale_return_id,
-                'payment_method' => $request->payment_method
+                'payment_method_id' => $paymentMethodData->id ?? null,
+                'payment_method' => $paymentMethodData->name ?? null,
+                'payment_method_name' => $paymentMethodData->name ?? null,
             ]);
         });
 
@@ -142,6 +146,24 @@ class SaleReturnPaymentsController extends Controller
 
     public function destroy(SaleReturnPayment $saleReturnPayment) {
         abort_if(Gate::denies('access_sale_return_payments'), 403);
+
+        $saleReturn = $saleReturnPayment->saleReturn;
+
+        $due_amount = $saleReturn->due_amount + $saleReturnPayment->amount;
+
+        if ($due_amount == $saleReturn->total_amount) {
+            $payment_status = 'Unpaid';
+        } elseif ($due_amount > 0) {
+            $payment_status = 'Partial';
+        } else {
+            $payment_status = 'Paid';
+        }
+
+        $saleReturn->update([
+            'paid_amount' => ($saleReturn->paid_amount  - $saleReturnPayment->amount),
+            'due_amount' => $due_amount,
+            'payment_status' => $payment_status
+        ]);
 
         $saleReturnPayment->delete();
 

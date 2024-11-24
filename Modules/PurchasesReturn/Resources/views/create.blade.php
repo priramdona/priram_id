@@ -124,7 +124,7 @@
             success: function(data) {
                 if (data.length > 0) {
                     $("#payment_method").empty();
-                    op = '<option value="" disabled="true" selected="true">-Select-</option>'
+                    op = '<option value="" disabled="true" selected="true">{{ __('sales_return.select') }}</option>'
                     for (var i = 0; i < data.length; i++) {
                         op += '<option value="' + data[i].id + '">' + data[i]
                             .name + '</option>';

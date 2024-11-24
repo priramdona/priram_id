@@ -39,28 +39,38 @@ class ProductCategoriesDataTable extends DataTable
             ->orderBy(4)
             ->buttons(
                 Button::make('excel')
-                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> Excel'),
+                    ->text('<i class="bi bi-file-earmark-excel-fill"></i> ' . __('products.button_utility.excel')),
                 Button::make('print')
-                    ->text('<i class="bi bi-printer-fill"></i> Print'),
+                    ->text('<i class="bi bi-printer-fill"></i> ' . __('products.button_utility.printer')),
                 Button::make('reset')
-                    ->text('<i class="bi bi-x-circle"></i> Reset'),
+                    ->text('<i class="bi bi-x-circle"></i> ' . __('products.button_utility.reset')),
                 Button::make('reload')
-                    ->text('<i class="bi bi-arrow-repeat"></i> Reload')
-            );
+                    ->text('<i class="bi bi-arrow-repeat"></i> ' . __('products.button_utility.reload')),
+            )
+                ->parameters([
+                    'responsive' => true,
+                    'autoWidth' => true,
+                    'scrollX' => true,
+                    'language' => __('products.datatable'),
+            ]);
     }
 
     protected function getColumns() {
         return [
             Column::make('category_code')
+            ->title(__('products.category_code'))
                 ->addClass('text-center'),
 
             Column::make('category_name')
+            ->title(__('products.category_name'))
                 ->addClass('text-center'),
 
             Column::make('products_count')
+            ->title(__('products.product_count'))
                 ->addClass('text-center'),
 
             Column::computed('action')
+            ->title(__('products.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->addClass('text-center'),

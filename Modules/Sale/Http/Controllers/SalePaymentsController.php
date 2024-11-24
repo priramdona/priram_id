@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Modules\PaymentMethod\Entities\PaymentMethod;
 use Modules\Sale\Entities\Sale;
 use Modules\Sale\Entities\SalePayment;
 
@@ -52,7 +53,7 @@ class SalePaymentsController extends Controller
         ->get();
 
         foreach( $salePaymentInfo as  $salePayment){
-            if (!blank($salePaymentInfo->payment_channel_id)){
+            if (!blank($salePayment->payment_channel_id)){
                 toast(__('controller.update_error_online'), 'error');
                 return back();
             }
@@ -70,13 +71,18 @@ class SalePaymentsController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
+
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
+
             SalePayment::create([
                 'date' => $request->date,
                 'reference' => $request->reference,
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'sale_id' => $request->sale_id,
-                'payment_method' => $request->payment_method,
+                'payment_method_id' => $paymentMethodData->id ?? null,
+                'payment_method' => $paymentMethodData->name ?? null,
+                'payment_method_name' => $paymentMethodData->name ?? null,
                 'business_id' => $request->user()->business_id,
             ]);
 
@@ -157,13 +163,17 @@ class SalePaymentsController extends Controller
                 'payment_status' => $payment_status
             ]);
 
+            $paymentMethodData = PaymentMethod::find($request->payment_method);
+
             $salePayment->update([
                 'date' => $request->date,
                 'reference' => $request->reference,
                 'amount' => $request->amount,
                 'note' => $request->note,
                 'sale_id' => $request->sale_id,
-                'payment_method' => $request->payment_method
+                'payment_method_id' => $paymentMethodData->id ?? null,
+                'payment_method' => $paymentMethodData->name ?? null,
+                'payment_method_name' => $paymentMethodData->name ?? null,
             ]);
         });
 
@@ -175,6 +185,24 @@ class SalePaymentsController extends Controller
 
     public function destroy(SalePayment $salePayment) {
         abort_if(Gate::denies('access_sale_payments'), 403);
+
+        $sale = $salePayment->sale;
+
+        $due_amount = $sale->due_amount + $salePayment->amount;
+
+        if ($due_amount == $sale->total_amount) {
+            $payment_status = 'Unpaid';
+        } elseif ($due_amount > 0) {
+            $payment_status = 'Partial';
+        } else {
+            $payment_status = 'Paid';
+        }
+
+        $sale->update([
+            'paid_amount' => ($sale->paid_amount  - $salePayment->amount),
+            'due_amount' => $due_amount,
+            'payment_status' => $payment_status
+        ]);
 
         $salePayment->delete();
 

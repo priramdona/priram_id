@@ -80,6 +80,7 @@ return [
     'create' => 'Buat',
     'edit' => 'Edit',
     'delete' => 'Hapus',
+    'cancel' => 'Batal',
     'view' => 'Lihat',
     'send_email' => 'Kirim Email',
     'sale_from_quotation' => 'Penjualan Dari Kutipan',

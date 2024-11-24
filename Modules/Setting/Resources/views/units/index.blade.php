@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Units')
+@section('title', __('unit.units'))
 
 @section('third_party_stylesheets')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
@@ -9,8 +9,8 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item active">Units</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('unit.home') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('unit.units') }}</li>
     </ol>
 @endsection
 
@@ -21,7 +21,7 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
                         <a href="{{ route('units.create') }}" class="btn btn-primary">
-                            Add Unit <i class="bi bi-plus"></i>
+                            {{ __('unit.add_unit') }} <i class="bi bi-plus"></i>
                         </a>
 
                         <hr>
@@ -30,12 +30,12 @@
                             <table class="table table-bordered mb-0 text-center" id="data-table">
                                 <thead>
                                 <tr>
-                                    <th class="align-middle">No.</th>
-                                    <th class="align-middle">Name</th>
-                                    <th class="align-middle">Short Name</th>
-                                    <th class="align-middle">Operator</th>
-                                    <th class="align-middle">Operation Value</th>
-                                    <th class="align-middle">Action</th>
+                                    <th class="align-middle">{{ __('unit.no') }}</th>
+                                    <th class="align-middle">{{ __('unit.name') }}</th>
+                                    <th class="align-middle">{{ __('unit.short_name') }}</th>
+                                    <th class="align-middle">{{ __('unit.operator') }}</th>
+                                    <th class="align-middle">{{ __('unit.operation_value') }}</th>
+                                    <th class="align-middle">{{ __('unit.action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -50,24 +50,35 @@
                                             <a href="{{ route('units.edit', $unit) }}" class="btn btn-primary btn-sm">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <button id="delete" class="btn btn-danger btn-sm delete-confirm" onclick="
-                                                event.preventDefault();
-                                                if (confirm('Are you sure? It will delete the data permanently!')) {
-                                                document.getElementById('destroy{{ $unit->id }}').submit()
-                                                }
-                                                ">
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                data-id="{{ $unit->id }}"
+                                                data-name="{{ $unit->name }}"
+                                                title="{{ __('user.delete_user') }}">
                                                 <i class="bi bi-trash"></i>
-                                                <form id="destroy{{ $unit->id }}" class="d-none" action="{{ route('units.destroy', $unit) }}"
-                                                      method="POST">
-                                                    @csrf
-                                                    @method('delete')
-                                                </form>
                                             </button>
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
+                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel">{{ __('user.delete_confirmation') }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p id="deleteMessage">{{ __('user.confirm_delete', ['name' => '']) }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('user.cancel') }}</button>
+                                            <button type="button" class="btn btn-danger" id="modalConfirmDeleteBtn">{{ __('products.action_confirm_delete') }}</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -80,14 +91,31 @@
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.24/b-1.7.0/b-html5-1.7.0/b-print-1.7.0/datatables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
     <script>
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // Tombol yang memicu modal
+        var userId = button.getAttribute('data-id'); // Ambil ID dari atribut data-id
+        var userName = button.getAttribute('data-name'); // Ambil nama dari atribut data-name
+        $('#modalConfirmDeleteBtn').on('click', function() {
+            var deleteUrl = "{{ route('units.destroy', ':id') }}";
+            deleteUrl = deleteUrl.replace(':id', userId);
+            var form = $('<form action="' + deleteUrl + '" method="POST">' +
+                '@csrf' +
+                '@method("DELETE")' +
+                '</form>');
+            $('body').append(form);
+            form.submit();
+        });
+    });
+
         var table = $('#data-table').DataTable({
             dom: "<'row'<'col-md-3'l><'col-md-5 mb-2'B><'col-md-4 justify-content-end'f>>tr<'row'<'col-md-5'i><'col-md-7 mt-2'p>>",
             "buttons": [
-                {extend: 'excel',text: '<i class="bi bi-file-earmark-excel-fill"></i> Excel'},
-                {extend: 'csv',text: '<i class="bi bi-file-earmark-excel-fill"></i> CSV'},
+                {extend: 'excel',text: '<i class="bi bi-file-earmark-excel-fill"></i> {{ __('unit.excel') }}'},
+                {extend: 'csv',text: '<i class="bi bi-file-earmark-excel-fill"></i> {{ __('unit.csv') }}'},
                 {extend: 'print',
-                    text: '<i class="bi bi-printer-fill"></i> Print',
-                    title: "Units",
+                    text: '<i class="bi bi-printer-fill"></i> {{ __('unit.print') }}',
+                    title: "{{ __('unit.units') }}",
                     exportOptions: {
                         columns: [ 0, 1, 2, 3, 4 ]
                     },
@@ -100,6 +128,23 @@
                 },
             ],
             ordering: false,
+            language: {
+                lengthMenu: "{{ __('unit.lengthMenu') }}",
+                zeroRecords: "{{ __('unit.zeroRecords') }}",
+                info: "{{ __('unit.info') }}",
+                infoEmpty: "{{ __('unit.infoEmpty') }}",
+                infoFiltered: "{{ __('unit.infoFiltered') }}",
+                search: "{{ __('unit.search') }}",
+                paginate: {
+                    first: "{{ __('unit.paginate.first') }}",
+                    last: "{{ __('unit.paginate.last') }}",
+                    next: "{{ __('unit.paginate.next') }}",
+                    previous: "{{ __('unit.paginate.previous') }}"
+                }
+            }
         });
     </script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
 @endpush
+

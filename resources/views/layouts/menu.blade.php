@@ -469,7 +469,7 @@
     </li>
 @endcan --}}
 @can('access_settings')
-    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('currencies*') || request()->routeIs('units*') ? 'c-show' : '' }}">
+    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('currencies*') ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
             <i class="c-sidebar-nav-icon bi bi-gear" style="line-height: 1;"></i> {{ __('menu.settings') }}
         </a>
@@ -487,7 +487,7 @@
     </li>
 @endcan
 
-    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('contacts.*') || request()->routeIs('units*') ? 'c-show' : '' }}">
+    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown {{ request()->routeIs('contacts.*')  ? 'c-show' : '' }}">
         <a class="c-sidebar-nav-dropdown-toggle">
             <i class="c-sidebar-nav-icon bi bi-info-square-fill" style="line-height: 1;"></i> {{ __('menu.about_us') }}
         </a>

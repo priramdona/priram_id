@@ -17,6 +17,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Modules\Currency\Entities\Currency;
 use Modules\Setting\Entities\Setting;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -62,11 +63,23 @@ class RegisterController extends Controller
         $validator = ValidatorFacade::make($data,
         [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'email')
+                    ->whereNull('deleted_at')
+            ],
             'business_name' => ['required', 'string', 'max:255'],
             'business_address' => ['required', 'string', 'max:500'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'phone_number' => ['required','string','min:6','max:16', 'unique:users'],
+            'phone_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'phone_number')
+                    ->whereNull('deleted_at')
+            ],
         ]);
 
         $phoneNumber = $data['phone_number'];

@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'category_exist' => 'Tidak bisa Hapus, karena ada data pada Kategori ini.',
+
     'updated' => 'Berhasil Dirubah',
     'created' => 'Berhasil Dibuat',
     'deleted' => 'Berhasil Dihapus',

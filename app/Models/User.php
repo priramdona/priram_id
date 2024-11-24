@@ -62,4 +62,14 @@ class User extends Authenticatable implements HasMedia
     public function scopeIsActive(Builder $builder) {
         return $builder->where('is_active', 1);
     }
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            return asset('images/' . $this->image);
+        }
+
+        // Jika tidak ada gambar, kembalikan URL gambar default
+        return asset('images/fallback_profile_image.png');
+    }
 }
