@@ -18,6 +18,7 @@ return [
     'categories' => 'Categories',
     'create_product' => 'Create Product',
     'all_products' => 'All Products',
+    'check_product' => 'Check Product',
     'print_barcode' => 'Print Barcode',
     'stock_adjustments' => 'Stock Adjustments',
     'create_adjustment' => 'Create Adjustment',

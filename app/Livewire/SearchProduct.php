@@ -53,6 +53,12 @@ class SearchProduct extends Component
     public function selectProduct($productData) {
         // dd($productData);
         $product = Product::find($productData['id']);
+        // dd($product->image_url);
         $this->dispatch('productSelected', $product);
+        $this->dispatch('productCheckSelected', [
+            'product' => $product,
+            'category' => $product->category,
+            'image' => $product->image_url,
+        ]);
     }
 }

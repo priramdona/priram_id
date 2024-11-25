@@ -38,6 +38,12 @@
             </a>
         </li>
         @endcan
+
+        <li class="c-sidebar-nav-item">
+            <a class="c-sidebar-nav-link {{ request()->routeIs('products.check.show') ? 'c-active' : '' }}" href="{{ route('products.check.show') }}">
+                <i class="c-sidebar-nav-icon bi bi-search" style="line-height: 1;"></i> {{ __('menu.check_product') }}
+            </a>
+        </li>
         <li class="c-sidebar-nav-item">
             <a class="c-sidebar-nav-link {{ request()->routeIs('products.index') ? 'c-active' : '' }}" href="{{ route('products.index') }}">
                 <i class="c-sidebar-nav-icon bi bi-journals" style="line-height: 1;"></i> {{ __('menu.all_products') }}
@@ -346,11 +352,11 @@
                         <i class="c-sidebar-nav-icon bi bi-newspaper" style="line-height: 1;"></i> {{ __('menu.show_list') }}
                     </a>
                 </li>
-                <li class="c-sidebar-nav-item">
+                {{-- <li class="c-sidebar-nav-item">
                     <a class="c-sidebar-nav-link {{ request()->routeIs('payment-gateways.setting') ? 'c-active' : '' }}" href="{{ route('payment-gateways.setting') }}">
                         <i class="c-sidebar-nav-icon bi bi-gear-fill" style="line-height: 1;"></i> {{ __('menu.payment_setting') }}
                     </a>
-                </li>
+                </li> --}}
         </ul>
     </li>
 @endcan

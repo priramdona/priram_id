@@ -1390,7 +1390,7 @@ class PaymentGatewayController extends Controller
         $businessId = Auth::user()->business_id;
 
         $balanceTransaction = BusinessAmount::where('business_id', $businessId)
-        // ->where('status','Completed')
+        ->where('status','Completed')
         ->sum('calculated_transaction_amount');
 
         return $balanceTransaction;

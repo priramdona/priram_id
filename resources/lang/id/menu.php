@@ -74,4 +74,5 @@ return [
     'system_settings' => 'Pengaturan Sistem',
     'upload_products' => 'Unggah Data Produk',
 
+    'check_product' => 'Cek Produk',
 ];

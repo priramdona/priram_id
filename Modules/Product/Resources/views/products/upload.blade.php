@@ -159,13 +159,25 @@
                             </div>
 
                             <div class="mb-3">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span><i class="bi bi-camera"></i> {{ __('sales.scanner') }}</span>
+                                        <button class="btn btn-link" type="button" id="expandcamera">
+                                            <i class="bi bi-caret-down-fill" id='iconexpandcamera'></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body" id="cameraview" hidden>
+                                        <div id="interactive" name="interactive" class="viewport">
+                                            <video id="video" autoplay></video>
+                                            <div class="scanner-laser"></div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <label for="product_code" class="form-label">{{ __('products.product_code') }}</label>
                                 <div class="input-group">
-                                <input type="number" class="form-control" id="product_code"
-                                onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }">
-
-                                <button type="button" id="generate-barcode-btn" class="btn btn-primary">{{ __('products.barcode.generate') }}</button>
-                                    {{-- <div id="barcode-display" class="mt-2"></div> --}}
+                                    <input type="number" class="form-control" id="product_code"
+                                    onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }">
+                                    <button type="button" id="generate-barcode-btn" class="btn btn-primary">{{ __('products.barcode.generate') }}</button>
                                 </div>
                             </div>
 
@@ -231,315 +243,378 @@
 @push('page_scripts')
 
 <script>
-         let originalData = {};
+        let originalData = {};
         const fileInput = document.getElementById('file');
         const previewButton = document.getElementById('preview-button');
 
         document.addEventListener('DOMContentLoaded', function () {
+            var beepSound = new Audio("{{ asset('sounds/beep.mp3') }}");
+            var klikSound = new Audio("{{ asset('sounds/klik.mp3') }}");
 
-            fileInput.addEventListener('change', function () {
-
-            });
-        });
-
-         $('#uploaddata').on('click', function () {
-            let tableData = [];
-             // Ambil elemen tbody dari tabel
-            const tableBody = document.querySelector('#preview-table tbody');
-
-            // Hitung jumlah baris dalam tbody
-            const rowCount = tableBody.querySelectorAll('tr').length;
-
-            // Cek apakah jumlah baris 0
-            if (rowCount === 0) {
-                  // Jika terjadi kesalahan, tampilkan pesan gagal
-                  Swal.fire({
-                        title: "Unggah Gagal",
-                        text: "Tidak ada data yang diunggah, silahkan periksa kembali.",
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        icon: 'error',
-                        didOpen: () => {
-                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                        },
-                    });
-                return; // Hentikan proses upload
-            }
-
-
-            $('#uploaddata').attr('hidden', true);
-            Swal.fire({
-                title: "Proses Unggah",
-                text: "Sedang Unggah Data, Pastikan Aplikasi tidak Tertutup..",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+            Quagga.init({
+                    inputStream : {
+                        name : "Live",
+                        type : "LiveStream",
+                        target: document.querySelector('#interactive'),
+                        constraints: {
+                            facingMode: "environment",
+                            advanced: [
+                                { focusMode: "manual" },
+                                { zoom: 4 },
+                            ]
+                        }
+                    },
+                    locator: {
+                        patchSize: "small",
+                        halfSample: false,
+                        debug: {
+                            showCanvas: true,
+                            showPatches: true,
+                            showFoundPatches: true,
+                            showSkeleton: true,
+                            showLabels: true,
+                            showPatchLabels: true,
+                            showRemainingPatchLabels: true,
+                        }
+                    },
+                    area: {
+                        top: "30%",
+                        right: "30%",
+                        left: "30%",
+                        bottom: "30%"
+                    },
+                    decoder : {
+                        readers : ["code_128_reader", "ean_reader"],
+                    },
+                    locate: true
+                }, function(err) {
+                    if (err) {
+                        return;
+                    }
+                    Quagga.start();
                 });
 
-            // Loop melalui setiap baris tabel
-            $('#preview-table tbody tr').each(function () {
-                let row = $(this);
-                let rowData = {
-                    row_id: row.data('row-id'),
-                    status: row.find('td:nth-child(2) span').text(),
-                    description: row.find('td:nth-child(3)').text(),
-                    product_name: row.find('td:nth-child(4)').text(),
-                    product_code: row.find('td:nth-child(5)').text(),
-                    category_name: row.find('td:nth-child(6)').text(),
-                    product_unit: row.find('td:nth-child(7)').text(),
-                    product_quantity: row.find('td:nth-child(8)').text(),
-                    product_cost: row.find('td:nth-child(9)').text(),
-                    product_price: row.find('td:nth-child(10)').text(),
-                    product_stock_alert: row.find('td:nth-child(11)').text(),
-                    product_order_tax: row.find('td:nth-child(12)').text(),
-                    product_tax_type: row.find('td:nth-child(13)').text(),
-                    product_note: row.find('td:nth-child(14)').text(),
-                };
-                tableData.push(rowData);
+            Quagga.onDetected(function(result) {
+                var code = result.codeResult.code;
+                let inputField = document.getElementById('product_code');
+                if(inputField) {
+                    inputField.value = code;
+                    inputField.dispatchEvent(new Event('input'));
+                    klikSound.play();
+                }
+            });
+        });
 
+    $(document).on('click', '#expandcamera', function() {
+        var div = $('#cameraview');
+        var icon = $('#iconexpandcamera');
+
+        if (div.attr('hidden')) {
+            icon.removeClass('bi-caret-down-fill').addClass('bi-caret-up-fill');
+            div.removeAttr('hidden');
+        } else {
+            icon.removeClass('bi-caret-up-fill').addClass('bi-caret-down-fill');
+            div.attr('hidden', true);
+        }
+    });
+        $('#uploaddata').on('click', function () {
+        let tableData = [];
+            // Ambil elemen tbody dari tabel
+        const tableBody = document.querySelector('#preview-table tbody');
+
+        // Hitung jumlah baris dalam tbody
+        const rowCount = tableBody.querySelectorAll('tr').length;
+
+        // Cek apakah jumlah baris 0
+        if (rowCount === 0) {
+                // Jika terjadi kesalahan, tampilkan pesan gagal
+                Swal.fire({
+                    title: "Unggah Gagal",
+                    text: "Tidak ada data yang diunggah, silahkan periksa kembali.",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    icon: 'error',
+                    didOpen: () => {
+                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                    },
+                });
+            return; // Hentikan proses upload
+        }
+
+
+        $('#uploaddata').attr('hidden', true);
+        Swal.fire({
+            title: "Proses Unggah",
+            text: "Sedang Unggah Data, Pastikan Aplikasi tidak Tertutup..",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
             });
 
-            // Kirim data melalui AJAX
-            $.ajax({
-                url: "{{ route('products.upload.process') }}",
-                method: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    tableData: tableData,
-                },
-                success: function (response) {
+        // Loop melalui setiap baris tabel
+        $('#preview-table tbody tr').each(function () {
+            let row = $(this);
+            let rowData = {
+                row_id: row.data('row-id'),
+                status: row.find('td:nth-child(2) span').text(),
+                description: row.find('td:nth-child(3)').text(),
+                product_name: row.find('td:nth-child(4)').text(),
+                product_code: row.find('td:nth-child(5)').text(),
+                category_name: row.find('td:nth-child(6)').text(),
+                product_unit: row.find('td:nth-child(7)').text(),
+                product_quantity: row.find('td:nth-child(8)').text(),
+                product_cost: row.find('td:nth-child(9)').text(),
+                product_price: row.find('td:nth-child(10)').text(),
+                product_stock_alert: row.find('td:nth-child(11)').text(),
+                product_order_tax: row.find('td:nth-child(12)').text(),
+                product_tax_type: row.find('td:nth-child(13)').text(),
+                product_note: row.find('td:nth-child(14)').text(),
+            };
+            tableData.push(rowData);
 
-                    if (response.success) {
-                        Swal.fire({
-                            title: "Unggah Selesai",
-                            text: "Unggah Selesai dan Berhasil, Silahkan priksa kembali informasi Produk pada Menu Produk..",
-                            icon: 'success',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                                didOpen: () => {
-                                        $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                                },
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.href = '{{ route('products.upload') }}';
-                                    }
-                                });
-                    }
-                },
-                error: function (xhr) {
-                    // Jika terjadi kesalahan, tampilkan pesan gagal
+        });
+
+        // Kirim data melalui AJAX
+        $.ajax({
+            url: "{{ route('products.upload.process') }}",
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                tableData: tableData,
+            },
+            success: function (response) {
+
+                if (response.success) {
                     Swal.fire({
-                        title: "Unggah Gagal",
-                        text: "Terjadi kesalahan pada saat Unggah data, Silahkan Coba Kembali.",
+                        title: "Unggah Selesai",
+                        text: "Unggah Selesai dan Berhasil, Silahkan priksa kembali informasi Produk pada Menu Produk..",
+                        icon: 'success',
                         allowOutsideClick: false,
                         allowEscapeKey: false,
-                        icon: 'error',
-                        didOpen: () => {
-                                $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
-                                        },
-                    });
+                            didOpen: () => {
+                                    $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                            },
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '{{ route('products.upload') }}';
+                                }
+                            });
                 }
-            });
+            },
+            error: function (xhr) {
+                // Jika terjadi kesalahan, tampilkan pesan gagal
+                Swal.fire({
+                    title: "Unggah Gagal",
+                    text: "Terjadi kesalahan pada saat Unggah data, Silahkan Coba Kembali.",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    icon: 'error',
+                    didOpen: () => {
+                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                    },
+                });
+            }
         });
+    });
 
 
-         document.getElementById('generate-barcode-btn').addEventListener('click', function () {
-            fetchBarcode();
-        });
+        document.getElementById('generate-barcode-btn').addEventListener('click', function () {
+        fetchBarcode();
+    });
 
-        function fetchBarcode() {
-            fetch('{{ route('generate.unique.barcode') }}')
-                .then(response => response.json())
-                .then(data => {
-                    // Update input and display area with the generated barcode
-                    document.getElementById('product_code').value = data.barcode;
-                    // document.getElementById('barcode-display').innerHTML = data.barcodeHtml;
-                })
-                .catch(error => console.error('Error:', error));
+    function fetchBarcode() {
+        fetch('{{ route('generate.unique.barcode') }}')
+            .then(response => response.json())
+            .then(data => {
+                // Update input and display area with the generated barcode
+                document.getElementById('product_code').value = data.barcode;
+                // document.getElementById('barcode-display').innerHTML = data.barcodeHtml;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function generateData(rowId) {
+        // Simpan data asli sebelum diedit
+        const row = $(`tr[data-row-id="${rowId}"]`);
+        originalData = {
+            row_id: rowId,
+            description: row.find('td:nth-child(3)').text().trim(),
+            product_name: row.find('td:nth-child(4)').text().trim(),
+            product_code: row.find('td:nth-child(5)').text().trim(),
+            category_name: row.find('td:nth-child(6)').text().trim(),
+            product_unit: row.find('td:nth-child(7)').text().trim(),
+            product_quantity: row.find('td:nth-child(8)').text().trim(),
+            product_cost: row.find('td:nth-child(9)').text().trim(),
+            product_price: row.find('td:nth-child(10)').text().trim(),
+            product_stock_alert: row.find('td:nth-child(11)').text().trim(),
+            product_order_tax: row.find('td:nth-child(12)').text().trim(),
+            product_tax_type: row.find('td:nth-child(13)').text().trim(),
+            product_note: row.find('td:nth-child(14)').text().trim(),
+            // Tambahkan field lain sesuai kebutuhan
+        };
+
+        // Isi modal dengan data asli
+        $('#row_id').val(originalData.row_id);
+        $('#description').val(originalData.description);
+        $('#product_name').val(originalData.product_name);
+        $('#product_code').val(originalData.product_code);
+        $('#category_name').val(originalData.category_name);
+        $('#product_unit').val(originalData.product_unit);
+        $('#product_quantity').val(originalData.product_quantity);
+        $('#product_cost').val(originalData.product_cost);
+        $('#product_price').val(originalData.product_price);
+        $('#product_stock_alert').val(originalData.product_stock_alert);
+        $('#product_order_tax').val(originalData.product_order_tax);
+
+        $("#product_tax_type").empty();
+        let exlusive =  @json(__('products.exclusive'), JSON_UNESCAPED_UNICODE);
+        let inclusive =  @json(__('products.inclusive'), JSON_UNESCAPED_UNICODE);
+
+        op =' ';
+        if (originalData.product_tax_type == 'eksklusif'){
+            op = '<option value="1" selected>' + exlusive.toLowerCase() + '</option>';
+            op += '<option value="2">' + inclusive.toLowerCase() + '</option>';
+        }else{
+            op = '<option value="1">' + exlusive.toLowerCase() + '</option>';
+            op += '<option value="2" selected>' + inclusive.toLowerCase() + '</option>';
         }
 
-        function generateData(rowId) {
-            // Simpan data asli sebelum diedit
-            const row = $(`tr[data-row-id="${rowId}"]`);
-            originalData = {
-                row_id: rowId,
-                description: row.find('td:nth-child(3)').text().trim(),
-                product_name: row.find('td:nth-child(4)').text().trim(),
-                product_code: row.find('td:nth-child(5)').text().trim(),
-                category_name: row.find('td:nth-child(6)').text().trim(),
-                product_unit: row.find('td:nth-child(7)').text().trim(),
-                product_quantity: row.find('td:nth-child(8)').text().trim(),
-                product_cost: row.find('td:nth-child(9)').text().trim(),
-                product_price: row.find('td:nth-child(10)').text().trim(),
-                product_stock_alert: row.find('td:nth-child(11)').text().trim(),
-                product_order_tax: row.find('td:nth-child(12)').text().trim(),
-                product_tax_type: row.find('td:nth-child(13)').text().trim(),
-                product_note: row.find('td:nth-child(14)').text().trim(),
-                // Tambahkan field lain sesuai kebutuhan
-            };
+        $("#product_tax_type").append(op);
+        $('#product_note').val(originalData.product_note);
 
-            // Isi modal dengan data asli
-            $('#row_id').val(originalData.row_id);
-            $('#description').val(originalData.description);
-            $('#product_name').val(originalData.product_name);
-            $('#product_code').val(originalData.product_code);
-            $('#category_name').val(originalData.category_name);
-            $('#product_unit').val(originalData.product_unit);
-            $('#product_quantity').val(originalData.product_quantity);
-            $('#product_cost').val(originalData.product_cost);
-            $('#product_price').val(originalData.product_price);
-            $('#product_stock_alert').val(originalData.product_stock_alert);
-            $('#product_order_tax').val(originalData.product_order_tax);
+        // Buka modal
+        $('#editModal').modal('show');
+    }
 
-            $("#product_tax_type").empty();
-            let exlusive =  @json(__('products.exclusive'), JSON_UNESCAPED_UNICODE);
-            let inclusive =  @json(__('products.inclusive'), JSON_UNESCAPED_UNICODE);
+    $('#saveEdit').on('click', function () {
+        var tax_value = 0;
+        var alert_value = 0;
+        const rowId = $('#row_id').val();
+        const description = $('#description').val();
+        const productName = $('#product_name').val();
+        const product_code = $('#product_code').val();
+        const category_name = $('#category_name').val();
+        const product_unit = $('#product_unit').val();
+        const product_quantity = $('#product_quantity').val();
+        const product_cost = $('#product_cost').val();
+        const product_price = $('#product_price').val();
+        const product_stock_alert = $('#product_stock_alert').val();
+        const product_order_tax = $('#product_order_tax').val();
+        var product_tax_type = $('#product_tax_type option:selected').text();
+        const product_note = $('#product_note').val();
 
-            op =' ';
-            if (originalData.product_tax_type == 'eksklusif'){
-                op = '<option value="1" selected>' + exlusive.toLowerCase() + '</option>';
-                op += '<option value="2">' + inclusive.toLowerCase() + '</option>';
-            }else{
-                op = '<option value="1">' + exlusive.toLowerCase() + '</option>';
-                op += '<option value="2" selected>' + inclusive.toLowerCase() + '</option>';
-            }
+        tax_value = product_order_tax;
+        alert_value = product_stock_alert;
 
-            $("#product_tax_type").append(op);
-            $('#product_note').val(originalData.product_note);
+        document.getElementById("error_input").innerText = "";
+        document.getElementById("error_info").innerText = "";
 
-            // Buka modal
-            $('#editModal').modal('show');
+        if (product_code.length < 12){
+            document.getElementById("error_input").innerText = @json(__('products.product_code'), JSON_UNESCAPED_UNICODE);
+            document.getElementById("error_info").innerText = @json(__('products.product_code_guideline'), JSON_UNESCAPED_UNICODE);
+            return;
         }
 
-        $('#saveEdit').on('click', function () {
-            var tax_value = 0;
-            var alert_value = 0;
-            const rowId = $('#row_id').val();
-            const description = $('#description').val();
-            const productName = $('#product_name').val();
-            const product_code = $('#product_code').val();
-            const category_name = $('#category_name').val();
-            const product_unit = $('#product_unit').val();
-            const product_quantity = $('#product_quantity').val();
-            const product_cost = $('#product_cost').val();
-            const product_price = $('#product_price').val();
-            const product_stock_alert = $('#product_stock_alert').val();
-            const product_order_tax = $('#product_order_tax').val();
-            var product_tax_type = $('#product_tax_type option:selected').text();
-            const product_note = $('#product_note').val();
+        if (productName.length == 0){
+            document.getElementById("error_input").innerText = @json(__('products.product_name'), JSON_UNESCAPED_UNICODE);
+            document.getElementById("error_info").innerText = @json(__('products.product_name_guideline'), JSON_UNESCAPED_UNICODE);
+            return;
+        }
 
-            tax_value = product_order_tax;
-            alert_value = product_stock_alert;
+        if (category_name.length == 0){
+            document.getElementById("error_input").innerText = @json(__('products.category_name'), JSON_UNESCAPED_UNICODE);
+            document.getElementById("error_info").innerText = @json(__('products.category_name_guideline'), JSON_UNESCAPED_UNICODE);
+            return;
+        }
 
-            document.getElementById("error_input").innerText = "";
-            document.getElementById("error_info").innerText = "";
+        if (product_unit.length == 0){
+            document.getElementById("error_input").innerText = @json(__('products.product_unit'), JSON_UNESCAPED_UNICODE);
+            document.getElementById("error_info").innerText = @json(__('products.product_unit_guideline'), JSON_UNESCAPED_UNICODE);
+            return;
+        }
 
-            if (product_code.length < 12){
-                document.getElementById("error_input").innerText = @json(__('products.product_code'), JSON_UNESCAPED_UNICODE);
-                document.getElementById("error_info").innerText = @json(__('products.product_code_guideline'), JSON_UNESCAPED_UNICODE);
-                return;
-            }
+        if (product_quantity.length == 0 || product_quantity == 0 || product_quantity == "0"){
+            document.getElementById("error_input").innerText = @json(__('products.product_quantity'), JSON_UNESCAPED_UNICODE);
+            document.getElementById("error_info").innerText = @json(__('products.product_quantity_guideline'), JSON_UNESCAPED_UNICODE);
+            return;
+        }
 
-            if (productName.length == 0){
-                document.getElementById("error_input").innerText = @json(__('products.product_name'), JSON_UNESCAPED_UNICODE);
-                document.getElementById("error_info").innerText = @json(__('products.product_name_guideline'), JSON_UNESCAPED_UNICODE);
-                return;
-            }
+        if (product_price.length == 0 || product_price == 0 || product_price == "0"){
+            document.getElementById("error_input").innerText = @json(__('products.product_price'), JSON_UNESCAPED_UNICODE);
+            document.getElementById("error_info").innerText = @json(__('products.product_price_guideline'), JSON_UNESCAPED_UNICODE);
+            return;
+        }
 
-            if (category_name.length == 0){
-                document.getElementById("error_input").innerText = @json(__('products.category_name'), JSON_UNESCAPED_UNICODE);
-                document.getElementById("error_info").innerText = @json(__('products.category_name_guideline'), JSON_UNESCAPED_UNICODE);
-                return;
-            }
+        if (product_cost.length == 0 || product_cost == 0 || product_cost == "0"){
+            document.getElementById("error_input").innerText = @json(__('products.product_cost'), JSON_UNESCAPED_UNICODE);
+            document.getElementById("error_info").innerText = @json(__('products.product_cost_guideline'), JSON_UNESCAPED_UNICODE);
+            return;
+        }
 
-            if (product_unit.length == 0){
-                document.getElementById("error_input").innerText = @json(__('products.product_unit'), JSON_UNESCAPED_UNICODE);
-                document.getElementById("error_info").innerText = @json(__('products.product_unit_guideline'), JSON_UNESCAPED_UNICODE);
-                return;
-            }
+        if (product_stock_alert.length == 0 || product_stock_alert < 1 || product_stock_alert == "0"){
+            alert_value = 0;
+        }
 
-            if (product_quantity.length == 0 || product_quantity == 0 || product_quantity == "0"){
-                document.getElementById("error_input").innerText = @json(__('products.product_quantity'), JSON_UNESCAPED_UNICODE);
-                document.getElementById("error_info").innerText = @json(__('products.product_quantity_guideline'), JSON_UNESCAPED_UNICODE);
-                return;
-            }
+        if (product_order_tax.length == 0 || product_order_tax < 1 || product_order_tax == "0"){
+            tax_value = 0;
+        }
 
-            if (product_price.length == 0 || product_price == 0 || product_price == "0"){
-                document.getElementById("error_input").innerText = @json(__('products.product_price'), JSON_UNESCAPED_UNICODE);
-                document.getElementById("error_info").innerText = @json(__('products.product_price_guideline'), JSON_UNESCAPED_UNICODE);
-                return;
-            }
-
-            if (product_cost.length == 0 || product_cost == 0 || product_cost == "0"){
-                document.getElementById("error_input").innerText = @json(__('products.product_cost'), JSON_UNESCAPED_UNICODE);
-                document.getElementById("error_info").innerText = @json(__('products.product_cost_guideline'), JSON_UNESCAPED_UNICODE);
-                return;
-            }
-
-            if (product_stock_alert.length == 0 || product_stock_alert < 1 || product_stock_alert == "0"){
-                alert_value = 0;
-            }
-
-            if (product_order_tax.length == 0 || product_order_tax < 1 || product_order_tax == "0"){
-                tax_value = 0;
-            }
-
-            $.ajax({
-                url: "{{ url('/products/check/data/edit') }}/",
-                method: "GET",
-                data: {
-                    'row_id': rowId,
-                    'product_name': productName,
-                    'product_code': product_code,
-                    'category_name': category_name,
-                    'product_unit': product_unit,
-                    'product_quantity': product_quantity,
-                    'product_cost': product_cost,
-                    'product_price': product_price,
-                    'product_stock_alert': alert_value,
-                    'product_order_tax': tax_value,
-                    'product_tax_type': product_tax_type,
-                    'product_note': product_note,
-                },
-                dataType: 'json',
-                success: function(response) {
-                    const row = $(`tr[data-row-id="${response.row_id}"]`);
-                    const actionCell = row.find('td:nth-child(1)'); // Kolom untuk tombol edit
-                    if (response.status === 'Oke') {
-                        actionCell.html(''); // Hapus tombol edit
-                    } else {
-                        actionCell.html(`<a onclick="generateData('${response.row_id}')" class="btn btn-info"><i class="bi bi-pencil"></i></a>`);
-                    }
-
-                    row.find('td:nth-child(2)').html(`<span style="color: ${response.status === 'Oke' ? 'green' : 'red'}; font-weight: bold;">${response.status}</span>`);
-                    row.find('td:nth-child(3)').text(response.description);
-                    row.find('td:nth-child(4)').text(response.product_name);
-                    row.find('td:nth-child(5)').text(response.product_code);
-                    row.find('td:nth-child(6)').text(response.category_name);
-                    row.find('td:nth-child(7)').text(response.product_unit);
-                    row.find('td:nth-child(8)').text(response.product_quantity);
-                    row.find('td:nth-child(9)').text(response.product_cost);
-                    row.find('td:nth-child(10)').text(response.product_price);
-                    row.find('td:nth-child(11)').text(response.product_stock_alert);
-                    row.find('td:nth-child(12)').text(response.product_order_tax);
-                    row.find('td:nth-child(13)').text(response.product_tax_type);
-                    row.find('td:nth-child(14)').text(response.product_note);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error); // Untuk menangani error
+        $.ajax({
+            url: "{{ url('/products/check/data/edit') }}/",
+            method: "GET",
+            data: {
+                'row_id': rowId,
+                'product_name': productName,
+                'product_code': product_code,
+                'category_name': category_name,
+                'product_unit': product_unit,
+                'product_quantity': product_quantity,
+                'product_cost': product_cost,
+                'product_price': product_price,
+                'product_stock_alert': alert_value,
+                'product_order_tax': tax_value,
+                'product_tax_type': product_tax_type,
+                'product_note': product_note,
+            },
+            dataType: 'json',
+            success: function(response) {
+                const row = $(`tr[data-row-id="${response.row_id}"]`);
+                const actionCell = row.find('td:nth-child(1)'); // Kolom untuk tombol edit
+                if (response.status === 'Oke') {
+                    actionCell.html(''); // Hapus tombol edit
+                } else {
+                    actionCell.html(`<a onclick="generateData('${response.row_id}')" class="btn btn-info"><i class="bi bi-pencil"></i></a>`);
                 }
-            });
 
-            // Tutup modal
-            $('#editModal').modal('hide');
+                row.find('td:nth-child(2)').html(`<span style="color: ${response.status === 'Oke' ? 'green' : 'red'}; font-weight: bold;">${response.status}</span>`);
+                row.find('td:nth-child(3)').text(response.description);
+                row.find('td:nth-child(4)').text(response.product_name);
+                row.find('td:nth-child(5)').text(response.product_code);
+                row.find('td:nth-child(6)').text(response.category_name);
+                row.find('td:nth-child(7)').text(response.product_unit);
+                row.find('td:nth-child(8)').text(response.product_quantity);
+                row.find('td:nth-child(9)').text(response.product_cost);
+                row.find('td:nth-child(10)').text(response.product_price);
+                row.find('td:nth-child(11)').text(response.product_stock_alert);
+                row.find('td:nth-child(12)').text(response.product_order_tax);
+                row.find('td:nth-child(13)').text(response.product_tax_type);
+                row.find('td:nth-child(14)').text(response.product_note);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error); // Untuk menangani error
+            }
         });
 
-        $('#cancelEdit').on('click', function () {
-            // Tutup modal tanpa menyimpan perubahan
-            $('#editModal').modal('hide');
-        });
+        // Tutup modal
+        $('#editModal').modal('hide');
+    });
+
+    $('#cancelEdit').on('click', function () {
+        // Tutup modal tanpa menyimpan perubahan
+        $('#editModal').modal('hide');
+    });
     </script>
 @endpush
 @push('page_css')

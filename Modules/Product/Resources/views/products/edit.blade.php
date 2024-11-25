@@ -34,8 +34,25 @@
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-group">
+                                        <div class="card">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <span><i class="bi bi-camera"></i> {{ __('sales.scanner') }}</span>
+                                                <button class="btn btn-link" type="button" id="expandcamera">
+                                                    <i class="bi bi-caret-down-fill" id='iconexpandcamera'></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-body" id="cameraview" hidden>
+                                                <div id="interactive" name="interactive" class="viewport">
+                                                    <video id="video" autoplay></video>
+                                                    <div class="scanner-laser"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <label for="product_code">{{ __('products.code') }} <span class="text-danger">*</span></label>
-                                        <input type="text" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" name="product_code" required value="{{ $product->product_code }}">
+                                        <div class="input-group">
+                                            <input type="number" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" name="product_code" required value="{{ $product->product_code }}">
+                                            <button type="button" id="generate-barcode-btn" class="btn btn-primary">{{ __('products.barcode.generate') }}</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -160,6 +177,76 @@
 
 @push('page_scripts')
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var beepSound = new Audio("{{ asset('sounds/beep.mp3') }}");
+        var klikSound = new Audio("{{ asset('sounds/klik.mp3') }}");
+
+        Quagga.init({
+                inputStream : {
+                    name : "Live",
+                    type : "LiveStream",
+                    target: document.querySelector('#interactive'),
+                    constraints: {
+                        facingMode: "environment",
+                        advanced: [
+                            { focusMode: "manual" },
+                            { zoom: 4 },
+                        ]
+                    }
+                },
+                locator: {
+                    patchSize: "small",
+                    halfSample: false,
+                    debug: {
+                        showCanvas: true,
+                        showPatches: true,
+                        showFoundPatches: true,
+                        showSkeleton: true,
+                        showLabels: true,
+                        showPatchLabels: true,
+                        showRemainingPatchLabels: true,
+                    }
+                },
+                area: {
+                    top: "30%",
+                    right: "30%",
+                    left: "30%",
+                    bottom: "30%"
+                },
+                decoder : {
+                    readers : ["code_128_reader", "ean_reader"],
+                },
+                locate: true
+            }, function(err) {
+                if (err) {
+                    return;
+                }
+                Quagga.start();
+            });
+
+        Quagga.onDetected(function(result) {
+            var code = result.codeResult.code;
+            let inputField = document.getElementById('product_code');
+            if(inputField) {
+                inputField.value = code;
+                inputField.dispatchEvent(new Event('input'));
+                klikSound.play();
+            }
+        });
+    });
+
+    $(document).on('click', '#expandcamera', function() {
+        var div = $('#cameraview');
+        var icon = $('#iconexpandcamera');
+
+        if (div.attr('hidden')) {
+            icon.removeClass('bi-caret-down-fill').addClass('bi-caret-up-fill');
+            div.removeAttr('hidden');
+        } else {
+            icon.removeClass('bi-caret-up-fill').addClass('bi-caret-down-fill');
+            div.attr('hidden', true);
+        }
+    });
         function previewImage(event) {
         const file = event.target.files[0];
         const reader = new FileReader();

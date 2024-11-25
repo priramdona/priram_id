@@ -30,7 +30,7 @@ class FetchXenditTransactionsJob implements ShouldQueue
     $retryAttempts = 0;
     $maxRetries = 5;
 
-    $apiKey = env('XENDIT_KEY');
+    $apiKey = config('services.xendit.key');
     while ($hasMore) {
         $url = "{$this->baseUrl}/transactions?limit=50";
 

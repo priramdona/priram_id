@@ -131,10 +131,8 @@
                 locate: true
             }, function(err) {
                 if (err) {
-                    // console.log(err);
                     return;
                 }
-                // console.log("{{ __('sales.search_product_sale.scanner.title') }}");
                 Quagga.start();
             });
 

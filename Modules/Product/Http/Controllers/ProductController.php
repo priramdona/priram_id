@@ -141,7 +141,6 @@ class ProductController extends Controller
             ], 500);
         }
     }
-
     public function checkDataEdit(Request $request)
     {
 
@@ -272,7 +271,6 @@ class ProductController extends Controller
         return response()->json($dataTable);
 
     }
-
     public function preview(Request $request)
     {
         $request->validate([
@@ -460,7 +458,6 @@ class ProductController extends Controller
 
         return $checksum;
     }
-
     public function uploadImage(Request $request, $productId)
     {
         $request->validate([
@@ -481,7 +478,6 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Gambar berhasil diupload.');
     }
-
     public function generateUniqueBarcode()
     {
         do {
@@ -521,13 +517,11 @@ class ProductController extends Controller
         return $dataTable->render('product::products.index');
     }
 
-
     public function create() {
         abort_if(Gate::denies('create_products'), 403);
 
         return view('product::products.create');
     }
-
 
     public function store(StoreProductRequest $request) {
         $user = $request->user();
@@ -567,6 +561,47 @@ class ProductController extends Controller
         return view('product::products.showsale', compact('product'));
     }
 
+    // public function checkShowSearch($search) {
+    //     abort_if(Gate::denies('show_products'), 403);
+    //     $result_search = Product::where('business_id',Auth::user()->business_id)
+    //     ->where(
+    //             fn ($query) => $query
+    //             ->where('product_name', 'like', '%' . $search . '%')
+    //             ->orWhere('product_code', 'like', '%' . $search . '%')
+    //         )->take(5)->get();
+
+    //     return view('product::products.showproduct', compact('result_search'));
+    // }
+    public function checkShowSearch(Request $request)
+    {
+        abort_if(Gate::denies('show_products'), 403);
+
+        $search = $request->query('search');
+        if (!$search) {
+            return response()->json(['message' => 'No search query provided'], 400);
+        }
+
+        $result_search = Product::where('business_id', Auth::user()->business_id)
+            ->where(function ($query) use ($search) {
+                $query->where('product_name', 'like', '%' . $search . '%')
+                    ->orWhere('product_code', 'like', '%' . $search . '%');
+            })
+            ->take(5)
+            ->get();
+
+        return view('product::products.showproduct', compact('result_search'));
+    }
+    public function checkShowDetail(Product $product) {
+        abort_if(Gate::denies('show_products'), 403);
+
+        return view('product::products.showproduct', compact('product'));
+    }
+
+    public function checkShow() {
+        abort_if(Gate::denies('show_products'), 403);
+
+        return view('product::products.showproduct');
+    }
 
     public function show(Product $product) {
         abort_if(Gate::denies('show_products'), 403);
