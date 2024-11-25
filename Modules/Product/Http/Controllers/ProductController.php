@@ -485,19 +485,15 @@ class ProductController extends Controller
     public function generateUniqueBarcode()
     {
         do {
-            // Generate random 12 digits for EAN-13 (first digit for country code can be set as desired)
             $barcode = mt_rand(100000000000, 999999999999);
-
-            // Check if the generated barcode already exists in product_code column
+            if (strlen($barcode) === 12) {
+                $barcode .= $this->calculateEAN13Checksum($barcode);
+            }
             $exists = Product::where('product_code', $barcode)
             ->where('business_id',Auth::user()->businessIid)
             ->exists();
         } while ($exists);
 
-        if (strlen($barcode) === 12) {
-            $barcode .= $this->calculateEAN13Checksum($barcode);
-        }
-        // Return barcode HTML and the code itself
         $barcodeHtml = DNS1DFacade::getBarcodeHTML($barcode, 'EAN13');
 
         return response()->json([
@@ -508,19 +504,14 @@ class ProductController extends Controller
     public function generateBarcode()
     {
         do {
-            // Generate random 12 digits for EAN-13 (first digit for country code can be set as desired)
             $barcode = mt_rand(100000000000, 999999999999);
-
-            // Check if the generated barcode already exists in product_code column
+            if (strlen($barcode) === 12) {
+                $barcode .= $this->calculateEAN13Checksum($barcode);
+            }
             $exists = Product::where('product_code', $barcode)->exists();
         } while ($exists);
 
-        // Return barcode HTML and the code itself
         $barcodeHtml = DNS1DFacade::getBarcodeHTML($barcode, 'EAN13');
-     // Jika 12 digit, tambahkan checksum otomatis
-        if (strlen($barcode) === 12) {
-            $barcode .= $this->calculateEAN13Checksum($barcode);
-        }
 
         return  $barcode;
     }
