@@ -235,7 +235,7 @@
 
         Quagga.onDetected(function(result) {
             var code = result.codeResult.code;
-            let inputField = document.getElementById('product_code');
+            let inputField = document.getElementById('productcode');
             if(inputField) {
                 inputField.value = code;
                 inputField.dispatchEvent(new Event('input'));

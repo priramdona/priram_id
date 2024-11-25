@@ -8,7 +8,7 @@
                             <i class="bi bi-search text-primary"></i>
                         </div>
                     </div>
-                    <input wire:keydown.escape="resetQuery" wire:model.live.debounce.500ms="query" type="text" class="form-control" placeholder="{{ __('sales.search_product.placeholder') }}">
+                    <input id="productcode" wire:keydown.escape="resetQuery" wire:model.live.debounce.500ms="query" type="text" class="form-control" placeholder="{{ __('sales.search_product.placeholder') }}">
                 </div>
             </div>
         </div>
