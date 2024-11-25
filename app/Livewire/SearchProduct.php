@@ -13,6 +13,7 @@ class SearchProduct extends Component
     public $query;
     public $search_results;
     public $how_many;
+    public bool $camera = false; // Default kamera tertutup
 
     public function mount() {
         $this->query = '';
@@ -23,7 +24,10 @@ class SearchProduct extends Component
     public function render() {
         return view('livewire.search-product');
     }
-
+    public function toggleCamera()
+    {
+        $this->camera = !$this->camera;
+    }
     public function updatedQuery() {
         $this->search_results = Product::where('business_id',Auth::user()->business_id)
             ->where('is_showlist', true)

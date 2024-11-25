@@ -1,22 +1,6 @@
 
 <div class="position-relative">
     <div class="card mb-0 border-0 shadow-sm">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">{{ __('sales.scanner') }}</h5>
-            <button class="btn btn-link" type="button" id="expandcamera">
-                <i class="bi bi-caret-down-fill" id='iconexpandcamera'></i>
-            </button>
-        </div>
-        {{-- <div > --}}
-            <div class="card-body" id="cameraview" hidden>
-                {{-- <div class="position-relative"> --}}
-                    <div id="interactive" name="interactive" class="viewport">
-                        <video id="video" autoplay></video>
-                        <div class="scanner-laser"></div>
-                    </div>
-                {{-- </div> --}}
-            </div>
-        {{-- </div> --}}
         <div class="card-body">
             <div class="form-group mb-0">
                 <div class="input-group">

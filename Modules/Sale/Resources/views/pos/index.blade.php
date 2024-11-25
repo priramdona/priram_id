@@ -21,6 +21,20 @@
             </div>
 
             <div class="col-lg-7">
+                <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-camera"></i> {{ __('sales.scanner') }}</h5>
+                    <button class="btn btn-link" type="button" id="expandcamera">
+                        <i class="bi bi-caret-down-fill" id='iconexpandcamera'></i>
+                    </button>
+                </div>
+                <div class="card-body" id="cameraview" hidden>
+                    <div id="interactive" name="interactive" class="viewport">
+                        <video id="video" autoplay></video>
+                        <div class="scanner-laser"></div>
+                    </div>
+                </div>
+                </div>
                 <livewire:search-product-sale/>
                 <livewire:pos.product-list :categories="$product_categories"/>
             </div>

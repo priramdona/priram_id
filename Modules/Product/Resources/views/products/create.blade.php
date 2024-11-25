@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Create Product')
+@section('title',  __('products.create_product') )
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a></li>
-        <li class="breadcrumb-item active">Add</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('products.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">{{ __('products.products') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('products.create_product') }}</li>
     </ol>
 @endsection
 
@@ -18,7 +18,7 @@
                 <div class="col-lg-12">
                     @include('utils.alerts')
                     <div class="form-group">
-                        <button class="btn btn-primary">Create Product <i class="bi bi-check"></i></button>
+                        <button class="btn btn-primary">{{ __('products.create_product') }} <i class="bi bi-check"></i></button>
                     </div>
                 </div>
                 <div class="col-lg-12">
@@ -27,16 +27,16 @@
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_name">Product Name <span class="text-danger">*</span></label>
+                                        <label for="product_name">{{ __('products.product_name') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="product_name" required value="{{ old('product_name') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_code">Code <span class="text-danger">*</span></label>
+                                        <label for="product_code">{{ __('products.code') }} <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"  type="text" class="form-control" name="product_code" id="product_code" required value="{{ old('product_code') }}">
-                                            <button type="button" id="generate-barcode-btn" class="btn btn-primary">Generate Barcode</button>
+                                            <button type="button" id="generate-barcode-btn" class="btn btn-primary">{{ __('products.barcode.generate') }}</button>
                                             {{-- <div id="barcode-display" class="mt-2"></div> --}}
                                         </div>
                                     </div>
@@ -45,24 +45,24 @@
 
                             <div class="form-row">
                                 <div class="col-md-6">
-                                    <label for="category_id">Category <span class="text-danger">*</span></label>
+                                    <label for="category_id">{{ __('products.category') }} <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <select class="form-control" name="category_id" id="category_id" required>
-                                            <option value="" selected disabled>Select Category</option>
+                                            <option value="" selected disabled>{{ __('products.select_category') }}</option>
                                             @foreach(\Modules\Product\Entities\Category::where('business_id',Auth::user()->business_id)->where('is_showlist',true)->get() as $category)
                                                 <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                                             @endforeach
                                         </select>
                                         <div class="input-group-append d-flex">
                                             <button data-toggle="modal" data-target="#categoryCreateModal" class="btn btn-outline-primary" type="button">
-                                                Add
+                                                {{ __('products.add_category') }}
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6" hidden>
                                     <div class="form-group">
-                                        <label for="barcode_symbology">Barcode Symbology <span class="text-danger">*</span></label>
+                                        <label for="barcode_symbology">{{ __('products.barcode_symbology') }} <span class="text-danger">*</span></label>
                                         <select class="form-control" name="product_barcode_symbology" id="barcode_symbology" required>
 
                                             <option selected value="EAN13">EAN-13</option>
@@ -75,13 +75,13 @@
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_cost">Cost <span class="text-danger">*</span></label>
+                                        <label for="product_cost">{{ __('products.product_cost') }} <span class="text-danger">*</span></label>
                                         <input id="product_cost" type="text" class="form-control" name="product_cost" required value="{{ old('product_cost') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_price">Price <span class="text-danger">*</span></label>
+                                        <label for="product_price">{{ __('products.product_price') }} <span class="text-danger">*</span></label>
                                         <input id="product_price" type="text" class="form-control" name="product_price" required value="{{ old('product_price') }}">
                                     </div>
                                 </div>
@@ -90,13 +90,13 @@
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_quantity">Quantity <span class="text-danger">*</span></label>
+                                        <label for="product_quantity">{{ __('products.quantity') }} <span class="text-danger">*</span></label>
                                         <input type="number" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"  class="form-control" name="product_quantity" required value="{{ old('product_quantity') }}" min="1">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="product_stock_alert">Alert Quantity <span class="text-danger">*</span></label>
+                                        <label for="product_stock_alert">{{ __('products.alert_quantity') }} <span class="text-danger">*</span></label>
                                         <input type="number" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" name="product_stock_alert" required value="{{ old('product_stock_alert', 0) }}" min="0" max="100">
                                     </div>
                                 </div>
@@ -105,15 +105,15 @@
                             <div class="form-row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="product_order_tax">Tax (%)</label>
+                                        <label for="product_order_tax">{{ __('products.tax') }}</label>
                                         <input type="number" onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }"  class="form-control" name="product_order_tax" value="{{ old('product_order_tax') }}" min="1">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="product_tax_type">Tax type</label>
+                                        <label for="product_tax_type">{{ __('products.tax_type') }}</label>
                                         <select class="form-control" name="product_tax_type" id="product_tax_type">
-                                            <option value="" selected >Select Tax Type</option>
+                                            <option value="" selected >{{ __('products.select_tax_type') }}</option>
                                             <option value="1">Exclusive</option>
                                             <option value="2">Inclusive</option>
                                         </select>
@@ -121,9 +121,9 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="product_unit">Unit <i class="bi bi-question-circle-fill text-info" data-toggle="tooltip" data-placement="top" title="This short text will be placed after Product Quantity."></i> <span class="text-danger">*</span></label>
+                                        <label for="product_unit">{{ __('products.product_unit') }} <i class="bi bi-question-circle-fill text-info" data-toggle="tooltip" data-placement="top" title="This short text will be placed after Product Quantity."></i> <span class="text-danger">*</span></label>
                                         <select class="form-control" name="product_unit" id="product_unit">
-                                            <option value="" selected >Select Unit</option>
+                                            <option value="" selected >{{ __('products.select_unit') }}</option>
                                             @foreach(\Modules\Setting\Entities\Unit::where('business_id',Auth::user()->business_id)->get() as $unit)
                                                 <option value="{{ $unit->short_name }}">{{ $unit->name . ' | ' . $unit->short_name }}</option>
                                             @endforeach
@@ -133,7 +133,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="product_note">Note</label>
+                                <label for="product_note">{{ __('products.note') }}</label>
                                 <textarea name="product_note" id="product_note" rows="4 " class="form-control"></textarea>
                             </div>
                         </div>
@@ -144,7 +144,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="image">Product Image</label>
+                                <label for="image">{{ __('products.image') }}</label>
                                 <input type="file" class="form-control-file" id="imageInput" name="image" accept="image/*" onchange="previewImage(event)">
                                 <div class="mt-3">
                                     <!-- Preview Image -->

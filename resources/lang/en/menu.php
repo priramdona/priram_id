@@ -72,4 +72,5 @@ return [
     'paymentgateway' => 'Payment Gateway',
     'show_list' => 'Payments List',
     'payment_setting' => 'Payment Settings',
+    'upload_products' => 'Upload Products',
 ];

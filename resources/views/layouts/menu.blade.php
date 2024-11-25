@@ -28,6 +28,11 @@
         @endcan
         @can('create_products')
         <li class="c-sidebar-nav-item">
+            <a class="c-sidebar-nav-link {{ request()->routeIs('products.upload') ? 'c-active' : '' }}" href="{{ route('products.upload') }}">
+                <i class="c-sidebar-nav-icon bi bi-file-earmark-plus" style="line-height: 1;"></i> {{ __('menu.upload_products') }}
+            </a>
+        </li>
+        <li class="c-sidebar-nav-item">
             <a class="c-sidebar-nav-link {{ request()->routeIs('products.create') ? 'c-active' : '' }}" href="{{ route('products.create') }}">
                 <i class="c-sidebar-nav-icon bi bi-journal-plus" style="line-height: 1;"></i> {{ __('menu.create_product') }}
             </a>

@@ -24,6 +24,7 @@ class StoreProductRequest extends FormRequest
             'max:255',
         Rule::unique('products', 'product_code')
             ->where('business_id', Auth::user()->business_id)
+            ->where('product_unit', $this->product_unit)
             ->whereNull('deleted_at')
             ],
             'product_barcode_symbology' => ['required', 'string', 'max:255'],

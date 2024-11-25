@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">{{ __('sales.search_product.product_list') }}</h5>
+        <h5 class="mb-0"><i class="bi bi-cart-plus"></i> {{ __('sales.search_product.product_list') }}</h5>
         <button class="btn btn-link" type="button" id="expandlist">
             <i class="bi bi-caret-down-fill" id='iconexpand'></i>
         </button>

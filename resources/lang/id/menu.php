@@ -72,4 +72,6 @@ return [
     'show_list' => 'Daftar Pembayaran',
     'payment_setting' => 'Pengaturan Pembayaran',
     'system_settings' => 'Pengaturan Sistem',
+    'upload_products' => 'Unggah Data Produk',
+
 ];
