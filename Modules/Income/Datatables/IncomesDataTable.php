@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Income\Datatables;
+namespace Modules\Income\DataTables;
 
 use Illuminate\Support\Facades\Auth;
 use Modules\Income\Entities\Income;
