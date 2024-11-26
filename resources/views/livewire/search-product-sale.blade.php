@@ -88,7 +88,7 @@
     });
 
 
-    $('#expand-tooltip').tooltip();
+    // $('#expand-tooltip').tooltip();
     document.addEventListener('DOMContentLoaded', function () {
         var beepSound = new Audio("{{ asset('sounds/beep.mp3') }}");
         var klikSound = new Audio("{{ asset('sounds/klik.mp3') }}");

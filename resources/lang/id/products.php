@@ -21,7 +21,7 @@ return [
     'action_confirm_delete' => 'Ya, Hapus',
     'confirm_delete_message' => 'Apakah Anda yakin ingin menghapus Produk ini?',
     'no_file_selected' => 'Tidak ada file yang dipilih',
-    'barcode_name' => 'Bardcode',
+    'barcode_name' => 'Barcode',
     'products' => 'Produk',
     'home' => 'Beranda',
     'update_product' => 'Perbarui Produk',
@@ -158,4 +158,6 @@ return [
     'select_template' => 'Template belum terpilih, Silakan Unduh dan atur Produk.',
     'preview_success' => 'Pratinjau Sukses, Anda dapat Cek dan Unggah Data dibawah.',
     'invalid_template' => 'Ada kesalahan Template, Periksa kembali template.',
+    'details' => 'Detail',
+
 ];

@@ -51,7 +51,6 @@ class UtilityController extends Controller
     }
     public function showNotification(MessageNotification $data)
     {
-
         $data->is_read = true;
         $data->save();
 

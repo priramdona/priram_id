@@ -102,7 +102,7 @@
             <div class="col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <img id ="productImage" src="" alt="Product Image" class="img-fluid img-thumbnail mb-2 fixed-size-img">
+                        <img id ="productImage" src="{{ asset('images/default.png') }}" alt="Product Image" class="img-fluid img-thumbnail mb-2 fixed-size-img">
                     </div>
                 </div>
             </div>

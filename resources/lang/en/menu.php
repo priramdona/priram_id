@@ -19,6 +19,7 @@ return [
     'create_product' => 'Create Product',
     'all_products' => 'All Products',
     'check_product' => 'Check Product',
+    'account' => 'Account',
     'print_barcode' => 'Print Barcode',
     'stock_adjustments' => 'Stock Adjustments',
     'create_adjustment' => 'Create Adjustment',
@@ -74,4 +75,10 @@ return [
     'show_list' => 'Payments List',
     'payment_setting' => 'Payment Settings',
     'upload_products' => 'Upload Products',
+    'close' => 'Close',
+    'inbox_message' => 'Inbox Message',
+    'view' => 'View',
+    'mark_read' => 'Mark Read',
+    'read' => 'Opened',
+    'low_quantity' => 'is low in quantity!',
 ];

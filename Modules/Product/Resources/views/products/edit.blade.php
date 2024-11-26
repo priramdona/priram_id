@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Product')
+@section('title', __('products.edit_product'))
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a></li>
-        <li class="breadcrumb-item active">Edit</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('products.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">{{ __('products.products') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('products.edit_product') }}</li>
     </ol>
 @endsection
 
@@ -26,7 +26,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="form-row">
-                                <div class="col-md-7">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="product_name">{{ __('products.product_name') }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="product_name" required value="{{ $product->product_name }}">
@@ -68,8 +68,8 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
+                                <div class="col-md-6" hidden>
+                                    <div class="form-group" >
                                         <label for="barcode_symbology">{{ __('products.barcode_symbology') }} <span class="text-danger">*</span></label>
                                         <select class="form-control" name="product_barcode_symbology" id="barcode_symbology" required>
                                             {{-- <option {{ $product->product_barcode_symbology == 'C128' ? 'selected' : '' }} value="C128">Code 128</option>
@@ -116,7 +116,7 @@
                             <div class="form-row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="product_order_tax">{{ __('products.tax') }} (%)</label>
+                                        <label for="product_order_tax">{{ __('products.tax') }}</label>
                                         <input type="number"onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }" class="form-control" name="product_order_tax" value="{{ $product->product_order_tax }}" min="0" max="100">
                                     </div>
                                 </div>

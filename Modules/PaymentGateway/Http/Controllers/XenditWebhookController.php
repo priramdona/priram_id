@@ -227,6 +227,13 @@ class XenditWebhookController extends Controller
                                 }
                             }
 
+                            $messageNotifications = new UtilityController;
+                            $messageNotifications->insertMessageNotifications(
+                                'Pembayaran Paylater Berhasil.',
+                                'Yeay Pembayaran Paylater telah berhasil untuk Transaksi ' . $sourceTransaction->reference .'. Saldo akan bertambah jika proses Settlement sudah diterima. (Baca panduan di Pembayaran Online), Terima Kasih!.... ',
+                                $sourceType,$sourceId
+                            );
+
 
                     }
                     else{
@@ -241,13 +248,6 @@ class XenditWebhookController extends Controller
                 $xenditCreatePayments->save();
                 $businessAmount->save();
                 $sourceTransaction->save();
-
-                $messageNotifications = new UtilityController;
-                $messageNotifications->insertMessageNotifications(
-                    'Paylater',
-                    $sourceTransaction->reference . ' Success Paid',
-                    $sourceType,$sourceId
-                );
 
                 return response()->json([], 200);
 
@@ -347,6 +347,12 @@ class XenditWebhookController extends Controller
                             }
 
 
+                            $messageNotifications = new UtilityController;
+                            $messageNotifications->insertMessageNotifications(
+                                'Pembayaran Faktur Tagihan Berhasil.',
+                                'Yeay Pembayaran Faktur Tagihan Telah berhasil untuk Transaksi ' . $sourceTransaction->reference .'. Saldo akan bertambah jika proses Settlement sudah diterima. (Baca panduan di Pembayaran Online), Terima Kasih!.... ',
+                                $sourceType,$sourceId
+                            );
                     }
                     else{
                         return response()->json("No Record Found....", 422);
@@ -361,12 +367,6 @@ class XenditWebhookController extends Controller
                 $businessAmount->save();
                 $sourceTransaction->save();
 
-                $messageNotifications = new UtilityController;
-                $messageNotifications->insertMessageNotifications(
-                    'Invoice',
-                    $sourceTransaction->reference . ' Success Paid',
-                    $sourceType,$sourceId
-                );
 
                 return response()->json([], 200);
 
@@ -451,6 +451,15 @@ class XenditWebhookController extends Controller
                                     return response()->json("No Source Found....", 422);
                                 }
                             }
+
+
+                        $messageNotifications = new UtilityController;
+                        $messageNotifications->insertMessageNotifications(
+                            'Pembayaran Virtual Account Berhasil.',
+                            'Yeay Pembayaran Virtual Account telah berhasil untuk Transaksi ' . $sourceTransaction->reference .'. Saldo akan bertambah jika proses Settlement sudah diterima. (Baca panduan di Pembayaran Online), Terima Kasih!.... ',
+                            $sourceType,$sourceId
+                        );
+
                     }
                     else{
                         return response()->json("No Record Found....", 422);
@@ -464,13 +473,6 @@ class XenditWebhookController extends Controller
                 $xenditCreatePayments->save();
                 $businessAmount->save();
                 $sourceTransaction->save();
-
-                $messageNotifications = new UtilityController;
-                $messageNotifications->insertMessageNotifications(
-                    'VA Payment',
-                    $sourceTransaction->reference . ' Success Paid',
-                    $sourceType,$sourceId
-                );
 
                 return response()->json([], 200);
 
@@ -509,12 +511,13 @@ class XenditWebhookController extends Controller
                     if ($businessAmount){
                         $businessAmount->status = $status;
                         $businessAmount->save();
+                        $trxDate = Carbon::parse($businessAmount->created_at)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
 
-                    $messageNotifications = new UtilityController;
-                    $messageNotifications->insertMessageNotifications(
-                    'Penarikan ' . format_currency($businessAmount->transaction_amount),
-                    $statusMsg,
-                    'disbursements',$xenditDisbursement->id
+                        $messageNotifications = new UtilityController;
+                        $messageNotifications->insertMessageNotifications(
+                            'Penarikan Dana ' . $trxDate . '.',
+                            'Penarikan Dana pada Tanggal : ' . $trxDate .' sebesar ' . format_currency($businessAmount->transaction_amount) . 'Telah sukses Diproses, Estimasi akan diterima pada : ' . $xenditDisbursement->estimated_arrival_time . ' Saat ini status penarikan Dana anda : ' . $statusMsg . ', Cek berkala dan pastikan Dana diterima dengan Baik.',
+                        'disbursements',$xenditDisbursement->id
                 );
                     }
                     $xenditDisbursement->save();
@@ -667,6 +670,13 @@ class XenditWebhookController extends Controller
                                 }
                             }
 
+                        $messageNotifications = new UtilityController;
+                        $messageNotifications->insertMessageNotifications(
+                            'Pembayaran Online Berhasil.',
+                            'Yeay Pembayaran telah berhasil untuk Transaksi ' . $sourceTransaction->reference .'. Saldo akan bertambah jika proses Settlement sudah diterima. (Baca panduan di Pembayaran Online), Terima Kasih!.... ',
+                            $sourceType,$sourceId
+                        );
+
                 }else{
                     return response()->json("Payment Request Record not Found....", 422);
                 }
@@ -680,13 +690,6 @@ class XenditWebhookController extends Controller
             $xenditCreatePayments->save();
             $businessAmount->save();
             $sourceTransaction->save();
-
-            $messageNotifications = new UtilityController;
-                $messageNotifications->insertMessageNotifications(
-                    'Payment',
-                    $sourceTransaction->reference . ' Success Paid',
-                    $sourceType,$sourceId
-                );
 
             return response()->json([], 200);
 

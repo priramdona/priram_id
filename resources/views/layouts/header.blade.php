@@ -16,7 +16,31 @@
     @endcan
 
     @can('show_notifications')
-    <li class="c-header-nav-item dropdown">
+    <li class="c-header-nav-item mr-3">
+        <a class="c-header-nav-link" href="#" role="button" data-toggle="modal" data-target="#inboxModal">
+            <i class="bi bi-envelope" style="font-size: 20px;"></i>
+            @php
+                $low_quantity_products = \Modules\Product\Entities\Product::select('id', 'product_quantity', 'product_stock_alert', 'product_code', 'product_name')->whereColumn('product_quantity', '<=', 'product_stock_alert')->get();
+                $message_notifications = \App\Models\MessageNotification::where('is_read', false)->get();
+            @endphp
+            @if($low_quantity_products->isNotEmpty() || $message_notifications->isNotEmpty())
+               <span class="badge badge-pill badge-danger">
+            @else
+                <span class="badge badge-pill">
+            @endif
+
+            @php
+                echo $low_quantity_products->count() + $message_notifications->count();
+            @endphp
+            </span>
+        </a>
+
+    </li>
+    @endcan
+
+    <!-- Modal -->
+
+    {{-- <li class="c-header-nav-item dropdown">
         <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="bi bi-envelope" style="font-size: 20px;"></i>
             @php
@@ -59,9 +83,7 @@
             @endif
 
         </div>
-    </li>
-    @endcan
-
+    </li> --}}
     <li class="c-header-nav-item dropdown">
 
         <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button"
@@ -76,7 +98,7 @@
         </a>
         <div class="dropdown-menu dropdown-menu-right pt-0">
 
-            <div class="dropdown-header bg-light py-2"><strong>Account</strong></div>
+            <div class="dropdown-header bg-light py-2"><strong> {{ __('menu.account') }}</strong></div>
 
             <a class="dropdown-item" href="{{ route('profile.edit') }}">
                 <i class="mfe-2  bi bi-person" style="font-size: 1.2rem;"></i> {{ __('menu.profile') }}
@@ -90,3 +112,4 @@
         </div>
     </li>
 </ul>
+

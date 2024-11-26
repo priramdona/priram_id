@@ -64,6 +64,16 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+
+        .notification-item.bg-light {
+            border: 1px solid #3a3a3a8f;
+            border-left: 5px solid #1676dc;
+
+            /* font-weight: bold; */
+        }
+        .notification-item a {
+            margin-left: 15px;
+        }
     </style>
 
     <!-- Masukkan QuaggaJS dari CDN -->
@@ -89,6 +99,7 @@
 
         <div class="c-body">
             <main class="c-main">
+                @include('includes.messages')
                 @yield('content')
             </main>
         </div>

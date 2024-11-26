@@ -73,6 +73,13 @@ return [
     'payment_setting' => 'Pengaturan Pembayaran',
     'system_settings' => 'Pengaturan Sistem',
     'upload_products' => 'Unggah Data Produk',
-
+    'account' => 'Akun',
+    'close' => 'Tutup',
     'check_product' => 'Cek Produk',
+    'inbox_message' => 'Pesan Masuk',
+    'view' => 'Lihat',
+    'mark_read' => 'Buka',
+    'read' => 'Dibuka',
+    'low_quantity' => 'Jumlah stok Menipis! Silakan cek Produk anda dan Atur kembali agar tidak kehabisan.',
+
 ];

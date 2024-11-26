@@ -20,7 +20,7 @@ return [
     'action_delete' => 'Delete',
     'action_confirm_delete' => 'Yes, Delete it',
     'confirm_delete_message' => 'Are you sure you want to delete this Product?',
-    'barcode_name' => 'Bardcode',
+    'barcode_name' => 'Barcode',
     'no_file_selected' => 'No File Selected',
     'products' => 'Products',
     'home' => 'Home',
@@ -156,4 +156,5 @@ return [
     'invalid_template' => 'Invalid Template, Please check Template.',
     'select_template' => 'Browse and Select Template.',
     'preview_success' => 'Preview Success, You can check and Upload Data.',
+    'details' => 'Details',
 ];

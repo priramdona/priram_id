@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BarcodeScannerController;
 use App\Http\Controllers\FinacialController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UtilityController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,11 @@ Route::get('/failedpayment', [UtilityController::class, 'failedPayment'])->name(
 
 Route::group(['middleware' => 'auth'], function () {
 
+    Route::get('notifications/{data}', [UtilityController::class, 'showNotification'])
+    ->name('notifications.show');
+
+    Route::post('/notifications/mark-as-read', [HomeController::class, 'markAsRead'])->name('notifications.markAsRead');
+
     Route::get('/home', 'HomeController@index')
         ->name('home');
 
@@ -47,8 +53,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/financial-management-withdraw', [FinacialController::class, 'index'])->name('financial.management.withdraw');
     Route::get('/financial-management-topup', [FinacialController::class, 'index'])->name('financial.management.topup');
 
-    Route::get('notifications/{data}', [UtilityController::class, 'showNotification'])
-    ->name('notifications.show');
 
 });
 

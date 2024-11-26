@@ -84,7 +84,7 @@
 
     });
       // Initialize toolti
-      $('#expand-tooltip').tooltip();
+    //   $('#expand-tooltip').tooltip();
 
 
         // // Initialize tooltip

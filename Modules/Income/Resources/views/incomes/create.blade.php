@@ -69,7 +69,7 @@
                                     <div class="form-group">
                                         <label for="amount">{{ __('income.amount') }} <span class="text-danger">*</span></label>
                                         <label class="text-primary font-weight-bold col-lg-6" id="lbl_amount" name="lbl_amount">Rp. 0.00</label>
-                                        <input id="amount" type="amount" class="form-control" name="amount" value="0" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" required>
+                                        <input id="amount" type="number" class="form-control" name="amount" value="0" onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">

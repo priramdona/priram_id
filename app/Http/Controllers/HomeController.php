@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MessageNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Expense\Entities\Expense;
@@ -14,6 +15,8 @@ use Modules\Sale\Entities\Sale;
 use Modules\Sale\Entities\SalePayment;
 use Modules\SalesReturn\Entities\SaleReturn;
 use Modules\SalesReturn\Entities\SaleReturnPayment;
+
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -66,6 +69,23 @@ class HomeController extends Controller
         ]);
     }
 
+    public function showNotifications()
+    {
+        $notifications = MessageNotification::orderBy('is_read', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('inbox', compact('notifications'));
+    }
+
+    public function markAsRead(Request $request)
+    {
+        $notification = MessageNotification::findOrFail($request->id);
+        $notification->is_read = true;
+        $notification->save();
+
+        return response()->json(['success' => true]);
+    }
 
     public function salesPurchasesChart() {
         abort_if(!request()->ajax(), 404);
