@@ -26,10 +26,8 @@
 
                         <hr>
 
-                        <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;"   >
-                            <table id="preview-table" class="table table-bordered" style="table-layout: auto; width: 100%;">
-
-                            {{-- <table class="table table-bordered mb-0 text-center" id="data-table"> --}}
+                        <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
+                            <table class="table table-bordered" style="table-layout: auto; width: 100%;" id="data-table">
                                 <thead>
                                 <tr>
                                     <th class="align-middle">{{ __('unit.no') }}</th>
@@ -130,6 +128,10 @@
                 },
             ],
             ordering: false,
+            responsive: true,
+            autoWidth: true,
+            scrollX: true,
+
             language: {
                 lengthMenu: "{{ __('unit.lengthMenu') }}",
                 zeroRecords: "{{ __('unit.zeroRecords') }}",
@@ -167,5 +169,6 @@
     #preview-table td {
         white-space: nowrap;
     }
+
 </style>
 @endpush
