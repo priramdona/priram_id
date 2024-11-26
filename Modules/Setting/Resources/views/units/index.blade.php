@@ -26,8 +26,10 @@
 
                         <hr>
 
-                        <div class="table-responsive">
-                            <table class="table table-bordered mb-0 text-center" id="data-table">
+                        <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;"   >
+                            <table id="preview-table" class="table table-bordered" style="table-layout: auto; width: 100%;">
+
+                            {{-- <table class="table table-bordered mb-0 text-center" id="data-table"> --}}
                                 <thead>
                                 <tr>
                                     <th class="align-middle">{{ __('unit.no') }}</th>
@@ -148,3 +150,22 @@
 
 @endpush
 
+
+@push('page_css')
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+    #preview-table td {
+        white-space: nowrap;
+    }
+</style>
+@endpush
