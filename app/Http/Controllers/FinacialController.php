@@ -32,14 +32,6 @@ class FinacialController extends Controller
         ->orderBy('created_at', 'desc')
          ->get();
 
-        // foreach ($history as $item) {
-            // dd($history->transactional); // Mengakses relasi polymorphic untuk setiap item
-        // }
-        // $history =  XenditDisbursement::query()
-        //             ->where('business_id', Auth::user()->business_id)
-        //             ->with('business')
-        //             ->get();
-
         return view('layouts.financial.history', [
             'history' => $history,
         ]);

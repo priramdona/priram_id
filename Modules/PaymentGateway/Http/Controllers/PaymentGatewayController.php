@@ -1390,8 +1390,8 @@ class PaymentGatewayController extends Controller
         $businessId = Auth::user()->business_id;
 
         $balanceTransaction = BusinessAmount::where('business_id', $businessId)
-        // ->where('status','Completed')
-        ->where('transactional_type', 'Modules\PaymentGateway\Entities\XenditDisbursement')
+        ->where('status','Completed')
+        // ->where('transactional_type', 'Modules\PaymentGateway\Entities\XenditDisbursement')
         ->sum('calculated_transaction_amount');
 
         return $balanceTransaction;
