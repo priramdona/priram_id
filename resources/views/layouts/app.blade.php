@@ -74,6 +74,51 @@
         .notification-item a {
             margin-left: 15px;
         }
+
+        /* Mengubah warna latar belakang sidebar */
+        /* Ganti dengan warna yang diinginkan */
+        /* .c-sidebar {
+            background-color: #007bff;
+        } */
+
+        /* Mengubah warna teks pada sidebar */
+        /* Ganti dengan warna teks yang diinginkan */
+        /* .c-sidebar .c-sidebar-nav li a {
+            color: #ffffff;
+        } */
+
+        /* Mengubah warna ketika item sidebar dihover */
+        /* Ganti dengan warna hover yang diinginkan */
+        /* .c-sidebar .c-sidebar-nav li a:hover {
+            background-color: #0056b3;
+        } */
+        /* Warna parent ketika dropdown dibuka */
+        /* Warna background parent ketika terbuka */
+         /* Warna teks parent */
+        /* .c-sidebar-nav-dropdown.c-show > .c-sidebar-nav-link {
+            background-color: #007bff;
+            color: #ffffff;
+        } */
+
+        /* Warna background untuk child items */
+        /* Warna background child ketika parent terbuka */
+        /* .c-sidebar-nav-dropdown.c-show > .c-sidebar-nav-dropdown-items {
+            background-color: #0056b3;
+        } */
+
+        /* Warna link dalam child items */
+        /* Warna teks link di child */
+        /* .c-sidebar-nav-dropdown.c-show > .c-sidebar-nav-dropdown-items .c-sidebar-nav-link {
+            color: #ffffff;
+        } */
+
+        /* Warna hover untuk child items */
+        /* Warna hover untuk child */
+        /* .c-sidebar-nav-dropdown.c-show > .c-sidebar-nav-dropdown-items .c-sidebar-nav-link:hover {
+            background-color: #004085;
+            color: #ffffff;
+        } */
+
     </style>
 
     <!-- Masukkan QuaggaJS dari CDN -->

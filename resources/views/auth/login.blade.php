@@ -49,7 +49,7 @@
                         @csrf
                         <h1>Login</h1>
                         <p class="text-muted">Masuk ke akun Anda</p>
-                        <div class="input-group mb-3">
+                        {{-- <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                     <span class="input-group-text">
                                       <i class="bi bi-person"></i>
@@ -59,6 +59,19 @@
                                    name="phone_number" value="{{ old('phone_number') }}"
                                    placeholder="Nomor Telepon">
                             @error('phone_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div> --}}
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                      <i class="bi bi-person"></i>
+                                    </span>
+                            </div>
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                                   name="email" value="{{ old('email') }}"
+                                   placeholder="Email">
+                            @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -123,13 +136,15 @@
 <script>
     let login = document.getElementById('login');
     let submit = document.getElementById('submit');
-    let phone_number = document.getElementById('phone_number');
+    // let phone_number = document.getElementById('phone_number');
+    let email = document.getElementById('email');
     let password = document.getElementById('password');
     let spinner = document.getElementById('spinner')
 
     login.addEventListener('submit', (e) => {
         submit.disabled = true;
-        phone_number.readonly = true;
+        // phone_number.readonly = true;
+        email.readonly = true;
         password.readonly = true;
 
         spinner.style.display = 'block';
@@ -139,7 +154,8 @@
 
     setTimeout(() => {
         submit.disabled = false;
-        phone_number.readonly = false;
+        // phone_number.readonly = false;
+        email.readonly = false;
         password.readonly = false;
 
         spinner.style.display = 'none';

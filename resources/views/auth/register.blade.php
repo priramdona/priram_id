@@ -78,6 +78,8 @@
                         <!-- Email -->
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
+                            <span class="text-danger" style="font-size: 12px;">(Pastikan Email Aktif, karena akan dikirimkan OTP)</span>
+
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" placeholder="Email">

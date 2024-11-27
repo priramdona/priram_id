@@ -23,22 +23,22 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
-    protected function credentials(Request $request)
-    {
-        $phoneNumber = $request->get('phone_number');
+    // protected function credentials(Request $request)
+    // {
+    //     $phoneNumber = $request->get('phone_number');
 
-        // Mengonversi nomor telepon ke format E.164 Indonesia
-        $formattedPhone = PhoneHelper::formatToE164Indonesia($phoneNumber);
+    //     // Mengonversi nomor telepon ke format E.164 Indonesia
+    //     $formattedPhone = PhoneHelper::formatToE164Indonesia($phoneNumber);
 
-        return [
-            'phone_number' => $formattedPhone,
-            'password' => $request->get('password'),
-        ];
-    }
-    public function username()
-    {
-        return 'phone_number';
-    }
+    //     return [
+    //         'phone_number' => $formattedPhone,
+    //         'password' => $request->get('password'),
+    //     ];
+    // }
+    // public function username()
+    // {
+    //     return 'phone_number';
+    // }
     /**
      * Where to redirect users after login.
      *
@@ -64,6 +64,10 @@ class LoginController extends Controller
                 'account_deactivated' => 'Your account is deactivated! Please contact with Super Admin.'
             ]);
         }
+        if (is_null($user->email_verified_at)) {
+            return redirect()->route('otp.show'); // Redirect ke halaman OTP jika belum verifikasi
+        }
+
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }
