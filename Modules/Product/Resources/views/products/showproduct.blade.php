@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Product Details')
+@section('title', __('products.details'))
 
 @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a></li>
-        <li class="breadcrumb-item active">Details</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('products.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">{{ __('products.products') }}</a></li>
+        <li class="breadcrumb-item active">{{ __('products.details') }}</li>
     </ol>
 @endsection
 
