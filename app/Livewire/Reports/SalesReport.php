@@ -5,6 +5,7 @@ namespace App\Livewire\Reports;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Sale\Entities\Sale;
+use Illuminate\Support\Facades\Auth;
 
 class SalesReport extends Component
 {
@@ -36,6 +37,7 @@ class SalesReport extends Component
 
     public function render() {
         $sales = Sale::whereDate('date', '>=', $this->start_date)
+        ->where('business_id', Auth::user()->business_id)
             ->whereDate('date', '<=', $this->end_date)
             ->when($this->customer_id, function ($query) {
                 return $query->where('customer_id', $this->customer_id);

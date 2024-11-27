@@ -133,8 +133,8 @@
 
             document.getElementById('barcode_symbology').innerText = product.barcode_symbology;
             document.getElementById('category_name').innerText = category.category_name;
-            document.getElementById('product_cost').innerText = product.product_cost;
-            document.getElementById('product_price').innerText = product.product_price;
+            document.getElementById('product_cost').innerText = formatRupiah(product.product_cost, 'Rp. ');
+            document.getElementById('product_price').innerText = formatRupiah(product.product_price, 'Rp. ');
 
             document.getElementById('product_quantity_unit').innerText = product.product_price + ' ' + product.product_unit;
             document.getElementById('product_stock_alert').innerText = product.product_stock_alert;

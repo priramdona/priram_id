@@ -5,6 +5,7 @@ namespace App\Livewire\Reports;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\PurchasesReturn\Entities\PurchaseReturn;
+use Illuminate\Support\Facades\Auth;
 
 class PurchasesReturnReport extends Component
 {
@@ -37,6 +38,7 @@ class PurchasesReturnReport extends Component
 
     public function render() {
         $purchase_returns = PurchaseReturn::whereDate('date', '>=', $this->start_date)
+            ->where('business_id', Auth::user()->business_id)
             ->whereDate('date', '<=', $this->end_date)
             ->when($this->supplier_id, function ($query) {
                 return $query->where('supplier_id', $this->supplier_id);

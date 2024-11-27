@@ -599,7 +599,6 @@
 
     });
 
-
     $(document).on('change', '#payment_method', function() {
         var paymentMethodId = document.getElementById('payment_method').value;
         var customer_id = document.getElementById('customer_id').value;

@@ -5,6 +5,7 @@ namespace App\Livewire\Reports;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Purchase\Entities\Purchase;
+use Illuminate\Support\Facades\Auth;
 
 class PurchasesReport extends Component
 {
@@ -36,6 +37,7 @@ class PurchasesReport extends Component
 
     public function render() {
         $purchases = Purchase::whereDate('date', '>=', $this->start_date)
+        ->where('business_id', Auth::user()->business_id)
             ->whereDate('date', '<=', $this->end_date)
             ->when($this->supplier_id, function ($query) {
                 return $query->where('supplier_id', $this->supplier_id);

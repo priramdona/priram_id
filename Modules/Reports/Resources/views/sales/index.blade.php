@@ -11,6 +11,6 @@
 
 @section('content')
     <div class="container-fluid">
-        <livewire:reports.sales-report :customers="\Modules\People\Entities\Customer::all()"/>
+        <livewire:reports.sales-report :customers="\Modules\People\Entities\Customer::where('business_id', Auth::user()->business_id)->get()"/>
     </div>
 @endsection

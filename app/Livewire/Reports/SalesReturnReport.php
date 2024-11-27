@@ -5,6 +5,7 @@ namespace App\Livewire\Reports;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\SalesReturn\Entities\SaleReturn;
+use Illuminate\Support\Facades\Auth;
 
 class SalesReturnReport extends Component
 {
@@ -46,6 +47,7 @@ class SalesReturnReport extends Component
             ->when($this->payment_status, function ($query) {
                 return $query->where('payment_status', $this->payment_status);
             })
+            ->where('business_id', Auth::user()->business_id)
             ->orderBy('date', 'desc')->paginate(10);
 
         return view('livewire.reports.sales-return-report', [

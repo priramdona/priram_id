@@ -33,7 +33,6 @@ class PaymentMethodController extends Controller
     $configs = DataConfig::first();
         return view('paymentmethod::index', compact(['channel', 'configs']));
     }
-
     public function getAllPaymentMethod(Request $request)
     {
         $sourceInfo = $request->source;

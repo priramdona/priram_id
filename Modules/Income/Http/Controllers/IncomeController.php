@@ -81,7 +81,7 @@ class IncomeController extends Controller
                 'reference_id' => $refIdData,
                 'amount' => $income->amount,
                 'income_id' => $income->id,
-                'payment_method' => $paymentMethodData->id,
+                'payment_method' => $paymentMethodData->name ?? null,
                 'payment_method_id' => $paymentMethodData->id,
                 'payment_method_name' => $paymentMethodData->name,
                 'payment_channel_id' => $paymentChannelData->id ?? null,
