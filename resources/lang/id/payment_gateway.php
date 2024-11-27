@@ -31,4 +31,11 @@ return [
     'deduction_amount' => 'Jumlah Potongan',
     'notes' => 'Catatan',
     'withdraw' => 'Tarik',
+    'date' => 'Tanggal',
+    'estimated_arrival' => 'Estimasi Diterima',
+    'status' => 'Status',
+    'description' => 'Keterangan',
+    'channel_code' => 'Channel Code',
+    'add_withdraw' => 'Tambah Tarik Saldo',
+    'receipt_notification' => 'Pemberitahuan Terima',
 ];

@@ -51,7 +51,10 @@ Route::group(['middleware' => 'auth'], function () {
     ->name('financial.management.withdraw.process');
 
     Route::get('/financial-management-withdraw', [FinacialController::class, 'index'])->name('financial.management.withdraw');
+    Route::get('/financial-management-history', [FinacialController::class, 'history'])->name('financial.management.history');
     Route::get('/financial-management-topup', [FinacialController::class, 'index'])->name('financial.management.topup');
+
+    Route::get('/disbursements/{id}', [FinacialController::class, 'detail'])->name('disbursements.show');
 
 
 });

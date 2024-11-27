@@ -144,8 +144,8 @@ class PaymentGatewayController extends Controller
                 'transactional_type' => XenditDisbursement::class ?? null,
                 'transactional_id' => $xenditDisbursment->id ?? null,
                 'reference_id' => $apiResultCreate['reference_id'],
-                'amount' => $amount ?? null,
-                'transaction_amount' =>  $transactionAmount ?? null,
+                'amount' => $transactionAmount ?? null,
+                'transaction_amount' =>  $amount ?? null,
                 'received_amount' => 0,
                 'deduction_amount' => 0,
                 'status' => 'PENDING',
@@ -1390,7 +1390,8 @@ class PaymentGatewayController extends Controller
         $businessId = Auth::user()->business_id;
 
         $balanceTransaction = BusinessAmount::where('business_id', $businessId)
-        ->where('status','Completed')
+        // ->where('status','Completed')
+        ->where('transactional_type', 'Modules\PaymentGateway\Entities\XenditDisbursement')
         ->sum('calculated_transaction_amount');
 
         return $balanceTransaction;

@@ -31,4 +31,11 @@ return [
     'deduction_amount' => 'Deduction Amount',
     'notes' => 'Notes',
     'withdraw' => 'Withdraw',
+    'date' => 'Date',
+    'estimated_arrival' => 'Estimated Arrival',
+    'status' => 'Status',
+    'description' => 'Description',
+    'channel_code' => 'Channel Code',
+    'receipt_notification' => 'Receipt Notification',
+    'add_withdraw' => 'Add Withdraw',
 ];
