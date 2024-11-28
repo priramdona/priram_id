@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
     <title>Login | {{ config('app.name') }}</title>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/favicon.png') }}">
     <!-- CoreUI CSS -->
@@ -42,6 +42,16 @@
                 <div class="alert alert-danger" role="alert">
                     {{ Session::get('account_deactivated') }}
                 </div>
+            @endif
+            @if (session('login_error'))
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Gagal',
+                        html: '{!! session('login_error') !!}',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
             @endif
             <div class="card p-4 border-0 shadow-sm">
                 <div class="card-body">
