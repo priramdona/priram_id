@@ -56,23 +56,25 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    // protected function sendFailedLoginResponse(Request $request)
-    // {
+    protected function sendFailedLoginResponse(Request $request)
+    {
 
-    //     $errors = [$this->username() => trans('auth.failed')];
+        $errors = [$this->username() => trans('auth.failed')];
 
-    //     // Check if the email exists
-    //     if (!Auth::validate([$this->username() => $request->{$this->username()}, 'password' => 'invalid'])) {
-    //         $errors = [$this->username() => 'Email atau Kata sandi Salah.'];
-    //     } else {
-    //         $errors = ['password' => 'Email atau Kata sandi Salah.'];
-    //     }
+        // Check if the email exists
+        if (!Auth::validate([$this->username() => $request->{$this->username()}, 'password' => 'invalid'])) {
+            $errors = [$this->username() => 'Email atau Kata sandi Salah.'];
+        } else {
+            $errors = ['password' => 'Email atau Kata sandi Salah.'];
+        }
 
-    //     // Return back with error
-    //     return redirect()->back()
-    //         ->withInput($request->only($this->username(), 'remember'))
-    //         ->with('login_error', implode('<br>', $errors));
-    // }
+        return back()->withErrors(['login' => 'Email atau Kata sandi Salah.']);
+
+        // Return back with error
+        // return redirect()->back()
+        //     ->withInput($request->only($this->username(), 'remember'))
+        //     ->with('login_error', implode('<br>', $errors));
+    }
 
     protected function authenticated(Request $request, $user) {
         if ($user->is_active != 1) {

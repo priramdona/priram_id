@@ -38,6 +38,13 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-md-5">
+            @if($errors->any())
+                @foreach($errors->all() as $error)
+                <div class="alert alert-danger" role="alert">
+                    {{ $error }}
+                </div>
+                @endforeach
+            @endif
             {{-- @if(Session::has('account_deactivated'))
                 <div class="alert alert-danger" role="alert">
                     {{ Session::get('account_deactivated') }}
@@ -53,7 +60,7 @@
                     });
                 </script>
             @endif --}}
-            @if(isset($login_error))
+            {{-- @if(isset($login_error))
             <script>
                 Swal.fire({
                     icon: 'error',
@@ -62,7 +69,19 @@
                     confirmButtonText: 'OK'
                 });
             </script>
-        @endif
+        @endif --}}
+        {{-- @if (request()->has('login_error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                html: '{!! request()->get('login_error') !!}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif --}}
+
+
             <div class="card p-4 border-0 shadow-sm">
                 <div class="card-body">
                     <form id="login" method="post" action="{{ url('/login') }}">
