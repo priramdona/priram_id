@@ -58,6 +58,7 @@ class LoginController extends Controller
 
     protected function sendFailedLoginResponse(Request $request)
     {
+
         $errors = [$this->username() => trans('auth.failed')];
 
         // Check if the email exists
