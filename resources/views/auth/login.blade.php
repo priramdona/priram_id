@@ -38,7 +38,7 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-md-5">
-            @if(Session::has('account_deactivated'))
+            {{-- @if(Session::has('account_deactivated'))
                 <div class="alert alert-danger" role="alert">
                     {{ Session::get('account_deactivated') }}
                 </div>
@@ -52,7 +52,17 @@
                         confirmButtonText: 'OK'
                     });
                 </script>
-            @endif
+            @endif --}}
+            @if(isset($login_error))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    html: '{!! $login_error !!}',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
             <div class="card p-4 border-0 shadow-sm">
                 <div class="card-body">
                     <form id="login" method="post" action="{{ url('/login') }}">
