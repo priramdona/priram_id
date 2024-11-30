@@ -60,12 +60,12 @@ class PosController extends Controller
 
         $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '.pdf');
 
-        if (!file_exists(dirname($filePath))) {
-            mkdir(dirname($filePath), 0777, true);
-        }
-        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
+        // if (!file_exists(dirname($filePath))) {
+        //     mkdir(dirname($filePath), 0777, true);
+        // }
+        // $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
 
-        return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl, 'publicUrl' => $publicUrl]);
+        return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl, 'publicUrl' => $filePath]);
 
         return response()->json([
             'pdf_url' => $filePath,
