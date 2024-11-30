@@ -39,7 +39,37 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class PosController extends Controller
 {
-    public function printPossd($id)
+    public function printPos($id)
+    {
+        $sale = Sale::find($id);
+        $url = route('sales.showdata', ['sale' => $sale]);
+        $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
+        // return view('sale::print-pos-old', ['sale' => $sale, 'barcode' => $barcodeUrl]);
+
+        // $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
+        $lineHeight = 41;
+        $numberOfItems = count($sale->saleDetails);
+        $estimatedHeight = ($numberOfItems * $lineHeight) + 400;
+
+        $heightMM =  (($estimatedHeight / 96) * 30) *3;
+        $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])
+        ->setPaper([0, 0, 226.772, $heightMM], 'portrait');
+
+        // Render PDF untuk mendapatkan output
+        $output = $pdf->download();
+
+        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '.pdf');
+
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
+        return response()->json([
+            'pdf_url' => $publicUrl,
+            'message' => "<script>window.location.href = '$publicUrl'; setTimeout(() => { Android.printPage(); }, 1000);</script>"
+        ]);
+    }
+    public function printPosOri($id)
     {
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
@@ -54,7 +84,7 @@ class PosController extends Controller
 
         return $pdf->stream('sale-'. $sale->reference .'.pdf');
     }
-    public function printPos($id)
+    public function printPosBackup($id)
     {
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
