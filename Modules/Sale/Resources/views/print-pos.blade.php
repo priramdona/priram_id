@@ -65,18 +65,21 @@
         }
     </style>
     <script>
-        function invokePrint() {
-            if (typeof Android !== "undefined" && Android.printPage) {
-                // Panggil metode print di Android
-                Android.printPage();
+        // Ambil publicUrl dari Blade Laravel
+        var publicUrl = "{{ $publicUrl ?? '' }}";
+
+        // Fungsi untuk mengirim URL PDF ke Android
+        function sendLinkPdf() {
+            if (typeof Android !== "undefined" && Android.printPage && publicUrl !== '') {
+                Android.printPage(publicUrl); // Panggil fungsi printPage dari Android
             } else {
                 console.log("Android interface not available");
             }
         }
 
+        // Panggil fungsi sendLinkPdf() saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function () {
-            invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
-
+            sendLinkPdf();
         });
     </script>
 </head>
