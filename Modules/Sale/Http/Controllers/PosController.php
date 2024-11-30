@@ -53,7 +53,7 @@ class PosController extends Controller
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
         $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl , 'publicUrl' => ''])
-        ->setPaper([0, 0, 226.772, $heightMM], 'portrait');
+        ->setPaper('a7');
 
         // Render PDF untuk mendapatkan output
         $output = $pdf->download();
