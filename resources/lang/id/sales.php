@@ -238,7 +238,7 @@ return [
             'amount' => 'Jumlah'
         ],
         'thankyou' => 'Terima Kasih',
-        'scan_label' => 'Pindai untuk melihat detail'
+        'scan_label' => 'Pindai untuk digital struk'
     ],
     'actions' => [
         'pos_invoice' => 'Struk',

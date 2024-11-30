@@ -53,26 +53,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/sales/pos/pdf/{id}', [PosController::class, 'printPos'])->name('sales.pos.pdf');
 
-    // Route::get('/sales/pos/pdf/{id}', function ($id) {
-    //     $sale = \Modules\Sale\Entities\Sale::findOrFail($id);
-
-    //     $pdf = \PDF::loadView('sale::print-pos', [
-    //         'sale' => $sale,
-    //     ])
-    //     // ->setPaper('a7')
-    //     ->setOption('page-width', '80mm')  // Set lebar kertas 80mm
-    //     ->setOption('page-height', '1000mm')  // Set tinggi kertas sesuai panjang struk
-    //     ->setOption('margin-top', 8)
-    //     ->setOption('margin-bottom', 8)
-    //     ->setOption('margin-left', 5)
-    //     ->setOption('margin-right', 5);
-
-    //     return $pdf->stream('sale-'. $sale->reference .'.pdf');
-    // })->name('sales.pos.pdf');
-
-    //Sales
-
-
     Route::resource('sales', 'SaleController');
     Route::resource('pos', 'PosController');
 

@@ -39,17 +39,32 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class PosController extends Controller
 {
+    public function printPossd($id)
+    {
+        $sale = Sale::find($id);
+        $url = route('sales.showdata', ['sale' => $sale]);
+
+        $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
+
+
+        $pdf = PDF::loadView('sale::print-pos', [
+            'sale' => $sale,
+            'barcode' => $barcodeUrl
+        ])->setPaper('a7');
+
+        return $pdf->stream('sale-'. $sale->reference .'.pdf');
+    }
     public function printPos($id)
     {
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
-        return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl]);
+        // return view('sale::print-pos-old', ['sale' => $sale, 'barcode' => $barcodeUrl]);
 
         // $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
         $lineHeight = 41;
         $numberOfItems = count($sale->saleDetails);
-        $estimatedHeight = ($numberOfItems * $lineHeight) + 500;
+        $estimatedHeight = ($numberOfItems * $lineHeight) + 400;
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
         $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])

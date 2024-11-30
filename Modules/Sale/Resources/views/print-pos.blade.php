@@ -17,7 +17,7 @@
         .page {
             width: 100%;
             margin: 0 auto;
-            border: 1px solid #ddd;
+            border: 0px solid #ddd;
             /* padding: 10px; */
             box-sizing: border-box;
         }
@@ -57,14 +57,6 @@
                 margin: 0;
                 padding: 0;
             }
-            * {
-                font-size:12px;
-                line-height: 20px;
-            }
-            td,th {padding: 5px 0;}
-            .hidden-print {
-                display: none !important;
-            }
             .page {
                 page-break-after: avoid; /* Hindari jeda halaman */
                 page-break-before: avoid;
@@ -94,12 +86,12 @@
             <div class="centered">
                 <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
 
-                <p style="font-size: 11px;line-height: 15px;margin-top: 0">
+                <p style="font-size: 10px;line-height: 15px;margin-top: 0">
                     {{ settings()->company_email }}, {{ settings()->company_phone }}
                     <br>{{ settings()->company_address }}
                 </p>
             </div>
-        <p>
+        <p style="font-size: 8px;">
             {{ __('sales.pos_receipt.date') }}: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}<br>
             {{ __('sales.pos_receipt.reference') }}: {{ $sale->reference }}<br>
             {{ __('sales.pos_receipt.customer_name') }}: {{ $sale->customer_name }}
@@ -108,40 +100,40 @@
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
                 <tr>
-                    <td colspan="2">
-                        {{  substr($saleDetail->product->product_name, 0, 10) }}
-                        ({{ $saleDetail->quantity }} x {{ format_currency($saleDetail->price) }})
+                    <td colspan="2" style="font-size: 8px">
+                        {{  substr($saleDetail->product->product_name, 0, 30) }}
+                        ({{ $saleDetail->quantity }} x {{ str_replace('Rp. ','',format_currency($saleDetail->price)) }})
                     </td>
-                    <td style="text-align:right;vertical-align:bottom">{{ format_currency($saleDetail->sub_total) }}</td>
+                    <td style="text-align:right;vertical-align:bottom;font-size: 10px;">{{ format_currency($saleDetail->sub_total) }}</td>
                 </tr>
             @endforeach
 
             @if($sale->tax_percentage > 0)
                 <tr>
-                    <th colspan="2" style="text-align:left">{{ __('sales.pos_receipt.tax_label') }} ({{ $sale->tax_percentage }}%)</th>
-                    <th style="text-align:right">{{ format_currency($sale->tax_amount) }}</th>
+                    <th colspan="2" style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.tax_label') }} ({{ $sale->tax_percentage }}%)</th>
+                    <th style="text-align:right;font-size: 10px;">{{ format_currency($sale->tax_amount) }}</th>
                 </tr>
             @endif
             @if($sale->discount_percentage > 0)
                 <tr>
-                    <th colspan="2" style="text-align:left">{{ __('sales.pos_receipt.discount_label') }} ({{ $sale->discount_percentage }}%)</th>
-                    <th style="text-align:right">{{ format_currency($sale->discount_amount) }}</th>
+                    <th colspan="2" style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.discount_label') }} ({{ $sale->discount_percentage }}%)</th>
+                    <th style="text-align:right;font-size: 10px;">{{ format_currency($sale->discount_amount) }}</th>
                 </tr>
             @endif
             @if($sale->shipping_amount > 0)
                 <tr>
-                    <th colspan="2" style="text-align:left">{{ __('sales.pos_receipt.shipping_label') }}</th>
-                    <th style="text-align:right">{{ format_currency($sale->shipping_amount) }}</th>
+                    <th colspan="2" style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.shipping_label') }}</th>
+                    <th style="text-align:right;font-size: 10px;">{{ format_currency($sale->shipping_amount) }}</th>
                 </tr>
             @endif
             <tr>
-                <th colspan="2" style="text-align:left">{{ __('sales.pos_receipt.total_label') }}</th>
-                <th style="text-align:right">{{ format_currency($sale->total_amount) }}</th>
+                <th colspan="2" style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.total_label') }}</th>
+                <th style="text-align:right;font-size: 10px;">{{ format_currency($sale->total_amount) }}</th>
             </tr>
             @if($sale->additional_paid_amount > 0)
-            <tr>
-                <th colspan="2" style="text-align:left">{{ __('sales.pos_receipt.additional_amount_label') }}</th>
-                <th style="text-align:right">{{ format_currency($sale->additional_paid_amount) }}</th>
+            <tr >
+                <th colspan="2" style="text-align:left;font-size: 10px">{{ __('sales.pos_receipt.additional_amount_label') }}</th>
+                <th style="text-align:right;font-size: 10px">{{ format_currency($sale->additional_paid_amount) }}</th>
             </tr>
             @endif
             </tbody>
@@ -149,21 +141,21 @@
         <table>
             <tbody>
                 <tr style="background-color:#ddd;">
-                    <td class="centered" style="padding: 5px;">
-                        {{ __('sales.pos_receipt.payment.paid_by') }}: {{ $sale->payment_method }}
+                    <td class="centered" style="font-size: 10px;">
+                        {{ __('sales.pos_receipt.payment.paid_by') }}<br> {{ $sale->payment_method }}
                     </td>
-                    <td class="centered" style="padding: 5px;">
-                        {{ __('sales.pos_receipt.payment.amount') }}: {{ format_currency($sale->total_paid_amount) }}
+                    <td class="centered" style="font-size: 10px;">
+                        {{ __('sales.pos_receipt.payment.amount') }}<br> {{ format_currency($sale->total_paid_amount) }}
                     </td>
                 </tr>
                 <tr style="border-bottom: 0;">
-                    <td class="centered" colspan="3">
+                    <td class="centered" colspan="3" style="font-size: 10px;">
                         {{ __('sales.pos_receipt.scan_label') }}
                     </td>
                 </tr>
                 <tr style="border-bottom: 0;">
                     <td class="centered" colspan="3">
-                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" />
+                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 100px; height: 100px;" />
                     </td>
                 </tr>
             </tbody>

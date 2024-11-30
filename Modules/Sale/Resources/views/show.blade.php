@@ -19,9 +19,9 @@
                         <div>
                             {{ __('sales.show.reference') }}: <strong>{{ $sale->reference }}</strong>
                         </div>
-                        <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('sales.pdf', $sale->id) }}">
+                        {{-- <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('sales.pdf', $sale->id) }}">
                             <i class="bi bi-printer"></i> {{ __('sales.show.print') }}
-                        </a>
+                        </a> --}}
                         <a target="_blank" class="btn btn-sm btn-info mfe-1 d-print-none" href="{{ route('sales.pdf', $sale->id) }}">
                             <i class="bi bi-save"></i> {{ __('sales.show.save') }}
                         </a>
