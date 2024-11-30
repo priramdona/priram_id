@@ -80,13 +80,14 @@
         // Panggil fungsi sendLinkPdf() saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function () {
             // sendLinkPdf();
-            if (typeof Android !== "undefined" && publicUrl !== ''){
+            if (publicUrl !== ''){
                 // Kirim ke Android Studio atau WebView jika menggunakan WebView
+                alert(publicUrl);
                 if (window.AndroidInterface) {
                     window.AndroidInterface.sendPdfUrl(publicUrl); // Mengirim ke Android interface
-                }
-            }else {
+                }else {
                 console.log("Android interface not available");
+            }
             }
 
         });
