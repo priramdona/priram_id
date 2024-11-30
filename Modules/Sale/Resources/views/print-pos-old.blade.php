@@ -51,6 +51,47 @@
             }
         }
     </style>
+    <script>
+        // Ambil publicUrl dari Blade Laravel
+        var publicUrl = "{{ $publicUrl ?? '' }}";
+
+        // Fungsi untuk mengirim URL PDF ke Android
+        function sendLinkPdf() {
+            if (typeof Android !== "undefined" && Android.printPage && publicUrl !== '') {
+                Android.printPage(publicUrl); // Panggil fungsi printPage dari Android
+            } else {
+                console.log("Android interface not available");
+            }
+        }
+
+        // Panggil fungsi sendLinkPdf() saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function () {
+            // sendLinkPdf();
+            if (publicUrl !== ''){
+                // Kirim ke Android Studio atau WebView jika menggunakan WebView
+                alert(publicUrl);
+                if (window.AndroidInterface) {
+                    window.AndroidInterface.sendPdfUrl(publicUrl); // Mengirim ke Android interface
+                }else {
+                    alert("Android interface not available");
+            }
+            }
+
+        });
+        // function invokePrint() {
+        //     if (typeof Android !== "undefined" && Android.printPage) {
+        //         // Panggil metode print di Android
+        //         Android.printPage();
+        //     } else {
+        //         console.log("Android interface not available");
+        //     }
+        // }
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
+
+        // });
+    </script>
 </head>
 <body>
 
