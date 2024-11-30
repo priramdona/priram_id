@@ -79,8 +79,30 @@
 
         // Panggil fungsi sendLinkPdf() saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function () {
-            sendLinkPdf();
+            // sendLinkPdf();
+            if (typeof Android !== "undefined" && publicUrl !== ''){
+                // Kirim ke Android Studio atau WebView jika menggunakan WebView
+                if (window.AndroidInterface) {
+                    window.AndroidInterface.sendPdfUrl(publicUrl); // Mengirim ke Android interface
+                }
+            }else {
+                console.log("Android interface not available");
+            }
+
         });
+        // function invokePrint() {
+        //     if (typeof Android !== "undefined" && Android.printPage) {
+        //         // Panggil metode print di Android
+        //         Android.printPage();
+        //     } else {
+        //         console.log("Android interface not available");
+        //     }
+        // }
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
+
+        // });
     </script>
 </head>
 <body>
