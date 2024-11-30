@@ -65,8 +65,6 @@
         }
     </style>
     <script>
-
-        var publicUrl = "{{ $publicUrl }}";
         function invokePrint() {
             if (typeof Android !== "undefined" && Android.printPage) {
                 // Panggil metode print di Android
@@ -76,18 +74,9 @@
             }
         }
 
-        function sendPdfToApp(pdfUrl) {
-            if (window.AndroidInterface) {
-                window.AndroidInterface.sendPdfUrl(pdfUrl);
-            } else {
-                alert('Android Interface not found!');
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
-            alert(publicUrl);
-            // invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
-            sendPdfToApp(publicUrl);
+            invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
+
         });
     </script>
 </head>
