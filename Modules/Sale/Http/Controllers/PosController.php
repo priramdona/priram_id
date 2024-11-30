@@ -52,7 +52,7 @@ class PosController extends Controller
         $estimatedHeight = ($numberOfItems * $lineHeight) + 400;
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
-        $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl , 'publicUrl' => ''])
+        $pdf = PDF::loadView('sale::print-pos-old', ['sale' => $sale, 'barcode' => $barcodeUrl , 'publicUrl' => ''])
         ->setPaper('a7');
 
         // Render PDF untuk mendapatkan output
@@ -66,7 +66,7 @@ class PosController extends Controller
 
         $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
 
-        return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl, 'publicUrl' => $publicUrl]);
+        return view('sale::print-pos-old', ['sale' => $sale, 'barcode' => $barcodeUrl, 'publicUrl' => $publicUrl]);
 
         return response()->json([
             'pdf_url' => $filePath,
