@@ -68,7 +68,7 @@ class PosController extends Controller
         return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl, 'publicUrl' => $publicUrl]);
 
         return response()->json([
-            'pdf_url' => $publicUrl,
+            'pdf_url' => $filePath,
             'message' => "<script>window.location.href = '$publicUrl'; setTimeout(() => { Android.printPage(); }, 1000);</script>"
         ]);
     }
