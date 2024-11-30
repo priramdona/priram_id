@@ -53,7 +53,7 @@ class PosController extends Controller
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
         $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl , 'publicUrl' => ''])
-        ->setPaper([0, 0, 226.772, $heightMM], 'portrait');
+        ->setPaper([0, 0, 226, $heightMM], 'portrait');
 
         // Render PDF untuk mendapatkan output
         $output = $pdf->download();
@@ -63,6 +63,18 @@ class PosController extends Controller
         if (!file_exists(dirname($filePath))) {
             mkdir(dirname($filePath), 0777, true);
         }
+
+
+        return response()->stream(
+            function () use ($output) {
+                echo $output;
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="invoice.pdf"',
+            ]
+        );
 
         $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
 
