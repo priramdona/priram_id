@@ -86,7 +86,7 @@
                 if (window.AndroidInterface) {
                     window.AndroidInterface.sendPdfUrl(publicUrl); // Mengirim ke Android interface
                 }else {
-                console.log("Android interface not available");
+                    alert("Android interface not available");
             }
             }
 
