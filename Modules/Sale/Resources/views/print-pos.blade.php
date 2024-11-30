@@ -74,8 +74,17 @@
             }
         }
 
+        function sendPdfToApp(pdfUrl) {
+            if (window.AndroidInterface) {
+                window.AndroidInterface.sendPdfUrl(pdfUrl);
+            } else {
+                alert('Android Interface not found!');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
-            invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
+            // invokePrint(); // Panggil fungsi ini otomatis saat halaman dimuat
+            sendPdfToApp($publicUrl)
         });
     </script>
 </head>
