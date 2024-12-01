@@ -65,16 +65,16 @@ class PosController extends Controller
         }
 
 
-        return response()->stream(
-            function () use ($output) {
-                echo $output;
-            },
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="invoice.pdf"',
-            ]
-        );
+        // return response()->stream(
+        //     function () use ($output) {
+        //         echo $output;
+        //     },
+        //     200,
+        //     [
+        //         'Content-Type' => 'application/pdf',
+        //         'Content-Disposition' => 'inline; filename="invoice.pdf"',
+        //     ]
+        // );
 
         $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
 
