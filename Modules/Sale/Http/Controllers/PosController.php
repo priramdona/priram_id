@@ -43,6 +43,15 @@ class PosController extends Controller
     {
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
+        $qrcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
+
+        return view('sale::print-pos-old', ['sale' => $sale, 'saleDetails' => $sale->saleDetails, 'qrcode' => $qrcodeUrl]);
+
+    }
+    public function printPosBackup2($id)
+    {
+        $sale = Sale::find($id);
+        $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
         // return view('sale::print-pos-old', ['sale' => $sale, 'barcode' => $barcodeUrl]);
 
@@ -65,16 +74,16 @@ class PosController extends Controller
         }
 
 
-        // return response()->stream(
-        //     function () use ($output) {
-        //         echo $output;
-        //     },
-        //     200,
-        //     [
-        //         'Content-Type' => 'application/pdf',
-        //         'Content-Disposition' => 'inline; filename="invoice.pdf"',
-        //     ]
-        // );
+        return response()->stream(
+            function () use ($output) {
+                echo $output;
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="invoice.pdf"',
+            ]
+        );
 
         $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
 

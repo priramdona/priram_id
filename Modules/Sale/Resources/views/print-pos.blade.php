@@ -95,7 +95,7 @@
 </head>
 <body>
 
-    <div class="page">
+    <div style="max-width:400px;margin:0 auto">
         <div id="receipt-data">
             <div class="centered">
                 <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
@@ -105,7 +105,7 @@
                     <br>{{ settings()->company_address }}
                 </p>
             </div>
-        <p style="font-size: 8px;">
+        <p style="font-size: 10px;">
             {{ __('sales.pos_receipt.date') }}: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}<br>
             {{ __('sales.pos_receipt.reference') }}: {{ $sale->reference }}<br>
             {{ __('sales.pos_receipt.customer_name') }}: {{ $sale->customer_name }}
@@ -114,11 +114,11 @@
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
                 <tr>
-                    <td colspan="2" style="font-size: 8px">
-                        {{  substr($saleDetail->product->product_name, 0, 30) }}
+                    <td colspan="2" style="width: 60%; text-align: left; font-size: 10px; ">
+                        {{  substr($saleDetail->product->product_name, 0, 50) }}
                         ({{ $saleDetail->quantity }} x {{ str_replace('Rp. ','',format_currency($saleDetail->price)) }})
                     </td>
-                    <td style="text-align:right;vertical-align:bottom;font-size: 10px;">{{ format_currency($saleDetail->sub_total) }}</td>
+                    <td style="width: 40%;text-align:right;vertical-align:bottom;font-size: 10px;">{{ format_currency($saleDetail->sub_total) }}</td>
                 </tr>
             @endforeach
 
