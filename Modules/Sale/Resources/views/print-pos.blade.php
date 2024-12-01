@@ -105,58 +105,61 @@
 </head>
 <body>
 
-    <div style="max-width:400px;margin:0 auto">
+    <div style="width: 100%; text-align: left; font-size: 12px; ">
         <div id="receipt-data">
             <div class="centered">
                 <h2 style="margin-bottom: 5px">{{ settings()->company_name }}</h2>
 
-                <p style="font-size: 10px;line-height: 15px;margin-top: 0">
+                <p style="font-size: 12px;line-height: 15px;margin-top: 0">
                     {{ settings()->company_email }}, {{ settings()->company_phone }}
                     <br>{{ settings()->company_address }}
                 </p>
             </div>
-        <p style="font-size: 10px;">
+        <p style="font-size: 12px;">
             {{ __('sales.pos_receipt.date') }}: {{ \Carbon\Carbon::parse($sale->date)->format('d M, Y') }}<br>
             {{ __('sales.pos_receipt.reference') }}: {{ $sale->reference }}<br>
             {{ __('sales.pos_receipt.customer_name') }}: {{ $sale->customer_name }}
         </p>
-        <table class="table-data">
+        <table style="width: 100%; text-align: left; font-size: 12px; ">
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
                 <tr>
-                    <td colspan="2" style="width: 75%; text-align: left; font-size: 10px; ">
-                        {{  substr($saleDetail->product->product_name, 0, 20) }}
+                    <td style="width: 70%; text-align: left; font-size: 12px;">
+                        {{  substr($saleDetail->product->product_name, 0, 37) }}<br>
                         ({{ $saleDetail->quantity }} x {{ str_replace('Rp. ','',format_currency($saleDetail->price)) }})
                     </td>
-                    <td style="width: 30%;text-align:right;vertical-align:bottom;font-size: 10px;">{{ format_currency($saleDetail->sub_total) }}</td>
+                    <td style="width: 30%;text-align:right;vertical-align:bottom;font-size: 12px;">{{ format_currency($saleDetail->sub_total) }}</td>
                 </tr>
             @endforeach
-
+            </tbody>
+        </table>
+        <table style="width: 100%; text-align: left; font-size: 12px; ">
+            <tbody>
             @if($sale->tax_percentage > 0)
                 <tr>
-                    <th colspan="2" style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.tax_label') }} ({{ $sale->tax_percentage }}%)</th>
+                    <th style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.tax_label') }} ({{ $sale->tax_percentage }}%)</th>
                     <th style="text-align:right;font-size: 10px;">{{ format_currency($sale->tax_amount) }}</th>
                 </tr>
             @endif
             @if($sale->discount_percentage > 0)
                 <tr>
-                    <th colspan="2" style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.discount_label') }} ({{ $sale->discount_percentage }}%)</th>
+                    <th style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.discount_label') }} ({{ $sale->discount_percentage }}%)</th>
                     <th style="text-align:right;font-size: 10px;">{{ format_currency($sale->discount_amount) }}</th>
                 </tr>
             @endif
             @if($sale->shipping_amount > 0)
                 <tr>
-                    <th colspan="2" style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.shipping_label') }}</th>
+                    <th style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.shipping_label') }}</th>
                     <th style="text-align:right;font-size: 10px;">{{ format_currency($sale->shipping_amount) }}</th>
                 </tr>
             @endif
             <tr>
-                <th colspan="2" style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.total_label') }}</th>
+                <th style="text-align:left;font-size: 10px;">{{ __('sales.pos_receipt.total_label') }}</th>
                 <th style="text-align:right;font-size: 10px;">{{ format_currency($sale->total_amount) }}</th>
             </tr>
             @if($sale->additional_paid_amount > 0)
             <tr >
-                <th colspan="2" style="text-align:left;font-size: 10px">{{ __('sales.pos_receipt.additional_amount_label') }}</th>
+                <th style="text-align:left;font-size: 10px">{{ __('sales.pos_receipt.additional_amount_label') }}</th>
                 <th style="text-align:right;font-size: 10px">{{ format_currency($sale->additional_paid_amount) }}</th>
             </tr>
             @endif
@@ -179,7 +182,7 @@
                 </tr>
                 <tr style="border-bottom: 0;">
                     <td class="centered" colspan="3">
-                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 100px; height: 100px;" />
+                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 150px; height: 150px;" />
                     </td>
                 </tr>
             </tbody>
