@@ -54,14 +54,24 @@
 
             body {
                 width: 100%;
-                margin: 0;
-                padding: 0;
             }
             .page {
                 page-break-after: avoid; /* Hindari jeda halaman */
                 page-break-before: avoid;
                 page-break-inside: avoid;
             }
+        }
+
+        @page {
+            margin: 0; /* Menghapus margin halaman PDF */
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%; /* Pastikan lebar penuh */
+        }
+        .content {
+            width: 100%; /* Pastikan konten menggunakan lebar penuh */
         }
     </style>
     <script>
@@ -114,11 +124,11 @@
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
                 <tr>
-                    <td colspan="2" style="width: 60%; text-align: left; font-size: 10px; ">
-                        {{  substr($saleDetail->product->product_name, 0, 50) }}
+                    <td colspan="2" style="width: 75%; text-align: left; font-size: 10px; ">
+                        {{  substr($saleDetail->product->product_name, 0, 20) }}
                         ({{ $saleDetail->quantity }} x {{ str_replace('Rp. ','',format_currency($saleDetail->price)) }})
                     </td>
-                    <td style="width: 40%;text-align:right;vertical-align:bottom;font-size: 10px;">{{ format_currency($saleDetail->sub_total) }}</td>
+                    <td style="width: 30%;text-align:right;vertical-align:bottom;font-size: 10px;">{{ format_currency($saleDetail->sub_total) }}</td>
                 </tr>
             @endforeach
 

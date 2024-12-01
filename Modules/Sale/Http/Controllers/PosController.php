@@ -39,7 +39,7 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class PosController extends Controller
 {
-    public function printPos($id)
+    public function printPosbackup2($id)
     {
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
@@ -48,7 +48,7 @@ class PosController extends Controller
         return view('sale::print-pos-old', ['sale' => $sale, 'saleDetails' => $sale->saleDetails, 'qrcode' => $qrcodeUrl]);
 
     }
-    public function printPosBackup2($id)
+    public function printPos($id)
     {
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
@@ -58,11 +58,12 @@ class PosController extends Controller
         // $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
         $lineHeight = 41;
         $numberOfItems = count($sale->saleDetails);
-        $estimatedHeight = ($numberOfItems * $lineHeight) + 400;
+        $estimatedHeight = ($numberOfItems * $lineHeight) + 450;
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
         $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl , 'publicUrl' => ''])
-        ->setPaper([0, 0, 226, $heightMM], 'portrait');
+        ->setPaper([0, 0, 226, $heightMM], 'portrait'); // Jika ingin mengatur margin bawah
+
 
         // Render PDF untuk mendapatkan output
         $output = $pdf->download();
@@ -74,16 +75,16 @@ class PosController extends Controller
         }
 
 
-        return response()->stream(
-            function () use ($output) {
-                echo $output;
-            },
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="invoice.pdf"',
-            ]
-        );
+        // return response()->stream(
+        //     function () use ($output) {
+        //         echo $output;
+        //     },
+        //     200,
+        //     [
+        //         'Content-Type' => 'application/pdf',
+        //         'Content-Disposition' => 'inline; filename="invoice.pdf"',
+        //     ]
+        // );
 
         $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
 
