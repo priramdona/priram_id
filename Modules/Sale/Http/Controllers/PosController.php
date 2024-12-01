@@ -58,7 +58,7 @@ class PosController extends Controller
         // Render PDF untuk mendapatkan output
         $output = $pdf->download();
 
-        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '.pdf');
+        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . Carbon::now()->format('Ymdss') . '.pdf');
 
         if (!file_exists(dirname($filePath))) {
             mkdir(dirname($filePath), 0777, true);
@@ -66,7 +66,7 @@ class PosController extends Controller
 
 
         file_put_contents($filePath, $output);
-        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
+        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . Carbon::now()->format('Ymdss') . '.pdf'); // URL yang dapat diakses oleh Android
 
         // dd($publicUrl);
         // return response()->stream(
