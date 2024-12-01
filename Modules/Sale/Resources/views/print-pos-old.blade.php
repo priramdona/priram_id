@@ -66,6 +66,15 @@
                 }
             }
         });
+
+        function showDevices() {
+            AndroidInterface.showBluetoothDevices();
+        }
+
+        function sendPrint() {
+            const content = "Halo, ini adalah konten yang akan dicetak!";
+            AndroidInterface.print(content);
+        }
     </script>
 </head>
 <body>
@@ -85,6 +94,7 @@
             {{ __('sales.pos_receipt.reference') }} : {{ $sale->reference }}<br>
             {{ __('sales.pos_receipt.customer_name') }} : {{ $sale->customer_name ?? 'Tidak terdaftar'}}
         </p>
+
         <table class="table-data">
             <tbody>
             @foreach($sale->saleDetails as $saleDetail)
@@ -151,6 +161,8 @@
         </table>
     </div>
 </div>
+    <button onclick="showDevices()">Pilih Printer</button>
+    <button onclick="sendPrint()">Print</button>
 
 </body>
 </html>
