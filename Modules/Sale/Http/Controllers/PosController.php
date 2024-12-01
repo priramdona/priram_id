@@ -39,15 +39,6 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class PosController extends Controller
 {
-    public function printPosbackup2($id)
-    {
-        $sale = Sale::find($id);
-        $url = route('sales.showdata', ['sale' => $sale]);
-        $qrcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
-
-        return view('sale::print-pos-old', ['sale' => $sale, 'saleDetails' => $sale->saleDetails, 'qrcode' => $qrcodeUrl]);
-
-    }
     public function printPos($id)
     {
         $sale = Sale::find($id);
@@ -58,12 +49,11 @@ class PosController extends Controller
         // $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
         $lineHeight = 41;
         $numberOfItems = count($sale->saleDetails);
-        $estimatedHeight = ($numberOfItems * $lineHeight) + 450;
+        $estimatedHeight = ($numberOfItems * $lineHeight) + 400;
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
         $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl , 'publicUrl' => ''])
-        ->setPaper([0, 0, 226, $heightMM], 'portrait'); // Jika ingin mengatur margin bawah
-
+        ->setPaper([0, 0, 226, $heightMM], 'portrait');
 
         // Render PDF untuk mendapatkan output
         $output = $pdf->download();
@@ -75,6 +65,10 @@ class PosController extends Controller
         }
 
 
+        file_put_contents($filePath, $output);
+        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
+
+        // dd($publicUrl);
         // return response()->stream(
         //     function () use ($output) {
         //         echo $output;
@@ -86,14 +80,12 @@ class PosController extends Controller
         //     ]
         // );
 
-        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
-
         return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl, 'publicUrl' => $publicUrl]);
 
-        return response()->json([
-            'pdf_url' => $filePath,
-            'message' => "<script>window.location.href = '$publicUrl'; setTimeout(() => { Android.printPage(); }, 1000);</script>"
-        ]);
+        // return response()->json([
+        //     'pdf_url' => $filePath,
+        //     'message' => "<script>window.location.href = '$publicUrl'; setTimeout(() => { Android.printPage(); }, 1000);</script>"
+        // ]);
     }
     public function printPosOri($id)
     {
