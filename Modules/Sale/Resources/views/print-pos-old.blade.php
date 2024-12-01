@@ -60,7 +60,6 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (saleData !== ''){
                 if (window.AndroidInterface) {
-                    window.AndroidInterface.
                     window.AndroidInterface.dataInvoice(saleData, saleDetails, qrcode); // Mengirim ke Android interface
                 }else {
                     alert("Android interface not available");
