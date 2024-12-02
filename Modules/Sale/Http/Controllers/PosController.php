@@ -44,6 +44,45 @@ class PosController extends Controller
         $sale = Sale::find($id);
         $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
+        $lineHeight = 41;
+        $numberOfItems = count($sale->saleDetails);
+        $estimatedHeight = ($numberOfItems * $lineHeight) + 400;
+
+        $heightMM =  (($estimatedHeight / 96) * 30) *3;
+        $pdf = PDF::loadView('sale::print-pos',
+        [
+            'sale' => $sale,
+            'saleDetail' => $sale->saleDetails,
+            'barcode' => $barcodeUrl ,
+            'publicUrl' => ''
+        ])
+        ->setPaper([0, 0, 226, $heightMM], 'portrait');
+
+        // Render PDF untuk mendapatkan output
+        $output = $pdf->download();
+
+        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . Carbon::now()->format('Ymdss') . '.pdf');
+
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        file_put_contents($filePath, $output);
+        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . Carbon::now()->format('Ymdss') . '.pdf'); // URL yang dapat diakses oleh Android
+
+        return view('sale::print-pos', [
+            'sale' => $sale,
+            'saleDetail' => $sale->saleDetails,
+            'barcode' => $barcodeUrl,
+            'publicUrl' => $publicUrl
+        ]);
+
+    }
+    public function printPosBackupForReal($id)
+    {
+        $sale = Sale::find($id);
+        $url = route('sales.showdata', ['sale' => $sale]);
+        $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
         // return view('sale::print-pos-old', ['sale' => $sale, 'barcode' => $barcodeUrl]);
 
         // $viewContent = view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl])->render();
@@ -52,7 +91,13 @@ class PosController extends Controller
         $estimatedHeight = ($numberOfItems * $lineHeight) + 400;
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
-        $pdf = PDF::loadView('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl , 'publicUrl' => ''])
+        $pdf = PDF::loadView('sale::print-pos',
+        [
+            'sale' => $sale,
+            'saleDetail' => $sale->saleDetails,
+            'barcode' => $barcodeUrl ,
+            'publicUrl' => ''
+        ])
         ->setPaper([0, 0, 226, $heightMM], 'portrait');
 
         // Render PDF untuk mendapatkan output
@@ -80,7 +125,12 @@ class PosController extends Controller
         //     ]
         // );
 
-        return view('sale::print-pos', ['sale' => $sale, 'barcode' => $barcodeUrl, 'publicUrl' => $publicUrl]);
+        return view('sale::print-pos', [
+            'sale' => $sale,
+            'saleDetail' => $sale->saleDetails,
+            'barcode' => $barcodeUrl,
+            'publicUrl' => $publicUrl
+        ]);
 
         // return response()->json([
         //     'pdf_url' => $filePath,

@@ -76,8 +76,40 @@
     </style>
     <script>
         // Ambil publicUrl dari Blade Laravel
-        var publicUrl = "{{ $publicUrl ?? '' }}";
+        // var publicUrl = "{{ $publicUrl ?? '' }}";
+        // var saleData = "{{ $sale ?? '' }}";
+        // var saleDetailsData = "{{ $saleDetail ?? '' }}";
+        // var barcodeUrl = "{{ $barcodeUrl ?? '' }}";
 
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     if (publicUrl !== '' && saleData !== '' && saleDetailsData !== '' && barcodeUrl !== '')
+        //     {
+        //         if (window.AndroidInterface) {
+        //             window.AndroidInterface.sendDataArrayAndTables(publicUrl,saleData,saleDetailsData,barcodeUrl); // Mengirim ke Android interface
+        //         }else {
+        //             alert("Android interface not available");
+        //         }
+        //     }
+        // });
+        var publicUrl = "{{ $publicUrl }}";
+        var saleData = @json($sale);
+        var saleDetailsData = @json($saleDetail);
+        var barcodeUrl = "{{ $barcode }}";
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (publicUrl !== '' && saleData !== '' && saleDetailsData !== '' && barcodeUrl !== '') {
+                if (window.AndroidInterface) {
+                    window.AndroidInterface.sendDataArrayAndTables(
+                        publicUrl,
+                        JSON.stringify(saleData),
+                        JSON.stringify(saleDetailsData),
+                        barcodeUrl
+                    ); // Mengirim ke Android interface
+                } else {
+                    alert("Android interface not available");
+                }
+            }
+        });
         // Fungsi untuk mengirim URL PDF ke Android
         function sendLinkPdf() {
             if (typeof Android !== "undefined" && Android.printPage && publicUrl !== '') {
@@ -86,21 +118,6 @@
                 console.log("Android interface not available");
             }
         }
-
-        // Panggil fungsi sendLinkPdf() saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', function () {
-            // sendLinkPdf();
-            if (publicUrl !== ''){
-                // Kirim ke Android Studio atau WebView jika menggunakan WebView
-                alert(publicUrl);
-                if (window.AndroidInterface) {
-                    window.AndroidInterface.sendPdfUrl(publicUrl); // Mengirim ke Android interface
-                }else {
-                    alert("Android interface not available");
-            }
-            }
-
-        });
     </script>
 </head>
 <body>
