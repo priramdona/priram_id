@@ -94,7 +94,7 @@
         var publicUrl = "{{ $publicUrl }}";
         var saleData = @json($sale);
         var saleDetailsData = @json($saleDetail);
-        var business = "{{ $business }}";
+        var business = @json($business);;
 
         document.addEventListener('DOMContentLoaded', function () {
             if (publicUrl !== '' && saleData !== '' && saleDetailsData !== '' && business !== '') {
@@ -104,7 +104,7 @@
                         publicUrl,
                         JSON.stringify(saleData),
                         JSON.stringify(saleDetailsData),
-                        business
+                        JSON.stringify(business)
                     ); // Mengirim ke Android interface
                 } else {
                     window.print();
