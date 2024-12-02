@@ -48,9 +48,9 @@ class PosController extends Controller
         $business = Business::find(Auth::user()->business_id);
         $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
-        $lineHeight = 45;
+        $lineHeight = 47;
         $numberOfItems = count($sale->saleDetails);
-        $estimatedHeight = ($numberOfItems * $lineHeight) + 310;
+        $estimatedHeight = ($numberOfItems * $lineHeight) + 320;
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
         $pdf = PDF::loadView('sale::print-pos',
