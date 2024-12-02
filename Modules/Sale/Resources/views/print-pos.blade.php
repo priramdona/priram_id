@@ -11,16 +11,17 @@
         body {
             margin: 0;
             padding: 0;
+            box-sizing: border-box; /* Pastikan padding dan border masuk ke ukuran elemen */
         }
 
-        /* Jika ingin diatur untuk tampilan layar */
         .page {
             width: 100%;
-            margin: 0 auto;
+            margin: 0 auto; /* Pusatkan konten secara horizontal */
+            padding: 0 10px; /* Jeda margin kiri dan kanan */
             border: 0px solid #ddd;
-            /* padding: 10px; */
             box-sizing: border-box;
         }
+
         * {
             font-size: 12px;
             line-height: 18px;
@@ -29,14 +30,11 @@
         h2 {
             font-size: 16px;
         }
-        td,
-        th,
-        tr,
-        table {
+        td, th, tr, table {
             border-collapse: collapse;
         }
         tr {border-bottom: 1px dashed #ddd;}
-        td,th {padding: 7px 0;width: 50%;}
+        td, th {padding: 7px 0; width: 50%;}
 
         table {
             width: 100%;
@@ -48,30 +46,25 @@
             text-align: center;
             align-content: center;
         }
-        small{font-size:11px;}
+        small {font-size: 11px;}
 
         @media print {
-
             body {
                 width: 100%;
             }
             .page {
-                page-break-after: avoid; /* Hindari jeda halaman */
+                page-break-after: avoid;
                 page-break-before: avoid;
                 page-break-inside: avoid;
             }
         }
 
         @page {
-            margin: 0; /* Menghapus margin halaman PDF */
+            margin: 10px; /* Tambahkan margin pada seluruh halaman PDF */
         }
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%; /* Pastikan lebar penuh */
-        }
+
         .content {
-            width: 100%; /* Pastikan konten menggunakan lebar penuh */
+            width: 100%;
         }
     </style>
     <script>
@@ -94,11 +87,11 @@
         var publicUrl = "{{ $publicUrl }}";
         var saleData = @json($sale);
         var saleDetailsData = @json($saleDetail);
-        var business = @json($business);;
+        var business = @json($business);
 
         document.addEventListener('DOMContentLoaded', function () {
             if (publicUrl !== '' && saleData !== '' && saleDetailsData !== '' && business !== '') {
-                alert('kirim');
+
                 if (window.AndroidInterface) {
                     window.AndroidInterface.sendDataArrayAndTables(
                         publicUrl,
@@ -140,10 +133,10 @@
         </p>
         <table style="width: 100%; text-align: left; font-size: 12px; ">
             <tbody>
-            @foreach($sale->saleDetails as $saleDetail)
+            @foreach($saleDetail as $saleDetail)
                 <tr>
                     <td style="width: 70%; text-align: left; font-size: 12px;">
-                        {{  substr($saleDetail->product->product_name, 0, 37) }}<br>
+                        {{  substr($saleDetail->product->product_name, 0, 33) }}<br>
                         ({{ $saleDetail->quantity }} x {{ str_replace('Rp. ','',format_currency($saleDetail->price)) }})
                     </td>
                     <td style="width: 30%;text-align:right;vertical-align:bottom;font-size: 12px;">{{ format_currency($saleDetail->sub_total) }}</td>
@@ -193,7 +186,7 @@
                         {{ __('sales.pos_receipt.payment.amount') }}<br> {{ format_currency($sale->total_paid_amount) }}
                     </td>
                 </tr>
-                <tr style="border-bottom: 0;">
+                {{-- <tr style="border-bottom: 0;">
                     <td class="centered" colspan="3" style="font-size: 10px;">
                         {{ __('sales.pos_receipt.scan_label') }}
                     </td>
@@ -202,7 +195,7 @@
                     <td class="centered" colspan="3">
                         <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" style="width: 150px; height: 150px;" />
                     </td>
-                </tr>
+                </tr> --}}
             </tbody>
         </table>
     </div>
