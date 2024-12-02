@@ -42,7 +42,10 @@ class PosController extends Controller
 {
     public function printPos($id)
     {
+
         $sale = Sale::find($id);
+
+        $business = Business::find(Auth::user()->business_id);
         $url = route('sales.showdata', ['sale' => $sale]);
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
         $lineHeight = 41;
@@ -55,6 +58,7 @@ class PosController extends Controller
             'sale' => $sale,
             'saleDetail' => $sale->saleDetails,
             'barcode' => $barcodeUrl ,
+            'business' => $business,
             'publicUrl' => ''
         ])
         ->setPaper([0, 0, 226, $heightMM], 'portrait');
@@ -71,7 +75,6 @@ class PosController extends Controller
         file_put_contents($filePath, $output);
         $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
 
-        $business = Business::find(Auth::user()->business_id);
         return view('sale::print-pos', [
             'sale' => $sale,
             'saleDetail' => $sale->saleDetails,
