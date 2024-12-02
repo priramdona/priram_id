@@ -50,7 +50,7 @@ class PosController extends Controller
         $barcodeUrl = DNS2DFacade::getBarcodePNG($url, 'QRCODE',5,5);
         $lineHeight = 45;
         $numberOfItems = count($sale->saleDetails);
-        $estimatedHeight = ($numberOfItems * $lineHeight) + 300;
+        $estimatedHeight = ($numberOfItems * $lineHeight) + 310;
 
         $heightMM =  (($estimatedHeight / 96) * 30) *3;
         $pdf = PDF::loadView('sale::print-pos',
