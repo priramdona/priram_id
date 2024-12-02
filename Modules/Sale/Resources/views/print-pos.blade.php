@@ -94,19 +94,20 @@
         var publicUrl = "{{ $publicUrl }}";
         var saleData = @json($sale);
         var saleDetailsData = @json($saleDetail);
-        var barcodeUrl = "{{ $barcode }}";
+        var business = "{{ $business }}";
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (publicUrl !== '' && saleData !== '' && saleDetailsData !== '' && barcodeUrl !== '') {
+            if (publicUrl !== '' && saleData !== '' && saleDetailsData !== '' && business !== '') {
                 if (window.AndroidInterface) {
                     window.AndroidInterface.sendDataArrayAndTables(
                         publicUrl,
                         JSON.stringify(saleData),
+                        JSON.stringify(saleData),
                         JSON.stringify(saleDetailsData),
-                        barcodeUrl
+                        business
                     ); // Mengirim ke Android interface
                 } else {
-                    alert("Android interface not available");
+                    window.print();
                 }
             }
         });

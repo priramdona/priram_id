@@ -2,6 +2,7 @@
 
 namespace Modules\Sale\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\DataConfig;
 use App\Models\masterConfig;
 use App\Models\MasterConfig as ModelsMasterConfig;
@@ -61,19 +62,21 @@ class PosController extends Controller
         // Render PDF untuk mendapatkan output
         $output = $pdf->download();
 
-        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . Carbon::now()->format('Ymdss') . '.pdf');
+        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '.pdf');
 
         if (!file_exists(dirname($filePath))) {
             mkdir(dirname($filePath), 0777, true);
         }
 
         file_put_contents($filePath, $output);
-        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . Carbon::now()->format('Ymdss') . '.pdf'); // URL yang dapat diakses oleh Android
+        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '.pdf'); // URL yang dapat diakses oleh Android
 
+        $business = Business::find(Auth::user()->business_id);
         return view('sale::print-pos', [
             'sale' => $sale,
             'saleDetail' => $sale->saleDetails,
             'barcode' => $barcodeUrl,
+            'business' => $business,
             'publicUrl' => $publicUrl
         ]);
 
