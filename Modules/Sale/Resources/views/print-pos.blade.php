@@ -98,6 +98,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             if (publicUrl !== '' && saleData !== '' && saleDetailsData !== '' && business !== '') {
+                alert('kirim');
                 if (window.AndroidInterface) {
                     window.AndroidInterface.sendDataArrayAndTables(
                         publicUrl,
