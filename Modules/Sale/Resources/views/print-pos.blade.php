@@ -102,7 +102,6 @@
                     window.AndroidInterface.sendDataArrayAndTables(
                         publicUrl,
                         JSON.stringify(saleData),
-                        JSON.stringify(saleData),
                         JSON.stringify(saleDetailsData),
                         business
                     ); // Mengirim ke Android interface
