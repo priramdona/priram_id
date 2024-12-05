@@ -50,6 +50,7 @@
     <script src="{{ asset('js/jquery-mask-money.js') }}"></script>
     <script>
         $(document).ready(function () {
+
             $("#payment_method").empty();
             window.addEventListener('dispatchBrowserEvent',function(event)  {
                 $.ajax({
@@ -94,8 +95,8 @@
 
             window.addEventListener('dispatchProductSelected',function(event)  {
                 Swal.fire({
-                    title: "Produk ditambah!",
-                    text: "Produk ditambahkan pada daftar pembelian, periksa dan atur kembali informasi daftar pembelian.",
+                    title:  @json(__('checkout_modal.selectted_product'), JSON_UNESCAPED_UNICODE),
+                    text: @json(__('checkout_modal.selectted_product_detail'), JSON_UNESCAPED_UNICODE),
                     icon: 'success',
                     allowOutsideClick: false,
                     allowEscapeKey: false,

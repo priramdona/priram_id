@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'selectted_product' => 'Product added!',
+    'selectted_product_detail' => 'The product is added to the purchase list, check and reset the purchase list information.',
     'confirm_sale' => 'Confirm Sale',
     'confirm_selforder' => 'Confirm Self order',
     'received_amount' => 'Received Amount',

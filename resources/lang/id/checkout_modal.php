@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'selectted_product' => 'Produk ditambah!',
+    'selectted_product_detail' => 'Produk ditambahkan pada daftar pembelian, periksa dan atur kembali informasi daftar pembelian.',
     'confirm_sale' => 'Konfirmasi Penjualan',
     'confirm_selforder' => 'Konfirmasi pembayaran Pelayanan Mandiri',
     'received_amount' => 'Jumlah Diterima',
