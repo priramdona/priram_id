@@ -153,6 +153,7 @@ class Checkout extends Component
         $this->discount_type[$product['id']] = 'fixed';
         $this->item_discount[$product['id']] = 0;
         $this->total_amount = $this->calculateTotal();
+        $this->dispatch('dispatchProductSelected');
     }
 
     public function removeItem($row_id) {

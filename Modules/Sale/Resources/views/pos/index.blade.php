@@ -90,6 +90,20 @@
                 $('#applyAction').modal('show');
                 $('body').css('pointer-events', 'none');
             });
+
+
+            window.addEventListener('dispatchProductSelected',function(event)  {
+                Swal.fire({
+                    title: "Produk ditambah!",
+                    text: "Produk ditambahkan pada daftar pembelian, periksa dan atur kembali informasi daftar pembelian.",
+                    icon: 'success',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                            $('.swal2-container, .swal2-popup').css('pointer-events', 'auto');
+                                    },
+                    })
+            });
         });
 
         function generatePhone(id, productName) {
