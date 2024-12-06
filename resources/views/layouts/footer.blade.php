@@ -1,5 +1,5 @@
 <footer class="c-footer">
-    <div>Kasir Mulia © {{ date('Y') }} || Developed by <strong><a target="_blank" href="priram.id">Utama Yaksa Mandiri</a></strong> Version <strong class="text-danger">1.0</strong>
+    <div>Kasir Mulia © {{ date('Y') }} || Developed by <strong><a target="_blank" href="https://www.priram.com">Priram Team </a></strong> PT. Utama Yaksa Mandiri Version <strong class="text-danger">1.0</strong>
     {{-- </br>
         <span class="text-center mt-4">
             Dengan menggunakan, Anda setuju dengan
