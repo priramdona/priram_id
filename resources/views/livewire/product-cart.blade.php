@@ -35,7 +35,7 @@
                     <span class="sr-only">Loading...</span>
                 </div>
             </div>
-            <table class="table table-bordered">
+            <table class="table table-bordered" style="table-layout: auto; width: 100%;" class="table table-bordered" >
                 <thead class="thead-dark">
                 <tr>
                     <th class="align-middle">{{ __("sales.show.table.product") }}</th>
@@ -188,3 +188,10 @@
     <input type="hidden" name="total_amount" value="{{ $total_with_shipping }}">
 
 </div>
+@push('page_css')
+<style>
+    #preview-table th, td {
+        white-space: nowrap;
+    }
+</style>
+@endpush

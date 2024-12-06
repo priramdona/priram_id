@@ -38,11 +38,11 @@ class ProductTable extends Component
         $product = Product::find($productData['id']);
         // dd($product);
         if ($quantity > 100) {
-            return session()->flash('message', 'Max quantity is 100 per barcode generation!');
+            return session()->flash('message', __('controller.session.flash.max_100_barcode_generation'));
         }
 
         if (!is_numeric($product->product_code)) {
-            return session()->flash('message', 'Can not generate Barcode with this type of Product Code');
+            return session()->flash('message', __('controller.session.flash.generate_failed'));
         }
 
         $this->barcodes = [];

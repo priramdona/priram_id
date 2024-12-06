@@ -20,4 +20,15 @@ return [
     'delete_error_online' => 'Tidak Dapat Menghapus Dengan Pembayaran Online..',
     'role_created' => 'Peran Dibuat Dengan Izin yang Dipilih!',
     'role_updated' => 'Peran Dirubah Dengan Izin yang Dipilih!',
+    'session' => [
+        'flash' => [
+            'stock_exist' => 'Produk ada di keranjang!',
+            'qty_not_available' => 'Jumlah yang diminta tidak tersedia dalam stok.',
+            'discount_added' => 'Diskon ditambahkan ke produk!',
+            'product_exist_list' => 'Sudah ada di daftar produk!',
+            'error' => 'Ada yang tidak beres!',
+            'max_100_barcode_generation' => 'Kuantitas maksimal adalah 100 per pembuatan barcode!',
+            'generate_failed' => 'Tidak dapat membuat Barcode dengan jenis Kode Produk ini',
+        ]
+    ]
 ];

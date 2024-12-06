@@ -19,4 +19,15 @@ return [
     'delete_error_online' => 'Unable Delete Payment Online..',
     'role_created' => 'Role Created With Selected Permissions!',
     'role_updated' => 'Role Updated With Selected Permissions!',
+    'session' => [
+        'flash' => [
+            'stock_exist' => 'Product exists in the cart!',
+            'qty_not_available' => 'The requested quantity is not available in stock.',
+            'discount_added' => 'Discount added to the product!',
+            'product_exist_list' => 'Already exists in the product list!',
+            'error' => 'Something went wrong!',
+            'max_100_barcode_generation' => 'Max quantity is 100 per barcode generation!',
+            'generate_failed' => 'Can not generate Barcode with this type of Product Code',
+        ]
+    ]
 ];
