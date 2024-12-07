@@ -181,7 +181,7 @@
         .then(data => {
             if (data.action === 'download_pdf') {
                 if (window.AndroidInterface) {
-                    window.AndroidInterface.sendLinkPdf(data.pdf_url);
+                    window.AndroidInterface.sendPdfUrl(data.pdf_url);
                 } else {
                     window.print();
                 }
