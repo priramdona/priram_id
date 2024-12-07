@@ -179,8 +179,3 @@
 </div>
 </body>
 </html>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        window.print(); // Memicu dialog cetak
-    });
-</script>
