@@ -38,14 +38,14 @@
             <table class="table table-bordered" style="table-layout: auto; width: 100%;" class="table table-bordered" >
                 <thead class="thead-dark">
                 <tr>
-                    <th class="align-middle">{{ __("sales.show.table.product") }}</th>
-                    <th class="align-middle text-center">{{ __("sales.show.table.net_unit_price") }}</th>
-                    <th class="align-middle text-center">{{ __("sales.show.table.stock") }}</th>
-                    <th class="align-middle text-center">{{ __("sales.show.table.quantity") }}</th>
-                    <th class="align-middle text-center">{{ __("sales.show.table.discount") }}</th>
-                    <th class="align-middle text-center">{{ __("sales.show.table.tax") }}</th>
-                    <th class="align-middle text-center">{{ __("sales.show.table.sub_total") }}</th>
-                    <th class="align-middle text-center">{{ __("sales.show.table.action") }}</th>
+                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.product") }}</th>
+                    <th style="white-space: nowrap;" class="align-middle text-center">{{ __("sales.show.table.net_unit_price") }}</th>
+                    <th style="white-space: nowrap;" class="align-middle text-center">{{ __("sales.show.table.stock") }}</th>
+                    <th style="white-space: nowrap;" class="align-middle text-center">{{ __("sales.show.table.quantity") }}</th>
+                    <th style="white-space: nowrap;" class="align-middle text-center">{{ __("sales.show.table.discount") }}</th>
+                    <th style="white-space: nowrap;" class="align-middle text-center">{{ __("sales.show.table.tax") }}</th>
+                    <th style="white-space: nowrap;" class="align-middle text-center">{{ __("sales.show.table.sub_total") }}</th>
+                    <th style="white-space: nowrap;" class="align-middle text-center">{{ __("sales.show.table.action") }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -130,7 +130,7 @@
     <div class="form-row" hidden>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="tax_percentage">Tax (%)</label>
+                <label for="tax_percentage">{{ __("sales.show.table.tax") }}</label>
                 <input wire:change="globalTaxChange($event.target.value)"
                 onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
                 type="text" class="form-control" name="tax_percentage" min="0" max="100" value="{{ $global_tax }}" {{ $data->with_invoice ?? false ? 'readonly' : 'required' }}>
@@ -138,7 +138,7 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="discount_percentage">Discount (%)</label>
+                <label for="discount_percentage">{{ __("sales.show.table.discount") }}</label>
                 <input wire:change="globalDiscountChange($event.target.value)"
                 onkeydown="if(!/^\d*\.?\d{0,2}$/.test(this.value + event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
                 type="text" class="form-control" name="discount_percentage" min="0" max="100" value="{{ $global_discount }}" {{ $data->with_invoice ?? false ? 'readonly' : 'required' }}>
@@ -146,7 +146,7 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="shipping_amount">Shipping</label>
+                <label for="shipping_amount">{{ __("sales.show.table.shipping") }}</label>
                 <input wire:change="shippingChange($event.target.value)"
                 onkeydown="if (!/^[0-9]$/.test(event.key) && event.key !== 'Backspace') { event.preventDefault(); }"
                 type="number" class="form-control" name="shipping_amount" min="0" value="{{ $data->shipping_amount ?? 0  }}" {{ $data->with_invoice ?? false ? 'readonly' : 'required' }} step="0.01">
@@ -172,7 +172,7 @@
                         <td>(+) {{ format_currency($shipping) }}</td>
                     </tr> --}}
                     <tr>
-                        <th>Grand Total</th>
+                        <th>{{ __("sales.show.table.grand_total") }}</th>
                         @php
                             $total_with_shipping = Cart::instance($cart_instance)->total() + (float) $shipping
                         @endphp

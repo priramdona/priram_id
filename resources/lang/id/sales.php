@@ -69,7 +69,7 @@ return [
         ],
         'table' => [
             'product' => 'Produk',
-            'net_unit_price' => 'Harga Satuan Bersih',
+            'net_unit_price' => 'Harga',
             'quantity' => 'Jumlah',
             'discount' => 'Diskon',
             'tax' => 'Pajak',
