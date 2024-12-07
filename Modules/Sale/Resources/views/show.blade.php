@@ -192,11 +192,3 @@
         });
 }
 </script>
-
-@push('page_css')
-<style>
-    #preview-table th, td {
-        white-space: nowrap;
-    }
-</style>
-@endpush
