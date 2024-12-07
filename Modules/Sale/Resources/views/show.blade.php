@@ -67,7 +67,7 @@
                         </div>
 
                         <div class="table-responsive-sm">
-                            <table id="preview-table" class="table table-striped">
+                            <table class="table table-striped">
                                 <thead>
                                 <tr>
                                     <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.product") }}</th>
