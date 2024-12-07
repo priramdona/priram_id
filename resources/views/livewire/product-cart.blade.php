@@ -35,7 +35,7 @@
                     <span class="sr-only">Loading...</span>
                 </div>
             </div>
-            <table class="table table-bordered" style="table-layout: auto; width: 100%;" class="table table-bordered" >
+            <table id="preview-table" class="table table-bordered" style="table-layout: auto; width: 100%;" class="table table-bordered" >
                 <thead class="thead-dark">
                 <tr>
                     <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.product") }}</th>

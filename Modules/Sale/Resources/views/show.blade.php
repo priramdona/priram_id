@@ -67,15 +67,15 @@
                         </div>
 
                         <div class="table-responsive-sm">
-                            <table class="table table-striped">
+                            <table id="preview-table" class="table table-bordered" style="table-layout: auto; width: 100%;"  class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th class="align-middle">{{ __("sales.show.table.product") }}</th>
-                                    <th class="align-middle">{{ __("sales.show.table.net_unit_price") }}</th>
-                                    <th class="align-middle">{{ __("sales.show.table.quantity") }}</th>
-                                    <th class="align-middle">{{ __("sales.show.table.discount") }}</th>
-                                    <th class="align-middle">{{ __("sales.show.table.tax") }}</th>
-                                    <th class="align-middle">{{ __("sales.show.table.sub_total") }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.product") }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.net_unit_price") }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.quantity") }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.discount") }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.tax") }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.sub_total") }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -157,3 +157,27 @@
     </div>
 @endsection
 
+<script>
+    var publicUrl = "{{ $pdf_url }}";
+    var actionUrl = "{{ $action }}";
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (publicUrl !== '' ) {
+            if (window.AndroidInterface) {
+                window.AndroidInterface.sendLinkPdf(
+                    publicUrl
+                );
+            } else {
+                window.print();
+            }
+        }
+    });
+</script>
+
+@push('page_css')
+<style>
+    #preview-table th, td {
+        white-space: nowrap;
+    }
+</style>
+@endpush

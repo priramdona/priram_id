@@ -115,7 +115,6 @@ class PosController extends Controller
             mkdir(dirname($filePath), 0777, true);
         }
 
-
         file_put_contents($filePath, $output);
         $publicUrl = asset('storage/invoices/invoice_' . $sale->id . Carbon::now()->format('Ymdss') . '.pdf'); // URL yang dapat diakses oleh Android
 
@@ -138,10 +137,10 @@ class PosController extends Controller
             'publicUrl' => $publicUrl
         ]);
 
-        // return response()->json([
-        //     'pdf_url' => $filePath,
-        //     'message' => "<script>window.location.href = '$publicUrl'; setTimeout(() => { Android.printPage(); }, 1000);</script>"
-        // ]);
+        return response()->json([
+            'action' => "download_pdf",
+            'pdf_url' => $filePath
+        ]);
     }
     public function printPosOri($id)
     {

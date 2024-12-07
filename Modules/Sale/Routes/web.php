@@ -48,7 +48,22 @@ Route::group(['middleware' => 'auth'], function () {
             'customer' => $customer,
         ])->setPaper('a4', 'landscape');;
 
-        return $pdf->stream('sale-'. $sale->reference .'.pdf');
+        $output = $pdf->download();
+        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '_invoice' . '.pdf');
+
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        file_put_contents($filePath, $output);
+        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '_invoice' . '.pdf');
+
+        return response()->json([
+            'action' => "download_pdf",
+            'pdf_url' => $publicUrl
+        ]);
+
+        // return $pdf->stream('sale-'. $sale->reference .'.pdf');
     })->name('sales.pdf');
 
     Route::get('/sales/pos/pdf/{id}', [PosController::class, 'printPos'])->name('sales.pos.pdf');
