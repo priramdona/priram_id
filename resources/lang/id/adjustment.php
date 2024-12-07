@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'loading' => 'Memuat...',
+    'select_product' => 'Silakan cari & Pilih produk!',
     'adjustment_details' => 'Detail Penyesuaian',
     'home' => 'Beranda',
     'adjustments' => 'Penyesuaian',

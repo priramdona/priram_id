@@ -19,12 +19,15 @@
                         <div>
                             {{ __('purchase_return.reference') }}: <strong>{{ $purchase_return->reference }}</strong>
                         </div>
-                        <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('purchase-returns.pdf', $purchase_return->id) }}">
+                        <a class="btn btn-sm btn-info mfs-auto mfe-1 d-print-none" onclick="fetchPdf('{{ $purchase_return->id }}')" >
+                            <i class="bi bi-save"></i> {{ __('purchase.show.save') }}
+                        </a>
+                        {{-- <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('purchase-returns.pdf', $purchase_return->id) }}">
                             <i class="bi bi-printer"></i> {{ __('purchase_return.print') }}
                         </a>
                         <a target="_blank" class="btn btn-sm btn-info mfe-1 d-print-none" href="{{ route('purchase-returns.pdf', $purchase_return->id) }}">
                             <i class="bi bi-save"></i> {{ __('purchase_return.save') }}
-                        </a>
+                        </a> --}}
                     </div>
                     <div class="card-body">
                         <div class="row mb-4">
@@ -59,15 +62,15 @@
                         </div>
 
                         <div class="table-responsive-sm">
-                            <table class="table table-striped">
+                            <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th class="align-middle">{{ __('purchase_return.product') }}</th>
-                                    <th class="align-middle">{{ __('purchase_return.net_unit_price') }}</th>
-                                    <th class="align-middle">{{ __('purchase_return.quantity') }}</th>
-                                    <th class="align-middle">{{ __('purchase_return.discount') }}</th>
-                                    <th class="align-middle">{{ __('purchase_return.tax') }}</th>
-                                    <th class="align-middle">{{ __('purchase_return.sub_total') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('purchase_return.product') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('purchase_return.net_unit_price') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('purchase_return.quantity') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('purchase_return.discount') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('purchase_return.tax') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('purchase_return.sub_total') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -107,20 +110,20 @@
                                 <table class="table">
                                     <tbody>
                                     <tr>
-                                        <td class="left"><strong>{{ __('purchase_return.discount') }} ({{ $purchase_return->discount_percentage }}%)</strong></td>
-                                        <td class="right">{{ format_currency($purchase_return->discount_amount) }}</td>
+                                        <td style="white-space: nowrap;" class="left"><strong>{{ __('purchase_return.discount') }} ({{ $purchase_return->discount_percentage }}%)</strong></td>
+                                        <td style="white-space: nowrap;" class="right">{{ format_currency($purchase_return->discount_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>{{ __('purchase_return.tax') }} ({{ $purchase_return->tax_percentage }}%)</strong></td>
-                                        <td class="right">{{ format_currency($purchase_return->tax_amount) }}</td>
+                                        <td style="white-space: nowrap;" class="left"><strong>{{ __('purchase_return.tax') }} ({{ $purchase_return->tax_percentage }}%)</strong></td>
+                                        <td style="white-space: nowrap;" class="right">{{ format_currency($purchase_return->tax_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>{{ __('purchase_return.shipping') }}</strong></td>
-                                        <td class="right">{{ format_currency($purchase_return->shipping_amount) }}</td>
+                                        <td style="white-space: nowrap;" class="left"><strong>{{ __('purchase_return.shipping') }}</strong></td>
+                                        <td style="white-space: nowrap;" class="right">{{ format_currency($purchase_return->shipping_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>{{ __('purchase_return.grand_total') }}</strong></td>
-                                        <td class="right"><strong>{{ format_currency($purchase_return->total_amount) }}</strong></td>
+                                        <td style="white-space: nowrap;" class="left"><strong>{{ __('purchase_return.grand_total') }}</strong></td>
+                                        <td style="white-space: nowrap;" class="right"><strong>{{ format_currency($purchase_return->total_amount) }}</strong></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -133,3 +136,27 @@
     </div>
 @endsection
 
+
+@push('page_scripts')
+<script>
+
+    function fetchPdf(id) {
+    const url = `/purchase-returns/pdf/${id}`; // Endpoint Laravel Anda
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.action === 'download_pdf') {
+                if (window.AndroidInterface) {
+                    window.AndroidInterface.sendPdfUrl(data.pdf_url);
+                } else {
+                    window.print();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching PDF:', error);
+        });
+}
+</script>
+@endpush

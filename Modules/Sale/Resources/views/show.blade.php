@@ -65,44 +65,43 @@
                             </div>
 
                         </div>
-
                         <div class="table-responsive-sm">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.product") }}</th>
-                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.net_unit_price") }}</th>
-                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.quantity") }}</th>
-                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.discount") }}</th>
-                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.tax") }}</th>
-                                    <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.sub_total") }}</th>
+                                    <th style="white-space: nowrap; font-size: 12px;" class="align-middle">{{ __("sales.show.table.product") }}</th>
+                                    <th style="white-space: nowrap; font-size: 12px;" class="align-middle">{{ __("sales.show.table.net_unit_price") }}</th>
+                                    <th style="white-space: nowrap; font-size: 12px;" class="align-middle">{{ __("sales.show.table.quantity") }}</th>
+                                    <th style="white-space: nowrap; font-size: 12px;" class="align-middle">{{ __("sales.show.table.discount") }}</th>
+                                    <th style="white-space: nowrap; font-size: 12px;" class="align-middle">{{ __("sales.show.table.tax") }}</th>
+                                    <th style="white-space: nowrap; font-size: 12px;" class="align-middle">{{ __("sales.show.table.sub_total") }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($sale->saleDetails as $item)
                                     <tr>
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap; font-size: 12px;" class="align-middle">
                                             {{ $item->product_name }} <br>
                                             <span class="badge badge-success">
                                                 {{ $item->product_code }}
                                             </span>
                                         </td>
 
-                                        <td class="align-middle">{{ format_currency($item->unit_price) }}</td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="align-middle">{{ format_currency($item->unit_price) }}</td>
 
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap; font-size: 12px;" class="align-middle">
                                             {{ $item->quantity }}
                                         </td>
 
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap; font-size: 12px;" class="align-middle">
                                             {{ format_currency($item->product_discount_amount) }}
                                         </td>
 
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap; font-size: 12px;" class="align-middle">
                                             {{ format_currency($item->product_tax_amount) }}
                                         </td>
 
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap; font-size: 12px;" class="align-middle">
                                             {{ format_currency($item->sub_total) }}
                                         </td>
                                     </tr>
@@ -116,34 +115,34 @@
                                     <tbody>
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>{{ __("sales.show.table.discount") }} ({{ $sale->discount_percentage }}%)</strong></td>
-                                        <td class="right">{{ format_currency($sale->discount_amount) }}</td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="left"><strong>{{ __("sales.show.table.discount") }} ({{ $sale->discount_percentage }}%)</strong></td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="right">{{ format_currency($sale->discount_amount) }}</td>
                                     </tr>
                                     @endif
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>{{ __("sales.show.table.tax") }} ({{ $sale->tax_percentage }}%)</strong></td>
-                                        <td class="right">{{ format_currency($sale->tax_amount) }}</td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="left"><strong>{{ __("sales.show.table.tax") }} ({{ $sale->tax_percentage }}%)</strong></td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="right">{{ format_currency($sale->tax_amount) }}</td>
                                     </tr>
                                     @endif
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td class="left"><strong>{{ __("sales.show.table.shipping") }}</strong></td>
-                                        <td class="right">{{ format_currency($sale->shipping_amount) }}</td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="left"><strong>{{ __("sales.show.table.shipping") }}</strong></td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="right">{{ format_currency($sale->shipping_amount) }}</td>
                                     </tr>
                                     @endif
                                     <tr>
-                                        <td class="left"><strong>{{ __("sales.show.table.total") }}</strong></td>
-                                        <td class="right"><strong>{{ format_currency($sale->total_amount) }}</strong></td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="left"><strong>{{ __("sales.show.table.total") }}</strong></td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="right"><strong>{{ format_currency($sale->total_amount) }}</strong></td>
                                     </tr>
                                     {{-- @if ($sale->additional_paid_amount > 0) --}}
                                     <tr>
-                                        <td class="left">{{ __("sales.show.table.additional_amount") }}</td>
-                                        <td class="right">{{ format_currency($sale->additional_paid_amount) }}</td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="left">{{ __("sales.show.table.additional_amount") }}</td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="right">{{ format_currency($sale->additional_paid_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>{{ __("sales.show.table.grand_total") }}</strong></td>
-                                        <td class="right"><strong>{{ format_currency($sale->total_paid_amount) }}</strong></td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="left"><strong>{{ __("sales.show.table.grand_total") }}</strong></td>
+                                        <td style="white-space: nowrap; font-size: 12px;" class="right"><strong>{{ format_currency($sale->total_paid_amount) }}</strong></td>
                                     </tr>
                                     {{-- @endif --}}
                                     </tbody>
@@ -157,21 +156,9 @@
     </div>
 @endsection
 
-<script>
-    // var publicUrl = "{{ $pdf_url }}";
-    // var actionUrl = "{{ $action ?? '' }}";
 
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     if (publicUrl !== '' ) {
-    //         if (window.AndroidInterface) {
-    //             window.AndroidInterface.sendLinkPdf(
-    //                 publicUrl
-    //             );
-    //         } else {
-    //             window.print();
-    //         }
-    //     }
-    // });
+@push('page_scripts')
+<script>
 
     function fetchPdf(saleId) {
     const url = `/sales/pdf/${saleId}`; // Endpoint Laravel Anda
@@ -192,3 +179,4 @@
         });
 }
 </script>
+@endpush

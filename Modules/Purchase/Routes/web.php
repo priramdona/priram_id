@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,12 +21,25 @@ Route::group(['middleware' => 'auth'], function () {
         $purchase = \Modules\Purchase\Entities\Purchase::findOrFail($id);
         $supplier = \Modules\People\Entities\Supplier::findOrFail($purchase->supplier_id);
 
-        $pdf = \PDF::loadView('purchase::print', [
+        $pdf = PDF::loadView('purchase::print', [
             'purchase' => $purchase,
             'supplier' => $supplier,
         ])->setPaper('a4');
 
-        return $pdf->stream('purchase-'. $purchase->reference .'.pdf');
+        $output = $pdf->download();
+        $filePath = storage_path('app/public/invoices/invoice_' . $purchase->id . '_purchase' . '.pdf');
+
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        file_put_contents($filePath, $output);
+        $publicUrl = asset('storage/invoices/invoice_' . $purchase->id . '_purchase' . '.pdf');
+
+        return response()->json([
+            'action' => "download_pdf",
+            'pdf_url' => $publicUrl
+        ]);
     })->name('purchases.pdf');
 
     //Sales

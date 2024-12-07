@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,12 +20,25 @@ Route::group(['middleware' => 'auth'], function() {
         $purchaseReturn = \Modules\PurchasesReturn\Entities\PurchaseReturn::findOrFail($id);
         $supplier = \Modules\People\Entities\Supplier::findOrFail($purchaseReturn->supplier_id);
 
-        $pdf = \PDF::loadView('purchasesreturn::print', [
+        $pdf = PDF::loadView('purchasesreturn::print', [
             'purchase_return' => $purchaseReturn,
             'supplier' => $supplier,
         ])->setPaper('a4');
 
-        return $pdf->stream('purchase-return-'. $purchaseReturn->reference .'.pdf');
+        $output = $pdf->download();
+        $filePath = storage_path('app/public/invoices/invoice_' . $purchaseReturn->id . '_purchase_return' . '.pdf');
+
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        file_put_contents($filePath, $output);
+        $publicUrl = asset('storage/invoices/invoice_' . $purchaseReturn->id . '_purchase_return' . '.pdf');
+
+        return response()->json([
+            'action' => "download_pdf",
+            'pdf_url' => $publicUrl
+        ]);
     })->name('purchase-returns.pdf');
 
     //Purchase Returns

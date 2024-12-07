@@ -19,12 +19,15 @@
                         <div>
                             {{ __('sales_return.reference') }}: <strong>{{ $sale_return->reference }}</strong>
                         </div>
-                        <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('sale-returns.pdf', $sale_return->id) }}">
+                        <a class="btn btn-sm btn-info mfs-auto mfe-1 d-print-none" onclick="fetchPdf('{{ $sale_return->id }}')" >
+                            <i class="bi bi-save"></i> {{ __('sales_return.show.save') }}
+                        </a>
+                        {{-- <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('sale-returns.pdf', $sale_return->id) }}">
                             <i class="bi bi-printer"></i> {{ __('sales_return.print') }}
                         </a>
                         <a target="_blank" class="btn btn-sm btn-info mfe-1 d-print-none" href="{{ route('sale-returns.pdf', $sale_return->id) }}">
                             <i class="bi bi-save"></i> {{ __('sales_return.save') }}
-                        </a>
+                        </a> --}}
                     </div>
                     <div class="card-body">
                         <div class="row mb-4">
@@ -67,42 +70,42 @@
                         </div>
 
                         <div class="table-responsive-sm">
-                            <table class="table table-striped">
+                            <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th class="align-middle">{{ __('sales_return.product') }}</th>
-                                    <th class="align-middle">{{ __('sales_return.net_unit_price') }}</th>
-                                    <th class="align-middle">{{ __('sales_return.quantity') }}</th>
-                                    <th class="align-middle">{{ __('sales_return.discount') }}</th>
-                                    <th class="align-middle">{{ __('sales_return.tax') }}</th>
-                                    <th class="align-middle">{{ __('sales_return.sub_total') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('sales_return.product') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('sales_return.net_unit_price') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('sales_return.quantity') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('sales_return.discount') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('sales_return.tax') }}</th>
+                                    <th style="white-space: nowrap;" class="align-middle">{{ __('sales_return.sub_total') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($sale_return->saleReturnDetails as $item)
                                     <tr>
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap;" class="align-middle">
                                             {{ $item->product_name }} <br>
                                             <span class="badge badge-success">
                                                 {{ $item->product_code }}
                                             </span>
                                         </td>
 
-                                        <td class="align-middle">{{ format_currency($item->unit_price) }}</td>
+                                        <td style="white-space: nowrap;" class="align-middle">{{ format_currency($item->unit_price) }}</td>
 
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap;" class="align-middle">
                                             {{ $item->quantity }}
                                         </td>
 
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap;" class="align-middle">
                                             {{ format_currency($item->product_discount_amount) }}
                                         </td>
 
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap;" class="align-middle">
                                             {{ format_currency($item->product_tax_amount) }}
                                         </td>
 
-                                        <td class="align-middle">
+                                        <td style="white-space: nowrap;" class="align-middle">
                                             {{ format_currency($item->sub_total) }}
                                         </td>
                                     </tr>
@@ -115,20 +118,20 @@
                                 <table class="table">
                                     <tbody>
                                     <tr>
-                                        <td class="left"><strong>{{ __('sales_return.discount') }} ({{ $sale_return->discount_percentage }}%)</strong></td>
-                                        <td class="right">{{ format_currency($sale_return->discount_amount) }}</td>
+                                        <td style="white-space: nowrap;" class="left"><strong>{{ __('sales_return.discount') }} ({{ $sale_return->discount_percentage }}%)</strong></td>
+                                        <td style="white-space: nowrap;" class="right">{{ format_currency($sale_return->discount_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>{{ __('sales_return.tax') }} ({{ $sale_return->tax_percentage }}%)</strong></td>
-                                        <td class="right">{{ format_currency($sale_return->tax_amount) }}</td>
+                                        <td style="white-space: nowrap;" class="left"><strong>{{ __('sales_return.tax') }} ({{ $sale_return->tax_percentage }}%)</strong></td>
+                                        <td style="white-space: nowrap;" class="right">{{ format_currency($sale_return->tax_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>{{ __('sales_return.shipping') }}</strong></td>
-                                        <td class="right">{{ format_currency($sale_return->shipping_amount) }}</td>
+                                        <td style="white-space: nowrap;" class="left"><strong>{{ __('sales_return.shipping') }}</strong></td>
+                                        <td style="white-space: nowrap;" class="right">{{ format_currency($sale_return->shipping_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>{{ __('sales_return.grand_total') }}</strong></td>
-                                        <td class="right"><strong>{{ format_currency($sale_return->total_amount) }}</strong></td>
+                                        <td style="white-space: nowrap;" class="left"><strong>{{ __('sales_return.grand_total') }}</strong></td>
+                                        <td style="white-space: nowrap;" class="right"><strong>{{ format_currency($sale_return->total_amount) }}</strong></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -141,3 +144,27 @@
     </div>
 @endsection
 
+
+@push('page_scripts')
+<script>
+
+    function fetchPdf(id) {
+    const url = `/sale-returns/pdf/${id}`; // Endpoint Laravel Anda
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.action === 'download_pdf') {
+                if (window.AndroidInterface) {
+                    window.AndroidInterface.sendPdfUrl(data.pdf_url);
+                } else {
+                    window.print();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching PDF:', error);
+        });
+}
+</script>
+@endpush

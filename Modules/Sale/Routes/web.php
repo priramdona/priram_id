@@ -49,14 +49,14 @@ Route::group(['middleware' => 'auth'], function () {
         ])->setPaper('a4');;
 
         $output = $pdf->download();
-        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '_invoice' . '.pdf');
+        $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '_sale' . '.pdf');
 
         if (!file_exists(dirname($filePath))) {
             mkdir(dirname($filePath), 0777, true);
         }
 
         file_put_contents($filePath, $output);
-        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '_invoice' . '.pdf');
+        $publicUrl = asset('storage/invoices/invoice_' . $sale->id . '_sale' . '.pdf');
 
         return response()->json([
             'action' => "download_pdf",

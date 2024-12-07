@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'loading' => 'Loading...',
+    'select_product' => 'Please search & select products!',
     'adjustment_details' => 'Adjustment Details',
     'home' => 'Home',
     'adjustments' => 'Adjustments',

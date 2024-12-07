@@ -1,5 +1,6 @@
 <?php
-
+use Illuminate\Support\Facades\Route;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,12 +18,25 @@ Route::group(['middleware' => 'auth'], function () {
         $saleReturn = \Modules\SalesReturn\Entities\SaleReturn::findOrFail($id);
         $customer = \Modules\People\Entities\Customer::find($saleReturn->customer_id) ?? null;
 
-        $pdf = \PDF::loadView('salesreturn::print', [
+        $pdf = PDF::loadView('salesreturn::print', [
             'sale_return' => $saleReturn,
             'customer' => $customer,
         ])->setPaper('a4');
 
-        return $pdf->stream('sale-return-'. $saleReturn->reference .'.pdf');
+        $output = $pdf->download();
+        $filePath = storage_path('app/public/invoices/invoice_' . $saleReturn->id . '_sale_return' . '.pdf');
+
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        file_put_contents($filePath, $output);
+        $publicUrl = asset('storage/invoices/invoice_' . $saleReturn->id . '_sale_return' . '.pdf');
+
+        return response()->json([
+            'action' => "download_pdf",
+            'pdf_url' => $publicUrl
+        ]);
     })->name('sale-returns.pdf');
 
     //Sale Returns

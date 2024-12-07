@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,12 +22,25 @@ Route::group(['middleware' => 'auth'], function () {
         $quotation = \Modules\Quotation\Entities\Quotation::findOrFail($id);
         $customer = \Modules\People\Entities\Customer::findOrFail($quotation->customer_id);
 
-        $pdf = \PDF::loadView('quotation::print', [
+        $pdf = PDF::loadView('quotation::print', [
             'quotation' => $quotation,
             'customer' => $customer,
         ])->setPaper('a4');
 
-        return $pdf->stream('quotation-'. $quotation->reference .'.pdf');
+        $output = $pdf->download();
+        $filePath = storage_path('app/public/invoices/invoice_' . $quotation->id . '_quotation' . '.pdf');
+
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+
+        file_put_contents($filePath, $output);
+        $publicUrl = asset('storage/invoices/invoice_' . $quotation->id . '_quotation' . '.pdf');
+
+        return response()->json([
+            'action' => "download_pdf",
+            'pdf_url' => $publicUrl
+        ]);
     })->name('quotations.pdf');
 
     //Send Quotation Mail
