@@ -22,7 +22,7 @@
                         {{-- <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('sales.pdf', $sale->id) }}">
                             <i class="bi bi-printer"></i> {{ __('sales.show.print') }}
                         </a> --}}
-                        <a target="_blank" class="btn btn-sm btn-info mfe-1 d-print-none" href="{{ route('sales.pdf', $sale->id) }}">
+                        <a target="_blank" class="btn btn-sm btn-info mfe-1 d-print-none" onclick="fetchPdf('{{ $sale->id }}')">
                             <i class="bi bi-save"></i> {{ __('sales.show.save') }}
                         </a>
                     </div>
@@ -158,20 +158,39 @@
 @endsection
 
 <script>
-    var publicUrl = "{{ $pdf_url }}";
-    var actionUrl = "{{ $action ?? '' }}";
+    // var publicUrl = "{{ $pdf_url }}";
+    // var actionUrl = "{{ $action ?? '' }}";
 
-    document.addEventListener('DOMContentLoaded', function () {
-        if (publicUrl !== '' ) {
-            if (window.AndroidInterface) {
-                window.AndroidInterface.sendLinkPdf(
-                    publicUrl
-                );
-            } else {
-                window.print();
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     if (publicUrl !== '' ) {
+    //         if (window.AndroidInterface) {
+    //             window.AndroidInterface.sendLinkPdf(
+    //                 publicUrl
+    //             );
+    //         } else {
+    //             window.print();
+    //         }
+    //     }
+    // });
+
+    function fetchPdf(saleId) {
+    const url = `/sales/pdf/${saleId}`; // Endpoint Laravel Anda
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.action === 'download_pdf') {
+                if (window.AndroidInterface) {
+                    window.AndroidInterface.sendLinkPdf(data.pdf_url);
+                } else {
+                    window.print();
+                }
             }
-        }
-    });
+        })
+        .catch(error => {
+            console.error('Error fetching PDF:', error);
+        });
+}
 </script>
 
 @push('page_css')
