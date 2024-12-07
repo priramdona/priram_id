@@ -159,7 +159,7 @@
 
 <script>
     var publicUrl = "{{ $pdf_url }}";
-    var actionUrl = "{{ $action }}";
+    var actionUrl = "{{ $action ?? '' }}";
 
     document.addEventListener('DOMContentLoaded', function () {
         if (publicUrl !== '' ) {
