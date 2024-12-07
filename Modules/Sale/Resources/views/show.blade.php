@@ -67,7 +67,7 @@
                         </div>
 
                         <div class="table-responsive-sm">
-                            <table id="preview-table" class="table table-bordered" style="table-layout: auto; width: 100%;"  class="table table-striped">
+                            <table id="preview-table" class="table table-striped">
                                 <thead>
                                 <tr>
                                     <th style="white-space: nowrap;" class="align-middle">{{ __("sales.show.table.product") }}</th>
@@ -81,28 +81,28 @@
                                 <tbody>
                                 @foreach($sale->saleDetails as $item)
                                     <tr>
-                                        <td style="white-space: nowrap;" class="align-middle">
+                                        <td class="align-middle">
                                             {{ $item->product_name }} <br>
                                             <span class="badge badge-success">
                                                 {{ $item->product_code }}
                                             </span>
                                         </td>
 
-                                        <td style="white-space: nowrap;" class="align-middle">{{ format_currency($item->unit_price) }}</td>
+                                        <td class="align-middle">{{ format_currency($item->unit_price) }}</td>
 
-                                        <td style="white-space: nowrap;" class="align-middle">
+                                        <td class="align-middle">
                                             {{ $item->quantity }}
                                         </td>
 
-                                        <td style="white-space: nowrap;" class="align-middle">
+                                        <td class="align-middle">
                                             {{ format_currency($item->product_discount_amount) }}
                                         </td>
 
-                                        <td style="white-space: nowrap;" class="align-middle">
+                                        <td class="align-middle">
                                             {{ format_currency($item->product_tax_amount) }}
                                         </td>
 
-                                        <td style="white-space: nowrap;" class="align-middle">
+                                        <td class="align-middle">
                                             {{ format_currency($item->sub_total) }}
                                         </td>
                                     </tr>
@@ -116,34 +116,34 @@
                                     <tbody>
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td style="white-space: nowrap;" class="left"><strong>{{ __("sales.show.table.discount") }} ({{ $sale->discount_percentage }}%)</strong></td>
-                                        <td style="white-space: nowrap;" class="right">{{ format_currency($sale->discount_amount) }}</td>
+                                        <td class="left"><strong>{{ __("sales.show.table.discount") }} ({{ $sale->discount_percentage }}%)</strong></td>
+                                        <td class="right">{{ format_currency($sale->discount_amount) }}</td>
                                     </tr>
                                     @endif
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td style="white-space: nowrap;" class="left"><strong>{{ __("sales.show.table.tax") }} ({{ $sale->tax_percentage }}%)</strong></td>
-                                        <td style="white-space: nowrap;" class="right">{{ format_currency($sale->tax_amount) }}</td>
+                                        <td class="left"><strong>{{ __("sales.show.table.tax") }} ({{ $sale->tax_percentage }}%)</strong></td>
+                                        <td class="right">{{ format_currency($sale->tax_amount) }}</td>
                                     </tr>
                                     @endif
                                     @if ($sale->discount_amount > 0)
                                     <tr>
-                                        <td style="white-space: nowrap;" class="left"><strong>{{ __("sales.show.table.shipping") }}</strong></td>
-                                        <td style="white-space: nowrap;" class="right">{{ format_currency($sale->shipping_amount) }}</td>
+                                        <td class="left"><strong>{{ __("sales.show.table.shipping") }}</strong></td>
+                                        <td class="right">{{ format_currency($sale->shipping_amount) }}</td>
                                     </tr>
                                     @endif
                                     <tr>
-                                        <td style="white-space: nowrap;" class="left"><strong>{{ __("sales.show.table.total") }}</strong></td>
-                                        <td style="white-space: nowrap;" class="right"><strong>{{ format_currency($sale->total_amount) }}</strong></td>
+                                        <td class="left"><strong>{{ __("sales.show.table.total") }}</strong></td>
+                                        <td class="right"><strong>{{ format_currency($sale->total_amount) }}</strong></td>
                                     </tr>
                                     {{-- @if ($sale->additional_paid_amount > 0) --}}
                                     <tr>
-                                        <td style="white-space: nowrap;" class="left">{{ __("sales.show.table.additional_amount") }}</td>
-                                        <td style="white-space: nowrap;" class="right">{{ format_currency($sale->additional_paid_amount) }}</td>
+                                        <td class="left">{{ __("sales.show.table.additional_amount") }}</td>
+                                        <td class="right">{{ format_currency($sale->additional_paid_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td style="white-space: nowrap;" class="left"><strong>{{ __("sales.show.table.grand_total") }}</strong></td>
-                                        <td style="white-space: nowrap;" class="right"><strong>{{ format_currency($sale->total_paid_amount) }}</strong></td>
+                                        <td class="left"><strong>{{ __("sales.show.table.grand_total") }}</strong></td>
+                                        <td class="right"><strong>{{ format_currency($sale->total_paid_amount) }}</strong></td>
                                     </tr>
                                     {{-- @endif --}}
                                     </tbody>
@@ -192,3 +192,11 @@
         });
 }
 </script>
+
+@push('page_css')
+<style>
+    #preview-table th, td {
+        white-space: nowrap;
+    }
+</style>
+@endpush
