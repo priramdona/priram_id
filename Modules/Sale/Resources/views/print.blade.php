@@ -38,9 +38,10 @@
     <div class="row">
         <div class="col-xs-12">
             <div style="text-align: left;margin-bottom: 25px;">
-                <img width="50" src="{{ public_path('images/logo-dark.png') }}" alt="Logo">
+
                 <h4 style="margin-bottom: 20px;">
-                    <span>{{ __('sales.print.reference') }}</span> <strong>{{ $sale->reference }}</strong>
+                    <img width="50" src="{{ public_path('images/logo-dark.png') }}" alt="Logo">
+                    <span> {{ __('sales.print.reference') }}</span> <strong>{{ $sale->reference }}</strong>
                 </h4>
             </div>
             <div class="card">
