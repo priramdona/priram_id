@@ -92,8 +92,8 @@
                 <img class="c-avatar rounded-circle" src="{{ auth()->user()->image_url }}" alt="Profile Image">
             </div>
             <div class="d-flex flex-column">
-                <span class="font-weight-bold">{{ auth()->user()->name }}</span>
-                <span class="font-italic">{{ auth()->user()->email }} <i class="bi bi-circle-fill text-success" style="font-size: 11px;"></i></span>
+                <span  style="font-size: 8px;"class="font-weight-bold">{{ auth()->user()->name }}</span>
+                <span style="font-size: 8px;" class="font-italic">{{ auth()->user()->email }} <i class="bi bi-circle-fill text-success" style="font-size: 8px;"></i></span>
             </div>
         </a>
         <div class="dropdown-menu dropdown-menu-right pt-0">
