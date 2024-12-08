@@ -93,12 +93,12 @@
                         <form method="POST" action="{{ route('otp.verify') }}">
                             @csrf
                             <div class="otp-input-wrapper">
-                                <input type="text" id="otp1" name="otp[]" maxlength="1" class="otp-input" required autofocus>
-                                <input type="text" id="otp2" name="otp[]" maxlength="1" class="otp-input" required>
-                                <input type="text" id="otp3" name="otp[]" maxlength="1" class="otp-input" required>
-                                <input type="text" id="otp4" name="otp[]" maxlength="1" class="otp-input" required>
-                                <input type="text" id="otp5" name="otp[]" maxlength="1" class="otp-input" required>
-                                <input type="text" id="otp6" name="otp[]" maxlength="1" class="otp-input" required>
+                                <input type="number" id="otp1" name="otp[]" maxlength="1" class="otp-input" required autofocus>
+                                <input type="number" id="otp2" name="otp[]" maxlength="1" class="otp-input" required>
+                                <input type="number" id="otp3" name="otp[]" maxlength="1" class="otp-input" required>
+                                <input type="number" id="otp4" name="otp[]" maxlength="1" class="otp-input" required>
+                                <input type="number" id="otp5" name="otp[]" maxlength="1" class="otp-input" required>
+                                <input type="number" id="otp6" name="otp[]" maxlength="1" class="otp-input" required>
                             </div>
 
                             @error('otp')
