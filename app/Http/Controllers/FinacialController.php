@@ -42,7 +42,7 @@ class FinacialController extends Controller
         ->where('transactional_id', $id)
         ->with('transactional')
         ->first();
-dd($history->transactional);
+// dd($history->transactional);
         return view('layouts.financial.show', [
             'data' => $history,
         ]);

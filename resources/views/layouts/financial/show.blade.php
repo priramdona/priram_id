@@ -31,13 +31,22 @@
                                 <span class="detail-label">{{ __('payment_gateway.channel_code') }}</span>
                                 <span class="detail-value">{{ $data->transactional->channel_code }}</span>
                             </div>
+                            @php
+                                $channelProperties = json_decode($history->transactional->channel_properties, true);
+                            @endphp
                             <div class="detail-item">
                                 <span class="detail-label">{{ __('payment_gateway.account_name') }}</span>
+
                                 <span class="detail-value">{{ $data->transactional->channel_properties['account_holder_name'] }}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">{{ __('payment_gateway.account_number') }}</span>
-                                <span class="detail-value">{{ $data->transactional->channel_properties['account_number'] }}</span>
+                                @if(is_array($channelProperties) && isset($channelProperties['account_number']))
+                                    <span class="detail-value">{{ $channelProperties['account_number'] }}</span>
+                                @else
+                                    <span class="detail-value">{{ __('N/A') }}</span>
+                                @endif
+                                {{-- <span class="detail-value">{{ $data->transactional->channel_properties['account_number'] }}</span> --}}
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">{{ __('payment_gateway.estimated_arrival') }}</span>
