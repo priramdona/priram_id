@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Modules\Income\Entities\Income;
 use Modules\Income\Entities\IncomePayment;
 use Modules\PaymentGateway\Entities\XenditCreatePayment;
-use Modules\PaymentGateway\Entities\xenditPaymentMethod;
+use Modules\PaymentGateway\Entities\XenditPaymentMethod;
 use Modules\PaymentGateway\Entities\xenditPaymentRequest;
 use Modules\PaymentMethod\Entities\PaymentChannel;
 use Modules\PaymentMethod\Entities\PaymentMethod;
@@ -90,7 +90,7 @@ class IncomeController extends Controller
                 'xendit_create_payment_id' => $paymentRequestData['id'] ?? null,
             ]);
 
-            $paymentMethod = xenditPaymentMethod::query()
+            $paymentMethod = XenditPaymentMethod::query()
             ->where('reference_id', $refIdData)
             ->first();
 
@@ -100,9 +100,6 @@ class IncomeController extends Controller
                 $paymentMethod->save();
             }
 
-            $paymentMethod = XenditPaymentMethod::query()
-            ->where('reference_id', $refIdData)
-            ->first();
 
             if ($paymentRequestData) {
                 $paymentRequestData->source_type = Income::class;
