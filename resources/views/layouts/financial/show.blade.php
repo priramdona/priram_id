@@ -36,8 +36,12 @@
                             @endphp
                             <div class="detail-item">
                                 <span class="detail-label">{{ __('payment_gateway.account_name') }}</span>
-
-                                <span class="detail-value">{{ $data->transactional->channel_properties['account_holder_name'] }}</span>
+                                @if(is_array($channelProperties) && isset($channelProperties['account_holder_name']))
+                                    <span class="detail-value">{{ $channelProperties['account_holder_name'] }}</span>
+                                @else
+                                    <span class="detail-value">{{ __('N/A') }}</span>
+                                @endif
+                                {{-- <span class="detail-value">{{ $data->transactional->channel_properties['account_holder_name'] }}</span> --}}
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">{{ __('payment_gateway.account_number') }}</span>
