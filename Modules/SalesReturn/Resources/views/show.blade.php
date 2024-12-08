@@ -20,7 +20,7 @@
                             {{ __('sales_return.reference') }}: <strong>{{ $sale_return->reference }}</strong>
                         </div>
                         <a class="btn btn-sm btn-info mfs-auto mfe-1 d-print-none" onclick="fetchPdf('{{ $sale_return->id }}')" >
-                            <i class="bi bi-save"></i> {{ __('sales_return.show.save') }}
+                            <i class="bi bi-save"></i> {{ __('purchase.show.save') }}
                         </a>
                         {{-- <a target="_blank" class="btn btn-sm btn-secondary mfs-auto mfe-1 d-print-none" href="{{ route('sale-returns.pdf', $sale_return->id) }}">
                             <i class="bi bi-printer"></i> {{ __('sales_return.print') }}

@@ -72,6 +72,7 @@
                         </div>
                         @endif
 
+
                         <div style="width: 33%; display: inline-block; vertical-align: top;">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales.print.info.invoice') }}</h4>
                             <div>{{ __('sales.print.invoice.number') }}: <strong>INV/{{ $sale->reference }}</strong></div>

@@ -184,6 +184,16 @@
         var startautosave;
 
         $(document).ready(function () {
+
+        $('#amount').maskMoney({
+            prefix:'{{ settings()->currency->symbol }}',
+            thousands:'{{ settings()->currency->thousand_separator }}',
+            decimal:'{{ settings()->currency->decimal_separator }}',
+            allowZero: true,
+        });
+
+
+
             $.ajax({
                 url: "{{ url('/get-payment-method') }}/",
                 method: "GET",
@@ -254,6 +264,8 @@
                 }
             });
             $('#income-form').on('submit', function(e) {
+                var amount = $('#amount').maskMoney('unmasked')[0];
+                $('#amount').val(amount);
 
                 var paymentChannel = document.getElementById('payment_channel').value;
                 if (paymentChannel.length > 0){

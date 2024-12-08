@@ -12,37 +12,39 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-12">
-            <div style="text-align: center;margin-bottom: 25px;">
-                <img width="180" src="{{ public_path('images/logo-dark.png') }}" alt="Logo">
+            <div style="text-align: left;margin-bottom: 25px;">
                 <h4 style="margin-bottom: 20px;">
-                    <span>{{ __('quotation.print.reference') }}:</span> <strong>{{ $quotation->reference }}</strong>
+                    <img width="50" src="{{ public_path('images/logo-dark.png') }}" alt="Logo">
+                    <span>  {{ __('menu.quotations') }} {{ __('sales.print.reference') }}</span> <strong>{{ $quotation->reference }}</strong>
                 </h4>
+
             </div>
+
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.company_info') }}:</h4>
+                        <div style="width: 33%; display: inline-block; vertical-align: top;text-align: left">
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.company_info') }}</h4>
                             <div><strong>{{ settings()->company_name }}</strong></div>
                             <div>{{ settings()->company_address }}</div>
                             <div>{{ __('quotation.print.email') }}: {{ settings()->company_email }}</div>
                             <div>{{ __('quotation.print.phone') }}: {{ settings()->company_phone }}</div>
                         </div>
 
-                        <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.customer_info') }}:</h4>
+                        <div style="width: 33%; display: inline-block; vertical-align: top;text-align: left">
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.customer_info') }}</h4>
                             <div><strong>{{ $customer->customer_name }}</strong></div>
                             <div>{{ $customer->address }}</div>
                             <div>{{ __('quotation.print.email') }}: {{ $customer->customer_email }}</div>
                             <div>{{ __('quotation.print.phone') }}: {{ $customer->customer_phone }}</div>
                         </div>
 
-                        <div class="col-xs-4 mb-3 mb-md-0">
-                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.invoice_info') }}:</h4>
+                        <div style="width: 32%; display: inline-block; vertical-align: top;text-align: left;">
+                            <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('quotation.print.invoice_info') }}</h4>
                             <div>{{ __('quotation.print.invoice') }}: <strong>INV/{{ $quotation->reference }}</strong></div>
-                            <div>{{ __('quotation.print.date') }}: {{ \Carbon\Carbon::parse($quotation->date)->format('d M, Y') }}</div>
+                            <div>{{ __('quotation.print.date') }}: <strong>{{ \Carbon\Carbon::parse($quotation->date)->format('d M, Y') }}</strong></div>
                             <div>{{ __('quotation.print.status') }}: <strong>{{ $quotation->status }}</strong></div>
-                            <div>{{ __('quotation.print.payment_status') }}: <strong>{{ $quotation->payment_status }}</strong></div>
+                            <div>{{ __('quotation.print.payment_status') }}: <strong>{{ $quotation->payment_status ?? 'Unpaid' }}</strong></div>
                         </div>
 
                     </div>
@@ -115,11 +117,11 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 25px;">
+                    {{-- <div class="row" style="margin-top: 25px;">
                         <div class="col-xs-12">
                             <p style="font-style: italic;text-align: center">{{ settings()->company_name }} &copy; {{ date('Y') }}</p>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

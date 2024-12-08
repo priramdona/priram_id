@@ -12,16 +12,16 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-12">
-            <div style="text-align: center;margin-bottom: 25px;">
-                <img width="180" src="{{ public_path('images/logo-dark.png') }}" alt="Logo">
+            <div style="text-align: left;margin-bottom: 25px;">
                 <h4 style="margin-bottom: 20px;">
-                    <span>{{ __('sales_return.reference') }}:</span> <strong>{{ $sale_return->reference }}</strong>
+                    <img width="50" src="{{ public_path('images/logo-dark.png') }}" alt="Logo">
+                    <span> {{ __('sales.print.reference') }}</span> <strong>{{ $sale_return->reference }}</strong>
                 </h4>
             </div>
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-xs-4 mb-3 mb-md-0">
+                        <div style="width: 33%; display: inline-block; vertical-align: top;text-align: left">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales_return.company_info') }}:</h4>
                             <div><strong>{{ settings()->company_name }}</strong></div>
                             <div>{{ settings()->company_address }}</div>
@@ -30,7 +30,7 @@
                         </div>
 
                         @if($customer)
-                        <div class="col-xs-4 mb-3 mb-md-0">
+                        <div style="width: 33%; display: inline-block; vertical-align: top;text-align: left">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales_return.customer_info') }}:</h4>
                             <div><strong>{{ $customer->customer_name }}</strong></div>
                             <div>{{ $customer->address }}</div>
@@ -38,7 +38,7 @@
                             <div>{{ __('sales_return.phone') }}: {{ $customer->customer_phone }}</div>
                         </div>
                         @else
-                        <div class="col-xs-4 mb-3 mb-md-0">
+                        <div style="width: 33%; display: inline-block; vertical-align: top;text-align: left">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales_return.customer_info') }}:</h4>
                             <div><strong>{{ __('sales_return.not_registered') }}</strong></div>
                             <div>-</div>
@@ -47,7 +47,7 @@
                         </div>
                         @endif
 
-                        <div class="col-xs-4 mb-3 mb-md-0">
+                        <div style="width: 32%; display: inline-block; vertical-align: top;text-align: left">
                             <h4 class="mb-2" style="border-bottom: 1px solid #dddddd;padding-bottom: 10px;">{{ __('sales_return.invoice_info') }}:</h4>
                             <div>{{ __('sales_return.invoice') }}: <strong>INV/{{ $sale_return->reference }}</strong></div>
                             <div>{{ __('sales_return.date') }}: {{ \Carbon\Carbon::parse($sale_return->date)->format('d M, Y') }}</div>
@@ -129,11 +129,11 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 25px;">
+                    {{-- <div class="row" style="margin-top: 25px;">
                         <div class="col-xs-12">
                             <p style="font-style: italic;text-align: center">{{ settings()->company_name }} &copy; {{ date('Y') }}.</p>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

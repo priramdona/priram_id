@@ -48,8 +48,8 @@
                                 <h5 class="mb-2 border-bottom pb-2">{{ __('sales.show.info.customer') }}</h5>
                                 <div><strong>{{ __('sales.show.customer.not_registered') }}</strong></div>
                                 <div>-</div>
-                                <div>{{ __('sales.customer.email') }}: -</div>
-                                <div>{{ __('sales.customer.phone') }}: -</div>
+                                <div>{{ __('sales.show.customer.email') }}: -</div>
+                                <div>{{ __('sales.show.customer.phone') }}: -</div>
                             </div>
                             @endif
                             <div class="col-sm-4 mb-3 mb-md-0">
