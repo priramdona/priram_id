@@ -68,7 +68,7 @@
                             <label for="phone_number" class="form-label">Nomor Telepon</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-phone"></i></span>
-                                <input type="phone" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" placeholder="Mobile Phone">
+                                <input type="number" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" placeholder="Mobile Phone">
                                 @error('phone_number')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
