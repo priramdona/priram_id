@@ -32,7 +32,7 @@
                                 <span class="detail-value">{{ $data->transactional->channel_code }}</span>
                             </div>
                             @php
-                                $channelProperties = json_decode($history->transactional->channel_properties, true);
+                                $channelProperties = json_decode($data->transactional->channel_properties, true);
                             @endphp
                             <div class="detail-item">
                                 <span class="detail-label">{{ __('payment_gateway.account_name') }}</span>
