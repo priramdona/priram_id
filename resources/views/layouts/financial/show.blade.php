@@ -19,6 +19,7 @@
                     <div class="card-body">
                         <div class="product-details">
                             <div class="detail-item">
+
                                 <span class="detail-label">{{ __('payment_gateway.date') }}</span>
                                 <span class="detail-value">{{ $data->created_at }}</span>
                             </div>
