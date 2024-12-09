@@ -182,6 +182,7 @@
     <script>
         const messages = @json(__('income.continue_payment'));
         var startautosave;
+        var isSubmitting = false;
 
         $(document).ready(function () {
 
@@ -245,6 +246,7 @@
                                     },
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            isSubmitting = true;
                             $('#income-form').submit();
                         }
                         else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -264,6 +266,11 @@
                 }
             });
             $('#income-form').on('submit', function(e) {
+                if (isSubmitting) {
+                    return; // Jika sudah dalam proses submit, hentikan
+                }
+                isSubmitting = true; // Set flag sebagai true untuk submit pertama kali
+
                 var amount = $('#amount').maskMoney('unmasked')[0];
                 $('#amount').val(amount);
 

@@ -96,7 +96,7 @@
                                                 $total_with_shipping = Cart::instance($cart_instance)->total() + (float) $shipping
                                             @endphp
 
-                                            <input name="amount_sale" id="amount_sale" type="hidden" value="{{ $total_with_shipping }}" name="shipping_amount">
+                                            <input name="amount_sale" id="amount_sale" type="hidden" value="{{ $total_with_shipping }}" >
                                             <td>
                                                 (=) {{ format_currency($total_with_shipping) }}
                                             </td>
@@ -131,7 +131,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button id='submitBtn' name='submitBtn' type="submit" class="btn btn-primary" hidden>{{ __('checkout_modal.submit') }}</button>
+                    <button id='submitBtn' name='submitBtn' type="button" class="btn btn-primary" hidden>{{ __('checkout_modal.submit') }}</button>
                     <button id='continuePayment' name='continuePayment' type="button" class="btn btn-success" hidden>{{ __('checkout_modal.proceed_payment') }}</button>
                     <button type="button" class="btn btn-secondary" id="closeModalCheckout" name="closeModalCheckout" >{{ __('checkout_modal.close') }}</button>
                 </div>
@@ -232,7 +232,9 @@
                             },
             }).then((result) => {
                 if (result.isConfirmed) {
+                    isSubmitting = true;
                     $('#checkout-form').submit();
+
                 }
                 else if (result.dismiss === Swal.DismissReason.cancel) {
                     // Aksi jika pengguna mengklik "No, cancel!"
@@ -254,7 +256,10 @@
     });
 
     $('#checkout-form').on('submit', function(e) {
-        if (isSubmitting) return; // Jika sudah dalam proses submit, hentikan
+
+        if (isSubmitting) {
+            return; // Jika sudah dalam proses submit, hentikan
+        }
         isSubmitting = true; // Set flag sebagai true untuk submit pertama kali
 
         var paymentChannel = document.getElementById('payment_channel').value;
