@@ -29,7 +29,7 @@
         .card-header {
             background-color: #4CAF50;
             color: white;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
@@ -43,10 +43,10 @@
         }
 
         .otp-input {
-            width: 50px;
-            height: 50px;
+            width: 30px;
+            height: 40px;
             text-align: center;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             border: 2px solid #ddd;
             border-radius: 8px;
@@ -56,6 +56,7 @@
         .otp-input:focus {
             border-color: #4CAF50;
             outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Efek fokus */
         }
 
         .btn-primary {
