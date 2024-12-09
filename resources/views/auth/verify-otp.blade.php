@@ -106,7 +106,7 @@
                                 <span class="text-danger d-block text-center">{{ $message }}</span>
                             @enderror
 
-                            <div class="d-grid mt-4">
+                            <div class="d-grid mt-4 text-center">
                                 <button type="submit" class="btn btn-primary">Verifikasi</button>
                             </div>
                         </form>
@@ -116,8 +116,8 @@
                         </div>
 
                         <div class="mt-3 text-center">
-                            <button id="sendOtpButton" class="btn btn-outline-primary">Kirim Ulang OTP</button>
-                         </div>
+                            <button id="sendOtpButton" class="btn btn-outline-primary">Kirim OTP</button>
+                        </div>
                     </div>
                 </div>
             </div>
