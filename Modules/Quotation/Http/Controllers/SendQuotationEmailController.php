@@ -38,6 +38,7 @@ class SendQuotationEmailController extends Controller
 
         } catch (\Exception $exception) {
             Log::error($exception);
+            // dd($exception->getMessage());
             toast(__('controller.error'), 'error');
         }
 

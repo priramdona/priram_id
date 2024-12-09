@@ -14,7 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 |
 */
    //Send Quotation Mail
- Route::get('/quotation/mail/{quotation}', 'SendQuotationEmailController')->name('quotation.email');
+//  Route::get('/quotation/mail/{quotation}', 'SendQuotationEmailController')->name('quotation.email');
 
 Route::group(['middleware' => 'auth'], function () {
     //Generate PDF

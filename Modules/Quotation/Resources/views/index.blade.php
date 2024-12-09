@@ -139,6 +139,7 @@
                     var invoiceUrl = "{{ route('quotation.email', ':id') }}";
                     invoiceUrl = invoiceUrl.replace(':id', selectedProductId);
                     window.location.href = invoiceUrl;
+                    alert(invoiceUrl);
                 } else {
                     console.error('No product selected');
                 }

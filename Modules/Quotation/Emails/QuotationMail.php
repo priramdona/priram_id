@@ -37,10 +37,12 @@ class QuotationMail extends Mailable
             $businessEmail = $business->email ?? null;
             $isEmailValid = filter_var($businessEmail, FILTER_VALIDATE_EMAIL) !== false;
 
-            $fromEmail = $isEmailValid ? $businessEmail : config('mail.from.address');
-            $fromName = $businessName ?: config('mail.from.name');
+            // $fromEmail = $isEmailValid ? $businessEmail : config('mail.from.address');
+            // $fromName = $businessName ?: config('mail.from.name');
 
-            // dd($fromEmail, $fromName);
+            $fromEmail = config('mail.from.address');
+            $fromName = config('mail.from.name');
+
         return $this->subject('Quotation - ' . settings()->company_name . ' Date ' . Carbon::parse(now())->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'))
             ->from($fromEmail, $fromName)
             ->view('quotation::emails.quotation', [
