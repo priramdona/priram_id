@@ -16,7 +16,8 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/selforder/enter', [SelforderController::class, 'enterSelforder'])
+->name('selforder.enterSelforder');
 Route::get('/mobileorder/{business}/{key}', [SelforderController::class, 'indexMobileOrder'])
 ->name('selforder.indexMobileOrder');
 

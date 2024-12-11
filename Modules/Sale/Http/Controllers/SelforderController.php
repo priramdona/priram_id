@@ -52,6 +52,7 @@ class SelforderController extends Controller
     /**
      * Display a listing of the resource.
      */
+
         public function posMobileOrder(string $id, request $request)
         {
             $request->validate([
@@ -225,6 +226,11 @@ class SelforderController extends Controller
         // return view('sale::selforder.ordered.mobileorder',compact( ['selforderCheckout']));
 
     }
+    public function enterSelforder()
+    {
+            return view('sale::enterselforder');
+    }
+
     public function indexMobileOrder(string $business, string $key)
     {
 

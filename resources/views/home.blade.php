@@ -11,7 +11,7 @@
 @section('content')
 
 
-{{-- <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script> --}}
+
 {{-- https://unpkg.com/html5-qrcode --}}
 <script>
     // Deteksi perangkat (mobile atau desktop)

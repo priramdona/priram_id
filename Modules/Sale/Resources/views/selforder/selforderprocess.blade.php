@@ -14,33 +14,6 @@
 @endsection
 
 @section('content')
-{{-- <div class="container-fluid mb-4">
-
-        <div class="container">
-            <div class="col-12">
-                @include('utils.alerts')
-            </div>
-
-            <div class="col-lg-5">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <figure class="text-center">
-                            <div class="position-relative">
-                                <div id="interactiveqr" class="viewport">
-                                    <video id="videoqr" autoplay></video>
-                                    <div class="scanner-laser-qr">{{ __('selforder.process.scan') }}</div>
-                                </div>
-                            </div>
-
-                            <figcaption class="figure-caption text-muted mt-2">
-                                {{ __('selforder.process.info') }}
-                            </figcaption>
-                        </figure>
-                    </div>
-                </div>
-            </div>
-        </div>
-</div> --}}
 <div class="container-fluid mb-4">
     <div class="container">
         <div class="col-12">
