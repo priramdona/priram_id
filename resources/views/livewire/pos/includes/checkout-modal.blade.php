@@ -57,7 +57,7 @@
                                 <label for="number_phone" name="lbl_number_phone" id="lbl_number_phone" hidden>{{  __('checkout_modal.ovo.phone_number') }}<span class="text-danger"> *</span></label>
                                 <div  class="col-11 row" name="group_number_phone" id="group_number_phone" hidden>
                                     <label class="col-2 text-small align-right">+62</label>
-                                    <input type="text" name="number_phone" id="number_phone" class="form-control form-control-sm col-9" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    <input type="number" name="number_phone" id="number_phone" class="form-control form-control-sm col-9" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 
                                 </div>
                             </div>
