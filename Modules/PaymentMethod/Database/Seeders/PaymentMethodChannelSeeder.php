@@ -196,6 +196,7 @@ class PaymentMethodChannelSeeder extends Seeder
            ];
 
 
+
            foreach($dataPaymentMethods as $paymentMethod) {
 
             $paymentMethodData = PaymentMethod::create($paymentMethod);
