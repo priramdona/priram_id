@@ -128,16 +128,19 @@ class XenditWebhookController extends Controller
                     }else{
                         return response()->json("No Payment Method Found....", 422);
                     }
-                    //end of Update xendit_Payment_method
+
+
+                    $xenditCreatePayments->save();
+                    $businessAmount->save();
+                    $paymentRequest->save();
+                    $paymentMethod->save();
                 }
                 else{
+                    //payment-methods-callback
+                    $this->forwardToProjectB($data, 'payment-methods-callback');
                     return response()->json("No Record Found....", 422);
                 }
 
-                $xenditCreatePayments->save();
-                $businessAmount->save();
-                $paymentRequest->save();
-                $paymentMethod->save();
 
             return response()->json([], 200);
 
@@ -465,14 +468,16 @@ class XenditWebhookController extends Controller
                         return response()->json("No Record Found....", 422);
                     }
 
+                    $xenditVirtualAccountRequest->save();
+                    $xenditCreatePayments->save();
+                    $businessAmount->save();
+                    $sourceTransaction->save();
+
                 }else{
+                    $this->forwardToProjectB($data, 'va-paid');
                     return response()->json("No Virtual Record Found....", 422);
                 }
 
-                $xenditVirtualAccountRequest->save();
-                $xenditCreatePayments->save();
-                $businessAmount->save();
-                $sourceTransaction->save();
 
                 return response()->json([], 200);
 
@@ -555,7 +560,9 @@ class XenditWebhookController extends Controller
                     $xenditCreatePayments->save();
 
                 }else{
-                    return response()->json("No Virtual Record Found....", 422);
+                    //create-va-callback
+                    $this->forwardToProjectB($data, 'create-va-callback');
+                    // return response()->json("No Virtual Record Found....", 422);
                 }
 
                 return response()->json([], 200);
@@ -677,19 +684,21 @@ class XenditWebhookController extends Controller
                             $sourceType,$sourceId
                         );
 
+                    $xenditCreatePaymentRequest->save();
+                    $xenditCallbackPaymentRequest->save();
+                    $xenditPaymentMethod->save();
+                    $xenditCreatePayments->save();
+                    $businessAmount->save();
+                    $sourceTransaction->save();
+
                 }else{
-                    return response()->json("Payment Request Record not Found....", 422);
+                         // Kirim ke Project B jika data tidak ditemukan
+                    $this->forwardToProjectB($data, 'payment-methods-succeeded');
+                    // return response()->json("Payment Request Record not Found....", 422);
                 }
             }else{
                 return response()->json("Event status invalid....", 422);
             }
-
-            $xenditCreatePaymentRequest->save();
-            $xenditCallbackPaymentRequest->save();
-            $xenditPaymentMethod->save();
-            $xenditCreatePayments->save();
-            $businessAmount->save();
-            $sourceTransaction->save();
 
             return response()->json([], 200);
 
@@ -699,4 +708,22 @@ class XenditWebhookController extends Controller
             return response()->json([$exception->getMessage()], 422);
         }
     }
+
+    private function forwardToProjectB($data, $method)
+    {
+        try {
+            $url = "https://www.donasikita.com/payment-gateways/{$method}";
+
+            $response = Http::post($url, $data);
+
+            if ($response->successful()) {
+                return response()->json([], 200);
+            }
+
+            return response()->json("Payment Request Record not Found....", 422);
+        } catch (\Exception $e) {
+            return response()->json("Error process", 422);
+        }
+    }
+
 }

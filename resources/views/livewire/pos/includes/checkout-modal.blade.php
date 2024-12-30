@@ -372,8 +372,6 @@
                                                 'number_phone': numberPhone,
                                                 'transaction_type': 'sale',
                                                 'customer_id': customer_id,
-                                                // 'action': data.action,
-                                                // 'source': data.source
                                             },
                                             dataType: 'json',
                                             success: function(response) {

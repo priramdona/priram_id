@@ -268,7 +268,7 @@
             }
 
             if (file) {
-                reader.readAsDataURL(file); // Membaca file sebagai data URL untuk preview
+                reader.readAsDataURL(file);
             }
         }
 
