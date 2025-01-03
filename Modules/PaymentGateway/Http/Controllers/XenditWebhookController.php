@@ -712,7 +712,7 @@ class XenditWebhookController extends Controller
     private function forwardToProjectB($data, $method)
     {
         try {
-            $url = "https://donat.priram.com/payment-gateways/{$method}";
+            $url = "https://xenditpayment.priram.com/payment-gateways/{$method}";
 
             $response = Http::post($url, $data);
 
