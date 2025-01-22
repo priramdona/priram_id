@@ -47,7 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
         $pdf = PDF::loadView('sale::print', [
             'sale' => $sale,
             'customer' => $customer,
-        ])->setPaper('a4');;
+        ])->setPaper('a4');
 
         $output = $pdf->download();
         $filePath = storage_path('app/public/invoices/invoice_' . $sale->id . '_sale' . '.pdf');
